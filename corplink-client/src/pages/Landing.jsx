@@ -1,33 +1,35 @@
+import { Link } from "react-router-dom"
+import MainLayout from "../layouts/MainLayout"
+
 function Landing() {
   return (
-    <div className="min-h-screen bg-white">
-      
-      {/* Navbar */}
-      <div className="flex justify-between items-center p-5 shadow">
-        <h1 className="text-2xl font-bold text-blue-600">CorpLink</h1>
-        <div className="space-x-4">
-          <button className="text-gray-600">Login</button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Register
-          </button>
-        </div>
+    <MainLayout>
+      <div className="min-h-screen text-slate-900">
+
+        {/* Hero */}
+        <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:px-10">
+          
+          <div>
+            <h2 className="text-5xl font-extrabold mb-6">
+              Manage your company in one platform
+            </h2>
+
+            <p className="text-gray-600 mb-6">
+              Employees, tasks, departments and collaboration in one place.
+            </p>
+
+            <Link
+              to="/register"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg"
+            >
+              Start Now
+            </Link>
+          </div>
+
+        </section>
+
       </div>
-
-      {/* Hero Section */}
-      <div className="text-center mt-20 px-4">
-        <h2 className="text-4xl font-bold mb-4">
-          Unified Corporate Platform
-        </h2>
-        <p className="text-gray-600 mb-6">
-          Manage employees, tasks, and collaboration in one place.
-        </p>
-
-        <button className="bg-blue-600 text-white px-6 py-3 rounded">
-          Get Started
-        </button>
-      </div>
-
-    </div>
+    </MainLayout>
   )
 }
 
