@@ -5,7 +5,7 @@ function StatCard({ title, value, subtitle }) {
       <h3 className="text-3xl font-bold text-slate-800 mt-2">{value}</h3>
       {subtitle && <p className="text-xs text-slate-400 mt-2">{subtitle}</p>}
     </div>
-  )
+  );
 }
 
-export default StatCard
+export default StatCard;

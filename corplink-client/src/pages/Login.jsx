@@ -58,6 +58,23 @@ function Login() {
         return
       }
 
+      // Log the login activity
+      try {
+        const { data: userProfile } = await supabase.from("profiles").select("company_id").eq("id", data.user.id).single()
+        if (userProfile?.company_id) {
+          await supabase.from("activity_logs").insert([{
+            company_id: userProfile.company_id,
+            user_id: data.user.id,
+            action: "System Login",
+            entity: "auth",
+            severity: "info",
+            status: "success"
+          }])
+        }
+      } catch (err) {
+        console.error("Failed to log auth:", err)
+      }
+
       navigate("/dashboard")
     } catch (err) {
       console.error("Login catch error:", err)

@@ -75,6 +75,20 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = async () => {
+    if (user && profile?.company_id) {
+      try {
+        await supabase.from("activity_logs").insert([{
+          company_id: profile.company_id,
+          user_id: user.id,
+          action: "System Logout",
+          entity: "auth",
+          severity: "info",
+          status: "success"
+        }])
+      } catch (e) {
+        console.error("Failed to log logout action", e)
+      }
+    }
     await supabase.auth.signOut()
     setUser(null)
     setProfile(null)

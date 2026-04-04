@@ -2,301 +2,233 @@ import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
+import { logAdminActivity } from "../utils/logger"
+
+import TeamsPanel from "../components/departments/TeamsPanel"
+import MembersPanel from "../components/departments/MembersPanel"
+import CommunicationPanel from "../components/departments/CommunicationPanel"
 
 function Departments() {
   const { user, profile, loading: authLoading } = useAuth()
 
   const [departments, setDepartments] = useState([])
-  const [name, setName] = useState("")
-  const [editingId, setEditingId] = useState(null)
+  const [employees, setEmployees] = useState([])
+  const [newDeptName, setNewDeptName] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [message, setMessage] = useState("")
+  
+  // Master-Detail State
+  const [activeDeptId, setActiveDeptId] = useState(null)
+  const [activeTab, setActiveTab] = useState("overview")
 
   const fetchDepartments = async () => {
     setError("")
-
-    const { data, error } = await supabase
+    // Fetch departments normally without PostgREST joins to prevent FK errors
+    const { data: deptsData, error: deptsError } = await supabase
       .from("departments")
       .select("*")
       .eq("company_id", profile?.company_id)
       .order("created_at", { ascending: false })
 
-    console.log("fetch departments data:", data)
-    console.log("fetch departments error:", error)
-
-    if (error) {
-      setError(error.message)
+    if (deptsError) {
+      console.error(deptsError)
+      setError("Failed to load departments.")
       return
     }
 
-    setDepartments(data || [])
+    // Manual merge with employees
+    const { data: empsData } = await supabase.from("employees").select("id, name").eq("company_id", profile?.company_id)
+    
+    if (empsData) setEmployees(empsData)
+
+    const mappedDepts = deptsData.map(d => {
+      const head = empsData?.find(e => e.id === d.head_id)
+      return { ...d, head: head ? { name: head.name } : null }
+    })
+
+    setDepartments(mappedDepts || [])
+    if (mappedDepts && mappedDepts.length > 0 && !activeDeptId) {
+      setActiveDeptId(mappedDepts[0].id)
+    }
   }
+
+  // We fetch employees inside fetchDepartments instead
+  const fetchCompanyEmployees = async () => {} 
+
 
   useEffect(() => {
     if (profile?.company_id) {
       fetchDepartments()
+      fetchCompanyEmployees()
     }
   }, [profile?.company_id])
 
-  const handleSubmit = async (e) => {
+  const handleCreateDepartment = async (e) => {
     e.preventDefault()
-    setError("")
-    setMessage("")
-
-    if (!name.trim()) {
-      setError("Department name দাও")
-      return
-    }
-
-    if (!profile?.company_id) {
-      setError("Company ID পাওয়া যায়নি")
-      return
-    }
-
-    if (!user?.id) {
-      setError("User পাওয়া যায়নি")
-      return
-    }
-
+    if (!newDeptName.trim()) return
     setLoading(true)
-
+    
     try {
-      if (editingId) {
-        const { error: updateError } = await supabase
-          .from("departments")
-          .update({ name: name.trim() })
-          .eq("id", editingId)
+      const { data: insertData, error: insertError } = await supabase
+        .from("departments")
+        .insert([{ name: newDeptName.trim(), company_id: profile.company_id, created_by: user.id }])
+        .select()
 
-        console.log("update department error:", updateError)
+      if (insertError) throw insertError
 
-        if (updateError) {
-          setError(updateError.message)
-          setLoading(false)
-          return
-        }
+      await logAdminActivity({
+        company_id: profile.company_id, user_id: user.id,
+        action: `Created new Department: ${newDeptName.trim()}`, entity: "department"
+      })
 
-        const { error: logError } = await supabase.from("activity_logs").insert([
-          {
-            company_id: profile.company_id,
-            user_id: user.id,
-            action: "Updated Department",
-            entity: "department",
-          },
-        ])
-
-        console.log("Update department log error:", logError)
-
-        setMessage("Department updated successfully")
-        setEditingId(null)
-      } else {
-        const { data: insertData, error: insertError } = await supabase
-          .from("departments")
-          .insert([
-            {
-              name: name.trim(),
-              company_id: profile.company_id,
-              created_by: user.id,
-            },
-          ])
-          .select()
-
-        console.log("insert department data:", insertData)
-        console.log("insert department error:", insertError)
-
-        if (insertError) {
-          setError(insertError.message)
-          setLoading(false)
-          return
-        }
-
-        const { error: logError } = await supabase.from("activity_logs").insert([
-          {
-            company_id: profile.company_id,
-            user_id: user.id,
-            action: "Created Department",
-            entity: "department",
-          },
-        ])
-
-        console.log("Create department log error:", logError)
-
-        setMessage("Department added successfully")
-      }
-
-      setName("")
+      setNewDeptName("")
       await fetchDepartments()
+      if (insertData && insertData.length > 0) setActiveDeptId(insertData[0].id)
     } catch (err) {
-      console.error("Department submit catch error:", err)
-      setError("Something went wrong")
+      setError(err.message)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleEdit = (dept) => {
-    setName(dept.name)
-    setEditingId(dept.id)
-    setError("")
-    setMessage("")
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
-
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Delete this department?")
-    if (!confirmDelete) return
-
-    setError("")
-    setMessage("")
-
-    const { error: deleteError } = await supabase
-      .from("departments")
-      .delete()
-      .eq("id", id)
-
-    console.log("delete department error:", deleteError)
-
-    if (deleteError) {
-      setError(deleteError.message)
-      return
+  const handleDeleteDepartment = async (id, name) => {
+    if (!window.confirm(`Are you extremely sure you want to permanently delete the ${name} department? This might affect employees and teams.`)) return
+    
+    const { error } = await supabase.from("departments").delete().eq("id", id)
+    if (!error) {
+       await logAdminActivity({
+        company_id: profile.company_id, user_id: user.id,
+        action: `Deleted Department: ${name}`, entity: "department", severity: "critical"
+      })
+      if (activeDeptId === id) setActiveDeptId(null)
+      fetchDepartments()
     }
-
-    const { error: logError } = await supabase.from("activity_logs").insert([
-      {
-        company_id: profile.company_id,
-        user_id: user.id,
-        action: "Deleted Department",
-        entity: "department",
-      },
-    ])
-
-    console.log("Delete department log error:", logError)
-
-    setMessage("Department deleted successfully")
-    fetchDepartments()
   }
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
-        <p className="text-lg font-medium text-slate-600">Loading...</p>
-      </div>
-    )
+  const handleAssignHead = async (deptId, empId) => {
+    await supabase.from("departments").update({ head_id: empId || null }).eq("id", deptId)
+    // Quick local update
+    const empMatch = employees.find(e => e.id === empId)
+    setDepartments(prev => prev.map(d => d.id === deptId ? { ...d, head_id: empId, head: empMatch ? { name: empMatch.name } : null } : d))
   }
+
+  if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-slate-100"><p className="text-lg font-medium text-slate-600">Loading...</p></div>
+
+  const activeDept = departments.find(d => d.id === activeDeptId)
 
   return (
-    <AppLayout
-      title="Department Management"
-      subtitle="Create and manage departments for your corporate workspace"
-    >
-      <div className="space-y-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4">
-            <input
-              type="text"
-              placeholder="Department Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="flex-1 border border-slate-300 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
-            />
-
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium"
-              >
-                {loading ? "Saving..." : editingId ? "Update Department" : "Add Department"}
+    <AppLayout title="Department Management" subtitle="Manage teams, assignments, and organizational workflows">
+      <div className="flex flex-col lg:flex-row gap-6">
+        
+        {/* Left Sidebar: Master List */}
+        <div className="lg:w-1/3 flex flex-col gap-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+            <h3 className="font-semibold text-slate-800 mb-3">Add Department</h3>
+            <form onSubmit={handleCreateDepartment} className="flex gap-2">
+              <input type="text" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="Marketing, IT..." className="flex-1 w-full border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm" />
+              <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 rounded-lg font-medium text-sm w-16 flex items-center justify-center">
+                {loading ? "..." : "Add"}
               </button>
+            </form>
+            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+          </div>
 
-              {editingId && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setName("")
-                    setEditingId(null)
-                    setError("")
-                    setMessage("")
-                  }}
-                  className="bg-slate-200 hover:bg-slate-300 text-slate-800 px-6 py-3 rounded-xl font-medium"
-                >
-                  Cancel
-                </button>
-              )}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-1">
+            <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+              <h3 className="font-semibold text-slate-800">Organization</h3>
+              <span className="bg-slate-200 text-slate-600 text-xs font-bold px-2 py-0.5 rounded">{departments.length}</span>
             </div>
-          </form>
-
-          {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
-          {message && <p className="text-green-600 text-sm mt-4">{message}</p>}
-
-          <div className="mt-4 text-sm text-slate-500 space-y-1">
-            <p>
-              <span className="font-semibold">Company ID:</span>{" "}
-              {profile?.company_id || "N/A"}
-            </p>
-            <p>
-              <span className="font-semibold">User ID:</span>{" "}
-              {user?.id || "N/A"}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-            <p className="text-sm text-slate-500">Total Departments</p>
-            <h3 className="text-3xl font-bold text-slate-800 mt-2">
-              {departments.length}
-            </h3>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-            <p className="text-sm text-slate-500">Current Workspace</p>
-            <h3 className="text-xl font-bold text-slate-800 mt-2">
-              {profile?.companies?.name || "Company"}
-            </h3>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-200">
-            <h3 className="text-xl font-semibold text-slate-800">Department List</h3>
-          </div>
-
-          {departments.length === 0 ? (
-            <p className="p-5 text-slate-500">No departments yet</p>
-          ) : (
-            <div className="divide-y divide-slate-200">
-              {departments.map((dept) => (
-                <div
+            <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+              {departments.length === 0 ? (
+                <p className="p-5 text-slate-500 text-center text-sm">No departments exist.</p>
+              ) : departments.map(dept => (
+                <button
                   key={dept.id}
-                  className="p-5 flex items-center justify-between gap-4"
+                  onClick={() => setActiveDeptId(dept.id)}
+                  className={`w-full text-left p-4 transition border-l-4 ${activeDeptId === dept.id ? "border-blue-600 bg-blue-50/50" : "border-transparent hover:bg-slate-50"}`}
                 >
-                  <div>
-                    <h4 className="text-lg font-semibold text-slate-800">
-                      {dept.name}
-                    </h4>
-                    <p className="text-sm text-slate-500 mt-1">
-                      Created on {new Date(dept.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => handleEdit(dept)}
-                      className="text-blue-600 font-medium hover:underline"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(dept.id)}
-                      className="text-red-600 font-medium hover:underline"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
+                  <p className={`font-semibold ${activeDeptId === dept.id ? "text-blue-800" : "text-slate-700"}`}>{dept.name}</p>
+                  <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                    <span>👑 {dept.head?.name || "No Head Assigned"}</span>
+                  </p>
+                </button>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Content: Active Department details */}
+        <div className="lg:w-2/3">
+          {!activeDept ? (
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-16 flex flex-col items-center justify-center text-center">
+              <span className="text-5xl mb-4">🏢</span>
+              <h3 className="text-xl font-bold text-slate-800">No Department Selected</h3>
+              <p className="text-slate-500 mt-2">Select a department from the left, or create a new one to start organizing teams.</p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden min-h-[600px] flex flex-col">
+              
+              {/* Dept Header */}
+              <div className="px-6 pt-6 pb-0 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-white">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900">{activeDept.name} Department</h2>
+                    <p className="text-slate-500 text-sm mt-1">Manage infrastructure, assignments, and workflow.</p>
+                  </div>
+                  <button onClick={() => handleDeleteDepartment(activeDept.id, activeDept.name)} className="text-red-500 hover:bg-red-50 p-2 rounded transition">
+                    🗑️ Delete Dept
+                  </button>
+                </div>
+                
+                {/* Tabs */}
+                <div className="flex gap-6 mt-6 border-b border-slate-200">
+                  {["overview", "teams", "members", "communication"].map(tab => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`pb-3 text-sm font-semibold capitalize transition border-b-2 ${activeTab === tab ? "border-blue-600 text-blue-700" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"}`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tab Content Area */}
+              <div className="p-6 flex-1 bg-slate-50/50">
+                {activeTab === "overview" && (
+                  <div className="space-y-6 animate-in fade-in">
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold text-slate-800 flex items-center gap-2">⭐ Department Head</h4>
+                        <p className="text-xs text-slate-500 mt-0.5">The primary administrative leader for this department.</p>
+                      </div>
+                      <select 
+                        value={activeDept.head_id || ""}
+                        onChange={(e) => handleAssignHead(activeDept.id, e.target.value)}
+                        className="border border-slate-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500 text-sm font-medium"
+                      >
+                        <option value="">-- No Head Assigned --</option>
+                        {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <p className="text-slate-500 text-sm">Created On</p>
+                        <p className="font-semibold text-slate-800 mt-1">{new Date(activeDept.created_at).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {activeTab === "teams" && <TeamsPanel activeDept={activeDept} user={user} profile={profile} />}
+                
+                {activeTab === "members" && <MembersPanel activeDept={activeDept} />}
+                
+                {activeTab === "communication" && <CommunicationPanel activeDept={activeDept} profile={profile} />}
+                
+              </div>
             </div>
           )}
         </div>

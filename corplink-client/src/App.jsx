@@ -8,6 +8,7 @@ import Employees from "./pages/Employees"
 import Tasks from "./pages/Tasks"
 import Activity from "./pages/Activity"
 import Feed from "./pages/Feed"
+import Collaboration from "./pages/Collaboration"
 import ProtectedRoute from "./components/ProtectedRoute"
 
 function App() {
@@ -68,6 +69,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Feed />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/collaboration"
+          element={
+            <ProtectedRoute>
+              <Collaboration />
             </ProtectedRoute>
           }
         />

@@ -1,5 +1,5 @@
-import Sidebar from "./Sidebar"
-import Topbar from "./Topbar"
+import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
 
 function AppLayout({ children, title, subtitle }) {
   return (
@@ -16,9 +16,7 @@ function AppLayout({ children, title, subtitle }) {
                 {title && (
                   <h1 className="text-3xl font-bold text-slate-800">{title}</h1>
                 )}
-                {subtitle && (
-                  <p className="text-slate-500 mt-2">{subtitle}</p>
-                )}
+                {subtitle && <p className="text-slate-500 mt-2">{subtitle}</p>}
               </div>
             )}
 
@@ -27,7 +25,7 @@ function AppLayout({ children, title, subtitle }) {
         </main>
       </div>
     </div>
-  )
+  );
 }
 
-export default AppLayout
+export default AppLayout;

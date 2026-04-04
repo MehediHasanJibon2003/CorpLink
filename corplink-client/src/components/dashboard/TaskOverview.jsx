@@ -1,11 +1,11 @@
 function TaskOverview({ pending, inProgress, finished }) {
-  const maxValue = Math.max(pending, inProgress, finished, 1)
+  const maxValue = Math.max(pending, inProgress, finished, 1);
 
   const bars = [
     { label: "Pending", value: pending },
     { label: "In Progress", value: inProgress },
     { label: "Finished", value: finished },
-  ]
+  ];
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
@@ -25,13 +25,15 @@ function TaskOverview({ pending, inProgress, finished }) {
                 }}
               />
             </div>
-            <p className="mt-3 text-sm font-medium text-slate-700">{bar.label}</p>
+            <p className="mt-3 text-sm font-medium text-slate-700">
+              {bar.label}
+            </p>
             <p className="text-xs text-slate-500">{bar.value}</p>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default TaskOverview
+export default TaskOverview;

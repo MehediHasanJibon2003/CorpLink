@@ -1,14 +1,14 @@
-import { useNavigate } from "react-router-dom"
-import { useAuth } from "../../context/AuthContext"
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function Topbar() {
-  const navigate = useNavigate()
-  const { profile, logout } = useAuth()
+  const navigate = useNavigate();
+  const { profile, logout } = useAuth();
 
   const handleLogout = async () => {
-    await logout()
-    navigate("/login")
-  }
+    await logout();
+    navigate("/login");
+  };
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
@@ -37,7 +37,7 @@ function Topbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
-export default Topbar
+export default Topbar;
