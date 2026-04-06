@@ -140,7 +140,7 @@ function ProposalsPanel() {
       case 'partnership': return <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">General Partnership</span>
       case 'vendor': return <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Vendor Contract</span>
       case 'project': return <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Shared Project</span>
-      default: return <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">Other</span>
+      default: return <span className="text-xs bg-slate-100 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded">Other</span>
     }
   }
 
@@ -150,8 +150,8 @@ function ProposalsPanel() {
     <div className="space-y-6">
 
       {/* Write Proposal Form */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <h3 className="font-semibold text-slate-800 mb-4">🚀 Create New Proposal</h3>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">🚀 Create New Proposal</h3>
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
         {message && <p className="text-green-500 text-sm mb-3">{message}</p>}
 
@@ -203,15 +203,15 @@ function ProposalsPanel() {
       </div>
 
       {/* Proposals List (Agreements and history) */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <div className="px-5 py-4 border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
           <h3 className="font-semibold text-slate-800">Proposal History & Agreements</h3>
         </div>
         
         {proposals.length === 0 ? (
           <p className="text-slate-500 text-sm p-5">No proposals found.</p>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {proposals.map(prop => {
               const isReceived = prop.to_company === profile.company_id
               const otherCompany = isReceived ? prop.fc?.name : prop.tc?.name
@@ -224,17 +224,17 @@ function ProposalsPanel() {
                         {isReceived ? (
                           <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">FROM: {otherCompany}</span>
                         ) : (
-                          <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">TO: {otherCompany}</span>
+                          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 px-2 py-0.5 rounded">TO: {otherCompany}</span>
                         )}
                         {typeBadge(prop.proposal_type)}
                       </div>
-                      <h4 className="font-bold text-slate-800 cursor-default">{prop.title}</h4>
+                      <h4 className="font-bold text-slate-800 dark:text-slate-100 cursor-default">{prop.title}</h4>
                     </div>
                     {statusBadge(prop.status)}
                   </div>
 
                   {prop.description && (
-                    <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">{prop.description}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg">{prop.description}</p>
                   )}
 
                   <div className="text-xs text-slate-400">
@@ -252,7 +252,7 @@ function ProposalsPanel() {
                       </button>
                       <button
                         onClick={() => handleUpdateStatus(prop.id, "rejected", otherCompany, prop.proposal_type)}
-                        className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-1.5 rounded-lg text-sm transition"
+                        className="bg-slate-200 hover:bg-slate-300 text-slate-700 dark:text-slate-200 px-4 py-1.5 rounded-lg text-sm transition"
                       >
                         Decline
                       </button>

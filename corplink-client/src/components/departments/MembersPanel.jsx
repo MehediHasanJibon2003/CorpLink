@@ -66,16 +66,16 @@ function MembersPanel({ activeDept }) {
     <div className="space-y-6">
       
       {/* Assign Member to Dept Form */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm flex items-center justify-between">
         <div>
-          <h4 className="font-semibold text-slate-800">Add Employee to Department</h4>
-          <p className="text-xs text-slate-500 mt-1">Select an employee from the company to join {activeDept.name}.</p>
+          <h4 className="font-semibold text-slate-800 dark:text-slate-100">Add Employee to Department</h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Select an employee from the company to join {activeDept.name}.</p>
         </div>
         <form onSubmit={handleAddMemberToDept} className="flex gap-2">
           <select 
             value={selectedNewEmp}
             onChange={e => setSelectedNewEmp(e.target.value)}
-            className="border border-slate-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500 text-sm bg-white"
+            className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500 text-sm cursor-pointer"
           >
             <option value="">-- Choose Employee --</option>
             {unassignedEmps.map(emp => (
@@ -89,25 +89,25 @@ function MembersPanel({ activeDept }) {
       </div>
 
       {/* Member Data Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-bold">
+            <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
               <th className="p-4">Employee Name</th>
               <th className="p-4">Email</th>
               <th className="p-4">Role</th>
               <th className="p-4">Team Assignment</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-sm">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
             {employees.length === 0 ? (
               <tr><td colSpan="4" className="p-10 text-center text-slate-500">No employees assigned to this department yet.</td></tr>
             ) : employees.map((emp) => (
-            <tr key={emp.id} className="hover:bg-slate-50 transition">
-              <td className="p-4 font-semibold text-slate-800">{emp.name}</td>
-              <td className="p-4 text-slate-500">{emp.email}</td>
+            <tr key={emp.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+              <td className="p-4 font-semibold text-slate-800 dark:text-slate-100">{emp.name}</td>
+              <td className="p-4 text-slate-500 dark:text-slate-400">{emp.email}</td>
               <td className="p-4">
-                <span className="bg-slate-100 px-2 py-1 rounded text-xs font-semibold text-slate-600 capitalize">
+                <span className="bg-slate-100 px-2 py-1 rounded text-xs font-semibold text-slate-600 dark:text-slate-300 capitalize">
                   {emp.role}
                 </span>
                 {activeDept.head_id === emp.id && (
@@ -121,7 +121,7 @@ function MembersPanel({ activeDept }) {
                   <select
                     value={emp.team_id || ""}
                     onChange={(e) => handleAssignTeam(emp.id, e.target.value)}
-                    className="border border-slate-300 rounded px-2 py-1 outline-none focus:border-blue-500 text-sm bg-white cursor-pointer"
+                    className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white rounded px-2 py-1 outline-none focus:border-blue-500 text-sm cursor-pointer"
                   >
                     <option value="">-- No Team --</option>
                     {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}

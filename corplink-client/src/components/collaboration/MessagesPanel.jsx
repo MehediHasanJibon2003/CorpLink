@@ -92,7 +92,7 @@ function MessagesPanel() {
 
   if (partners.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-10 text-center">
         <div className="text-4xl mb-3">💬</div>
         <h3 className="font-semibold text-slate-700">No active partners</h3>
         <p className="text-slate-500 text-sm mt-1">Connect with other companies in the Discover tab first.</p>
@@ -101,10 +101,10 @@ function MessagesPanel() {
   }
 
   return (
-    <div className="bg-white border flex flex-col md:flex-row border-slate-200 rounded-2xl shadow-sm overflow-hidden h-[600px]">
+    <div className="bg-white dark:bg-slate-800 border flex flex-col md:flex-row border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden h-[600px]">
       {/* Sidebar: Partners List */}
-      <div className="md:w-1/3 bg-slate-50 border-r border-slate-200 flex flex-col">
-        <div className="p-4 border-b border-slate-200 bg-white">
+      <div className="md:w-1/3 bg-slate-50 dark:bg-slate-900/50 border-r border-slate-200 dark:border-slate-700 flex flex-col">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-white">
           <h3 className="font-semibold text-slate-800">Partner Contacts</h3>
         </div>
         <div className="overflow-y-auto flex-1">
@@ -116,14 +116,14 @@ function MessagesPanel() {
                 ${activePartner?.id === partner.id ? "bg-blue-50/50" : "hover:bg-slate-100"}
               `}
             >
-              <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-600 dark:text-slate-300 font-bold flex items-center justify-center">
                 {partner.name.charAt(0).toUpperCase()}
               </div>
               <div className="truncate">
                 <p className={`font-semibold text-sm ${activePartner?.id === partner.id ? "text-blue-700" : "text-slate-700"}`}>
                   {partner.name}
                 </p>
-                <p className="text-xs text-slate-500 truncate">Partner</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Partner</p>
               </div>
             </button>
           ))}
@@ -133,12 +133,12 @@ function MessagesPanel() {
       {/* Chat Area */}
       <div className="md:w-2/3 flex flex-col h-full bg-white">
         {/* Chat header */}
-        <div className="p-4 border-b border-slate-200 shadow-sm z-10 flex items-center gap-3">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700 shadow-sm z-10 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-blue-600 font-bold text-white flex items-center justify-center">
             {activePartner?.name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 leading-tight">{activePartner?.name}</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-100 leading-tight">{activePartner?.name}</h3>
             <p className="text-xs text-green-600">Company connected</p>
           </div>
         </div>
@@ -157,7 +157,7 @@ function MessagesPanel() {
                   <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
                     isMine 
                       ? "bg-blue-600 text-white rounded-br-sm" 
-                      : "bg-white border border-slate-200 text-slate-800 rounded-bl-sm shadow-sm"
+                      : "bg-white dark:bg-slate-800 border border-slate-200 text-slate-800 dark:text-slate-100 rounded-bl-sm shadow-sm"
                   }`}>
                     {msg.message_text}
                     <div className={`text-[10px] mt-1 text-right ${isMine ? "text-blue-200" : "text-slate-400"}`}>
@@ -172,7 +172,7 @@ function MessagesPanel() {
         </div>
 
         {/* Input area */}
-        <div className="p-4 border-t border-slate-200 bg-white">
+        <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white">
           <form onSubmit={handleSend} className="flex gap-2">
             <input
               type="text"

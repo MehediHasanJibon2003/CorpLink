@@ -8,7 +8,7 @@ const POST_TYPES = [
   { value: "announcement", label: "Announcement", color: "bg-blue-50 text-blue-700 border-blue-200" },
   { value: "promotion", label: "Product Promotion", color: "bg-purple-50 text-purple-700 border-purple-200" },
   { value: "event", label: "Event / Campaign", color: "bg-orange-50 text-orange-700 border-orange-200" },
-  { value: "internal", label: "Internal Alert", color: "bg-slate-100 text-slate-700 border-slate-200" }
+  { value: "internal", label: "Internal Alert", color: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700" }
 ]
 
 function Feed() {
@@ -303,15 +303,15 @@ function Feed() {
       <div className="max-w-3xl mx-auto space-y-6 pb-20">
         
         {/* CREATE POST SECTION */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="p-5">
-            <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-4">
+            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
               <div className="h-10 w-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
                 {profile?.full_name?.charAt(0)?.toUpperCase()}
               </div>
               <div>
-                <h3 className="font-semibold text-slate-800 leading-tight">Create an Update</h3>
-                <p className="text-xs text-slate-500">Share with your company or the public</p>
+                <h3 className="font-semibold text-slate-800 dark:text-slate-100 leading-tight">Create an Update</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Share with your company or the public</p>
               </div>
             </div>
 
@@ -319,7 +319,7 @@ function Feed() {
               <div className="flex gap-4 mb-2">
                 <select 
                   value={visibility} onChange={(e) => setVisibility(e.target.value)}
-                  className="bg-slate-50 border border-slate-200 text-sm rounded-lg px-3 py-2 outline-none focus:border-blue-500 font-medium text-slate-700"
+                  className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none focus:border-blue-500 font-medium text-slate-700 dark:text-slate-200"
                 >
                   <option value="internal">🔒 Internal Only</option>
                   <option value="public">🌍 Public (All Companies)</option>
@@ -327,7 +327,7 @@ function Feed() {
 
                 <select 
                   value={postType} onChange={(e) => setPostType(e.target.value)}
-                  className="bg-slate-50 border border-slate-200 text-sm rounded-lg px-3 py-2 outline-none focus:border-blue-500 font-medium text-slate-700"
+                  className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none focus:border-blue-500 font-medium text-slate-700 dark:text-slate-200"
                 >
                   {POST_TYPES.map(pt => <option key={pt.value} value={pt.value}>{pt.label}</option>)}
                 </select>
@@ -335,15 +335,15 @@ function Feed() {
 
               <input
                 type="text" placeholder="Campaign or update title" value={title} onChange={(e) => setTitle(e.target.value)}
-                className="w-full border border-slate-300 px-4 py-3 rounded-xl outline-none focus:border-blue-500 font-medium"
+                className="w-full border border-slate-300 dark:border-slate-600 px-4 py-3 rounded-xl outline-none focus:border-blue-500 font-medium"
               />
               <textarea
                 placeholder="Write your corporate update..." value={content} onChange={(e) => setContent(e.target.value)} rows="3"
-                className="w-full border border-slate-300 px-4 py-4 rounded-xl outline-none focus:border-blue-500 resize-none text-sm"
+                className="w-full border border-slate-300 dark:border-slate-600 px-4 py-4 rounded-xl outline-none focus:border-blue-500 resize-none text-sm"
               />
 
               <div className="flex items-center gap-4">
-                <label className="cursor-pointer flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-sm text-slate-700 transition">
+                <label className="cursor-pointer flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 px-4 py-2 rounded-lg text-sm text-slate-700 dark:text-slate-200 transition">
                   <span>📸 Add Media</span>
                   <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                 </label>
@@ -355,7 +355,7 @@ function Feed() {
                 {editingId && (
                   <button type="button" onClick={() => {
                     setEditingId(null); setTitle(""); setContent(""); setSelectedImage(null); setImagePreview("")
-                  }} className="bg-slate-200 hover:bg-slate-300 text-slate-800 px-6 py-2.5 rounded-xl font-semibold transition">
+                  }} className="bg-slate-200 hover:bg-slate-300 text-slate-800 dark:text-slate-100 px-6 py-2.5 rounded-xl font-semibold transition">
                     Cancel
                   </button>
                 )}
@@ -379,7 +379,7 @@ function Feed() {
                 key={keys[idx]}
                 onClick={() => setFilter(keys[idx])}
                 className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold transition border ${
-                  isActive ? "bg-slate-800 text-white border-slate-800 shadow-sm" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                  isActive ? "bg-slate-800 text-white border-slate-800 shadow-sm" : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-slate-900/50"
                 }`}
               >
                 {tab}
@@ -390,9 +390,9 @@ function Feed() {
 
         {/* FEED TIMELINE */}
         {filteredPosts.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 text-center">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-10 text-center">
             <div className="text-4xl mb-2">📰</div>
-            <p className="text-slate-500 font-medium">No posts found for this filter.</p>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">No posts found for this filter.</p>
           </div>
         ) : (
           filteredPosts.map((post) => {
@@ -400,7 +400,7 @@ function Feed() {
             const isMyCompany = post.company_id === profile?.company_id
             
             return (
-              <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-4">
+              <div key={post.id} className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mt-4">
                 {/* Header */}
                 <div className="p-5 flex items-start justify-between border-b border-slate-50 relative">
                   <div className="flex items-center gap-3">
@@ -409,7 +409,7 @@ function Feed() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-slate-900 leading-tight">
+                        <h3 className="font-semibold text-slate-900 dark:text-white leading-tight">
                           {post.companies?.name || "Corporate User"}
                         </h3>
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${typeConfig.color}`}>
@@ -417,11 +417,11 @@ function Feed() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[11px] text-slate-500">
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
                           {new Date(post.created_at).toLocaleDateString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}
                         </span>
                         <span className="text-slate-300">•</span>
-                        <span className="text-[11px] font-medium text-slate-500 flex items-center gap-1">
+                        <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
                           {post.visibility === 'public' ? '🌍 Public' : '🔒 Internal'}
                         </span>
                       </div>
@@ -433,7 +433,7 @@ function Feed() {
                     <div className="relative">
                       <button 
                         onClick={() => setOpenMenuId(openMenuId === post.id ? null : post.id)} 
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition focus:outline-none"
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:bg-slate-800 transition focus:outline-none"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z"/></svg>
                       </button>
@@ -441,10 +441,10 @@ function Feed() {
                       {openMenuId === post.id && (
                         <>
                           <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)}></div>
-                          <div className="absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg border border-slate-200 z-20 py-1 overflow-hidden">
+                          <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-20 py-1 overflow-hidden">
                             <button 
                               onClick={() => { handleEdit(post); setOpenMenuId(null); }} 
-                              className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition"
+                              className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:bg-slate-900/50 flex items-center gap-2 transition"
                             >
                               ✏️ Edit Post
                             </button>
@@ -463,54 +463,54 @@ function Feed() {
 
                 {/* Content */}
                 <div className="px-5 py-4">
-                  <h4 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h4>
-                  <p className="text-slate-700 whitespace-pre-line text-[15px] leading-relaxed">
+                  <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{post.title}</h4>
+                  <p className="text-slate-700 dark:text-slate-200 whitespace-pre-line text-[15px] leading-relaxed">
                     {post.content}
                   </p>
                 </div>
 
                 {/* Media */}
                 {post.image_url && (
-                  <div className="w-full bg-slate-50 border-y border-slate-100">
+                  <div className="w-full bg-slate-50 dark:bg-slate-900/50 border-y border-slate-100 dark:border-slate-800">
                     <img src={post.image_url} alt={post.title} className="w-full max-h-[400px] object-contain" />
                   </div>
                 )}
 
                 {/* Analytics & Interaction Bar */}
-                <div className="px-5 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+                <div className="px-5 py-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
                   <div className="flex gap-4">
                     <span>❤️ {post.likesCount}</span>
                     <span>💬 {post.commentsCount}</span>
                   </div>
-                  <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded">
+                  <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-900/50 px-2 py-1 rounded">
                     <span>📈</span>
                     <span>{Number(post.views_count || 0) + Number(post.likesCount || 0) + Number(post.commentsCount || 0)} views</span>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="border-t border-slate-100 grid grid-cols-3 divide-x divide-slate-100">
-                  <button onClick={() => handleToggleLike(post)} className={`py-3 flex items-center justify-center gap-2 text-sm font-semibold transition ${post.likedByMe ? "text-blue-600 bg-blue-50/50" : "text-slate-600 hover:bg-slate-50"}`}>
+                <div className="border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 divide-x divide-slate-100">
+                  <button onClick={() => handleToggleLike(post)} className={`py-3 flex items-center justify-center gap-2 text-sm font-semibold transition ${post.likedByMe ? "text-blue-600 bg-blue-50/50" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}>
                     {post.likedByMe ? '💙 Liked' : '🤍 Like'}
                   </button>
-                  <button onClick={() => toggleComments(post.id)} className={`py-3 flex items-center justify-center gap-2 text-sm font-semibold transition ${expandedComments.includes(post.id) ? "text-blue-600 bg-blue-50/50" : "text-slate-600 hover:bg-slate-50"}`}>
+                  <button onClick={() => toggleComments(post.id)} className={`py-3 flex items-center justify-center gap-2 text-sm font-semibold transition ${expandedComments.includes(post.id) ? "text-blue-600 bg-blue-50/50" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}>
                     💬 Comment
                   </button>
-                  <button onClick={() => handleShare(post.id)} className="py-3 flex items-center justify-center gap-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+                  <button onClick={() => handleShare(post.id)} className="py-3 flex items-center justify-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50 transition">
                     ↗ Share
                   </button>
                 </div>
 
                 {/* Comments Section (Facebook style toggle) */}
                 {expandedComments.includes(post.id) && (
-                  <div className="bg-slate-50 p-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="bg-slate-50 dark:bg-slate-900/50 p-4 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="flex gap-3 text-sm">
                       <input
                         id={`comment-${post.id}`} type="text" placeholder="Write a comment..."
                         value={commentInputs[post.id] || ""}
                         onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
                         onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post)}
-                        className="flex-1 bg-white border border-slate-200 px-4 py-2 rounded-full outline-none focus:border-blue-500 shadow-sm transition"
+                        className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-full outline-none focus:border-blue-500 shadow-sm transition"
                       />
                       <button onClick={() => handleAddComment(post)} className="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-full font-semibold transition">
                         Post
@@ -522,8 +522,8 @@ function Feed() {
                       <div className="mt-4 space-y-3">
                         {post.comments.map((comment) => (
                           <div key={comment.id} className="flex gap-2">
-                            <div className="h-7 w-7 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 mt-0.5">U</div>
-                            <div className="bg-white border border-slate-200 rounded-2xl px-3 py-2 text-sm text-slate-700 shadow-sm flex-1">
+                            <div className="h-7 w-7 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300 mt-0.5">U</div>
+                            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-2 text-sm text-slate-700 dark:text-slate-200 shadow-sm flex-1">
                               {/* If you add user names to comments later, put it here as a bold tag before the text */}
                               {comment.comment_text}
                             </div>

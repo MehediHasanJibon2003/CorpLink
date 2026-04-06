@@ -81,13 +81,13 @@ function TeamsPanel({ activeDept, user, profile }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-        <h4 className="font-semibold text-slate-800 mb-4">Create New Team</h4>
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
+        <h4 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">Create New Team</h4>
         <form onSubmit={handleCreateTeam} className="flex gap-3">
           <input 
             type="text" value={name} onChange={e => setName(e.target.value)}
             placeholder="e.g. Frontend Team, Support Squad..."
-            className="flex-1 border border-slate-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500"
+            className="flex-1 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white placeholder-slate-400 rounded-lg px-4 py-2 outline-none focus:border-blue-500"
           />
           <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition">
             {loading ? "Adding..." : "Add Team"}
@@ -98,22 +98,22 @@ function TeamsPanel({ activeDept, user, profile }) {
 
       <div className="grid md:grid-cols-2 gap-4">
         {teams.length === 0 ? (
-          <p className="text-slate-500 col-span-2 p-5 bg-slate-50 rounded-xl text-center border border-slate-100">No teams created in this department yet.</p>
+          <p className="text-slate-500 col-span-2 p-5 bg-slate-50 dark:bg-slate-900/50 rounded-xl text-center border border-slate-100">No teams created in this department yet.</p>
         ) : teams.map(team => (
-          <div key={team.id} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+          <div key={team.id} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
             <div>
               <div className="flex justify-between items-start mb-2">
-                <h5 className="font-bold text-slate-800 text-lg">{team.name}</h5>
+                <h5 className="font-bold text-slate-800 dark:text-slate-100 text-lg">{team.name}</h5>
                 <button onClick={() => handleDeleteTeam(team.id)} className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition">Delete</button>
               </div>
             </div>
             
-            <div className="mt-4 pt-4 border-t border-slate-100">
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Team Lead</label>
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 block">Team Lead</label>
               <select 
                 value={team.lead_id || ""}
                 onChange={(e) => handleAssignLead(team.id, e.target.value)}
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm bg-slate-50"
+                className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm"
               >
                 <option value="">No Lead Assigned</option>
                 {employees.map(emp => (

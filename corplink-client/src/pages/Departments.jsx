@@ -112,7 +112,7 @@ function Departments() {
     setDepartments(prev => prev.map(d => d.id === deptId ? { ...d, head_id: empId, head: empMatch ? { name: empMatch.name } : null } : d))
   }
 
-  if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-slate-100"><p className="text-lg font-medium text-slate-600">Loading...</p></div>
+  if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-800"><p className="text-lg font-medium text-slate-600 dark:text-slate-300">Loading...</p></div>
 
   const activeDept = departments.find(d => d.id === activeDeptId)
 
@@ -122,10 +122,10 @@ function Departments() {
         
         {/* Left Sidebar: Master List */}
         <div className="lg:w-1/3 flex flex-col gap-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-            <h3 className="font-semibold text-slate-800 mb-3">Add Department</h3>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3">Add Department</h3>
             <form onSubmit={handleCreateDepartment} className="flex gap-2">
-              <input type="text" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="Marketing, IT..." className="flex-1 w-full border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm" />
+              <input type="text" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="Marketing, IT..." className="flex-1 w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm" />
               <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 rounded-lg font-medium text-sm w-16 flex items-center justify-center">
                 {loading ? "..." : "Add"}
               </button>
@@ -133,22 +133,22 @@ function Departments() {
             {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-1">
-            <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-              <h3 className="font-semibold text-slate-800">Organization</h3>
-              <span className="bg-slate-200 text-slate-600 text-xs font-bold px-2 py-0.5 rounded">{departments.length}</span>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex-1">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100">Organization</h3>
+              <span className="bg-slate-200 text-slate-600 dark:text-slate-300 text-xs font-bold px-2 py-0.5 rounded">{departments.length}</span>
             </div>
             <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
               {departments.length === 0 ? (
-                <p className="p-5 text-slate-500 text-center text-sm">No departments exist.</p>
+                <p className="p-5 text-slate-500 dark:text-slate-400 text-center text-sm">No departments exist.</p>
               ) : departments.map(dept => (
                 <button
                   key={dept.id}
                   onClick={() => setActiveDeptId(dept.id)}
-                  className={`w-full text-left p-4 transition border-l-4 ${activeDeptId === dept.id ? "border-blue-600 bg-blue-50/50" : "border-transparent hover:bg-slate-50"}`}
+                  className={`w-full text-left p-4 transition border-l-4 ${activeDeptId === dept.id ? "border-blue-600 bg-blue-50/50" : "border-transparent hover:bg-slate-50 dark:bg-slate-900/50"}`}
                 >
-                  <p className={`font-semibold ${activeDeptId === dept.id ? "text-blue-800" : "text-slate-700"}`}>{dept.name}</p>
-                  <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                  <p className={`font-semibold ${activeDeptId === dept.id ? "text-blue-800" : "text-slate-700 dark:text-slate-200"}`}>{dept.name}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
                     <span>👑 {dept.head?.name || "No Head Assigned"}</span>
                   </p>
                 </button>
@@ -160,20 +160,20 @@ function Departments() {
         {/* Right Content: Active Department details */}
         <div className="lg:w-2/3">
           {!activeDept ? (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-16 flex flex-col items-center justify-center text-center">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-16 flex flex-col items-center justify-center text-center">
               <span className="text-5xl mb-4">🏢</span>
-              <h3 className="text-xl font-bold text-slate-800">No Department Selected</h3>
-              <p className="text-slate-500 mt-2">Select a department from the left, or create a new one to start organizing teams.</p>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">No Department Selected</h3>
+              <p className="text-slate-500 dark:text-slate-400 mt-2">Select a department from the left, or create a new one to start organizing teams.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden min-h-[600px] flex flex-col">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden min-h-[600px] flex flex-col">
               
               {/* Dept Header */}
-              <div className="px-6 pt-6 pb-0 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-white">
+              <div className="px-6 pt-6 pb-0 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-r from-blue-50 to-white dark:from-slate-800 dark:to-slate-800">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-2xl font-bold text-slate-900">{activeDept.name} Department</h2>
-                    <p className="text-slate-500 text-sm mt-1">Manage infrastructure, assignments, and workflow.</p>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{activeDept.name} Department</h2>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Manage infrastructure, assignments, and workflow.</p>
                   </div>
                   <button onClick={() => handleDeleteDepartment(activeDept.id, activeDept.name)} className="text-red-500 hover:bg-red-50 p-2 rounded transition">
                     🗑️ Delete Dept
@@ -181,12 +181,12 @@ function Departments() {
                 </div>
                 
                 {/* Tabs */}
-                <div className="flex gap-6 mt-6 border-b border-slate-200">
+                <div className="flex gap-6 mt-6 border-b border-slate-200 dark:border-slate-700">
                   {["overview", "teams", "members", "communication"].map(tab => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`pb-3 text-sm font-semibold capitalize transition border-b-2 ${activeTab === tab ? "border-blue-600 text-blue-700" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"}`}
+                      className={`pb-3 text-sm font-semibold capitalize transition border-b-2 ${activeTab === tab ? "border-blue-600 text-blue-700" : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:border-slate-600"}`}
                     >
                       {tab}
                     </button>
@@ -195,18 +195,18 @@ function Departments() {
               </div>
 
               {/* Tab Content Area */}
-              <div className="p-6 flex-1 bg-slate-50/50">
+              <div className="p-6 flex-1 bg-slate-50 dark:bg-slate-900/50">
                 {activeTab === "overview" && (
                   <div className="space-y-6 animate-in fade-in">
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
                       <div>
-                        <h4 className="font-semibold text-slate-800 flex items-center gap-2">⭐ Department Head</h4>
-                        <p className="text-xs text-slate-500 mt-0.5">The primary administrative leader for this department.</p>
+                        <h4 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">⭐ Department Head</h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">The primary administrative leader for this department.</p>
                       </div>
                       <select 
                         value={activeDept.head_id || ""}
                         onChange={(e) => handleAssignHead(activeDept.id, e.target.value)}
-                        className="border border-slate-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500 text-sm font-medium"
+                        className="border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 outline-none focus:border-blue-500 text-sm font-medium"
                       >
                         <option value="">-- No Head Assigned --</option>
                         {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
@@ -214,9 +214,9 @@ function Departments() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                        <p className="text-slate-500 text-sm">Created On</p>
-                        <p className="font-semibold text-slate-800 mt-1">{new Date(activeDept.created_at).toLocaleDateString()}</p>
+                      <div className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Created On</p>
+                        <p className="font-semibold text-slate-800 dark:text-slate-100 mt-1">{new Date(activeDept.created_at).toLocaleDateString()}</p>
                       </div>
                     </div>
                   </div>

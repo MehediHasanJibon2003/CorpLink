@@ -70,37 +70,37 @@ function EmployeeDashboard() {
         {/* Left Col: Tasks */}
         <div className="lg:col-span-2 space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200">
               <p className="text-slate-500 text-xs font-semibold uppercase">Pending</p>
-              <h3 className="text-2xl font-bold text-slate-800 mt-1">{pending}</h3>
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">{pending}</h3>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200">
               <p className="text-slate-500 text-xs font-semibold uppercase">In Progress</p>
               <h3 className="text-2xl font-bold text-blue-600 mt-1">{ongoing}</h3>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200">
               <p className="text-slate-500 text-xs font-semibold uppercase">In Review</p>
               <h3 className="text-2xl font-bold text-amber-500 mt-1">{review}</h3>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200">
               <p className="text-slate-500 text-xs font-semibold uppercase">Completed</p>
               <h3 className="text-2xl font-bold text-green-500 mt-1">{finished}</h3>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center">
-              <h3 className="font-bold text-slate-800 text-lg">My Recent Tasks</h3>
+              <h3 className="font-bold text-slate-800 dark:text-slate-100 text-lg">My Recent Tasks</h3>
               <Link to="/tasks" className="text-blue-600 text-sm font-semibold hover:underline">Open Task Board &rarr;</Link>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {tasks.length === 0 ? (
                 <div className="p-8 text-center text-slate-400 italic">No tasks assigned to you right now. Relax!</div>
               ) : tasks.slice(0,5).map(task => (
                 <div key={task.id} className="p-5 flex items-start justify-between gap-4 hover:bg-slate-50 transition">
                   <div>
                     <h4 className="font-semibold text-slate-800">{task.title}</h4>
-                    <p className="text-xs text-slate-500 mt-1">Project: {task.projects?.name || "Inbox"}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Project: {task.projects?.name || "Inbox"}</p>
                   </div>
                   <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider
                     ${task.status==='pending' ? 'bg-slate-200 text-slate-700' :
@@ -117,11 +117,11 @@ function EmployeeDashboard() {
 
         {/* Right Col: Feed */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <div className="p-5 border-b border-slate-100">
-              <h3 className="font-bold text-slate-800 text-lg">Corporate News</h3>
+              <h3 className="font-bold text-slate-800 dark:text-slate-100 text-lg">Corporate News</h3>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {news.length === 0 ? (
                  <div className="p-6 text-center text-slate-400 text-sm">No recent news.</div>
               ) : news.map(post => (
@@ -133,7 +133,7 @@ function EmployeeDashboard() {
                     <span className="text-xs font-semibold text-slate-600">{post.profiles?.full_name}</span>
                     <span className="text-[10px] text-slate-400">• {new Date(post.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p className="text-sm text-slate-800 line-clamp-3">{post.content}</p>
+                  <p className="text-sm text-slate-800 dark:text-slate-100 line-clamp-3">{post.content}</p>
                 </div>
               ))}
             </div>

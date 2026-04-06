@@ -2,9 +2,12 @@ import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
+import EmployeeDashboard from "./EmployeeDashboard"
 import StatCard from "../components/dashboard/StatCard"
 import TaskOverview from "../components/dashboard/TaskOverview"
 import RecentActivity from "../components/dashboard/RecentActivity"
+
+import { Users, Building2, FolderKanban, ListTodo, Clock, AlertCircle, CheckCircle2, XCircle, Plus, Activity } from "lucide-react"
 
 function Dashboard() {
   const { profile } = useAuth()
@@ -59,29 +62,51 @@ function Dashboard() {
     fetchDashboardData()
   }, [])
 
-  if (profile?.role && profile.role !== "corporate_admin") {
-    // Basic Managers and Employees get the EmployeeDashboard
+  // Basic Employees and restricted users get the EmployeeDashboard
+  const isAdminView = ["admin", "corporate_admin", "manager", "hr"].includes(profile?.role);
+  
+  if (profile && !isAdminView) {
     return <EmployeeDashboard />
   }
 
   return (
     <AppLayout
-      title="Admin Dashboard"
-      subtitle={`Welcome back, ${profile?.full_name || "Admin"}!`}
+      title="Corporate Command Center"
+      subtitle="Overview of your workspace performance and active metrics."
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Employees" value={stats.employees} />
-        <StatCard title="Total Departments" value={stats.departments} />
-        <StatCard title="Total Projects" value={stats.projects} />
-        <StatCard title="Total Tasks" value={stats.tasks} />
-        <StatCard title="Pending Tasks" value={stats.pending} />
-        <StatCard title="In Progress" value={stats.inProgress} />
-        <StatCard title="Needs Review" value={stats.needsReview} />
-        <StatCard title="Finished Tasks" value={stats.finished} />
-        <StatCard title="Rejected Tasks" value={stats.rejected} />
+      
+      {/* Quick Actions Row */}
+      <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium shrink-0 transition shadow-sm shadow-blue-500/20">
+          <Plus className="h-4 w-4" /> Add Task
+        </button>
+        <button className="flex items-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium shrink-0 transition">
+          <Users className="h-4 w-4 text-slate-400" /> Invite Employee
+        </button>
+        <button className="flex items-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium shrink-0 transition">
+          <Building2 className="h-4 w-4 text-slate-400" /> New Department
+        </button>
       </div>
 
-      <div className="grid xl:grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard title="Total Employees" value={stats.employees} icon={Users} colorClass="bg-blue-50 text-blue-600" />
+        <StatCard title="Active Departments" value={stats.departments} icon={Building2} colorClass="bg-indigo-50 text-indigo-600" />
+        <StatCard title="Active Projects" value={stats.projects} icon={FolderKanban} colorClass="bg-purple-50 text-purple-600" />
+        <StatCard title="Total Tasks" value={stats.tasks} icon={ListTodo} colorClass="bg-emerald-50 text-emerald-600" />
+      </div>
+
+      <div className="mt-6">
+        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Task Sub-Status</h3>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <StatCard title="Pending" value={stats.pending} icon={Clock} colorClass="bg-amber-50 text-amber-600" />
+          <StatCard title="In Progress" value={stats.inProgress} icon={Activity} colorClass="bg-blue-50 text-blue-600" />
+          <StatCard title="Needs Review" value={stats.needsReview} icon={AlertCircle} colorClass="bg-orange-50 text-orange-600" />
+          <StatCard title="Finished" value={stats.finished} icon={CheckCircle2} colorClass="bg-emerald-50 text-emerald-600" />
+          <StatCard title="Rejected" value={stats.rejected} icon={XCircle} colorClass="bg-red-50 text-red-600" />
+        </div>
+      </div>
+
+      <div className="grid xl:grid-cols-3 gap-6 mt-8">
         <div className="xl:col-span-2">
           <TaskOverview
             pending={stats.pending}
@@ -95,56 +120,6 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 className="text-xl font-semibold text-slate-800 mb-4">
-            Company Info
-          </h3>
-
-          <div className="space-y-3 text-slate-700">
-            <p>
-              <span className="font-semibold">Company:</span>{" "}
-              {profile?.companies?.name || "N/A"}
-            </p>
-            <p>
-              <span className="font-semibold">Admin Name:</span>{" "}
-              {profile?.full_name || "N/A"}
-            </p>
-            <p>
-              <span className="font-semibold">Email:</span>{" "}
-              {profile?.email || "N/A"}
-            </p>
-            <p>
-              <span className="font-semibold">Role:</span>{" "}
-              {profile?.role || "N/A"}
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 className="text-xl font-semibold text-slate-800 mb-4">
-            Quick Summary
-          </h3>
-
-          <div className="space-y-3 text-slate-700">
-            <p>
-              Your workspace currently has{" "}
-              <span className="font-semibold">{stats.employees}</span> employees.
-            </p>
-            <p>
-              Your system currently tracks <span className="font-semibold">{stats.tasks}</span> tasks.
-            </p>
-            <p>
-              Workflow Breakdown:<br/>
-              • Pending: <span className="font-semibold">{stats.pending}</span><br/>
-              • In Progress: <span className="font-semibold">{stats.inProgress}</span><br/>
-              • Needs Review: <span className="font-semibold">{stats.needsReview}</span><br/>
-              • Finished: <span className="font-semibold text-green-600">{stats.finished}</span><br/>
-              • Rejected: <span className="font-semibold text-red-600">{stats.rejected}</span>
-            </p>
-          </div>
-        </div>
-      </div>
     </AppLayout>
   )
 }

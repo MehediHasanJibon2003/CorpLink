@@ -2,11 +2,11 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 
 const COLUMNS = [
-  { id: "pending", title: "Pending", color: "bg-slate-100 border-slate-200", badge: "bg-slate-200 text-slate-700" },
-  { id: "in_progress", title: "In Progress", color: "bg-blue-50 border-blue-100", badge: "bg-blue-200 text-blue-800" },
-  { id: "needs_review", title: "Needs Review", color: "bg-amber-50 border-amber-100", badge: "bg-amber-200 text-amber-800" },
-  { id: "finished", title: "Completed", color: "bg-green-50 border-green-100", badge: "bg-green-200 text-green-800" },
-  { id: "rejected", title: "Rejected", color: "bg-red-50 border-red-100", badge: "bg-red-200 text-red-800" }
+  { id: "pending", title: "Pending", color: "bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700", badge: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200" },
+  { id: "in_progress", title: "In Progress", color: "bg-blue-50 dark:bg-blue-950/40 border-blue-100 dark:border-blue-900/50", badge: "bg-blue-200 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300" },
+  { id: "needs_review", title: "Needs Review", color: "bg-amber-50 dark:bg-amber-950/30 border-amber-100 dark:border-amber-900/40", badge: "bg-amber-200 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300" },
+  { id: "finished", title: "Completed", color: "bg-green-50 dark:bg-green-950/30 border-green-100 dark:border-green-900/40", badge: "bg-green-200 dark:bg-green-900/50 text-green-800 dark:text-green-300" },
+  { id: "rejected", title: "Rejected", color: "bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900/40", badge: "bg-red-200 dark:bg-red-900/50 text-red-800 dark:text-red-300" }
 ]
 
 function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
@@ -20,14 +20,11 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
     } else {
       query = query.is("project_id", null)
     }
-    
-    // Scoped to company
     query = query.eq("company_id", profile.company_id).order("created_at", { ascending: false })
 
     const { data: tasksData } = await query
     const { data: empsData } = await supabase.from("employees").select("id, name").eq("company_id", profile.company_id)
     
-    // Map assignments
     if (tasksData && empsData) {
       const mapped = tasksData.map(t => {
         const e = empsData.find(emp => emp.id === t.assigned_to)
@@ -50,11 +47,7 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
     e.preventDefault()
     const taskId = e.dataTransfer.getData("taskId")
     if (!taskId) return
-
-    // Optimistic UI update
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t))
-
-    // DB update
     await supabase.from("tasks").update({ status: newStatus }).eq("id", taskId)
   }
 
@@ -68,7 +61,7 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
           onDrop={e => handleDrop(e, col.id)}
         >
           <div className="flex justify-between items-center mb-4 px-2">
-            <h4 className="font-bold text-slate-800">{col.title}</h4>
+            <h4 className="font-bold text-slate-800 dark:text-slate-100">{col.title}</h4>
             <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${col.badge}`}>
               {tasks.filter(t => t.status === col.id).length}
             </span>
@@ -81,27 +74,27 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
                 draggable
                 onDragStart={(e) => handleDragStart(e, task.id)}
                 onClick={() => onTaskClick(task)}
-                className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 cursor-grab active:cursor-grabbing hover:border-blue-300 hover:shadow-md transition"
+                className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab active:cursor-grabbing hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition"
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className={`text-[10px] uppercase font-bold tracking-wider ${task.priority === 'high' ? 'text-red-500' : task.priority === 'medium' ? 'text-purple-500' : 'text-slate-400'}`}>
                     {task.priority || "Normal"}
                   </span>
                   {task.deadline && (
-                    <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 rounded flex items-center">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-700 px-1.5 rounded flex items-center">
                       ⏱ {new Date(task.deadline).toLocaleDateString()}
                     </span>
                   )}
                 </div>
-                <h5 className="font-semibold text-slate-800 text-sm mb-1">{task.title}</h5>
-                <p className="text-xs text-slate-500 line-clamp-2 mb-3">{task.description}</p>
+                <h5 className="font-semibold text-slate-800 dark:text-slate-100 text-sm mb-1">{task.title}</h5>
+                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3">{task.description}</p>
                 
-                <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100">
+                <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-bold">
+                    <div className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center justify-center text-[10px] font-bold">
                       {task.assignee.charAt(0)}
                     </div>
-                    <span className="text-xs font-semibold text-slate-600">{task.assignee}</span>
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{task.assignee}</span>
                   </div>
                   <span className="text-xs text-slate-400 hover:text-blue-500 transition cursor-pointer">
                     💬 Details
@@ -111,7 +104,7 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
             ))}
             
             {tasks.filter(t => t.status === col.id).length === 0 && (
-              <div className="border-2 border-dashed border-slate-300/50 rounded-lg p-6 flex flex-col justify-center items-center text-slate-400 italic text-sm">
+              <div className="border-2 border-dashed border-slate-300/50 dark:border-slate-600/50 rounded-lg p-6 flex flex-col justify-center items-center text-slate-400 dark:text-slate-600 italic text-sm">
                 Drop task here
               </div>
             )}

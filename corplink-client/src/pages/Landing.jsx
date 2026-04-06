@@ -1,36 +1,31 @@
-import { Link } from "react-router-dom"
-import MainLayout from "../layouts/MainLayout"
+import Navbar from "../components/landing/Navbar";
+import Hero from "../components/landing/Hero";
+import PainPoints from "../components/landing/PainPoints";
+import CoreFeatures from "../components/landing/CoreFeatures";
+import Workflow from "../components/landing/Workflow";
+import DashboardPreview from "../components/landing/DashboardPreview";
+import Security from "../components/landing/Security";
+import Testimonials from "../components/landing/Testimonials";
+import Pricing from "../components/landing/Pricing";
+import CTA from "../components/landing/CTA";
+import Footer from "../components/landing/Footer";
 
 function Landing() {
   return (
-    <MainLayout>
-      <div className="min-h-screen text-slate-900">
-
-        {/* Hero */}
-        <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:px-10">
-          
-          <div>
-            <h2 className="text-5xl font-extrabold mb-6">
-              Manage your company in one platform
-            </h2>
-
-            <p className="text-gray-600 mb-6">
-              Employees, tasks, departments and collaboration in one place.
-            </p>
-
-            <Link
-              to="/register"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg"
-            >
-              Start Now
-            </Link>
-          </div>
-
-        </section>
-
-      </div>
-    </MainLayout>
-  )
+    <div className="bg-white min-h-screen">
+      <Navbar />
+      <Hero />
+      <PainPoints />
+      <CoreFeatures />
+      <Workflow />
+      <DashboardPreview />
+      <Security />
+      <Testimonials />
+      <Pricing />
+      <CTA />
+      <Footer />
+    </div>
+  );
 }
 
-export default Landing
+export default Landing;

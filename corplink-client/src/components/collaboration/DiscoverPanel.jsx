@@ -94,7 +94,7 @@ function DiscoverPanel() {
       {message && <p className="text-green-600 text-sm bg-green-50 px-4 py-2 rounded-xl border border-green-100">{message}</p>}
 
       {companies.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-10 text-center">
           <div className="text-4xl mb-3">🏢</div>
           <p className="text-slate-500 text-sm">No other companies found on CorpLink yet.</p>
         </div>
@@ -105,7 +105,7 @@ function DiscoverPanel() {
             return (
               <div
                 key={company.id}
-                className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col gap-3"
+                className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm flex flex-col gap-3"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
@@ -113,7 +113,7 @@ function DiscoverPanel() {
                       {company.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h4 className="font-semibold text-slate-800 text-sm">{company.name}</h4>
+                      <h4 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{company.name}</h4>
                       <p className="text-xs text-slate-400 mt-0.5">Corporate Company</p>
                     </div>
                   </div>
@@ -134,7 +134,7 @@ function DiscoverPanel() {
                   <button
                     onClick={() => handleConnect(company.id, company.name)}
                     disabled={sending === company.id}
-                    className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 py-2 rounded-xl text-sm font-medium transition"
+                    className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 dark:text-slate-300 py-2 rounded-xl text-sm font-medium transition"
                   >
                     Retry Request
                   </button>

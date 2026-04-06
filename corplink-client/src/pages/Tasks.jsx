@@ -72,23 +72,23 @@ function Tasks() {
     <AppLayout title="Projects & Tasks" subtitle="Master board for workflows, approvals, and productivity.">
       
       {/* Top Navbar */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-2 mb-6 flex justify-between items-center overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-2 mb-6 flex justify-between items-center overflow-x-auto">
         <div className="flex gap-2 min-w-max">
           <button 
             onClick={() => setActiveTab('projects')} 
-            className={`px-4 py-2 font-semibold text-sm rounded-lg transition ${activeTab === 'projects' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}`}
+            className={`px-4 py-2 font-semibold text-sm rounded-lg transition ${activeTab === 'projects' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}
           >
             📂 All Projects
           </button>
           <button 
             onClick={() => setActiveTab('kanban')} 
-            className={`px-4 py-2 font-semibold text-sm rounded-lg transition ${activeTab === 'kanban' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}`}
+            className={`px-4 py-2 font-semibold text-sm rounded-lg transition ${activeTab === 'kanban' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}
           >
             📋 {activeProject ? `Board: ${activeProject.name}` : "Global Task Board"}
           </button>
           <button 
             onClick={() => setActiveTab('analytics')} 
-            className={`px-4 py-2 font-semibold text-sm rounded-lg transition ${activeTab === 'analytics' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}`}
+            className={`px-4 py-2 font-semibold text-sm rounded-lg transition ${activeTab === 'analytics' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}
           >
             📈 Performance Analytics
           </button>
@@ -142,31 +142,31 @@ function Tasks() {
       {/* Create Task Quick-Modal */}
       {showCreateTask && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
-            <h3 className="font-bold text-slate-800 text-xl mb-4">Create New Task</h3>
-            <p className="text-sm text-slate-500 mb-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-lg p-6">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-xl mb-4">Create New Task</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
               {activeProject ? `Adding under project: ${activeProject.name}` : "Adding to Global Inbox"}
             </p>
             <form onSubmit={handleCreateTask} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Title</label>
-                <input type="text" required value={form.title} onChange={e=>setForm({...form, title: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500" />
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Title</label>
+                <input type="text" required value={form.title} onChange={e=>setForm({...form, title: e.target.value})} className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500" />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Description</label>
-                <textarea value={form.description} onChange={e=>setForm({...form, description: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500" rows="3" />
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Description</label>
+                <textarea value={form.description} onChange={e=>setForm({...form, description: e.target.value})} className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500" rows="3" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Assign To</label>
-                  <select value={form.assigned_to} onChange={e=>setForm({...form, assigned_to: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500 bg-white">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Assign To</label>
+                  <select value={form.assigned_to} onChange={e=>setForm({...form, assigned_to: e.target.value})} className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500 bg-white dark:bg-slate-800">
                     <option value="">-- Unassigned --</option>
                     {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase">Priority</label>
-                  <select value={form.priority} onChange={e=>setForm({...form, priority: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500 bg-white">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Priority</label>
+                  <select value={form.priority} onChange={e=>setForm({...form, priority: e.target.value})} className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500 bg-white dark:bg-slate-800">
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
@@ -174,11 +174,11 @@ function Tasks() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase">Deadline</label>
-                <input type="date" value={form.deadline} onChange={e=>setForm({...form, deadline: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500" />
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Deadline</label>
+                <input type="date" value={form.deadline} onChange={e=>setForm({...form, deadline: e.target.value})} className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 mt-1 outline-none focus:border-blue-500" />
               </div>
               <div className="flex justify-end gap-3 mt-6">
-                <button type="button" onClick={() => setShowCreateTask(false)} className="text-slate-500 font-medium px-4 py-2 hover:bg-slate-100 rounded-lg transition">Cancel</button>
+                <button type="button" onClick={() => setShowCreateTask(false)} className="text-slate-500 dark:text-slate-400 font-medium px-4 py-2 hover:bg-slate-100 dark:bg-slate-800 rounded-lg transition">Cancel</button>
                 <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition">Create Task</button>
               </div>
             </form>

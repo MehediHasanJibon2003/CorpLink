@@ -84,8 +84,8 @@ function PartnerRequestsPanel() {
   return (
     <div className="grid lg:grid-cols-2 gap-6">
       {/* Inbox : Received Requests */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-        <h3 className="font-semibold text-slate-800 mb-4">📥 Received Requests</h3>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">📥 Received Requests</h3>
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
         {message && <p className="text-green-500 text-sm mb-3">{message}</p>}
 
@@ -94,16 +94,16 @@ function PartnerRequestsPanel() {
             <p className="text-sm text-slate-400">No incoming requests.</p>
           ) : (
             received.map((req) => (
-              <div key={req.id} className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3">
+              <div key={req.id} className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex justify-between items-start">
                   <div>
                     <h4 className="font-medium text-slate-800">{req.from_company?.name}</h4>
-                    <p className="text-xs text-slate-500 mt-1">{new Date(req.created_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(req.created_at).toLocaleDateString()}</p>
                   </div>
                   {statusBadge(req.status)}
                 </div>
 
-                <div className="bg-slate-50 p-3 rounded-lg text-sm text-slate-600">
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg text-sm text-slate-600">
                   {req.message}
                 </div>
 
@@ -117,7 +117,7 @@ function PartnerRequestsPanel() {
                     </button>
                     <button
                       onClick={() => handleUpdateStatus(req.id, "rejected", req.from_company?.name)}
-                      className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2 rounded-lg text-sm font-medium transition"
+                      className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:text-slate-200 py-2 rounded-lg text-sm font-medium transition"
                     >
                       Reject
                     </button>
@@ -130,19 +130,19 @@ function PartnerRequestsPanel() {
       </div>
 
       {/* Outbox : Sent Requests */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-        <h3 className="font-semibold text-slate-800 mb-4">↗️ Sent Requests</h3>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">↗️ Sent Requests</h3>
         
         <div className="space-y-4">
           {sent.length === 0 ? (
             <p className="text-sm text-slate-400">You haven't sent any requests.</p>
           ) : (
             sent.map((req) => (
-              <div key={req.id} className="border border-slate-200 rounded-xl p-4 flex flex-col gap-2">
+              <div key={req.id} className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-2">
                 <div className="flex justify-between items-start">
                   <div>
                     <h4 className="font-medium text-slate-800">{req.to_company?.name}</h4>
-                    <p className="text-xs text-slate-500 mt-1">{new Date(req.created_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(req.created_at).toLocaleDateString()}</p>
                   </div>
                   {statusBadge(req.status)}
                 </div>

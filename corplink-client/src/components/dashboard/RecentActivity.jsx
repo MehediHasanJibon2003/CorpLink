@@ -1,42 +1,39 @@
-function RecentActivity({ activities = [] }) {
+export default function RecentActivity({ activities = [] }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-slate-800">Recent Activity</h3>
-        <p className="text-sm text-slate-500">Latest updates</p>
-      </div>
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 h-full">
+      <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 dark:text-white flex items-center gap-2 mb-6">
+        Corporate Activity
+      </h3>
 
       {activities.length === 0 ? (
-        <p className="text-slate-500 text-sm">No recent activity found</p>
+        <p className="text-slate-500 dark:text-slate-400 text-sm">No recent activity found</p>
       ) : (
-        <div className="space-y-4">
-          {activities.map((item) => (
-            <div key={item.id} className="relative pl-6 pb-4 last:pb-0">
-              {/* Timeline line */}
-              <div className="absolute left-2 top-2 bottom-[-16px] w-px bg-slate-100 last:hidden"></div>
-              
-              {/* Timeline indicator (Color based on severity) */}
-              <div className={`absolute left-[5px] top-1.5 w-2 h-2 rounded-full border-2 border-white ring-1 ring-slate-100 ${
-                item.severity === 'critical' ? 'bg-red-500' : item.severity === 'warning' ? 'bg-orange-500' : 'bg-blue-500'
-              }`}></div>
+        <div className="space-y-6">
+          {activities.map((log) => {
+            const colors = {
+              critical: { bg: 'bg-red-50 dark:bg-red-900/20', text: 'text-red-600 dark:text-red-400', ring: 'ring-red-200 dark:ring-red-800' },
+              warning: { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-600 dark:text-orange-400', ring: 'ring-orange-200 dark:ring-orange-800' },
+              default: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-600 dark:text-blue-400', ring: 'ring-blue-200 dark:ring-blue-800' }
+            }[log.severity] || { bg: 'bg-slate-50 dark:bg-slate-700', text: 'text-slate-600 dark:text-slate-300', ring: 'ring-slate-200 dark:ring-slate-600' };
 
-              <div className="flex justify-between items-start">
-                <p className={`text-sm font-medium ${item.status === 'failed' ? 'text-red-700 line-through' : 'text-slate-800'}`}>
-                  {item.action}
-                </p>
-                <span className="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500 font-semibold capitalize border border-slate-200">
-                  {item.entity}
-                </span>
+            return (
+              <div key={log.id} className="flex gap-4">
+                <div className={`mt-1 h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${colors.bg} ${colors.text} shadow-sm ring-1 ring-inset ${colors.ring}`}>
+                  <div className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-800 dark:text-slate-100 dark:text-slate-300">
+                    <span className="font-semibold text-slate-900 dark:text-white">{log.user?.name || "Someone"}</span> {log.action.replace(log.user?.name || "User", "").trim()}
+                  </p>
+                  <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 font-medium">
+                    {new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
               </div>
-              <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-widest font-semibold">
-                {new Date(item.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })} • {new Date(item.created_at).toLocaleDateString()}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
   )
 }
-
-export default RecentActivity

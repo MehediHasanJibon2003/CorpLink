@@ -107,10 +107,10 @@ function Activity() {
 
   return (
     <AppLayout title="Audit Log & Security" subtitle="Real-time monitoring of corporate system activities">
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-10">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mb-10">
         
         {/* Top Controls: Search & Filter */}
-        <div className="p-5 border-b border-slate-200 bg-slate-50 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="p-5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
             <span className="absolute left-3 top-2.5 text-slate-400">🔍</span>
             <input 
@@ -118,14 +118,14 @@ function Activity() {
               placeholder="Search by action or user..." 
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg outline-none focus:border-blue-500 text-sm"
+              className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg outline-none focus:border-blue-500 text-sm"
             />
           </div>
 
           <div className="flex gap-3 w-full md:w-auto">
             <select 
               value={filterModule} onChange={e => setFilterModule(e.target.value)}
-              className="flex-1 md:flex-none border border-slate-300 bg-white rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm font-medium text-slate-700"
+              className="flex-1 md:flex-none border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm font-medium text-slate-700 dark:text-slate-200"
             >
               <option value="all">All Modules</option>
               <option value="auth">Authentication</option>
@@ -138,7 +138,7 @@ function Activity() {
 
             <select 
               value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)}
-              className="flex-1 md:flex-none border border-slate-300 bg-white rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm font-medium text-slate-700"
+              className="flex-1 md:flex-none border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm font-medium text-slate-700 dark:text-slate-200"
             >
               <option value="all">All Severities</option>
               <option value="info">Info</option>
@@ -152,18 +152,18 @@ function Activity() {
         {error ? (
           <div className="p-10 text-center text-red-600 bg-red-50 border-t border-red-100">{error}</div>
         ) : loading ? (
-          <div className="p-10 text-center text-slate-500">Loading secure audit logs...</div>
+          <div className="p-10 text-center text-slate-500 dark:text-slate-400">Loading secure audit logs...</div>
         ) : filteredActivities.length === 0 ? (
           <div className="p-16 text-center">
             <div className="text-4xl mb-3">🛡️</div>
-            <h3 className="text-lg font-semibold text-slate-700">No Logs Found</h3>
-            <p className="text-slate-500 mt-1">No activities match your current filters.</p>
+            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">No Logs Found</h3>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">No activities match your current filters.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
-                <tr className="bg-slate-100 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-bold">
+                <tr className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
                   <th className="p-4 w-12 text-center">STS</th>
                   <th className="p-4">Timestamp</th>
                   <th className="p-4">User</th>
@@ -174,24 +174,24 @@ function Activity() {
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
                 {filteredActivities.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 transition">
-                    <td className="p-4 text-center border-r border-slate-100">
+                  <tr key={log.id} className="hover:bg-slate-50 dark:bg-slate-900/50 transition">
+                    <td className="p-4 text-center border-r border-slate-100 dark:border-slate-800">
                       {getStatusIcon(log.status)}
                     </td>
-                    <td className="p-4 text-slate-500 whitespace-nowrap">
+                    <td className="p-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
                       <div>{new Date(log.created_at).toLocaleDateString()}</div>
                       <div className="text-xs">{new Date(log.created_at).toLocaleTimeString()}</div>
                     </td>
                     <td className="p-4">
-                      <div className="font-semibold text-slate-800">{log.user?.full_name || 'System / Deleted User'}</div>
+                      <div className="font-semibold text-slate-800 dark:text-slate-100">{log.user?.full_name || 'System / Deleted User'}</div>
                       <div className="text-xs text-slate-400 capitalize">{log.user?.role || 'Unknown Role'}</div>
                     </td>
                     <td className="p-4">
-                      <span className="bg-slate-100 px-2 py-1 rounded text-xs font-semibold text-slate-600 border border-slate-200 capitalize">
+                      <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 capitalize">
                         {log.entity}
                       </span>
                     </td>
-                    <td className="p-4 font-medium text-slate-700">
+                    <td className="p-4 font-medium text-slate-700 dark:text-slate-200">
                       {log.action}
                     </td>
                     <td className="p-4 text-right">

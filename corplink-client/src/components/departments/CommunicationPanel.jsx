@@ -69,10 +69,10 @@ function CommunicationPanel({ activeDept, profile }) {
   if (loading) return <div className="p-10 text-center text-slate-500">Loading channel...</div>
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-[500px]">
-      <div className="p-4 border-b border-slate-100 bg-slate-50 rounded-t-xl">
-        <h3 className="font-bold text-slate-800">#{activeDept.name.toLowerCase().replace(/\s+/g, '-')}</h3>
-        <p className="text-xs text-slate-500">Internal department workflow communication</p>
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col h-[500px]">
+      <div className="p-4 border-b border-slate-100 bg-slate-50 dark:bg-slate-900/50 rounded-t-xl">
+        <h3 className="font-bold text-slate-800 dark:text-slate-100">#{activeDept.name.toLowerCase().replace(/\s+/g, '-')}</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Internal department workflow communication</p>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -85,10 +85,10 @@ function CommunicationPanel({ activeDept, profile }) {
           return (
             <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
               <div className="flex items-baseline gap-2 mb-1 px-1">
-                <span className="text-xs font-semibold text-slate-700">{msg.sender?.full_name || "Unknown"}</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{msg.sender?.full_name || "Unknown"}</span>
                 <span className="text-[10px] text-slate-400">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
               </div>
-              <div className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm shadow-sm ${isMe ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-slate-100 text-slate-800 rounded-tl-sm'}`}>
+              <div className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm shadow-sm ${isMe ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-sm'}`}>
                 {msg.content}
               </div>
             </div>
@@ -97,14 +97,14 @@ function CommunicationPanel({ activeDept, profile }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t border-slate-100 bg-white rounded-b-xl">
+      <div className="p-4 border-t border-slate-100 bg-white dark:bg-slate-800 rounded-b-xl">
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <input 
             type="text" 
             value={newMessage} 
             onChange={e => setNewMessage(e.target.value)}
             placeholder="Type a message to the department..."
-            className="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 outline-none focus:border-blue-400 text-sm"
+            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-2 outline-none focus:border-blue-400 text-sm"
           />
           <button type="submit" className="bg-slate-800 hover:bg-slate-900 text-white rounded-full p-2 w-10 flex flex-shrink-0 items-center justify-center transition">
             ➤

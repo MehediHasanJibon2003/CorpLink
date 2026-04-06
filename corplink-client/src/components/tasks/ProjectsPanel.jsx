@@ -70,12 +70,12 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h3 className="font-bold text-slate-800 mb-4">Create New Project</h3>
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+        <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-4">Create New Project</h3>
         <form onSubmit={handleSubmit} className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Project Title" className="border border-slate-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
-          <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Short description" className="border border-slate-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
-          <select value={form.department_id} onChange={e => setForm({...form, department_id: e.target.value})} className="border border-slate-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500 bg-white">
+          <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Project Title" className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white placeholder-slate-400 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
+          <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Short description" className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white placeholder-slate-400 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
+          <select value={form.department_id} onChange={e => setForm({...form, department_id: e.target.value})} className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500">
             <option value="">-- No Specific Department --</option>
             {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
@@ -88,17 +88,17 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
 
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
         {/* Default Inbox / Unassigned Board */}
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+        <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col justify-between">
           <div>
             <div className="w-10 h-10 bg-slate-200 rounded-lg flex items-center justify-center mb-4 text-xl">📥</div>
-            <h4 className="font-bold text-slate-800 text-lg">Inbox / No Project</h4>
-            <p className="text-sm text-slate-500 mt-2">Standalone tasks that are not assigned to any specific project workflow.</p>
+            <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg">Inbox / No Project</h4>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Standalone tasks that are not assigned to any specific project workflow.</p>
           </div>
           <button onClick={() => onSelectProject(null)} className="mt-6 w-full py-2 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition">View Tasks</button>
         </div>
 
         {projects.map(proj => (
-          <div key={proj.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between hover:shadow-md transition group">
+          <div key={proj.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col justify-between hover:shadow-md transition group">
             <div>
               <div className="flex justify-between items-start mb-2">
                 <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl font-bold">
@@ -106,9 +106,9 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
                 </div>
                 <button onClick={() => handleDelete(proj.id, proj.name)} className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition text-sm">Delete</button>
               </div>
-              <h4 className="font-bold text-slate-800 text-lg mt-3">{proj.name}</h4>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg mt-3">{proj.name}</h4>
               <p className="text-xs text-blue-600 font-semibold mb-2">{proj.department?.name || "Company-wide"}</p>
-              <p className="text-sm text-slate-500">{proj.description}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{proj.description}</p>
             </div>
             <button onClick={() => onSelectProject(proj)} className="mt-6 w-full py-2 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition border border-blue-200">
               Open Board

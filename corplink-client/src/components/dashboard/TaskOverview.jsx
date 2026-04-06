@@ -1,39 +1,44 @@
-function TaskOverview({ pending, inProgress, finished }) {
-  const maxValue = Math.max(pending, inProgress, finished, 1);
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart3 } from 'lucide-react';
 
-  const bars = [
-    { label: "Pending", value: pending },
-    { label: "In Progress", value: inProgress },
-    { label: "Finished", value: finished },
+export default function TaskOverview({ pending, inProgress, finished }) {
+  const data = [
+    { name: "Pending", value: pending, fill: "#f59e0b" },
+    { name: "In Progress", value: inProgress, fill: "#3b82f6" },
+    { name: "Finished", value: finished, fill: "#10b981" },
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 h-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-slate-800">Tasks Overview</h3>
-        <p className="text-sm text-slate-500">Dynamic summary</p>
+        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 dark:text-white flex items-center gap-2">
+          <BarChart3 className="h-5 w-5 text-blue-500" />
+          Task Performance
+        </h3>
+        <select className="text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 dark:text-slate-300 rounded-lg px-3 py-1.5 outline-none">
+          <option>This Week</option>
+          <option>This Month</option>
+          <option>All Time</option>
+        </select>
       </div>
 
-      <div className="flex items-end gap-8 h-64">
-        {bars.map((bar) => (
-          <div key={bar.label} className="flex-1 flex flex-col items-center">
-            <div className="w-full max-w-[90px] bg-slate-100 rounded-t-2xl h-52 flex items-end overflow-hidden">
-              <div
-                className="w-full bg-blue-500 rounded-t-2xl transition-all duration-500"
-                style={{
-                  height: `${(bar.value / maxValue) * 100}%`,
-                }}
-              />
-            </div>
-            <p className="mt-3 text-sm font-medium text-slate-700">
-              {bar.label}
-            </p>
-            <p className="text-xs text-slate-500">{bar.value}</p>
-          </div>
-        ))}
+      <div className="h-64 mt-auto">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barSize={50}>
+            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
+            <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
+            <Tooltip 
+              cursor={{fill: '#f1f5f9'}}
+              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+            />
+            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
 }
-
-export default TaskOverview;
