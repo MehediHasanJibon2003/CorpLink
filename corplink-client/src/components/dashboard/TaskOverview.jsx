@@ -1,11 +1,13 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { BarChart3 } from 'lucide-react';
 
-export default function TaskOverview({ pending, inProgress, finished }) {
+export default function TaskOverview({ pending, inProgress, needsReview, finished, rejected }) {
   const data = [
     { name: "Pending", value: pending, fill: "#f59e0b" },
     { name: "In Progress", value: inProgress, fill: "#3b82f6" },
+    { name: "Needs Review", value: needsReview, fill: "#f97316" }, // Orange 500
     { name: "Finished", value: finished, fill: "#10b981" },
+    { name: "Rejected", value: rejected, fill: "#ef4444" }, // Red 500
   ];
 
   return (

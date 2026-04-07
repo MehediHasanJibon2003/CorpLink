@@ -111,7 +111,9 @@ function Dashboard() {
           <TaskOverview
             pending={stats.pending}
             inProgress={stats.inProgress}
+            needsReview={stats.needsReview}
             finished={stats.finished}
+            rejected={stats.rejected}
           />
         </div>
 

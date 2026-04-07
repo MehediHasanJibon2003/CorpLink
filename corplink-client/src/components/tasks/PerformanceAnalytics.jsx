@@ -18,7 +18,9 @@ function PerformanceAnalytics({ profile }) {
   const total = tasks.length
   const finished = tasks.filter(t => t.status === "finished").length
   const rejected = tasks.filter(t => t.status === "rejected").length
-  const pending = tasks.filter(t => t.status === "pending" || t.status === "in_progress" || t.status === "needs_review").length
+  const pending = tasks.filter(t => t.status === "pending").length
+  const inProgress = tasks.filter(t => t.status === "in_progress").length
+  const needsReview = tasks.filter(t => t.status === "needs_review").length
 
   const completionRate = total === 0 ? 0 : Math.round((finished / total) * 100)
 
@@ -34,30 +36,38 @@ function PerformanceAnalytics({ profile }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">Total Tasks</p>
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">{total}</h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Tasks</p>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">{total}</h3>
         </div>
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-amber-400">
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">Pending / Ongoing</p>
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">{pending}</h3>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-amber-400">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Pending</p>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">{pending}</h3>
         </div>
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-green-500">
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">Completed</p>
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">{finished}</h3>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-blue-500">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">In Progress</p>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">{inProgress}</h3>
         </div>
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-red-500">
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">Rejected</p>
-          <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">{rejected}</h3>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-orange-500">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Needs Review</p>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">{needsReview}</h3>
         </div>
-        <div className="bg-slate-800 p-6 rounded-xl shadow-sm text-white flex flex-col justify-between col-span-2 md:col-span-4 lg:col-span-1">
-          <p className="text-slate-300 text-sm font-semibold">Completion Rate</p>
-          <div className="flex items-end gap-2 mt-2">
-            <h3 className="text-4xl font-bold text-blue-400">{completionRate}%</h3>
-          </div>
-          <div className="w-full bg-slate-700 h-2 mt-4 rounded-full overflow-hidden">
-            <div className="bg-blue-500 h-full rounded-full" style={{ width: `${completionRate}%` }} />
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-green-500">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Completed</p>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">{finished}</h3>
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm border-b-4 border-b-red-500">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Rejected</p>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">{rejected}</h3>
+        </div>
+        <div className="bg-slate-800 p-4 rounded-xl shadow-sm text-white flex flex-col justify-between col-span-2 md:col-span-3 lg:col-span-1 border-b-4 border-b-blue-400">
+          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Success Rate</p>
+          <div className="flex items-center justify-between mt-1">
+            <h3 className="text-2xl font-bold text-blue-400">{completionRate}%</h3>
+            <div className="w-16 bg-slate-700 h-1.5 rounded-full overflow-hidden">
+               <div className="bg-blue-500 h-full rounded-full" style={{ width: `${completionRate}%` }} />
+            </div>
           </div>
         </div>
       </div>
