@@ -12,7 +12,7 @@ import Footer from "../components/landing/Footer";
 
 function Landing() {
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white w-full overflow-x-hidden">
       <Navbar />
       <Hero />
       <PainPoints />

@@ -3,6 +3,24 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  html {
+    font-size: 16px;
+  }
+
   body {
     @apply transition-colors duration-300;
   }
@@ -48,4 +66,21 @@
     background: #334155;
     border-radius: 4px;
   }
+}
+
+/* GLOBAL FULL-WIDTH RULES */
+section,
+footer,
+header,
+main {
+  width: 100%;
+  max-width: 100%;
+}
+
+.container,
+.wrapper,
+.inner,
+.content-wrapper {
+  width: 100%;
+  max-width: 100%;
 }

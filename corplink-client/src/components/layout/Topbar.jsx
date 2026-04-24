@@ -22,8 +22,8 @@ function Topbar({ onMenuClick }) {
   };
 
   return (
-    <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-20 shadow-sm transition-colors duration-300">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+    <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-20 shadow-sm transition-colors duration-300 w-full shrink-0 h-16">
+      <div className="w-full px-6 lg:px-8 h-full flex items-center justify-between gap-6">
         {/* Mobile Menu Button */}
         <button
           onClick={onMenuClick}
@@ -41,7 +41,7 @@ function Topbar({ onMenuClick }) {
             <input
               type="text"
               placeholder="Search employees, tasks, or projects..."
-              className="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-slate-50 dark:bg-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm transition duration-150 ease-in-out"
+              className="block w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg leading-5 bg-slate-50 dark:bg-slate-800 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition duration-150 ease-in-out"
             />
           </div>
         </div>
@@ -73,10 +73,10 @@ function Topbar({ onMenuClick }) {
 
           <div className="flex items-center gap-3">
             <div className="hidden md:block text-right">
-              <p className="text-sm font-bold text-slate-800 dark:text-slate-100 dark:text-slate-100">
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
                 {profile?.full_name || profile?.name || "Corporate User"}
               </p>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-400 font-medium tracking-wide flex items-center justify-end gap-1.5">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium tracking-wide flex items-center justify-end gap-1.5">
                 {profile?.companies?.name || "Company"}
                 <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
                 <span className="capitalize">{profile?.role || "Admin"}</span>
@@ -93,7 +93,7 @@ function Topbar({ onMenuClick }) {
 
             <button
               onClick={handleLogout}
-              className="ml-2 bg-slate-50 dark:bg-slate-800 hover:bg-red-50 hover:dark:bg-red-900/20 hover:text-red-600 text-slate-600 dark:text-slate-300 dark:text-slate-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition border border-slate-200 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-800"
+              className="ml-2 bg-slate-50 dark:bg-slate-800 hover:bg-red-50 hover:dark:bg-red-900/20 hover:text-red-600 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition border border-slate-200 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-800"
             >
               Sign Out
             </button>

@@ -168,9 +168,9 @@ function Sidebar({ isOpen, setIsOpen }) {
 
       {/* Sidebar sidebar itself */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0
+        className={`fixed inset-y-0 left-0 z-40 w-60 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0 md:static md:h-screen md:sticky md:top-0
+        md:translate-x-0 md:relative
       `}
       >
         {/* Brand Header */}
@@ -186,7 +186,7 @@ function Sidebar({ isOpen, setIsOpen }) {
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto py-6 px-3 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto py-8 px-4 custom-scrollbar">
           {menuGroups.map((group, groupIndex) => {
             const hasAccessToGroup = group.items.some(
               (item) => !item.roles || item.roles.includes(profile?.role),
@@ -195,11 +195,11 @@ function Sidebar({ isOpen, setIsOpen }) {
             if (!hasAccessToGroup) return null;
 
             return (
-              <div key={groupIndex} className="mb-8">
-                <h3 className="px-3 text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-600 uppercase tracking-wider mb-3">
+              <div key={groupIndex} className="mb-6">
+                <h3 className="px-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {group.title}
                 </h3>
-                <nav className="space-y-1">
+                <nav className="space-y-2">
                   {group.items.map((item, itemIndex) => {
                     const hasAccess =
                       !item.roles || item.roles.includes(profile?.role);
@@ -212,7 +212,7 @@ function Sidebar({ isOpen, setIsOpen }) {
                       <Link
                         key={itemIndex}
                         to={item.path}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                           isActive
                             ? "bg-blue-600 text-white shadow-sm shadow-blue-900/20"
                             : "text-slate-400 hover:text-white hover:bg-slate-800 dark:hover:bg-slate-900"

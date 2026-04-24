@@ -27,28 +27,43 @@ export default function Testimonials() {
   ];
 
   return (
-    <div className="bg-slate-50 py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-xl text-center mb-16">
-          <h2 className="text-lg font-semibold leading-8 tracking-tight text-orange-600">Testimonials</h2>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+    <section
+      className="w-full bg-slate-50 overflow-hidden"
+      style={{ padding: "6rem clamp(2rem, 6vw, 6vw)" }}
+    >
+      <div className="w-full">
+        <div
+          className="text-center mb-16 mx-auto"
+          style={{ maxWidth: "800px" }}
+        >
+          <p
+            style={{ fontSize: "clamp(2rem, 3.5vw, 3.2rem)" }}
+            className="font-bold tracking-tight text-slate-900"
+          >
             Trusted by modern enterprises
           </p>
         </div>
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 text-sm leading-6 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {testimonials.map((testimonial) => (
-            <div key={testimonial.author.handle} className="rounded-3xl bg-white shadow-sm border border-slate-100 p-8 transform hover:scale-105 transition duration-300">
+            <div
+              key={testimonial.author.handle}
+              className="rounded-lg bg-white shadow-sm border border-slate-100 p-6 transform hover:shadow-md transition duration-200 flex flex-col"
+            >
               <figure className="h-full flex flex-col justify-between">
-                <blockquote className="text-slate-700 italic">
-                  <p>“{testimonial.body}”</p>
+                <blockquote className="text-slate-700 leading-relaxed mb-4">
+                  <p>"{testimonial.body}"</p>
                 </blockquote>
-                <figcaption className="mt-6 flex items-center gap-x-4">
-                  <div className="h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 font-bold border border-slate-200">
+                <figcaption className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                  <div className="h-8 w-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 font-bold border border-slate-200 shrink-0 text-xs">
                     {testimonial.author.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-semibold text-slate-900">{testimonial.author.name}</div>
-                    <div className="text-slate-500 text-xs">{testimonial.author.role}</div>
+                    <div className="font-semibold text-slate-900 text-sm">
+                      {testimonial.author.name}
+                    </div>
+                    <div className="text-slate-500 text-xs leading-4">
+                      {testimonial.author.role}
+                    </div>
                   </div>
                 </figcaption>
               </figure>
@@ -56,6 +71,6 @@ export default function Testimonials() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

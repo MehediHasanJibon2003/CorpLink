@@ -36,7 +36,8 @@ const tiers = [
     id: "tier-enterprise",
     href: "/register",
     priceMonthly: "Custom",
-    description: "Dedicated resources and absolute control for large corporations.",
+    description:
+      "Dedicated resources and absolute control for large corporations.",
     features: [
       "Unlimited employees",
       "B2B Networking & Vendors",
@@ -51,24 +52,41 @@ const tiers = [
 
 export default function Pricing() {
   return (
-    <div className="bg-slate-50 py-24 sm:py-32" id="pricing">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-orange-600">Pricing</h2>
-          <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+    <section
+      id="pricing"
+      className="w-full bg-slate-900 relative overflow-hidden text-white"
+      style={{ padding: "6rem clamp(2rem, 6vw, 6vw)" }}
+    >
+      <div className="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent pointer-events-none"></div>
+
+      <div className="relative z-10 w-full">
+        <div
+          className="text-center mb-16 mx-auto"
+          style={{ maxWidth: "800px" }}
+        >
+          <h2
+            style={{ fontSize: "clamp(2rem, 3.5vw, 3.2rem)" }}
+            className="font-bold tracking-tight text-white mb-3"
+          >
             Scale your workspace without scaling costs
+          </h2>
+          <p
+            style={{ fontSize: "clamp(1rem, 1.25vw, 1.125rem)" }}
+            className="leading-relaxed text-slate-400"
+          >
+            Choose the plan that fits your corporate needs. Upgrade, downgrade,
+            or cancel at any time.
           </p>
         </div>
-        <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-slate-600">
-          Choose the plan that fits your corporate needs. Upgrade, downgrade, or cancel at any time.
-        </p>
 
-        <div className="isolate mx-auto mt-16 grid max-w-md grid-cols-1 gap-y-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-x-8 xl:gap-x-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           {tiers.map((tier) => (
             <div
               key={tier.id}
-              className={`rounded-3xl p-8 ring-1 ring-slate-200 xl:p-10 bg-white shadow-sm transition-transform hover:-translate-y-1 ${
-                tier.mostPopular ? "ring-2 ring-orange-500 shadow-xl relative" : ""
+              className={`rounded-xl p-6 ring-1 ring-slate-200 bg-white shadow-sm transition-all hover:shadow-md ${
+                tier.mostPopular
+                  ? "ring-2 ring-orange-500 shadow-xl relative"
+                  : ""
               }`}
             >
               {tier.mostPopular && (
@@ -78,19 +96,29 @@ export default function Pricing() {
                   </span>
                 </div>
               )}
-              <div className="flex items-center justify-between gap-x-4">
-                <h3 className={`text-lg font-semibold leading-8 ${tier.mostPopular ? 'text-orange-600' : 'text-slate-900'}`}>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h3
+                  className={`text-base font-semibold leading-6 ${tier.mostPopular ? "text-orange-600" : "text-slate-900"}`}
+                >
                   {tier.name}
                 </h3>
               </div>
-              <p className="mt-4 text-sm leading-6 text-slate-600">{tier.description}</p>
-              <p className="mt-6 flex items-baseline gap-x-1">
-                <span className="text-4xl font-bold tracking-tight text-slate-900">{tier.priceMonthly}</span>
-                {tier.priceMonthly !== "Custom" && <span className="text-sm font-semibold leading-6 text-slate-600">/mo</span>}
+              <p className="mt-2 text-xs leading-5 text-slate-600">
+                {tier.description}
+              </p>
+              <p className="mt-4 flex items-baseline gap-1">
+                <span className="text-3xl font-bold tracking-tight text-slate-900">
+                  {tier.priceMonthly}
+                </span>
+                {tier.priceMonthly !== "Custom" && (
+                  <span className="text-xs font-semibold leading-5 text-slate-600">
+                    /mo
+                  </span>
+                )}
               </p>
               <Link
                 to={tier.href}
-                className={`mt-6 block rounded-xl px-3 py-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 w-full ${
+                className={`mt-5 block rounded-lg px-3 py-2 text-center text-xs font-semibold leading-5 focus-visible:outline-2 focus-visible:outline-offset-2 w-full transition-colors ${
                   tier.mostPopular
                     ? "bg-orange-500 text-white hover:bg-orange-400 shadow-sm focus-visible:outline-orange-500"
                     : "bg-slate-100 text-slate-900 hover:bg-slate-200"
@@ -98,10 +126,16 @@ export default function Pricing() {
               >
                 Get started
               </Link>
-              <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-slate-600">
+              <ul
+                role="list"
+                className="mt-5 space-y-2 text-xs leading-5 text-slate-600"
+              >
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-x-3">
-                    <Check className="h-6 w-5 flex-none text-orange-500" aria-hidden="true" />
+                    <Check
+                      className="h-6 w-5 flex-none text-orange-500"
+                      aria-hidden="true"
+                    />
                     {feature}
                   </li>
                 ))}
@@ -110,6 +144,6 @@ export default function Pricing() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
