@@ -79,9 +79,11 @@ function Login() {
       try {
         const { data: userProfile } = await supabase
           .from("profiles")
-          .select("company_id")
+          .select("company_id, role")
           .eq("id", data.user.id)
           .single();
+
+        // Log activity for non-super-admins
         if (userProfile?.company_id) {
           await supabase.from("activity_logs").insert([
             {
@@ -93,6 +95,12 @@ function Login() {
               status: "success",
             },
           ]);
+        }
+
+        // Role-based redirect
+        if (userProfile?.role === "super_admin") {
+          navigate("/super-admin");
+          return;
         }
       } catch (err) {
         console.error("Failed to log auth:", err);

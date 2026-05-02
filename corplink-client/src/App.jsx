@@ -16,7 +16,18 @@ import UserProfile from "./pages/UserProfile"
 import Messages from "./pages/Messages"
 import Analytics from "./pages/Analytics"
 import Settings from "./pages/Settings"
+import Unauthorized from "./pages/Unauthorized"
 import ProtectedRoute from "./components/ProtectedRoute"
+import SuperAdminRoute from "./components/SuperAdminRoute"
+
+// Super Admin Pages
+import SuperAdminDashboard from "./pages/superadmin/SuperAdminDashboard"
+import CorporateManagement from "./pages/superadmin/CorporateManagement"
+import SubscriptionBilling from "./pages/superadmin/SubscriptionBilling"
+import PlatformSettings from "./pages/superadmin/PlatformSettings"
+import SystemActivityLogs from "./pages/superadmin/SystemActivityLogs"
+import GlobalAnnouncements from "./pages/superadmin/GlobalAnnouncements"
+import PlatformAnalytics from "./pages/superadmin/PlatformAnalytics"
 
 function App() {
   return (
@@ -123,6 +134,39 @@ function App() {
                   <Collaboration />
                 </ProtectedRoute>
               }
+            />
+
+            {/* Unauthorized */}
+            <Route path="/unauthorized" element={<Unauthorized />} />
+
+            {/* ── Super Admin Routes ── */}
+            <Route
+              path="/super-admin"
+              element={<SuperAdminRoute><SuperAdminDashboard /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/corporates"
+              element={<SuperAdminRoute><CorporateManagement /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/subscriptions"
+              element={<SuperAdminRoute><SubscriptionBilling /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/settings"
+              element={<SuperAdminRoute><PlatformSettings /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/logs"
+              element={<SuperAdminRoute><SystemActivityLogs /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/announcements"
+              element={<SuperAdminRoute><GlobalAnnouncements /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/analytics"
+              element={<SuperAdminRoute><PlatformAnalytics /></SuperAdminRoute>}
             />
           </Routes>
         </BrowserRouter>
