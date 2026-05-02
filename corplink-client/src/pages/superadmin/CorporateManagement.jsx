@@ -68,15 +68,16 @@ export default function CorporateManagement() {
       {/* Search & Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         {/* Status Tabs */}
-        <div className="flex gap-2 flex-wrap" style={{ padding: "4px", background: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(139,92,246,0.1)" }}>
+        <div className="flex gap-2 flex-wrap p-1 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/10 shadow-sm">
           {STATUS_TABS.map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`px-4 py-2 rounded-xl text-xs font-bold capitalize transition-all duration-300 ${
-                tab === t ? "text-white shadow-lg" : "text-violet-400 hover:text-violet-200 hover:bg-white/5"
+                tab === t 
+                  ? "text-white shadow-lg bg-gradient-to-br from-violet-600 to-indigo-600 dark:shadow-[0_4px_12px_rgba(124,58,237,0.3)]" 
+                  : "text-slate-500 dark:text-violet-400 hover:text-slate-800 dark:hover:text-violet-200 hover:bg-slate-100 dark:hover:bg-white/5"
               }`}
-              style={tab === t ? { background: "linear-gradient(135deg, #7c3aed, #4f46e5)", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" } : {}}
             >
               {t} <span className="opacity-70 ml-1">({counts[t] || 0})</span>
             </button>
@@ -85,54 +86,50 @@ export default function CorporateManagement() {
 
         {/* Search */}
         <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-violet-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-violet-400" />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search corporates..."
-            className="w-full rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-violet-500 outline-none transition-all"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,92,246,0.15)" }}
-            onFocus={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.5)"; e.target.style.boxShadow = "0 0 15px rgba(139,92,246,0.1)" }}
-            onBlur={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.15)"; e.target.style.boxShadow = "none" }}
+            className="w-full rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-violet-500 outline-none transition-all bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 focus:border-violet-500 dark:focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(139,92,246,0.1)] shadow-sm"
           />
         </div>
       </div>
 
       {/* Table Container */}
-      <div className="rounded-3xl overflow-hidden relative"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(139,92,246,0.12)", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
+      <div className="rounded-3xl overflow-hidden relative bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 shadow-sm dark:shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
         
         {/* Ambient Top Glow */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent)", boxShadow: "0 0 20px rgba(139,92,246,0.5)" }} />
+        <div className="absolute top-0 left-1/4 right-1/4 h-px dark:shadow-[0_0_20px_rgba(139,92,246,0.5)]" style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent)" }} />
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left" style={{ background: "rgba(139,92,246,0.05)", borderBottom: "1px solid rgba(139,92,246,0.1)" }}>
+              <tr className="text-left bg-slate-50 dark:bg-violet-500/5 border-b border-slate-200 dark:border-violet-500/10">
                 {["Company", "Plan", "Status", "Registered", "Actions"].map(h => (
-                  <th key={h} className="px-6 py-4 text-xs font-black text-violet-400 uppercase tracking-widest">{h}</th>
+                  <th key={h} className="px-6 py-4 text-xs font-black text-slate-500 dark:text-violet-400 uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y" style={{ borderColor: "rgba(139,92,246,0.06)" }}>
+            <tbody className="divide-y divide-slate-100 dark:divide-violet-500/5">
               {loading ? (
-                <tr><td colSpan={5} className="text-center py-12 text-violet-500 font-medium">Loading companies...</td></tr>
+                <tr><td colSpan={5} className="text-center py-12 text-slate-500 dark:text-violet-500 font-medium">Loading companies...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-12 text-violet-500 font-medium">No companies found</td></tr>
+                <tr><td colSpan={5} className="text-center py-12 text-slate-500 dark:text-violet-500 font-medium">No companies found</td></tr>
               ) : filtered.map((company, i) => {
                 const sStyle = statusStyle[company.status] || statusStyle.pending
                 const pStyle = planStyle[company.plan] || planStyle.basic
                 return (
-                  <tr key={company.id} className="transition-colors hover:bg-white/[0.02]">
+                  <tr key={company.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-sm"
-                          style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.2), rgba(79,70,229,0.1))", border: "1px solid rgba(139,92,246,0.2)" }}>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md"
+                          style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
                           {company.name?.charAt(0)?.toUpperCase() || "C"}
                         </div>
                         <div>
-                          <p className="font-bold text-white tracking-wide">{company.name}</p>
-                          <p className="text-xs text-violet-400/80 mt-0.5">{company.email || "—"}</p>
+                          <p className="font-bold text-slate-900 dark:text-white tracking-wide">{company.name}</p>
+                          <p className="text-xs text-slate-500 dark:text-violet-400/80 mt-0.5">{company.email || "—"}</p>
                         </div>
                       </div>
                     </td>
@@ -148,12 +145,12 @@ export default function CorporateManagement() {
                         {sStyle.label || company.status}
                       </span>
                       {company.rejection_reason && (
-                        <p className="text-[10px] text-red-400/80 mt-1 max-w-[150px] truncate" title={company.rejection_reason}>
+                        <p className="text-[10px] text-red-600 dark:text-red-400 mt-1 max-w-[150px] truncate" title={company.rejection_reason}>
                           Reason: {company.rejection_reason}
                         </p>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-xs font-medium text-violet-400/80">
+                    <td className="px-6 py-4 text-xs font-medium text-slate-600 dark:text-violet-400/80">
                       {new Date(company.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                     </td>
                     <td className="px-6 py-4">
@@ -206,25 +203,24 @@ export default function CorporateManagement() {
 
       {/* Deny Modal (Glassmorphism) */}
       {denyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity">
-          <div className="rounded-3xl p-6 w-full max-w-md relative overflow-hidden"
-            style={{ background: "linear-gradient(135deg, rgba(13,6,34,0.9), rgba(13,6,34,0.95))", border: "1px solid rgba(139,92,246,0.3)", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)" }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-black/80 backdrop-blur-md transition-opacity">
+          <div className="rounded-3xl p-6 w-full max-w-md relative overflow-hidden bg-white dark:bg-[#0d0622] border border-slate-200 dark:border-violet-500/30 shadow-2xl">
             
             {/* Modal Ambient Glow */}
-            <div className="absolute top-0 right-0 w-32 h-32 opacity-20 -translate-y-10 translate-x-10 blur-2xl" style={{ background: "radial-gradient(circle, #ef4444, transparent)" }} />
+            <div className="absolute top-0 right-0 w-32 h-32 opacity-10 dark:opacity-20 -translate-y-10 translate-x-10 blur-2xl" style={{ background: "radial-gradient(circle, #ef4444, transparent)" }} />
 
             <div className="flex items-center justify-between mb-6 relative z-10">
-              <h3 className="text-lg font-black text-white flex items-center gap-2">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
                 Reject Corporate
               </h3>
-              <button onClick={() => setDenyModal(null)} className="text-violet-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 p-2 rounded-xl">
+              <button onClick={() => setDenyModal(null)} className="text-slate-500 dark:text-violet-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 p-2 rounded-xl">
                 <X className="h-4 w-4" />
               </button>
             </div>
             
-            <p className="text-sm text-violet-300 mb-4 relative z-10">
-              You are rejecting <strong className="text-white font-black">{denyModal.name}</strong>. Please provide a reason to notify them.
+            <p className="text-sm text-slate-600 dark:text-violet-300 mb-4 relative z-10">
+              You are rejecting <strong className="text-slate-900 dark:text-white font-black">{denyModal.name}</strong>. Please provide a reason to notify them.
             </p>
             
             <textarea
@@ -232,21 +228,17 @@ export default function CorporateManagement() {
               onChange={e => setDenyReason(e.target.value)}
               rows={4}
               placeholder="Enter rejection reason…"
-              className="w-full rounded-2xl px-4 py-3 text-sm text-white placeholder-violet-500/70 outline-none transition-all resize-none relative z-10 mb-6"
-              style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(139,92,246,0.2)" }}
-              onFocus={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.5)"; e.target.style.boxShadow = "0 0 15px rgba(139,92,246,0.1)" }}
-              onBlur={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.2)"; e.target.style.boxShadow = "none" }}
+              className="w-full rounded-2xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-violet-500/70 outline-none transition-all resize-none relative z-10 mb-6 bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-violet-500/20 focus:border-violet-500 dark:focus:border-violet-500/50 focus:shadow-[0_0_15px_rgba(139,92,246,0.1)]"
             />
             
             <div className="flex gap-3 justify-end relative z-10">
-              <button onClick={() => setDenyModal(null)} className="px-5 py-2.5 text-sm font-bold text-violet-400 hover:text-white transition-colors">
+              <button onClick={() => setDenyModal(null)} className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-violet-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                 Cancel
               </button>
               <button
                 disabled={saving || !denyReason.trim()}
                 onClick={() => updateStatus(denyModal.id, "rejected", { rejection_reason: denyReason })}
-                className="px-6 py-2.5 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all shadow-lg"
-                style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)", boxShadow: "0 4px 15px rgba(239,68,68,0.4)" }}
+                className="px-6 py-2.5 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all shadow-lg bg-gradient-to-br from-red-500 to-red-600 dark:shadow-[0_4px_15px_rgba(239,68,68,0.4)]"
               >
                 {saving ? "Saving…" : "Confirm Rejection"}
               </button>

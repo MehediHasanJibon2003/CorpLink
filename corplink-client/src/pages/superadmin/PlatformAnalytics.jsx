@@ -5,7 +5,7 @@ import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts"
-import { BarChart3, TrendingUp, Users, Server, Activity } from "lucide-react"
+import { BarChart3, TrendingUp, Users, Server, Activity, PieChart as PieChartIcon } from "lucide-react"
 import { useTheme } from "../../context/ThemeContext"
 
 // Premium color palette
@@ -57,23 +57,22 @@ export default function PlatformAnalytics() {
   }, [])
 
   const isDark = theme === "dark" || true // Enforcing dark style for premium look
-  const gridColor    = "rgba(139,92,246,0.08)"
-  const tickColor    = "#a78bfa"
+  const gridColor    = theme === "dark" ? "rgba(139,92,246,0.08)" : "rgba(139,92,246,0.15)"
+  const tickColor    = theme === "dark" ? "#a78bfa" : "#64748b"
   const tooltipStyle = {
     contentStyle: {
-      background: "rgba(13,6,34,0.9)",
+      background: theme === "dark" ? "rgba(13,6,34,0.9)" : "rgba(255,255,255,0.9)",
       backdropFilter: "blur(10px)",
       border: "1px solid rgba(139,92,246,0.3)",
       borderRadius: "16px",
-      color: "#e9d5ff",
-      boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
+      color: theme === "dark" ? "#e9d5ff" : "#1e293b",
+      boxShadow: theme === "dark" ? "0 10px 40px rgba(0,0,0,0.3)" : "0 10px 40px rgba(0,0,0,0.1)",
     },
-    labelStyle: { color: "#c4b5fd", fontWeight: 900, textTransform: "uppercase", fontSize: "11px", letterSpacing: "1px", marginBottom: "4px" },
+    labelStyle: { color: theme === "dark" ? "#c4b5fd" : "#8b5cf6", fontWeight: 900, textTransform: "uppercase", fontSize: "11px", letterSpacing: "1px", marginBottom: "4px" },
     itemStyle: { fontSize: "13px", fontWeight: 700 }
   }
 
-  const cardCls = "rounded-3xl p-6 relative overflow-hidden"
-  const cardStyle = { background: "rgba(255,255,255,0.02)", border: "1px solid rgba(139,92,246,0.12)", boxShadow: "0 10px 40px rgba(0,0,0,0.15)" }
+  const cardCls = "rounded-3xl p-6 relative overflow-hidden bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/12 shadow-sm dark:shadow-[0_10px_40px_rgba(0,0,0,0.15)]"
 
   const metrics = [
     { label: "Total Corporates", value: totals.companies, icon: Server, color: "#8b5cf6", grad: "linear-gradient(135deg, #8b5cf6, #6366f1)" },
@@ -87,13 +86,13 @@ export default function PlatformAnalytics() {
       {/* Top Level Metrics (Glass Cards) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {metrics.map(m => (
-          <div key={m.label} className={cardCls} style={cardStyle}>
+          <div key={m.label} className={cardCls}>
             <div className="absolute top-0 right-0 w-32 h-32 opacity-20 blur-3xl -translate-y-10 translate-x-10" style={{ background: `radial-gradient(circle, ${m.color}, transparent)` }} />
             
             <div className="flex items-center justify-between relative z-10">
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-violet-400/80 mb-2">{m.label}</p>
-                <p className="text-4xl font-black text-white" style={{ textShadow: `0 0 20px ${m.color}80` }}>
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-violet-400/80 mb-2">{m.label}</p>
+                <p className="text-4xl font-black text-slate-900 dark:text-white dark:drop-shadow-[0_0_20px_var(--tw-shadow-color)]" style={{ '--tw-shadow-color': `${m.color}80` }}>
                   {loading ? "..." : m.value.toLocaleString()}
                 </p>
               </div>
@@ -109,12 +108,12 @@ export default function PlatformAnalytics() {
 
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
         {/* Corporate Growth Chart */}
-        <div className={cardCls} style={cardStyle}>
+        <div className={cardCls}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-violet-500/10 border border-violet-500/20">
-              <TrendingUp className="h-4 w-4 text-violet-400" />
+            <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20">
+              <TrendingUp className="h-4 w-4 text-violet-600 dark:text-violet-400" />
             </div>
-            <h3 className="text-sm font-black text-white uppercase tracking-widest">Platform Growth (6mo)</h3>
+            <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Platform Growth (6mo)</h3>
           </div>
           
           {loading ? (
@@ -144,12 +143,12 @@ export default function PlatformAnalytics() {
         </div>
 
         {/* Status Distribution Chart */}
-        <div className={cardCls} style={cardStyle}>
+        <div className={cardCls}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
-              <BarChart3 className="h-4 w-4 text-blue-400" />
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20">
+              <BarChart3 className="h-4 w-4 text-blue-500 dark:text-blue-400" />
             </div>
-            <h3 className="text-sm font-black text-white uppercase tracking-widest">Corporate Status Breakdown</h3>
+            <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Corporate Status Breakdown</h3>
           </div>
           
           {loading ? (
@@ -175,19 +174,19 @@ export default function PlatformAnalytics() {
       </div>
 
       {/* Plan Distribution (Wide Pie Chart) */}
-      <div className={cardCls} style={cardStyle}>
+      <div className={cardCls}>
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-            <PieChart className="h-4 w-4 text-emerald-400" />
+          <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20">
+            <PieChartIcon className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
           </div>
-          <h3 className="text-sm font-black text-white uppercase tracking-widest">Active Subscription Tiers</h3>
+          <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Active Subscription Tiers</h3>
         </div>
         
         {loading ? (
           <div className="h-64 flex items-center justify-center"><div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>
         ) : planDist.length === 0 ? (
-          <div className="h-64 flex flex-col items-center justify-center text-violet-300 gap-3">
-            <PieChart className="h-12 w-12 opacity-30" />
+          <div className="h-64 flex flex-col items-center justify-center text-slate-400 dark:text-violet-300 gap-3">
+            <PieChartIcon className="h-12 w-12 opacity-30" />
             <p className="text-sm font-bold tracking-wide">No subscription data available</p>
           </div>
         ) : (
@@ -216,7 +215,7 @@ export default function PlatformAnalytics() {
                   verticalAlign="bottom" 
                   height={36} 
                   iconType="circle"
-                  formatter={(value) => <span className="text-xs font-bold text-white uppercase tracking-widest ml-1 mr-4">{value}</span>}
+                  formatter={(value) => <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-widest ml-1 mr-4">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>

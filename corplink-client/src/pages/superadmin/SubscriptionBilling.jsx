@@ -58,41 +58,39 @@ export default function SubscriptionBilling() {
     <SuperAdminLayout title="Subscriptions & Billing" subtitle="Manage all corporate subscription plans and payment status">
       
       {/* Header Metric */}
-      <div className="mb-6 inline-flex items-center gap-3 px-5 py-3 rounded-2xl relative overflow-hidden"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(139,92,246,0.15)" }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.1))", border: "1px solid rgba(16,185,129,0.2)" }}>
-          <Sparkles className="h-5 w-5 text-emerald-400" />
+      <div className="mb-6 inline-flex items-center gap-3 px-5 py-3 rounded-2xl relative overflow-hidden bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 shadow-sm">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20">
+          <Sparkles className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />
         </div>
         <div>
-          <p className="text-xs font-bold text-violet-400 uppercase tracking-widest">Active Subscriptions</p>
-          <p className="text-xl font-black text-white">{subs.filter(s => s.status === 'active').length} <span className="text-sm font-medium text-violet-500">/ {subs.length} total</span></p>
+          <p className="text-xs font-bold text-slate-500 dark:text-violet-400 uppercase tracking-widest">Active Subscriptions</p>
+          <p className="text-xl font-black text-slate-900 dark:text-white">{subs.filter(s => s.status === 'active').length} <span className="text-sm font-medium text-slate-400 dark:text-violet-500">/ {subs.length} total</span></p>
         </div>
       </div>
 
-      <div className="rounded-3xl overflow-hidden relative"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(139,92,246,0.12)", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
+      <div className="rounded-3xl overflow-hidden relative bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 shadow-sm dark:shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
         
         {/* Ambient Top Glow */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(16,185,129,0.5), transparent)", boxShadow: "0 0 20px rgba(16,185,129,0.5)" }} />
+        <div className="absolute top-0 left-1/4 right-1/4 h-px dark:shadow-[0_0_20px_rgba(16,185,129,0.5)]" style={{ background: "linear-gradient(90deg, transparent, rgba(16,185,129,0.5), transparent)" }} />
 
-        <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(139,92,246,0.1)", background: "rgba(139,92,246,0.02)" }}>
+        <div className="px-6 py-5 flex items-center justify-between border-b border-slate-100 dark:border-violet-500/10 bg-slate-50 dark:bg-violet-500/5">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.2), rgba(79,70,229,0.1))" }}>
-              <CreditCard className="h-4 w-4 text-violet-400" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-violet-100 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20">
+              <CreditCard className="h-4 w-4 text-violet-600 dark:text-violet-400" />
             </div>
-            <h2 className="text-sm font-black text-white uppercase tracking-wider">Billing Overview</h2>
+            <h2 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Billing Overview</h2>
           </div>
-          <button onClick={fetchSubs} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-violet-300 bg-white/5 hover:bg-white/10 hover:text-white transition-all border border-transparent hover:border-violet-500/30">
+          <button onClick={fetchSubs} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 dark:text-violet-300 bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all border border-transparent dark:hover:border-violet-500/30">
             <RefreshCw className="h-3.5 w-3.5" /> Sync Data
           </button>
         </div>
 
         {subs.length === 0 && !loading && (
           <div className="text-center py-20 relative">
-            <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at center, #7c3aed, transparent 50%)" }} />
-            <CreditCard className="h-16 w-16 text-violet-500/30 mx-auto mb-4 relative z-10" />
-            <p className="text-violet-300 font-bold text-lg relative z-10">No subscriptions found.</p>
-            <p className="text-violet-500 text-sm mt-2 relative z-10">Corporate subscriptions appear here once they are approved.</p>
+            <div className="absolute inset-0 opacity-5 dark:opacity-10" style={{ background: "radial-gradient(circle at center, #7c3aed, transparent 50%)" }} />
+            <CreditCard className="h-16 w-16 text-slate-300 dark:text-violet-500/30 mx-auto mb-4 relative z-10" />
+            <p className="text-slate-600 dark:text-violet-300 font-bold text-lg relative z-10">No subscriptions found.</p>
+            <p className="text-slate-400 dark:text-violet-500 text-sm mt-2 relative z-10">Corporate subscriptions appear here once they are approved.</p>
           </div>
         )}
 
@@ -100,23 +98,23 @@ export default function SubscriptionBilling() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left" style={{ borderBottom: "1px solid rgba(139,92,246,0.1)" }}>
+                <tr className="text-left bg-slate-50 dark:bg-transparent border-b border-slate-200 dark:border-violet-500/10">
                   {["Company", "Plan Tier", "Status", "Start Date", "Expiry", "Management"].map(h => (
-                    <th key={h} className="px-6 py-4 text-xs font-black text-violet-400 uppercase tracking-widest">{h}</th>
+                    <th key={h} className="px-6 py-4 text-xs font-black text-slate-500 dark:text-violet-400 uppercase tracking-widest">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y" style={{ borderColor: "rgba(139,92,246,0.06)" }}>
+              <tbody className="divide-y divide-slate-100 dark:divide-violet-500/10">
                 {loading ? (
-                  <tr><td colSpan={6} className="text-center py-12 text-violet-500 font-medium">Fetching subscriptions...</td></tr>
+                  <tr><td colSpan={6} className="text-center py-12 text-slate-500 dark:text-violet-500 font-medium">Fetching subscriptions...</td></tr>
                 ) : subs.map(sub => {
                   const pStyle = planStyle[sub.plan] || planStyle.basic;
                   const sStyle = statusStyle[sub.status] || statusStyle.cancelled;
                   return (
-                  <tr key={sub.id} className="transition-colors hover:bg-white/[0.02]">
+                  <tr key={sub.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                     <td className="px-6 py-4">
-                      <p className="font-bold text-white tracking-wide">{sub.companies?.name || "—"}</p>
-                      <p className="text-xs text-violet-400/80 mt-0.5">{sub.companies?.email || "—"}</p>
+                      <p className="font-bold text-slate-900 dark:text-white tracking-wide">{sub.companies?.name || "—"}</p>
+                      <p className="text-xs text-slate-500 dark:text-violet-400/80 mt-0.5">{sub.companies?.email || "—"}</p>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block"
@@ -132,11 +130,11 @@ export default function SubscriptionBilling() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs font-medium text-violet-300">
+                    <td className="px-6 py-4 text-xs font-medium text-slate-600 dark:text-violet-300">
                       {sub.start_date ? new Date(sub.start_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : "—"}
                     </td>
                     <td className="px-6 py-4 text-xs font-medium">
-                      <span className={isExpiring(sub.expiry_date) ? "text-amber-400 flex items-center gap-1" : "text-violet-400"}>
+                      <span className={isExpiring(sub.expiry_date) ? "text-amber-500 dark:text-amber-400 flex items-center gap-1" : "text-slate-600 dark:text-violet-400"}>
                         {sub.expiry_date ? new Date(sub.expiry_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : "No expiry"}
                         {isExpiring(sub.expiry_date) && <span title="Expiring soon" className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse ml-1" />}
                       </span>
@@ -147,12 +145,9 @@ export default function SubscriptionBilling() {
                           value={sub.plan}
                           disabled={saving === sub.id}
                           onChange={e => changePlan(sub.id, e.target.value)}
-                          className="text-[11px] font-bold px-3 py-1.5 rounded-xl outline-none transition-all cursor-pointer disabled:opacity-50 appearance-none"
-                          style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(139,92,246,0.3)", color: "white" }}
-                          onFocus={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.8)" }}
-                          onBlur={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.3)" }}
+                          className="text-[11px] font-bold px-3 py-1.5 rounded-xl outline-none transition-all cursor-pointer disabled:opacity-50 appearance-none bg-slate-100 dark:bg-black/30 border border-slate-300 dark:border-violet-500/30 text-slate-900 dark:text-white focus:border-violet-500 dark:focus:border-violet-500/80"
                         >
-                          {PLANS.map(p => <option key={p} value={p} className="bg-[#0d0622]">{p.toUpperCase()}</option>)}
+                          {PLANS.map(p => <option key={p} value={p} className="bg-white dark:bg-[#0d0622] text-slate-900 dark:text-white">{p.toUpperCase()}</option>)}
                         </select>
                         {sub.status === "active" ? (
                           <button

@@ -57,49 +57,39 @@ export default function SystemActivityLogs() {
     <SuperAdminLayout title="System Activity Logs" subtitle="Monitor all user actions across every corporate account in real-time">
       
       {/* Filters Bar (Glassmorphism) */}
-      <div className="flex flex-col md:flex-row gap-3 mb-6 p-3 rounded-2xl relative overflow-hidden"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(139,92,246,0.1)", boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}>
+      <div className="flex flex-col md:flex-row gap-3 mb-6 p-3 rounded-2xl relative overflow-hidden bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 shadow-sm dark:shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
         
         <div className="absolute top-0 right-1/4 w-32 h-32 opacity-10 blur-2xl" style={{ background: "radial-gradient(circle, #ec4899, transparent)" }} />
         
         <div className="relative flex-1 min-w-[200px] z-10">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-violet-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-violet-400" />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search action logs..."
-            className="w-full rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-violet-500/70 outline-none transition-all"
-            style={inputStyle}
-            onFocus={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.5)"; e.target.style.background = "rgba(0,0,0,0.4)" }}
-            onBlur={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.2)"; e.target.style.background = "rgba(0,0,0,0.2)" }}
+            className="w-full rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-violet-500/70 outline-none transition-all bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-violet-500/20 focus:border-violet-500 dark:focus:border-violet-500/50"
           />
         </div>
 
         <select 
           value={companyId} 
           onChange={e => setCompanyId(e.target.value)} 
-          className={`${inputCls} z-10 md:w-64`} 
-          style={inputStyle}
-          onFocus={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.5)" }}
-          onBlur={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.2)" }}
+          className="rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all appearance-none cursor-pointer z-10 md:w-64 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-violet-500/20 focus:border-violet-500 dark:focus:border-violet-500/50"
         >
-          <option value="all" className="bg-[#0d0622]">All Companies</option>
-          {companies.map(c => <option key={c.id} value={c.id} className="bg-[#0d0622]">{c.name}</option>)}
+          <option value="all" className="bg-white dark:bg-[#0d0622]">All Companies</option>
+          {companies.map(c => <option key={c.id} value={c.id} className="bg-white dark:bg-[#0d0622]">{c.name}</option>)}
         </select>
 
         <select 
           value={severity} 
           onChange={e => setSeverity(e.target.value)} 
-          className={`${inputCls} z-10 md:w-48`} 
-          style={inputStyle}
-          onFocus={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.5)" }}
-          onBlur={(e) => { e.target.style.borderColor = "rgba(139,92,246,0.2)" }}
+          className="rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all appearance-none cursor-pointer z-10 md:w-48 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-violet-500/20 focus:border-violet-500 dark:focus:border-violet-500/50"
         >
-          <option value="all" className="bg-[#0d0622]">All Severities</option>
-          <option value="info" className="bg-[#0d0622]">Info</option>
-          <option value="warning" className="bg-[#0d0622]">Warning</option>
-          <option value="error" className="bg-[#0d0622]">Error</option>
-          <option value="success" className="bg-[#0d0622]">Success</option>
+          <option value="all" className="bg-white dark:bg-[#0d0622]">All Severities</option>
+          <option value="info" className="bg-white dark:bg-[#0d0622]">Info</option>
+          <option value="warning" className="bg-white dark:bg-[#0d0622]">Warning</option>
+          <option value="error" className="bg-white dark:bg-[#0d0622]">Error</option>
+          <option value="success" className="bg-white dark:bg-[#0d0622]">Success</option>
         </select>
 
         <button onClick={fetchLogs} className="px-4 py-2.5 rounded-xl transition-all z-10 flex items-center justify-center hover:scale-105 active:scale-95"
@@ -109,30 +99,29 @@ export default function SystemActivityLogs() {
       </div>
 
       {/* Table Container */}
-      <div className="rounded-3xl overflow-hidden relative"
-        style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(139,92,246,0.1)", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
+      <div className="rounded-3xl overflow-hidden relative bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 shadow-sm dark:shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
         
-        <div className="absolute top-0 left-1/3 right-1/3 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(236,72,153,0.5), transparent)", boxShadow: "0 0 20px rgba(236,72,153,0.5)" }} />
+        <div className="absolute top-0 left-1/3 right-1/3 h-px dark:shadow-[0_0_20px_rgba(236,72,153,0.5)]" style={{ background: "linear-gradient(90deg, transparent, rgba(236,72,153,0.5), transparent)" }} />
 
-        <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(139,92,246,0.1)", background: "rgba(139,92,246,0.02)" }}>
+        <div className="px-6 py-4 flex items-center justify-between border-b border-slate-100 dark:border-violet-500/10 bg-slate-50 dark:bg-violet-500/5">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(236,72,153,0.2), rgba(219,39,119,0.1))" }}>
-              <Activity className="h-4 w-4 text-pink-400" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-pink-100 dark:bg-pink-500/10 border border-pink-200 dark:border-pink-500/20">
+              <Activity className="h-4 w-4 text-pink-500 dark:text-pink-400" />
             </div>
-            <p className="text-sm font-black text-white uppercase tracking-wider">{total.toLocaleString()} <span className="text-violet-400 font-semibold">Total Logs</span></p>
+            <p className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">{total.toLocaleString()} <span className="text-slate-500 dark:text-violet-400 font-semibold">Total Logs</span></p>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left" style={{ borderBottom: "1px solid rgba(139,92,246,0.06)" }}>
+              <tr className="text-left border-b border-slate-200 dark:border-violet-500/10 bg-slate-50 dark:bg-transparent">
                 {["User", "Company", "Action", "Entity", "Severity", "Timestamp"].map(h => (
-                  <th key={h} className="px-6 py-4 text-[11px] font-black text-violet-400 uppercase tracking-widest">{h}</th>
+                  <th key={h} className="px-6 py-4 text-[11px] font-black text-slate-500 dark:text-violet-400 uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y" style={{ borderColor: "rgba(139,92,246,0.04)" }}>
+            <tbody className="divide-y divide-slate-100 dark:divide-violet-500/5">
               {loading ? (
                 <tr><td colSpan={6} className="text-center py-16">
                   <div className="flex flex-col items-center justify-center gap-3">
@@ -145,24 +134,24 @@ export default function SystemActivityLogs() {
               ) : logs.map(log => {
                 const sStyle = severityStyle[log.severity] || severityStyle.info;
                 return (
-                <tr key={log.id} className="transition-colors hover:bg-white/[0.03]">
+                <tr key={log.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.03]">
                   <td className="px-6 py-3.5">
-                    <p className="text-sm text-white font-bold tracking-wide truncate max-w-[150px]">
+                    <p className="text-sm text-slate-900 dark:text-white font-bold tracking-wide truncate max-w-[150px]">
                       {log.profiles?.full_name || "System"}
                     </p>
-                    <p className="text-[10px] text-violet-500 mt-0.5 truncate max-w-[150px]">
+                    <p className="text-[10px] text-slate-500 dark:text-violet-500 mt-0.5 truncate max-w-[150px]">
                       {log.user_id?.slice(0, 12)}...
                     </p>
                   </td>
-                  <td className="px-6 py-3.5 text-xs font-semibold text-violet-300">
+                  <td className="px-6 py-3.5 text-xs font-semibold text-slate-600 dark:text-violet-300">
                     {log.companies?.name ? (
-                       <span className="px-2.5 py-1 rounded-md" style={{ background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.15)" }}>
+                       <span className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-violet-500/10 border border-slate-200 dark:border-violet-500/20">
                          {log.companies.name}
                        </span>
                     ) : "—"}
                   </td>
-                  <td className="px-6 py-3.5 text-sm text-white font-medium">{log.action}</td>
-                  <td className="px-6 py-3.5 text-xs text-violet-400">{log.entity || "—"}</td>
+                  <td className="px-6 py-3.5 text-sm text-slate-900 dark:text-white font-medium">{log.action}</td>
+                  <td className="px-6 py-3.5 text-xs text-slate-500 dark:text-violet-400">{log.entity || "—"}</td>
                   <td className="px-6 py-3.5">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full"
                       style={{ background: sStyle.bg, border: `1px solid ${sStyle.border}` }}>
@@ -172,7 +161,7 @@ export default function SystemActivityLogs() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-3.5 text-xs text-violet-400/80 font-medium whitespace-nowrap">
+                  <td className="px-6 py-3.5 text-xs text-slate-500 dark:text-violet-400/80 font-medium whitespace-nowrap">
                     {new Date(log.created_at).toLocaleString(undefined, {
                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
                     })}
@@ -185,17 +174,15 @@ export default function SystemActivityLogs() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(139,92,246,0.1)", background: "rgba(139,92,246,0.02)" }}>
-            <p className="text-xs font-semibold text-violet-400">Page <span className="text-white">{page + 1}</span> of <span className="text-white">{totalPages}</span></p>
+          <div className="px-6 py-4 flex items-center justify-between border-t border-slate-200 dark:border-violet-500/10 bg-slate-50 dark:bg-violet-500/5">
+            <p className="text-xs font-semibold text-slate-500 dark:text-violet-400">Page <span className="text-slate-900 dark:text-white">{page + 1}</span> of <span className="text-slate-900 dark:text-white">{totalPages}</span></p>
             <div className="flex gap-2">
               <button disabled={page === 0} onClick={() => setPage(p => p - 1)}
-                className="px-4 py-2 text-xs font-bold text-violet-300 rounded-xl disabled:opacity-40 transition-all hover:bg-white/10"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(139,92,246,0.2)" }}>
+                className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-violet-300 rounded-xl disabled:opacity-40 transition-all hover:bg-slate-200 dark:hover:bg-white/10 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-violet-500/20">
                 Previous
               </button>
               <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}
-                className="px-4 py-2 text-xs font-bold text-white rounded-xl disabled:opacity-40 transition-all shadow-lg hover:scale-105 active:scale-95"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
+                className="px-4 py-2 text-xs font-bold text-white rounded-xl disabled:opacity-40 transition-all shadow-lg hover:scale-105 active:scale-95 bg-gradient-to-br from-violet-600 to-indigo-600">
                 Next
               </button>
             </div>

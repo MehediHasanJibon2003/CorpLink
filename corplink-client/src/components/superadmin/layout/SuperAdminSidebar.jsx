@@ -25,13 +25,10 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
       )}
 
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 flex flex-col shrink-0 h-screen
-        transition-transform duration-300 ease-in-out
+        transition-colors transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0 md:relative`}
-        style={{
-          background: "linear-gradient(180deg, #0d0622 0%, #0a0418 50%, #07030f 100%)",
-          borderRight: "1px solid rgba(139, 92, 246, 0.15)",
-        }}
+        md:translate-x-0 md:relative
+        bg-white dark:bg-[#0a0418] border-r border-slate-200 dark:border-violet-500/15`}
       >
         {/* Top gradient line */}
         <div className="absolute top-0 left-0 right-0 h-px"
@@ -47,17 +44,16 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
 
           <Link to="/super-admin" className="flex items-center gap-3 relative z-10">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-lg shadow-2xl"
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-lg shadow-xl"
                 style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", boxShadow: "0 0 20px rgba(124,58,237,0.5)" }}>
                 C
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0d0622] bg-emerald-400"
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-[#0d0622] bg-emerald-400"
                 style={{ boxShadow: "0 0 8px rgba(52,211,153,0.8)" }} />
             </div>
             <div>
-              <p className="text-base font-black text-white tracking-tight leading-tight">CorpLink</p>
-              <p className="text-[9px] font-bold uppercase tracking-widest"
-                style={{ background: "linear-gradient(90deg, #a78bfa, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              <p className="text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">CorpLink</p>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
                 Super Admin
               </p>
             </div>
@@ -69,20 +65,19 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
         </div>
 
         {/* Admin Profile Card */}
-        <div className="mx-3 mt-3 mb-2 p-3 rounded-2xl relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.1))", border: "1px solid rgba(139,92,246,0.2)" }}>
-          <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-20 -translate-y-4 translate-x-4"
+        <div className="mx-3 mt-3 mb-2 p-3 rounded-2xl relative overflow-hidden bg-violet-50/50 dark:bg-violet-900/10 border border-violet-100 dark:border-violet-500/20">
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-10 dark:opacity-20 -translate-y-4 translate-x-4"
             style={{ background: "radial-gradient(circle, #7c3aed, transparent)" }} />
           <div className="flex items-center gap-2.5 relative z-10">
-            <div className="w-9 h-9 rounded-xl font-bold text-white text-sm flex items-center justify-center shrink-0"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", boxShadow: "0 4px 12px rgba(124,58,237,0.4)" }}>
+            <div className="w-9 h-9 rounded-xl font-bold text-white text-sm flex items-center justify-center shrink-0 shadow-lg"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
               {(profile?.full_name || "S").charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-white truncate">{profile?.full_name || "Super Admin"}</p>
+              <p className="text-xs font-bold text-slate-800 dark:text-white truncate">{profile?.full_name || "Super Admin"}</p>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <Shield className="h-2.5 w-2.5 text-violet-400" />
-                <p className="text-[9px] font-semibold text-violet-400 uppercase tracking-wider">Full Access</p>
+                <Shield className="h-2.5 w-2.5 text-violet-500 dark:text-violet-400" />
+                <p className="text-[9px] font-semibold text-violet-500 dark:text-violet-400 uppercase tracking-wider">Full Access</p>
               </div>
             </div>
           </div>
@@ -100,7 +95,7 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                 end={item.exact}
                 className={({ isActive }) =>
                   `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 relative overflow-hidden ${
-                    isActive ? "text-white" : "text-violet-400/70 hover:text-violet-200"
+                    isActive ? "text-violet-900 dark:text-white" : "text-slate-500 dark:text-violet-400/70 hover:text-slate-800 dark:hover:text-violet-200"
                   }`
                 }
               >
@@ -108,25 +103,23 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                   <>
                     {/* Active background */}
                     {isActive && (
-                      <div className="absolute inset-0 rounded-xl"
-                        style={{ background: `linear-gradient(135deg, rgba(124,58,237,0.4), rgba(79,70,229,0.3))`, border: "1px solid rgba(139,92,246,0.3)" }} />
+                      <div className="absolute inset-0 rounded-xl bg-violet-100 dark:bg-violet-500/20 border border-violet-200 dark:border-violet-500/30" />
                     )}
                     {/* Hover background */}
                     {!isActive && (
-                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{ background: "rgba(124,58,237,0.08)" }} />
+                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity bg-slate-50 dark:bg-violet-500/10" />
                     )}
 
                     {/* Icon container */}
                     <div className={`relative z-10 w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
-                      isActive ? "shadow-lg" : "opacity-60 group-hover:opacity-90"
+                      isActive ? "shadow-md dark:shadow-lg" : "opacity-60 group-hover:opacity-90 bg-slate-100 dark:bg-violet-500/10"
                     }`}
                       style={isActive ? {
                         background: `linear-gradient(135deg, ${item.colorStart}, ${item.colorEnd})`,
                         boxShadow: `0 4px 12px ${item.colorStart}66`
-                      } : { background: "rgba(139,92,246,0.1)" }}
+                      } : {}}
                     >
-                      <Icon className="h-3.5 w-3.5 text-white" />
+                      <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-white' : 'text-slate-500 dark:text-white'}`} />
                     </div>
 
                     <span className="relative z-10">{item.name}</span>
@@ -144,19 +137,17 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
 
         {/* Bottom Status */}
         <div className="p-3 mt-auto">
-          <div className="relative p-3 rounded-2xl overflow-hidden"
-            style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.05))", border: "1px solid rgba(16,185,129,0.15)" }}>
+          <div className="relative p-3 rounded-2xl overflow-hidden bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/15">
             <div className="absolute top-0 right-0 w-16 h-16 opacity-10 -translate-y-4 translate-x-4"
               style={{ background: "radial-gradient(circle, #10b981, transparent)" }} />
             <div className="flex items-center gap-2 relative z-10">
               <div className="flex items-center gap-2">
-                <Zap className="h-3.5 w-3.5 text-emerald-400" />
-                <p className="text-xs font-bold text-emerald-300">All Systems Online</p>
+                <Zap className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
+                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-300">All Systems Online</p>
               </div>
-              <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse"
-                style={{ boxShadow: "0 0 8px rgba(52,211,153,0.9)" }} />
+              <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
             </div>
-            <p className="text-[10px] text-emerald-600 mt-0.5 relative z-10">Platform fully operational</p>
+            <p className="text-[10px] text-emerald-600/70 dark:text-emerald-600 mt-0.5 relative z-10">Platform fully operational</p>
           </div>
         </div>
 
