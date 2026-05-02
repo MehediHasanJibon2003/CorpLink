@@ -6,13 +6,13 @@ import {
 } from "lucide-react"
 
 const NAV_ITEMS = [
-  { name: "Overview",          path: "/super-admin",               icon: LayoutDashboard, exact: true, color: "from-violet-500 to-indigo-500" },
-  { name: "Corporates",        path: "/super-admin/corporates",    icon: Building2,       color: "from-blue-500 to-cyan-500" },
-  { name: "Subscriptions",     path: "/super-admin/subscriptions", icon: CreditCard,      color: "from-emerald-500 to-teal-500" },
-  { name: "Platform Settings", path: "/super-admin/settings",      icon: Settings,        color: "from-amber-500 to-orange-500" },
-  { name: "Activity Logs",     path: "/super-admin/logs",          icon: Activity,        color: "from-rose-500 to-pink-500" },
-  { name: "Announcements",     path: "/super-admin/announcements", icon: Megaphone,       color: "from-fuchsia-500 to-purple-500" },
-  { name: "Analytics",         path: "/super-admin/analytics",     icon: BarChart3,       color: "from-indigo-500 to-violet-500" },
+  { name: "Overview",          path: "/super-admin",               icon: LayoutDashboard, exact: true, colorStart: "#8b5cf6", colorEnd: "#6366f1" },
+  { name: "Corporates",        path: "/super-admin/corporates",    icon: Building2,       colorStart: "#3b82f6", colorEnd: "#06b6d4" },
+  { name: "Subscriptions",     path: "/super-admin/subscriptions", icon: CreditCard,      colorStart: "#10b981", colorEnd: "#14b8a6" },
+  { name: "Platform Settings", path: "/super-admin/settings",      icon: Settings,        colorStart: "#f59e0b", colorEnd: "#f97316" },
+  { name: "Activity Logs",     path: "/super-admin/logs",          icon: Activity,        colorStart: "#f43f5e", colorEnd: "#ec4899" },
+  { name: "Announcements",     path: "/super-admin/announcements", icon: Megaphone,       colorStart: "#d946ef", colorEnd: "#a855f7" },
+  { name: "Analytics",         path: "/super-admin/analytics",     icon: BarChart3,       colorStart: "#6366f1", colorEnd: "#8b5cf6" },
 ]
 
 export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
@@ -122,8 +122,8 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                       isActive ? "shadow-lg" : "opacity-60 group-hover:opacity-90"
                     }`}
                       style={isActive ? {
-                        background: `linear-gradient(135deg, ${item.color.split(" ")[1].replace("from-", "").replace("[", "").replace("]", "")}, ${item.color.split(" ")[2].replace("to-", "").replace("[", "").replace("]", "")})`,
-                        boxShadow: "0 4px 12px rgba(124,58,237,0.4)"
+                        background: `linear-gradient(135deg, ${item.colorStart}, ${item.colorEnd})`,
+                        boxShadow: `0 4px 12px ${item.colorStart}66`
                       } : { background: "rgba(139,92,246,0.1)" }}
                     >
                       <Icon className="h-3.5 w-3.5 text-white" />

@@ -59,14 +59,14 @@ export function AuthProvider({ children }) {
       setUser(currentUser)
 
       if (currentUser) {
-        setTimeout(() => {
-          fetchProfile(currentUser.id)
-        }, 0)
+        setLoading(true)
+        fetchProfile(currentUser.id).finally(() => {
+          setLoading(false)
+        })
       } else {
         setProfile(null)
+        setLoading(false)
       }
-
-      setLoading(false)
     })
 
     return () => {

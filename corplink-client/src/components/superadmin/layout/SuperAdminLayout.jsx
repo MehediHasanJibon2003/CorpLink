@@ -7,11 +7,7 @@ export default function SuperAdminLayout({ children, title, subtitle }) {
 
   return (
     <div className="h-screen w-screen flex overflow-hidden relative transition-colors duration-300
-      bg-[#05030f] dark:bg-[#05030f]
-      light:bg-gradient-to-br light:from-violet-50 light:via-indigo-50 light:to-slate-50"
-      style={{
-        background: "linear-gradient(135deg, #05030f 0%, #0d0622 50%, #060312 100%)"
-      }}
+      bg-slate-50 dark:bg-[#05030f]"
     >
       {/* Ambient glow blobs — decorative background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
@@ -33,13 +29,12 @@ export default function SuperAdminLayout({ children, title, subtitle }) {
             {(title || subtitle) && (
               <div className="mb-8">
                 {title && (
-                  <h1 className="text-2xl font-extrabold tracking-tight mb-1"
-                    style={{ background: "linear-gradient(135deg, #fff 30%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  <h1 className="text-2xl font-extrabold tracking-tight mb-1 text-slate-900 dark:text-transparent bg-clip-text bg-gradient-to-br from-violet-600 to-indigo-600 dark:from-white dark:to-violet-200">
                     {title}
                   </h1>
                 )}
                 {subtitle && (
-                  <p className="text-violet-400/70 text-sm font-medium">{subtitle}</p>
+                  <p className="text-slate-500 dark:text-violet-400/70 text-sm font-medium">{subtitle}</p>
                 )}
               </div>
             )}

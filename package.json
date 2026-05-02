@@ -1,0 +1,11 @@
+{
+  "name": "corplink",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix corplink-client",
+    "build": "npm run build --prefix corplink-client",
+    "lint": "npm run lint --prefix corplink-client",
+    "preview": "npm run preview --prefix corplink-client"
+  }
+}

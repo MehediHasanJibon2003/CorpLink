@@ -246,9 +246,14 @@ function Login() {
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Password
+                </label>
+                <Link to="/forgot-password" className="text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <Lock
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
@@ -274,6 +279,18 @@ function Login() {
                   )}
                 </button>
               </div>
+            </div>
+
+            {/* Remember Me */}
+            <div className="flex items-center gap-2">
+              <input 
+                type="checkbox" 
+                id="remember" 
+                className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:ring-offset-slate-900"
+              />
+              <label htmlFor="remember" className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+                Remember me for 30 days
+              </label>
             </div>
 
             {/* Error */}
@@ -346,13 +363,13 @@ function Login() {
 
           <p className="text-center text-xs text-slate-400 mt-6">
             By signing in, you agree to CorpLink's{" "}
-            <span className="text-blue-500 cursor-pointer hover:underline">
+            <Link to="/terms" className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors">
               Terms of Service
-            </span>{" "}
+            </Link>{" "}
             and{" "}
-            <span className="text-blue-500 cursor-pointer hover:underline">
+            <Link to="/privacy" className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors">
               Privacy Policy
-            </span>
+            </Link>
           </p>
         </div>
       </div>
