@@ -171,19 +171,19 @@ function Login() {
             communication — from a single unified workspace.
           </p>
 
-          <div className="grid grid-cols-1 gap-8">
+          <div className="grid grid-cols-1 gap-10 md:gap-12">
             {FEATURES.map((f, i) => {
               const Icon = f.icon;
               return (
-                <div key={i} className="flex items-center gap-6 group">
-                  <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-blue-600/30 transition">
-                    <Icon className="h-8 w-8 text-blue-400" />
+                <div key={i} className="flex items-center gap-8 group">
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-white/10 border-2 border-white/10 flex items-center justify-center shrink-0 group-hover:bg-blue-600/30 group-hover:scale-110 transition-all duration-300">
+                    <Icon className="h-10 w-10 md:h-12 md:w-12 text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-white font-bold text-xl">
+                    <p className="text-white font-black text-2xl md:text-3xl tracking-tight">
                       {f.title}
                     </p>
-                    <p className="text-slate-400 text-base">{f.desc}</p>
+                    <p className="text-slate-400 text-lg md:text-xl font-medium mt-1">{f.desc}</p>
                   </div>
                 </div>
               );
@@ -232,22 +232,21 @@ function Login() {
           {/* Form */}
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Email */}
-            <div className="space-y-3">
-              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
-                Email Address
+            <div className="space-y-4">
+              <label className="block text-xl md:text-2xl font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest px-2">
+                Corporate Email Address
               </label>
               <div className="relative">
                 <Mail
-                  className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none"
-                  style={{ width: "24px", height: "24px" }}
+                  className="absolute left-8 top-1/2 -translate-y-1/2 h-8 w-8 text-slate-400 pointer-events-none"
                 />
                 <input
                   type="email"
                   name="email"
-                  placeholder="you@company.com"
+                  placeholder="name@enterprise.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
+                  className="w-full pl-20 pr-8 py-8 md:py-10 border-[4px] border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-400 rounded-3xl md:rounded-[2.5rem] outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-8 focus:ring-blue-500/5 transition-all text-2xl md:text-3xl font-black shadow-inner"
                 />
               </div>
             </div>
@@ -317,12 +316,12 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-5 rounded-2xl font-black text-xl transition-all shadow-xl shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 mt-6"
+              className="w-full flex items-center justify-center gap-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-8 md:py-10 rounded-3xl md:rounded-[2.5rem] font-black text-2xl md:text-4xl transition-all shadow-2xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-1 active:translate-y-0 mt-10 tracking-tight"
             >
               {loading ? (
                 <>
                   <svg
-                    className="animate-spin h-4 w-4"
+                    className="animate-spin h-8 w-8"
                     fill="none"
                     viewBox="0 0 24 24"
                   >
@@ -340,11 +339,11 @@ function Login() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                     />
                   </svg>
-                  Signing in...
+                  Authenticating...
                 </>
               ) : (
                 <>
-                  Sign In <ArrowRight className="h-4 w-4" />
+                  Secure Sign In <ArrowRight className="h-8 w-8" />
                 </>
               )}
             </button>

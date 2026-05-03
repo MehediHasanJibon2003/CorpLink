@@ -143,41 +143,41 @@ function Activity() {
       title="Audit Log & Security"
       subtitle="Real-time monitoring of corporate system activities"
     >
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mb-10">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm border-2 border-slate-200 dark:border-slate-700 overflow-hidden mb-16">
         {/* Top Controls: Search & Filter */}
-        <div className="p-5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:w-96">
-            <span className="absolute left-3 top-2.5 text-slate-400">🔍</span>
+        <div className="p-10 md:p-12 border-b-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex flex-col xl:flex-row gap-8 items-center justify-between">
+          <div className="relative w-full xl:w-[40rem]">
+            <span className="absolute left-6 top-6 text-3xl text-slate-400">🔍</span>
             <input
               type="text"
-              placeholder="Search by action or user..."
+              placeholder="Filter by action, user or system event..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg outline-none focus:border-blue-500 text-sm"
+              className="w-full pl-16 pr-8 py-6 md:py-8 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-3xl outline-none focus:border-blue-500 bg-white dark:bg-slate-800 text-lg md:text-2xl font-medium shadow-inner transition-all"
             />
           </div>
 
-          <div className="flex gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap gap-4 md:gap-6 w-full xl:w-auto">
             <select
               value={filterModule}
               onChange={(e) => setFilterModule(e.target.value)}
-              className="flex-1 md:flex-none border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm font-medium text-slate-700 dark:text-slate-200"
+              className="flex-1 xl:flex-none border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 outline-none focus:border-blue-500 text-lg md:text-xl font-black text-slate-700 dark:text-slate-200 cursor-pointer shadow-sm"
             >
-              <option value="all">All Modules</option>
-              <option value="auth">Authentication</option>
-              <option value="employee">Employees</option>
-              <option value="department">Departments</option>
-              <option value="task">Tasks</option>
-              <option value="announcement">Feed / Announcements</option>
-              <option value="collaboration">Collaboration</option>
+              <option value="all">Global Modules</option>
+              <option value="auth">🔐 Security / Auth</option>
+              <option value="employee">👥 Workforce</option>
+              <option value="department">🏢 Departments</option>
+              <option value="task">✅ Task Systems</option>
+              <option value="announcement">📢 Corporate Feed</option>
+              <option value="collaboration">🤝 Partnerships</option>
             </select>
 
             <select
               value={filterSeverity}
               onChange={(e) => setFilterSeverity(e.target.value)}
-              className="flex-1 md:flex-none border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm font-medium text-slate-700 dark:text-slate-200"
+              className="flex-1 xl:flex-none border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 outline-none focus:border-blue-500 text-lg md:text-xl font-black text-slate-700 dark:text-slate-200 cursor-pointer shadow-sm"
             >
-              <option value="all">All Severities</option>
+              <option value="all">All Priorities</option>
               <option value="info">Info</option>
               <option value="warning">Warning</option>
               <option value="critical">Critical</option>
@@ -187,69 +187,74 @@ function Activity() {
 
         {/* Data Table */}
         {error ? (
-          <div className="p-10 text-center text-red-600 bg-red-50 border-t border-red-100">
+          <div className="p-20 text-center text-red-600 bg-red-50 font-black text-2xl">
             {error}
           </div>
         ) : loading ? (
-          <div className="p-10 text-center text-slate-500 dark:text-slate-400">
-            Loading secure audit logs...
+          <div className="p-32 text-center">
+             <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-blue-600 mx-auto mb-8"></div>
+             <p className="text-2xl md:text-3xl text-slate-500 dark:text-slate-400 font-black tracking-tight">Decrypting secure audit logs...</p>
           </div>
         ) : filteredActivities.length === 0 ? (
-          <div className="p-16 text-center">
-            <div className="text-4xl mb-3">🛡️</div>
-            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+          <div className="p-32 text-center">
+            <div className="text-8xl mb-8">🛡️</div>
+            <h3 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
               No Logs Found
             </h3>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">
-              No activities match your current filters.
+            <p className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 mt-4 font-medium italic">
+              The security vault has no matches for your current parameters.
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[800px]">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse min-w-[1200px]">
               <thead>
-                <tr className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
-                  <th className="p-4 w-12 text-center">STS</th>
-                  <th className="p-4">Timestamp</th>
-                  <th className="p-4">User</th>
-                  <th className="p-4">Module</th>
-                  <th className="p-4">Action Details</th>
-                  <th className="p-4 text-right">Severity</th>
+                <tr className="bg-slate-50 dark:bg-slate-900/80 border-b-2 border-slate-200 dark:border-slate-700 text-sm md:text-base uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-black">
+                  <th className="p-8 w-24 text-center">STS</th>
+                  <th className="p-8">Temporal Reference</th>
+                  <th className="p-8">Actor / Role</th>
+                  <th className="p-8">Module</th>
+                  <th className="p-8">Operational Details</th>
+                  <th className="p-8 text-right">Priority</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-sm">
+              <tbody className="divide-y-2 divide-slate-100 dark:divide-slate-800 text-lg md:text-xl">
                 {filteredActivities.map((log) => (
                   <tr
                     key={log.id}
-                    className="hover:bg-slate-50 dark:bg-slate-900/50 transition"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors group"
                   >
-                    <td className="p-4 text-center border-r border-slate-100 dark:border-slate-800">
-                      {getStatusIcon(log.status)}
+                    <td className="p-8 text-center border-r-2 border-slate-50 dark:border-slate-800">
+                      <div className="transform scale-150 group-hover:scale-[1.75] transition-transform">
+                        {getStatusIcon(log.status)}
+                      </div>
                     </td>
-                    <td className="p-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                      <div>{new Date(log.created_at).toLocaleDateString()}</div>
-                      <div className="text-xs">
+                    <td className="p-8">
+                      <div className="font-black text-slate-800 dark:text-slate-100 tracking-tight">{new Date(log.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                      <div className="text-sm md:text-base text-slate-400 font-bold uppercase mt-1">
                         {new Date(log.created_at).toLocaleTimeString()}
                       </div>
                     </td>
-                    <td className="p-4">
-                      <div className="font-semibold text-slate-800 dark:text-slate-100">
-                        {log.user?.full_name || "System / Deleted User"}
+                    <td className="p-8">
+                      <div className="font-black text-slate-900 dark:text-white text-xl md:text-2xl">
+                        {log.user?.full_name || "SYSTEM_DAEMON"}
                       </div>
-                      <div className="text-xs text-slate-400 capitalize">
-                        {log.user?.role || "Unknown Role"}
+                      <div className="text-sm md:text-base text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest mt-1">
+                        {log.user?.role || "SYSTEM"}
                       </div>
                     </td>
-                    <td className="p-4">
-                      <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 capitalize">
+                    <td className="p-8">
+                      <span className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-6 py-2 rounded-full text-xs md:text-sm font-black uppercase tracking-[0.15em] shadow-md">
                         {log.entity}
                       </span>
                     </td>
-                    <td className="p-4 font-medium text-slate-700 dark:text-slate-200">
+                    <td className="p-8 font-black text-slate-700 dark:text-slate-200 leading-tight">
                       {log.action}
                     </td>
-                    <td className="p-4 text-right">
-                      {getSeverityBadge(log.severity)}
+                    <td className="p-8 text-right">
+                       <div className="inline-block transform scale-125 origin-right">
+                          {getSeverityBadge(log.severity)}
+                       </div>
                     </td>
                   </tr>
                 ))}
