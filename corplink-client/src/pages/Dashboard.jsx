@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
+import { Navigate } from "react-router-dom"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
-import EmployeeDashboard from "./EmployeeDashboard"
 import StatCard from "../components/dashboard/StatCard"
 import TaskOverview from "../components/dashboard/TaskOverview"
 import RecentActivity from "../components/dashboard/RecentActivity"
@@ -62,11 +62,11 @@ function Dashboard() {
     fetchDashboardData()
   }, [])
 
-  // Basic Employees and restricted users get the EmployeeDashboard
+  // Non-admin roles are redirected to the dedicated Employee Module
   const isAdminView = ["admin", "corporate_admin", "manager", "hr"].includes(profile?.role);
   
   if (profile && !isAdminView) {
-    return <EmployeeDashboard />
+    return <Navigate to="/employee/dashboard" replace />
   }
 
   return (

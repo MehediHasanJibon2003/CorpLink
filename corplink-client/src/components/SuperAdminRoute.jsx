@@ -18,7 +18,11 @@ export default function SuperAdminRoute({ children }) {
   }
 
   if (!user) return <Navigate to="/login" replace />
-  if (profile?.role !== "super_admin") return <Navigate to="/unauthorized" replace />
+  
+  // Extra security: Strictly allow only the authorized Super Admin email
+  if (profile?.role !== "super_admin" || profile?.email !== "mehedi777@gmail.com") {
+    return <Navigate to="/unauthorized" replace />
+  }
 
   return children
 }

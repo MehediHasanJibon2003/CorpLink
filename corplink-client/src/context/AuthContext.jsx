@@ -11,13 +11,7 @@ export function AuthProvider({ children }) {
   const fetchProfile = async (userId) => {
     const { data, error } = await supabase
       .from("profiles")
-      .select(`
-        *,
-        companies (
-          id,
-          name
-        )
-      `)
+      .select('*')
       .eq("id", userId)
       .single()
 

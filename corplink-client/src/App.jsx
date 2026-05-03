@@ -17,8 +17,13 @@ import Messages from "./pages/Messages"
 import Analytics from "./pages/Analytics"
 import Settings from "./pages/Settings"
 import Unauthorized from "./pages/Unauthorized"
+import PendingApproval from "./pages/PendingApproval"
 import ProtectedRoute from "./components/ProtectedRoute"
 import SuperAdminRoute from "./components/SuperAdminRoute"
+import EmployeeRoute from "./components/EmployeeRoute"
+
+// Employee Module
+import EmployeeDashboard from "./pages/EmployeeDashboard"
 
 // Super Admin Pages
 import SuperAdminDashboard from "./pages/superadmin/SuperAdminDashboard"
@@ -136,8 +141,39 @@ function App() {
               }
             />
 
-            {/* Unauthorized */}
+            {/* ── Employee Routes ── */}
+            <Route
+              path="/employee/dashboard"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
+              path="/employee/tasks"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
+              path="/employee/projects"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
+              path="/employee/feed"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
+              path="/employee/notifications"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
+              path="/employee/collaboration"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
+              path="/employee/profile"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+
+            {/* Unauthorized / Pending */}
             <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="/pending-approval" element={<PendingApproval />} />
 
             {/* ── Super Admin Routes ── */}
             <Route
