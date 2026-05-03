@@ -168,25 +168,25 @@ function Sidebar({ isOpen, setIsOpen }) {
 
       {/* Sidebar sidebar itself */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-60 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen
+        className={`fixed inset-y-0 left-0 z-40 w-64 md:w-80 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0 md:relative
       `}
       >
         {/* Brand Header */}
-        <div className="h-16 shrink-0 flex items-center px-6 border-b border-slate-800 dark:border-slate-800/50">
-          <Link to="/dashboard" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/20">
+        <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b border-slate-800 dark:border-slate-800/50">
+          <Link to="/dashboard" className="flex items-center gap-3 md:gap-4">
+            <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-orange-500 flex items-center justify-center font-bold text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-base md:text-xl">
               C
             </div>
-            <span className="text-xl font-bold tracking-tight text-white">
+            <span className="text-xl md:text-3xl font-bold tracking-tight text-white">
               CorpLink
             </span>
           </Link>
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto py-8 px-4 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto py-8 md:py-10 px-4 md:px-6 custom-scrollbar">
           {menuGroups.map((group, groupIndex) => {
             const hasAccessToGroup = group.items.some(
               (item) => !item.roles || item.roles.includes(profile?.role),
@@ -195,11 +195,11 @@ function Sidebar({ isOpen, setIsOpen }) {
             if (!hasAccessToGroup) return null;
 
             return (
-              <div key={groupIndex} className="mb-6">
-                <h3 className="px-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+              <div key={groupIndex} className="mb-6 md:mb-8">
+                <h3 className="px-4 md:px-6 text-xs md:text-lg font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 md:mb-5">
                   {group.title}
                 </h3>
-                <nav className="space-y-2">
+                <nav className="space-y-2 md:space-y-3">
                   {group.items.map((item, itemIndex) => {
                     const hasAccess =
                       !item.roles || item.roles.includes(profile?.role);
@@ -212,14 +212,14 @@ function Sidebar({ isOpen, setIsOpen }) {
                       <Link
                         key={itemIndex}
                         to={item.path}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 rounded-lg md:rounded-xl text-sm md:text-lg font-medium transition-all duration-200 ${
                           isActive
-                            ? "bg-blue-600 text-white shadow-sm shadow-blue-900/20"
+                            ? "bg-blue-600 text-white shadow-sm md:shadow-md shadow-blue-900/20"
                             : "text-slate-400 hover:text-white hover:bg-slate-800 dark:hover:bg-slate-900"
                         }`}
                       >
                         <Icon
-                          className={`h-5 w-5 ${isActive ? "text-white" : "text-slate-500 dark:text-slate-600 group-hover:text-slate-300"}`}
+                          className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-500 dark:text-slate-600 group-hover:text-slate-300"}`}
                         />
                         {item.name}
                       </Link>
@@ -231,15 +231,15 @@ function Sidebar({ isOpen, setIsOpen }) {
           })}
         </div>
 
-        <div className="p-4 border-t border-slate-800 bg-slate-900 sticky bottom-0">
-          <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700/50">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
-              <p className="text-xs font-semibold text-slate-200">
+        <div className="p-4 md:p-6 border-t border-slate-800 bg-slate-900 sticky bottom-0">
+          <div className="bg-slate-800/50 rounded-2xl md:rounded-3xl p-4 md:p-5 border border-slate-700/50">
+            <div className="flex items-center gap-3 md:gap-4 mb-1.5 md:mb-2">
+              <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] md:shadow-[0_0_12px_rgba(16,185,129,0.8)]"></div>
+              <p className="text-xs md:text-base font-semibold md:font-bold text-slate-200">
                 System Online
               </p>
             </div>
-            <p className="text-[10px] text-slate-400">
+            <p className="text-[10px] md:text-sm text-slate-400 font-medium">
               All services operational
             </p>
           </div>

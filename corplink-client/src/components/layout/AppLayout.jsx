@@ -19,16 +19,16 @@ function AppLayout({ children, title, subtitle }) {
         <Topbar onMenuClick={() => setIsSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
-          <div className="w-full px-6 lg:px-8 py-8 flex flex-col">
+          <div className="w-full px-4 md:px-8 lg:px-16 py-6 md:py-8 lg:py-12 flex flex-col">
             {(title || subtitle) && (
-              <div className="mb-12">
+              <div className="mb-8 md:mb-12 lg:mb-16">
                 {title && (
-                  <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">
+                  <h1 className="text-3xl md:text-4xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight mb-2 md:mb-4">
                     {title}
                   </h1>
                 )}
                 {subtitle && (
-                  <p className="text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
+                  <p className="text-base md:text-lg lg:text-2xl text-slate-500 dark:text-slate-400 mt-2 lg:mt-3 font-medium">
                     {subtitle}
                   </p>
                 )}

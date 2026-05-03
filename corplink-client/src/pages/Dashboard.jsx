@@ -76,28 +76,28 @@ function Dashboard() {
     >
       
       {/* Quick Actions Row */}
-      <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium shrink-0 transition shadow-sm shadow-blue-500/20">
-          <Plus className="h-4 w-4" /> Add Task
+      <div className="flex gap-4 md:gap-6 mb-8 md:mb-12 overflow-x-auto pb-4 custom-scrollbar">
+        <button className="flex items-center gap-2 md:gap-3 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-sm md:text-lg shrink-0 transition shadow-lg shadow-blue-500/20 hover:-translate-y-0.5">
+          <Plus className="h-5 w-5 md:h-6 md:w-6" /> Add Task
         </button>
-        <button className="flex items-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium shrink-0 transition">
-          <Users className="h-4 w-4 text-slate-400" /> Invite Employee
+        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-sm md:text-lg shrink-0 transition hover:-translate-y-0.5">
+          <Users className="h-5 w-5 md:h-6 md:w-6 text-slate-400" /> Invite Employee
         </button>
-        <button className="flex items-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium shrink-0 transition">
-          <Building2 className="h-4 w-4 text-slate-400" /> New Department
+        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-sm md:text-lg shrink-0 transition hover:-translate-y-0.5">
+          <Building2 className="h-5 w-5 md:h-6 md:w-6 text-slate-400" /> New Department
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-10">
         <StatCard title="Total Employees" value={stats.employees} icon={Users} colorClass="bg-blue-50 text-blue-600" />
         <StatCard title="Active Departments" value={stats.departments} icon={Building2} colorClass="bg-indigo-50 text-indigo-600" />
         <StatCard title="Active Projects" value={stats.projects} icon={FolderKanban} colorClass="bg-purple-50 text-purple-600" />
         <StatCard title="Total Tasks" value={stats.tasks} icon={ListTodo} colorClass="bg-emerald-50 text-emerald-600" />
       </div>
 
-      <div className="mt-6">
-        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">Task Sub-Status</h3>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="mt-8 md:mt-12">
+        <h3 className="text-sm md:text-lg font-bold text-slate-500 uppercase tracking-wider mb-4 md:mb-6 px-1">Task Sub-Status</h3>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
           <StatCard title="Pending" value={stats.pending} icon={Clock} colorClass="bg-amber-50 text-amber-600" />
           <StatCard title="In Progress" value={stats.inProgress} icon={Activity} colorClass="bg-blue-50 text-blue-600" />
           <StatCard title="Needs Review" value={stats.needsReview} icon={AlertCircle} colorClass="bg-orange-50 text-orange-600" />
@@ -106,7 +106,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid xl:grid-cols-3 gap-6 mt-8">
+      <div className="grid xl:grid-cols-3 gap-6 lg:gap-10 mt-8 lg:mt-12">
         <div className="xl:col-span-2">
           <TaskOverview
             pending={stats.pending}
