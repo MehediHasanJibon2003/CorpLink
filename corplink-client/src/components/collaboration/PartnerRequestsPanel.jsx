@@ -82,42 +82,46 @@ function PartnerRequestsPanel() {
   if (loading) return <p className="text-slate-500 text-sm p-4">Loading requests...</p>
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 md:gap-16">
       {/* Inbox : Received Requests */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
-        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">📥 Received Requests</h3>
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-        {message && <p className="text-green-500 text-sm mb-3">{message}</p>}
+      <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] border-2 border-slate-200 dark:border-slate-700 p-10 md:p-16 shadow-sm">
+        <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-10 md:mb-12 tracking-tight flex items-center gap-4">
+           <span className="text-4xl">📥</span> Received Requests
+        </h3>
+        {error && <p className="p-6 bg-red-50 text-red-600 rounded-2xl font-bold mb-8">{error}</p>}
+        {message && <p className="p-6 bg-green-50 text-green-600 rounded-2xl font-bold mb-8">{message}</p>}
 
-        <div className="space-y-4">
+        <div className="space-y-8 md:space-y-10">
           {received.length === 0 ? (
-            <p className="text-sm text-slate-400">No incoming requests.</p>
+            <p className="text-xl md:text-2xl text-slate-400 font-bold italic text-center py-20">No incoming requests in the inbox.</p>
           ) : (
             received.map((req) => (
-              <div key={req.id} className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+              <div key={req.id} className="border-2 border-slate-100 dark:border-slate-700 rounded-3xl p-8 md:p-12 flex flex-col gap-8 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-all">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="font-medium text-slate-800">{req.from_company?.name}</h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(req.created_at).toLocaleDateString()}</p>
+                    <h4 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100">{req.from_company?.name}</h4>
+                    <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">{new Date(req.created_at).toLocaleDateString()}</p>
                   </div>
-                  {statusBadge(req.status)}
+                  <div className="transform scale-125 origin-top-right">
+                    {statusBadge(req.status)}
+                  </div>
                 </div>
 
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg text-sm text-slate-600">
-                  {req.message}
+                <div className="bg-slate-100 dark:bg-slate-900/50 p-6 md:p-10 rounded-2xl md:rounded-[2rem] text-lg md:text-2xl text-slate-700 dark:text-slate-200 font-medium leading-relaxed italic shadow-inner">
+                  "{req.message}"
                 </div>
 
                 {req.status === "pending" && (
-                  <div className="flex gap-2 mt-1">
+                  <div className="flex flex-col sm:flex-row gap-4 md:gap-6 mt-4">
                     <button
                       onClick={() => handleUpdateStatus(req.id, "accepted", req.from_company?.name)}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-sm font-medium transition"
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 md:py-6 rounded-2xl md:rounded-3xl text-lg md:text-2xl font-black transition-all shadow-lg active:scale-95"
                     >
-                      Accept
+                      Accept Partnership
                     </button>
                     <button
                       onClick={() => handleUpdateStatus(req.id, "rejected", req.from_company?.name)}
-                      className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:text-slate-200 py-2 rounded-lg text-sm font-medium transition"
+                      className="flex-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-4 md:py-6 rounded-2xl md:rounded-3xl text-lg md:text-2xl font-black transition-all"
                     >
                       Reject
                     </button>
@@ -130,21 +134,25 @@ function PartnerRequestsPanel() {
       </div>
 
       {/* Outbox : Sent Requests */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
-        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">↗️ Sent Requests</h3>
+      <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] border-2 border-slate-200 dark:border-slate-700 p-10 md:p-16 shadow-sm">
+        <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-10 md:mb-12 tracking-tight flex items-center gap-4">
+           <span className="text-4xl">↗️</span> Sent Requests
+        </h3>
         
-        <div className="space-y-4">
+        <div className="space-y-8 md:space-y-10">
           {sent.length === 0 ? (
-            <p className="text-sm text-slate-400">You haven't sent any requests.</p>
+            <p className="text-xl md:text-2xl text-slate-400 font-bold italic text-center py-20">You haven't sent any requests yet.</p>
           ) : (
             sent.map((req) => (
-              <div key={req.id} className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-2">
+              <div key={req.id} className="border-2 border-slate-100 dark:border-slate-700 rounded-3xl p-8 md:p-12 flex flex-col gap-6 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-all">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="font-medium text-slate-800">{req.to_company?.name}</h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(req.created_at).toLocaleDateString()}</p>
+                    <h4 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100">{req.to_company?.name}</h4>
+                    <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">{new Date(req.created_at).toLocaleDateString()}</p>
                   </div>
-                  {statusBadge(req.status)}
+                  <div className="transform scale-125 origin-top-right">
+                    {statusBadge(req.status)}
+                  </div>
                 </div>
               </div>
             ))
