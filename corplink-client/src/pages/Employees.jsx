@@ -236,36 +236,37 @@ function Employees() {
       title="Employee Management"
       subtitle="Add, update and manage your company employees"
     >
-      <div className="space-y-6">
+      <div className="space-y-8 md:space-y-12">
         {/* Invite Code Card */}
-        <div className="bg-linear-to-r from-blue-600 to-blue-800 rounded-2xl shadow-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
-          <div>
-            <h3 className="text-xl font-bold mb-1">Company Invite Code</h3>
-            <p className="text-blue-200 text-sm">
+        <div className="bg-linear-to-r from-blue-600 to-blue-800 rounded-3xl md:rounded-[2.5rem] shadow-2xl p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-10 text-white">
+          <div className="text-center lg:text-left">
+            <h3 className="text-3xl md:text-5xl font-black mb-3 md:mb-4">Company Invite Code</h3>
+            <p className="text-blue-200 text-base md:text-2xl font-medium leading-relaxed">
               Share this code with your employees so they can join your workspace.
             </p>
           </div>
-          <div className="flex items-center gap-3 bg-black/20 p-2 pl-4 rounded-xl border border-white/10 w-full md:w-auto">
-            <code className="font-mono font-bold text-sm select-all">
+          <div className="flex items-center gap-4 bg-black/20 p-3 md:p-4 pl-6 md:pl-8 rounded-2xl border-2 border-white/10 w-full lg:w-auto">
+            <code className="font-mono font-bold text-lg md:text-2xl tracking-wide select-all w-full text-center lg:text-left">
               {profile?.company_id || "Loading..."}
             </code>
             <button
               onClick={handleCopyInviteCode}
-              className="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+              className="bg-white text-blue-700 hover:bg-blue-50 px-6 md:px-10 py-3 md:py-4 rounded-xl text-base md:text-xl font-bold transition-all shadow-md hover:shadow-lg shrink-0"
             >
               {copied ? "Copied!" : "Copy Code"}
             </button>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
-          <form onSubmit={handleSubmit} className="grid md:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-700 p-8 md:p-12">
+          <h3 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100 mb-6 md:mb-8">{editingId ? 'Edit Employee' : 'Add New Employee'}</h3>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             <input
               type="text"
               placeholder="Employee Name"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="border border-slate-300 dark:border-slate-600 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+              className="border-2 border-slate-200 dark:border-slate-600 px-6 md:px-8 py-4 md:py-5 rounded-2xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-base md:text-xl transition-colors"
             />
 
             <input
@@ -273,7 +274,7 @@ function Employees() {
               placeholder="Employee Email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="border border-slate-300 dark:border-slate-600 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+              className="border-2 border-slate-200 dark:border-slate-600 px-6 md:px-8 py-4 md:py-5 rounded-2xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-base md:text-xl transition-colors"
             />
 
             <select
@@ -281,7 +282,7 @@ function Employees() {
               onChange={(e) =>
                 setForm({ ...form, department_id: e.target.value })
               }
-              className="border border-slate-300 dark:border-slate-600 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+              className="border-2 border-slate-200 dark:border-slate-600 px-6 md:px-8 py-4 md:py-5 rounded-2xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-base md:text-xl transition-colors"
             >
               <option value="">Select Department</option>
               {departments.map((dept) => (
@@ -294,7 +295,7 @@ function Employees() {
             <select
               value={form.role}
               onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="border border-slate-300 dark:border-slate-600 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+              className="border-2 border-slate-200 dark:border-slate-600 px-6 md:px-8 py-4 md:py-5 rounded-2xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-base md:text-xl transition-colors"
             >
               <option value="employee">Employee</option>
               <option value="manager">Manager</option>
@@ -305,21 +306,21 @@ function Employees() {
               placeholder="Designation"
               value={form.designation}
               onChange={(e) => setForm({ ...form, designation: e.target.value })}
-              className="border border-slate-300 dark:border-slate-600 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+              className="border-2 border-slate-200 dark:border-slate-600 px-6 md:px-8 py-4 md:py-5 rounded-2xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-base md:text-xl transition-colors"
             />
 
             <input
               type="date"
               value={form.joining_date}
               onChange={(e) => setForm({ ...form, joining_date: e.target.value })}
-              className="border border-slate-300 dark:border-slate-600 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+              className="border-2 border-slate-200 dark:border-slate-600 px-6 md:px-8 py-4 md:py-5 rounded-2xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-base md:text-xl transition-colors"
             />
 
-            <div className="md:col-span-4 flex gap-3">
+            <div className="md:col-span-2 lg:col-span-4 flex flex-col md:flex-row gap-4 mt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-12 py-4 md:py-5 rounded-2xl font-bold text-base md:text-xl shadow-md transition hover:-translate-y-0.5 w-full md:w-auto"
               >
                 {loading ? "Saving..." : editingId ? "Update Employee" : "Add Employee"}
               </button>
@@ -328,7 +329,7 @@ function Employees() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="bg-slate-200 hover:bg-slate-300 text-slate-800 dark:text-slate-100 px-6 py-3 rounded-xl font-medium"
+                  className="bg-slate-200 hover:bg-slate-300 text-slate-800 dark:text-slate-100 px-8 md:px-12 py-4 md:py-5 rounded-2xl font-bold text-base md:text-xl transition w-full md:w-auto"
                 >
                   Cancel
                 </button>
@@ -336,55 +337,55 @@ function Employees() {
             </div>
           </form>
 
-          {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
-          {message && <p className="text-green-600 text-sm mt-4">{message}</p>}
+          {error && <p className="text-red-600 font-bold text-base md:text-lg mt-6 bg-red-50 p-4 rounded-xl">{error}</p>}
+          {message && <p className="text-green-600 font-bold text-base md:text-lg mt-6 bg-green-50 p-4 rounded-xl">{message}</p>}
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Total Employees</p>
-            <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 md:p-10 border-b-[8px] border-b-blue-500 flex flex-col items-center text-center">
+            <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">Total Employees</p>
+            <h3 className="text-5xl md:text-7xl font-black text-slate-800 dark:text-slate-100 mt-4 md:mt-6">
               {employees.length}
             </h3>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Managers</p>
-            <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 md:p-10 border-b-[8px] border-b-purple-500 flex flex-col items-center text-center">
+            <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">Managers</p>
+            <h3 className="text-5xl md:text-7xl font-black text-slate-800 dark:text-slate-100 mt-4 md:mt-6">
               {employees.filter((emp) => emp.role === "manager").length}
             </h3>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Employees</p>
-            <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 md:p-10 border-b-[8px] border-b-emerald-500 flex flex-col items-center text-center">
+            <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">Active Members</p>
+            <h3 className="text-5xl md:text-7xl font-black text-slate-800 dark:text-slate-100 mt-4 md:mt-6">
               {employees.filter((emp) => emp.role === "employee").length}
             </h3>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Employee List</h3>
+        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="px-8 md:px-12 py-6 md:py-8 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30">
+            <h3 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100">Employee Directory</h3>
           </div>
 
           {employees.length === 0 ? (
-            <p className="p-5 text-slate-500 dark:text-slate-400">No employees yet</p>
+            <p className="p-10 text-center text-slate-500 dark:text-slate-400 text-lg md:text-xl font-medium italic">No employees found. Invite some to get started!</p>
           ) : (
-            <div className="divide-y divide-slate-200">
+            <div className="divide-y divide-slate-200 dark:divide-slate-700">
               {employees.map((emp) => (
                 <div
                   key={emp.id}
-                  className="p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+                  className="p-6 md:p-10 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-2">
+                      <h4 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100">
                         {emp.name}
                       </h4>
 
                       <span
-                        className={`text-xs px-3 py-1 rounded-full font-medium ${getRoleBadge(
+                        className={`text-sm md:text-base px-4 py-1.5 md:px-5 md:py-2 rounded-full font-bold shadow-sm ${getRoleBadge(
                           emp.role
                         )}`}
                       >
@@ -392,47 +393,50 @@ function Employees() {
                       </span>
 
                       {emp.onboarded ? (
-                        <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50">
-                          Active
+                        <span className="text-sm md:text-base px-4 py-1.5 md:px-5 md:py-2 rounded-full font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50 shadow-sm">
+                          Active User
                         </span>
                       ) : (
-                        <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50">
+                        <span className="text-sm md:text-base px-4 py-1.5 md:px-5 md:py-2 rounded-full font-bold bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50 shadow-sm">
                           Pending Invite
                         </span>
                       )}
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-3 mt-4 text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
-                      <p className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">Email:</span> {emp.email}
+                    <div className="grid sm:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-8 text-base md:text-xl text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-6 md:p-8 rounded-2xl border-2 border-slate-100 dark:border-slate-700/50">
+                      <p className="flex items-center gap-3">
+                        <span className="font-bold text-slate-800 dark:text-slate-200 min-w-[120px]">Email:</span> 
+                        <span className="font-medium break-all">{emp.email}</span>
                       </p>
-                      <p className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">Department:</span>{" "}
-                        {getDepartmentName(emp.department_id) || <span className="text-slate-400 italic">No Department</span>}
+                      <p className="flex items-center gap-3">
+                        <span className="font-bold text-slate-800 dark:text-slate-200 min-w-[120px]">Department:</span>{" "}
+                        <span className="font-medium">{getDepartmentName(emp.department_id) || <span className="text-slate-400 italic">Unassigned</span>}</span>
                       </p>
                       {emp.designation && (
-                        <p className="flex items-center gap-2">
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">Designation:</span> {emp.designation}
+                        <p className="flex items-center gap-3">
+                          <span className="font-bold text-slate-800 dark:text-slate-200 min-w-[120px]">Designation:</span> 
+                          <span className="font-medium">{emp.designation}</span>
                         </p>
                       )}
                       {emp.joining_date && (
-                        <p className="flex items-center gap-2">
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">Joined:</span> {new Date(emp.joining_date).toLocaleDateString()}
+                        <p className="flex items-center gap-3">
+                          <span className="font-bold text-slate-800 dark:text-slate-200 min-w-[120px]">Joined:</span> 
+                          <span className="font-medium">{new Date(emp.joining_date).toLocaleDateString()}</span>
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex flex-row lg:flex-col gap-3 lg:gap-4 lg:w-48">
                     <button
                       onClick={() => handleEdit(emp)}
-                      className="text-blue-600 font-medium hover:underline"
+                      className="flex-1 lg:w-full bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 text-slate-700 dark:text-slate-200 hover:text-white px-6 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-base md:text-xl transition-all shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-600 hover:border-blue-600 text-center"
                     >
-                      Edit
+                      Edit Profile
                     </button>
                     <button
                       onClick={() => handleDelete(emp.id)}
-                      className="text-red-600 font-medium hover:underline"
+                      className="flex-1 lg:w-full bg-slate-100 dark:bg-slate-700 hover:bg-red-600 text-slate-700 dark:text-slate-200 hover:text-white px-6 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-base md:text-xl transition-all shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-600 hover:border-red-600 text-center"
                     >
                       Delete
                     </button>
