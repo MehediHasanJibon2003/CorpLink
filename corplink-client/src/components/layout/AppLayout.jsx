@@ -19,7 +19,7 @@ function AppLayout({ children, title, subtitle }) {
         <Topbar onMenuClick={() => setIsSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
-          <div className="w-full px-4 md:px-8 lg:px-16 py-6 md:py-8 lg:py-12 flex flex-col">
+          <div className="w-full px-8 md:px-12 lg:px-20 py-6 md:py-8 lg:py-12 flex flex-col">
             {(title || subtitle) && (
               <div className="mb-8 md:mb-12 lg:mb-16">
                 {title && (

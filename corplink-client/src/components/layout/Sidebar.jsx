@@ -168,7 +168,7 @@ function Sidebar({ isOpen, setIsOpen }) {
 
       {/* Sidebar sidebar itself */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 md:w-80 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen
+        className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0 md:relative
       `}
@@ -186,7 +186,7 @@ function Sidebar({ isOpen, setIsOpen }) {
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto py-8 md:py-10 px-4 md:px-6 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto py-8 md:py-10 pl-4 pr-2 md:pl-6 md:pr-4 custom-scrollbar">
           {menuGroups.map((group, groupIndex) => {
             const hasAccessToGroup = group.items.some(
               (item) => !item.roles || item.roles.includes(profile?.role),
