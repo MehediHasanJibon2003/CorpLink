@@ -221,8 +221,10 @@ function EmployeeLayout({ children, activeView, setActiveView }) {
                   <p className="text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">
                     {profile?.full_name || profile?.name || "Employee"}
                   </p>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 capitalize">
-                    {profile?.role || "employee"}
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-end gap-1.5">
+                    {profile?.companies?.name || "Company"}
+                    <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+                    <span className="capitalize">{profile?.role || "employee"}</span>
                   </p>
                 </div>
                 <div className="h-9 w-9 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center justify-center font-bold border border-blue-200 dark:border-blue-800 shadow-sm text-sm">

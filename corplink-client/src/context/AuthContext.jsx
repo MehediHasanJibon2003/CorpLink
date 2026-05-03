@@ -21,6 +21,19 @@ export function AuthProvider({ children }) {
       return
     }
 
+    // Fetch company name to display in the UI
+    if (data && data.company_id) {
+      const { data: companyData } = await supabase
+        .from("companies")
+        .select("name")
+        .eq("id", data.company_id)
+        .single()
+      
+      if (companyData) {
+        data.companies = { name: companyData.name }
+      }
+    }
+
     setProfile(data)
   }
 
