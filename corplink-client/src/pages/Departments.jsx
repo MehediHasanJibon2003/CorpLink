@@ -118,38 +118,38 @@ function Departments() {
 
   return (
     <AppLayout title="Department Management" subtitle="Manage teams, assignments, and organizational workflows">
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col xl:flex-row gap-8 md:gap-12">
         
         {/* Left Sidebar: Master List */}
-        <div className="lg:w-1/3 flex flex-col gap-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
-            <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3">Add Department</h3>
-            <form onSubmit={handleCreateDepartment} className="flex gap-2">
-              <input type="text" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="Marketing, IT..." className="flex-1 w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm" />
-              <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 rounded-lg font-medium text-sm w-16 flex items-center justify-center">
+        <div className="xl:w-[28rem] flex flex-col gap-6 md:gap-8">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+            <h3 className="text-xl md:text-2xl font-black text-slate-800 dark:text-slate-100 mb-4">Add Department</h3>
+            <form onSubmit={handleCreateDepartment} className="flex gap-3 md:gap-4">
+              <input type="text" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} placeholder="Marketing, IT..." className="flex-1 w-full border-2 border-slate-300 dark:border-slate-600 rounded-xl md:rounded-2xl px-5 py-3 md:px-6 md:py-4 outline-none focus:border-blue-500 text-base md:text-lg transition-colors bg-slate-50 dark:bg-slate-900/50" />
+              <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-bold text-base md:text-lg w-24 md:w-32 flex items-center justify-center transition shadow-md">
                 {loading ? "..." : "Add"}
               </button>
             </form>
-            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+            {error && <p className="text-red-500 font-bold text-sm md:text-base mt-3">{error}</p>}
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex-1">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100">Organization</h3>
-              <span className="bg-slate-200 text-slate-600 dark:text-slate-300 text-xs font-bold px-2 py-0.5 rounded">{departments.length}</span>
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex-1">
+            <div className="px-6 md:px-8 py-5 md:py-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30 flex justify-between items-center">
+              <h3 className="text-xl md:text-2xl font-black text-slate-800 dark:text-slate-100">Organization</h3>
+              <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 text-sm md:text-lg font-black px-4 py-1 rounded-full">{departments.length}</span>
             </div>
-            <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+            <div className="divide-y divide-slate-100 dark:divide-slate-700 max-h-[600px] md:max-h-[800px] overflow-y-auto custom-scrollbar">
               {departments.length === 0 ? (
-                <p className="p-5 text-slate-500 dark:text-slate-400 text-center text-sm">No departments exist.</p>
+                <p className="p-8 md:p-10 text-slate-500 dark:text-slate-400 text-center text-base md:text-lg italic font-medium">No departments exist.</p>
               ) : departments.map(dept => (
                 <button
                   key={dept.id}
                   onClick={() => setActiveDeptId(dept.id)}
-                  className={`w-full text-left p-4 transition border-l-4 ${activeDeptId === dept.id ? "border-blue-600 bg-blue-50/50" : "border-transparent hover:bg-slate-50 dark:bg-slate-900/50"}`}
+                  className={`w-full text-left p-5 md:p-6 transition border-l-[6px] ${activeDeptId === dept.id ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/20" : "border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50"}`}
                 >
-                  <p className={`font-semibold ${activeDeptId === dept.id ? "text-blue-800" : "text-slate-700 dark:text-slate-200"}`}>{dept.name}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-                    <span>👑 {dept.head?.name || "No Head Assigned"}</span>
+                  <p className={`text-lg md:text-2xl font-bold ${activeDeptId === dept.id ? "text-blue-800 dark:text-blue-400" : "text-slate-700 dark:text-slate-200"}`}>{dept.name}</p>
+                  <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2 font-medium">
+                    <span className="text-xl">👑</span> <span>{dept.head?.name || "No Head Assigned"}</span>
                   </p>
                 </button>
               ))}
@@ -158,35 +158,35 @@ function Departments() {
         </div>
 
         {/* Right Content: Active Department details */}
-        <div className="lg:w-2/3">
+        <div className="flex-1">
           {!activeDept ? (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-16 flex flex-col items-center justify-center text-center">
-              <span className="text-5xl mb-4">🏢</span>
-              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">No Department Selected</h3>
-              <p className="text-slate-500 dark:text-slate-400 mt-2">Select a department from the left, or create a new one to start organizing teams.</p>
+            <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-700 p-16 md:p-24 flex flex-col items-center justify-center text-center">
+              <span className="text-6xl md:text-8xl mb-6 md:mb-8">🏢</span>
+              <h3 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100">No Department Selected</h3>
+              <p className="text-lg md:text-2xl text-slate-500 dark:text-slate-400 mt-4 md:mt-6 leading-relaxed max-w-xl">Select a department from the left, or create a new one to start organizing teams.</p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden min-h-[600px] flex flex-col">
+            <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden min-h-[700px] md:min-h-[850px] flex flex-col">
               
               {/* Dept Header */}
-              <div className="px-6 pt-6 pb-0 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-r from-blue-50 to-white dark:from-slate-800 dark:to-slate-800">
-                <div className="flex justify-between items-start">
+              <div className="px-8 md:px-12 pt-8 md:pt-12 pb-0 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50/50 to-white dark:from-slate-800 dark:to-slate-800">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{activeDept.name} Department</h2>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Manage infrastructure, assignments, and workflow.</p>
+                    <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-2 md:mb-4 tracking-tight">{activeDept.name} Department</h2>
+                    <p className="text-slate-500 dark:text-slate-400 text-base md:text-xl font-medium">Manage infrastructure, assignments, and workflow.</p>
                   </div>
-                  <button onClick={() => handleDeleteDepartment(activeDept.id, activeDept.name)} className="text-red-500 hover:bg-red-50 p-2 rounded transition">
-                    🗑️ Delete Dept
+                  <button onClick={() => handleDeleteDepartment(activeDept.id, activeDept.name)} className="text-base md:text-lg font-bold bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-800/50 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl transition shadow-sm w-full md:w-auto flex items-center justify-center gap-2">
+                    <span className="text-xl">🗑️</span> Delete Dept
                   </button>
                 </div>
                 
                 {/* Tabs */}
-                <div className="flex gap-6 mt-6 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex gap-8 md:gap-12 mt-8 md:mt-12 overflow-x-auto custom-scrollbar border-b border-slate-200 dark:border-slate-700">
                   {["overview", "teams", "members", "communication"].map(tab => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`pb-3 text-sm font-semibold capitalize transition border-b-2 ${activeTab === tab ? "border-blue-600 text-blue-700" : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:border-slate-600"}`}
+                      className={`pb-4 md:pb-5 text-base md:text-xl font-bold capitalize transition border-b-4 shrink-0 ${activeTab === tab ? "border-blue-600 text-blue-700 dark:text-blue-400" : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600"}`}
                     >
                       {tab}
                     </button>
@@ -195,28 +195,28 @@ function Departments() {
               </div>
 
               {/* Tab Content Area */}
-              <div className="p-6 flex-1 bg-slate-50 dark:bg-slate-900/50">
+              <div className="p-8 md:p-12 flex-1 bg-slate-50 dark:bg-slate-900/30">
                 {activeTab === "overview" && (
-                  <div className="space-y-6 animate-in fade-in">
-                    <div className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                  <div className="space-y-6 md:space-y-8 animate-in fade-in">
+                    <div className="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl md:rounded-3xl border-2 border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
                       <div>
-                        <h4 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">⭐ Department Head</h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">The primary administrative leader for this department.</p>
+                        <h4 className="text-xl md:text-2xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3"><span className="text-2xl md:text-3xl">⭐</span> Department Head</h4>
+                        <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-2 font-medium">The primary administrative leader for this department.</p>
                       </div>
                       <select 
                         value={activeDept.head_id || ""}
                         onChange={(e) => handleAssignHead(activeDept.id, e.target.value)}
-                        className="border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 outline-none focus:border-blue-500 text-sm font-medium"
+                        className="border-2 border-slate-200 dark:border-slate-600 rounded-xl md:rounded-2xl px-6 py-3 md:px-8 md:py-4 outline-none focus:border-blue-500 text-base md:text-xl font-bold bg-slate-50 dark:bg-slate-900/50 transition-colors w-full md:w-auto max-w-sm"
                       >
                         <option value="">-- No Head Assigned --</option>
                         {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">Created On</p>
-                        <p className="font-semibold text-slate-800 dark:text-slate-100 mt-1">{new Date(activeDept.created_at).toLocaleDateString()}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                      <div className="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl md:rounded-3xl border-2 border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-center">
+                        <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg font-bold uppercase tracking-widest">Created On</p>
+                        <p className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100 mt-2 md:mt-4">{new Date(activeDept.created_at).toLocaleDateString()}</p>
                       </div>
                     </div>
                   </div>

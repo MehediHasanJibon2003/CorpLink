@@ -69,26 +69,27 @@ function CommunicationPanel({ activeDept, profile }) {
   if (loading) return <div className="p-10 text-center text-slate-500">Loading channel...</div>
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col h-[500px]">
-      <div className="p-4 border-b border-slate-100 bg-slate-50 dark:bg-slate-900/50 rounded-t-xl">
-        <h3 className="font-bold text-slate-800 dark:text-slate-100">#{activeDept.name.toLowerCase().replace(/\s+/g, '-')}</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400">Internal department workflow communication</p>
+    <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm border-2 border-slate-200 dark:border-slate-700 flex flex-col h-[600px] md:h-[750px] overflow-hidden transition-all">
+      <div className="p-6 md:p-10 border-b-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+        <h3 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight">#{activeDept.name.toLowerCase().replace(/\s+/g, '-')}</h3>
+        <p className="text-sm md:text-lg text-slate-500 dark:text-slate-400 font-medium mt-1">Internal department workflow communication</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 md:space-y-8 custom-scrollbar bg-white dark:bg-slate-800/50">
         {messages.length === 0 ? (
-          <div className="h-full flex items-center justify-center text-slate-400 italic text-sm">
+          <div className="h-full flex flex-col items-center justify-center text-slate-400 italic text-lg md:text-2xl font-medium opacity-60">
+            <span className="text-4xl md:text-6xl mb-4">💬</span>
             No messages yet. Start the conversation!
           </div>
         ) : messages.map((msg) => {
           const isMe = msg.sender_id === profile.id
           return (
-            <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-              <div className="flex items-baseline gap-2 mb-1 px-1">
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{msg.sender?.full_name || "Unknown"}</span>
-                <span className="text-[10px] text-slate-400">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
+            <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-in slide-in-from-bottom-2 duration-300`}>
+              <div className="flex items-baseline gap-3 mb-2 px-2">
+                <span className="text-sm md:text-base font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">{msg.sender?.full_name || "Unknown"}</span>
+                <span className="text-xs md:text-sm text-slate-400 font-medium">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
               </div>
-              <div className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm shadow-sm ${isMe ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-sm'}`}>
+              <div className={`px-6 py-4 md:px-8 md:py-6 rounded-[2rem] max-w-[85%] md:max-w-[70%] text-base md:text-2xl shadow-md font-medium leading-relaxed ${isMe ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-sm border border-slate-200 dark:border-slate-600'}`}>
                 {msg.content}
               </div>
             </div>
@@ -97,17 +98,17 @@ function CommunicationPanel({ activeDept, profile }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t border-slate-100 bg-white dark:bg-slate-800 rounded-b-xl">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+      <div className="p-6 md:p-10 border-t-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
+        <form onSubmit={handleSendMessage} className="flex gap-4 md:gap-6">
           <input 
             type="text" 
             value={newMessage} 
             onChange={e => setNewMessage(e.target.value)}
             placeholder="Type a message to the department..."
-            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-2 outline-none focus:border-blue-400 text-sm"
+            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 rounded-[3rem] px-8 py-4 md:py-6 outline-none focus:border-blue-500 text-base md:text-2xl font-bold transition-all shadow-inner"
           />
-          <button type="submit" className="bg-slate-800 hover:bg-slate-900 text-white rounded-full p-2 w-10 flex flex-shrink-0 items-center justify-center transition">
-            ➤
+          <button type="submit" className="bg-slate-900 hover:bg-black dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 rounded-full w-16 h-16 md:w-24 md:h-24 flex flex-shrink-0 items-center justify-center transition shadow-lg hover:shadow-xl hover:-translate-y-1">
+            <span className="text-3xl md:text-5xl">➤</span>
           </button>
         </form>
       </div>
