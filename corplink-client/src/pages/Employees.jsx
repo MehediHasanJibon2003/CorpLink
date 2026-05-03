@@ -23,11 +23,14 @@ function Employees() {
   })
 
   const fetchEmployees = async () => {
+    if (!profile?.company_id) return
+
     setError("")
 
     const { data, error } = await supabase
       .from("employees")
-      .select("*, departments(name)")
+      .select("*")
+      .eq("company_id", profile.company_id)
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -39,9 +42,12 @@ function Employees() {
   }
 
   const fetchDepartments = async () => {
+    if (!profile?.company_id) return
+
     const { data, error } = await supabase
       .from("departments")
       .select("*")
+      .eq("company_id", profile.company_id)
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -53,9 +59,11 @@ function Employees() {
   }
 
   useEffect(() => {
-    fetchEmployees()
-    fetchDepartments()
-  }, [])
+    if (profile?.company_id) {
+      fetchEmployees()
+      fetchDepartments()
+    }
+  }, [profile?.company_id])
 
   const resetForm = () => {
     setForm({
@@ -208,6 +216,12 @@ function Employees() {
     return "bg-blue-100 text-blue-700"
   }
 
+  const getDepartmentName = (deptId) => {
+    if (!deptId) return null;
+    const dept = departments.find((d) => d.id === deptId);
+    return dept ? dept.name : null;
+  }
+
   return (
     <AppLayout
       title="Employee Management"
@@ -346,24 +360,34 @@ function Employees() {
                       >
                         {emp.role.charAt(0).toUpperCase() + emp.role.slice(1)}
                       </span>
+
+                      {emp.onboarded ? (
+                        <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50">
+                          Pending Invite
+                        </span>
+                      )}
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-3 mt-3 text-sm text-slate-600 dark:text-slate-300">
-                      <p>
-                        <span className="font-semibold">Email:</span> {emp.email}
+                    <div className="grid sm:grid-cols-2 gap-3 mt-4 text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
+                      <p className="flex items-center gap-2">
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">Email:</span> {emp.email}
                       </p>
-                      <p>
-                        <span className="font-semibold">Department:</span>{" "}
-                        {emp.departments?.name || "No Department"}
+                      <p className="flex items-center gap-2">
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">Department:</span>{" "}
+                        {getDepartmentName(emp.department_id) || <span className="text-slate-400 italic">No Department</span>}
                       </p>
                       {emp.designation && (
-                        <p>
-                          <span className="font-semibold">Designation:</span> {emp.designation}
+                        <p className="flex items-center gap-2">
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">Designation:</span> {emp.designation}
                         </p>
                       )}
                       {emp.joining_date && (
-                        <p>
-                          <span className="font-semibold">Joined:</span> {new Date(emp.joining_date).toLocaleDateString()}
+                        <p className="flex items-center gap-2">
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">Joined:</span> {new Date(emp.joining_date).toLocaleDateString()}
                         </p>
                       )}
                     </div>
