@@ -10,88 +10,88 @@ export default function DashboardPreview() {
 
       <div className="relative z-10 w-full">
         <div
-          className="text-center mb-16 mx-auto"
-          style={{ maxWidth: "800px" }}
+          className="text-center mb-24 mx-auto"
+          style={{ maxWidth: "1200px" }}
         >
           <h2
-            style={{ fontSize: "clamp(2rem, 3.5vw, 3.2rem)" }}
-            className="font-bold tracking-tight text-white mb-3"
+            style={{ fontSize: "clamp(3.5rem, 5vw, 5rem)" }}
+            className="font-bold tracking-tight text-white mb-6"
           >
             Total Organizational Control
           </h2>
           <p
-            style={{ fontSize: "clamp(1rem, 1.25vw, 1.125rem)" }}
-            className="leading-relaxed text-slate-400"
+            style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)" }}
+            className="leading-relaxed text-slate-400 max-w-4xl mx-auto"
           >
             Real-time analytics, performance tracking, and engagement insights
             tailored for enterprise leadership.
           </p>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-slate-800/50 backdrop-blur-md p-6 sm:p-8 shadow-2xl w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-slate-900 rounded-lg border border-white/5 p-5 transform hover:-translate-y-1 transition duration-300">
-              <div className="flex items-center gap-3 mb-4 text-white">
-                <div className="p-2 bg-orange-500/20 rounded-lg">
-                  <Activity className="text-orange-500 h-5 w-5" />
+        <div className="rounded-3xl border border-white/10 bg-slate-800/50 backdrop-blur-md p-10 sm:p-12 shadow-2xl w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="bg-slate-900 rounded-2xl border border-white/5 p-8 transform hover:-translate-y-1 transition duration-300">
+              <div className="flex items-center gap-4 mb-6 text-white">
+                <div className="p-3 bg-orange-500/20 rounded-xl">
+                  <Activity className="text-orange-500 h-8 w-8" />
                 </div>
-                <h3 className="font-semibold text-sm">Task Velocity</h3>
+                <h3 className="font-semibold text-xl">Task Velocity</h3>
               </div>
-              <div className="h-20 bg-linear-to-t from-orange-500/20 to-transparent rounded-lg border-b-2 border-orange-500"></div>
+              <div className="h-32 bg-linear-to-t from-orange-500/20 to-transparent rounded-xl border-b-[3px] border-orange-500"></div>
             </div>
 
-            <div className="bg-slate-900 rounded-lg border border-white/5 p-5 transform hover:-translate-y-1 transition duration-300 delay-100">
-              <div className="flex items-center gap-3 mb-4 text-white">
-                <div className="p-2 bg-blue-500/20 rounded-lg">
-                  <BarChart3 className="text-blue-500 h-5 w-5" />
+            <div className="bg-slate-900 rounded-2xl border border-white/5 p-8 transform hover:-translate-y-1 transition duration-300 delay-100">
+              <div className="flex items-center gap-4 mb-6 text-white">
+                <div className="p-3 bg-blue-500/20 rounded-xl">
+                  <BarChart3 className="text-blue-500 h-8 w-8" />
                 </div>
-                <h3 className="font-semibold text-sm">Team Performance</h3>
+                <h3 className="font-semibold text-xl">Team Performance</h3>
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-full bg-slate-800 rounded-full">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-full bg-slate-800 rounded-full">
                     <div
-                      className="h-1.5 bg-blue-500 rounded-full"
+                      className="h-2 bg-blue-500 rounded-full"
                       style={{ width: "80%" }}
                     ></div>
                   </div>
-                  <span className="text-xs text-slate-400 whitespace-nowrap">
+                  <span className="text-base text-slate-400 whitespace-nowrap">
                     80%
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-full bg-slate-800 rounded-full">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-full bg-slate-800 rounded-full">
                     <div
-                      className="h-1.5 bg-blue-400 rounded-full"
+                      className="h-2 bg-blue-400 rounded-full"
                       style={{ width: "65%" }}
                     ></div>
                   </div>
-                  <span className="text-xs text-slate-400 whitespace-nowrap">
+                  <span className="text-base text-slate-400 whitespace-nowrap">
                     65%
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-full bg-slate-800 rounded-full">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-full bg-slate-800 rounded-full">
                     <div
-                      className="h-1.5 bg-blue-300 rounded-full"
+                      className="h-2 bg-blue-300 rounded-full"
                       style={{ width: "40%" }}
                     ></div>
                   </div>
-                  <span className="text-xs text-slate-400 whitespace-nowrap">
+                  <span className="text-base text-slate-400 whitespace-nowrap">
                     40%
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-lg border border-white/5 p-5 transform hover:-translate-y-1 transition duration-300 delay-200">
-              <div className="flex items-center gap-3 mb-4 text-white">
-                <div className="p-2 bg-emerald-500/20 rounded-lg">
-                  <LineChart className="text-emerald-500 h-5 w-5" />
+            <div className="bg-slate-900 rounded-2xl border border-white/5 p-8 transform hover:-translate-y-1 transition duration-300 delay-200">
+              <div className="flex items-center gap-4 mb-6 text-white">
+                <div className="p-3 bg-emerald-500/20 rounded-xl">
+                  <LineChart className="text-emerald-500 h-8 w-8" />
                 </div>
-                <h3 className="font-semibold text-sm">Corporate Growth</h3>
+                <h3 className="font-semibold text-xl">Corporate Growth</h3>
               </div>
-              <div className="flex items-end h-20 gap-1">
+              <div className="flex items-end h-32 gap-1.5">
                 {[40, 60, 45, 80, 50, 90, 75].map((h, i) => (
                   <div
                     key={i}

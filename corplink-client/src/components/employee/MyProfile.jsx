@@ -76,13 +76,28 @@ function MyProfile() {
   const fetchProfileData = async () => {
     setLoading(true)
     try {
-      // Try employees table first
-      const { data: emp } = await supabase
-        .from("employees")
-        .select("id, name, email, phone, designation, department_id, profile_photo, joined_at, is_active, role")
-        .eq("user_id", user.id)
-        .eq("company_id", profile.company_id)
-        .single()
+      const emailToSearch = user?.email || profile?.email
+      
+      // Try employees table by email (user_id may not be set yet)
+      let emp = null
+      
+      if (profile?.employee_id) {
+        const { data } = await supabase
+          .from("employees")
+          .select("id, name, email, phone, designation, department_id, profile_photo, joined_at, is_active, role")
+          .eq("id", profile.employee_id)
+          .eq("company_id", profile.company_id)
+          .maybeSingle()
+        emp = data
+      } else if (emailToSearch) {
+        const { data } = await supabase
+          .from("employees")
+          .select("id, name, email, phone, designation, department_id, profile_photo, joined_at, is_active, role")
+          .eq("email", emailToSearch.toLowerCase())
+          .eq("company_id", profile.company_id)
+          .maybeSingle()
+        emp = data
+      }
 
       if (emp) {
         setEmployeeData(emp)
@@ -152,17 +167,26 @@ function MyProfile() {
   const handleSaveProfile = async () => {
     setSaving(true)
     try {
-      // Update employees table
-      const { error } = await supabase
-        .from("employees")
-        .update({
-          phone: phone.trim(),
-          profile_photo: photoUrl,
-        })
-        .eq("user_id", user.id)
-        .eq("company_id", profile.company_id)
+      // Update employees table (use employee_id from profile, or fallback to email match)
+      let updateErr = null
+      
+      if (profile?.employee_id) {
+        const { error } = await supabase
+          .from("employees")
+          .update({ phone: phone.trim(), profile_photo: photoUrl })
+          .eq("id", profile.employee_id)
+          .eq("company_id", profile.company_id)
+        updateErr = error
+      } else {
+        const { error } = await supabase
+          .from("employees")
+          .update({ phone: phone.trim(), profile_photo: photoUrl })
+          .eq("email", (user?.email || profile?.email || "").toLowerCase())
+          .eq("company_id", profile.company_id)
+        updateErr = error
+      }
 
-      if (error) {
+      if (updateErr) {
         // Fallback: update profiles table
         await supabase.from("profiles").update({
           phone: phone.trim(),

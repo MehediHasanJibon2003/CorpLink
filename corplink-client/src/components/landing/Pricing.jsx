@@ -61,64 +61,64 @@ export default function Pricing() {
 
       <div className="relative z-10 w-full">
         <div
-          className="text-center mb-16 mx-auto"
-          style={{ maxWidth: "800px" }}
+          className="text-center mb-24 mx-auto"
+          style={{ maxWidth: "1200px" }}
         >
           <h2
-            style={{ fontSize: "clamp(2rem, 3.5vw, 3.2rem)" }}
-            className="font-bold tracking-tight text-white mb-3"
+            style={{ fontSize: "clamp(3.5rem, 5vw, 5rem)" }}
+            className="font-bold tracking-tight text-white mb-6"
           >
             Scale your workspace without scaling costs
           </h2>
           <p
-            style={{ fontSize: "clamp(1rem, 1.25vw, 1.125rem)" }}
-            className="leading-relaxed text-slate-400"
+            style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)" }}
+            className="leading-relaxed text-slate-400 max-w-4xl mx-auto"
           >
             Choose the plan that fits your corporate needs. Upgrade, downgrade,
             or cancel at any time.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full">
           {tiers.map((tier) => (
             <div
               key={tier.id}
-              className={`rounded-xl p-6 ring-1 ring-slate-200 bg-white shadow-sm transition-all hover:shadow-md ${
+              className={`rounded-3xl p-10 ring-1 ring-slate-200 bg-white shadow-sm transition-all hover:shadow-xl ${
                 tier.mostPopular
-                  ? "ring-2 ring-orange-500 shadow-xl relative"
+                  ? "ring-[3px] ring-orange-500 shadow-2xl relative"
                   : ""
               }`}
             >
               {tier.mostPopular && (
                 <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
-                  <span className="bg-orange-500 text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full">
+                  <span className="bg-orange-500 text-white text-sm font-bold uppercase tracking-wider py-2 px-5 rounded-full">
                     Most Popular
                   </span>
                 </div>
               )}
-              <div className="flex items-center justify-between gap-3 mb-3">
+              <div className="flex items-center justify-between gap-4 mb-4">
                 <h3
-                  className={`text-base font-semibold leading-6 ${tier.mostPopular ? "text-orange-600" : "text-slate-900"}`}
+                  className={`text-2xl font-bold leading-8 ${tier.mostPopular ? "text-orange-600" : "text-slate-900"}`}
                 >
                   {tier.name}
                 </h3>
               </div>
-              <p className="mt-2 text-xs leading-5 text-slate-600">
+              <p className="mt-4 text-lg leading-relaxed text-slate-600">
                 {tier.description}
               </p>
-              <p className="mt-4 flex items-baseline gap-1">
-                <span className="text-3xl font-bold tracking-tight text-slate-900">
+              <p className="mt-6 flex items-baseline gap-2">
+                <span className="text-5xl font-black tracking-tight text-slate-900">
                   {tier.priceMonthly}
                 </span>
                 {tier.priceMonthly !== "Custom" && (
-                  <span className="text-xs font-semibold leading-5 text-slate-600">
+                  <span className="text-xl font-bold leading-8 text-slate-600">
                     /mo
                   </span>
                 )}
               </p>
               <Link
                 to={tier.href}
-                className={`mt-5 block rounded-lg px-3 py-2 text-center text-xs font-semibold leading-5 focus-visible:outline-2 focus-visible:outline-offset-2 w-full transition-colors ${
+                className={`mt-8 block rounded-2xl px-6 py-4 text-center text-xl font-bold leading-8 focus-visible:outline-2 focus-visible:outline-offset-2 w-full transition-colors ${
                   tier.mostPopular
                     ? "bg-orange-500 text-white hover:bg-orange-400 shadow-sm focus-visible:outline-orange-500"
                     : "bg-slate-100 text-slate-900 hover:bg-slate-200"
@@ -128,12 +128,12 @@ export default function Pricing() {
               </Link>
               <ul
                 role="list"
-                className="mt-5 space-y-2 text-xs leading-5 text-slate-600"
+                className="mt-8 space-y-4 text-lg leading-relaxed text-slate-600"
               >
                 {tier.features.map((feature) => (
-                  <li key={feature} className="flex gap-x-3">
+                  <li key={feature} className="flex gap-x-4 items-center">
                     <Check
-                      className="h-6 w-5 flex-none text-orange-500"
+                      className="h-8 w-8 flex-none text-orange-500"
                       aria-hidden="true"
                     />
                     {feature}

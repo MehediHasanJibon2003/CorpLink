@@ -84,7 +84,7 @@ function PersonalDashboard() {
       const { data: tasks, error: taskErr } = await supabase
         .from("tasks")
         .select("id, status, title, priority, deadline, created_at")
-        .eq("assigned_to", user.id)
+        .eq("assigned_to", profile.employee_id || user.id)
         .eq("company_id", profile.company_id)
         .order("created_at", { ascending: false })
 

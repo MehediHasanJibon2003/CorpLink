@@ -111,7 +111,7 @@ function MyProjects() {
       const { data: memberships, error: mErr } = await supabase
         .from("project_members")
         .select("project_id, role_in_project")
-        .eq("employee_id", user.id)
+        .eq("employee_id", profile?.employee_id || user.id)
 
       if (mErr) throw mErr
 

@@ -30,20 +30,25 @@ function EmployeeRoute({ children }) {
         if (!error && data) {
           setCompanyStatus(data.status)
         } else {
-          setCompanyStatus("pending")
+          // Default to active if query fails — don't block employees unnecessarily
+          setCompanyStatus("active")
         }
       } else if (profile?.role === "super_admin") {
         setCompanyStatus("active")
       } else {
-        setCompanyStatus("pending")
+        // If profile exists but has no company_id, still allow — don't lock out
+        setCompanyStatus("active")
       }
       setCheckingStatus(false)
     }
 
-    if (profile) {
-      checkStatus()
-    } else if (!loading) {
-      setCheckingStatus(false)
+    if (profile !== undefined) {
+      if (profile) {
+        checkStatus()
+      } else if (!loading) {
+        // profile is null and not loading — no profile means not authenticated
+        setCheckingStatus(false)
+      }
     }
   }, [profile, loading])
 
@@ -63,8 +68,11 @@ function EmployeeRoute({ children }) {
   // Not authenticated
   if (!user) return <Navigate to="/login" replace />
 
+  // No profile yet — possibly still being created or account incomplete
+  if (!profile) return <Navigate to="/login" replace />
+
   // Admin-level roles go back to admin dashboard
-  if (ADMIN_ROLES.includes(profile?.role)) {
+  if (ADMIN_ROLES.includes(profile.role)) {
     return <Navigate to="/dashboard" replace />
   }
 

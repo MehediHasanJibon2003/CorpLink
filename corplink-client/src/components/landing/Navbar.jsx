@@ -21,12 +21,12 @@ export default function Navbar() {
         <div className="flex flex-1">
           <Link
             to="/"
-            className="flex items-center gap-3 hover:opacity-80 transition"
+            className="flex items-center gap-4 hover:opacity-80 transition"
           >
-            <div className="w-12 h-12 rounded-lg bg-orange-500 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/30 text-lg">
+            <div className="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-xl shadow-orange-500/30 text-3xl">
               C
             </div>
-            <span className="text-2xl font-bold tracking-tight text-white">
+            <span className="text-4xl font-black tracking-tight text-white">
               CorpLink
             </span>
           </Link>
@@ -40,44 +40,44 @@ export default function Navbar() {
           >
             <span className="sr-only">Open main menu</span>
             {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
+              <X className="h-8 w-8" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <Menu className="h-8 w-8" />
             )}
           </button>
         </div>
 
-        <div className="hidden lg:flex lg:gap-x-12 lg:items-center">
+        <div className="hidden lg:flex lg:gap-x-14 lg:items-center">
           <a
             href="#features"
-            className="text-lg font-semibold leading-7 text-slate-300 hover:text-white transition"
+            className="text-2xl font-bold leading-7 text-slate-300 hover:text-white transition"
           >
             Features
           </a>
           <a
             href="#how-it-works"
-            className="text-lg font-semibold leading-7 text-slate-300 hover:text-white transition"
+            className="text-2xl font-bold leading-7 text-slate-300 hover:text-white transition"
           >
             How it Works
           </a>
           <a
             href="#pricing"
-            className="text-lg font-semibold leading-7 text-slate-300 hover:text-white transition"
+            className="text-2xl font-bold leading-7 text-slate-300 hover:text-white transition"
           >
             Pricing
           </a>
         </div>
 
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-10">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-12">
           <Link
             to="/login"
-            className="text-lg font-semibold leading-7 text-slate-300 hover:text-white transition"
+            className="text-2xl font-bold leading-7 text-slate-300 hover:text-white transition"
           >
             Log in
           </Link>
           <Link
             to="/register"
-            className="text-lg font-bold leading-7 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl backdrop-blur-sm border border-white/10 transition duration-200"
+            className="text-2xl font-bold leading-7 bg-white/10 hover:bg-white/20 text-white px-10 py-5 rounded-2xl backdrop-blur-sm border border-white/10 transition duration-200"
           >
             Sign up <span aria-hidden="true">&rarr;</span>
           </Link>

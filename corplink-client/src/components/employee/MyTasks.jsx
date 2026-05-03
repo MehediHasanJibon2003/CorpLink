@@ -61,7 +61,7 @@ function MyTasks() {
       const { data, error: err } = await supabase
         .from("tasks")
         .select("*")
-        .eq("assigned_to", user.id)
+        .eq("assigned_to", profile?.employee_id || user.id)
         .eq("company_id", profile.company_id)
         .order("created_at", { ascending: false })
 

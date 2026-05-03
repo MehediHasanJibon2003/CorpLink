@@ -5,23 +5,23 @@ export default function Footer() {
     <footer
       className="w-full bg-slate-950"
       aria-labelledby="footer-heading"
-      style={{ padding: "4rem clamp(2rem, 6vw, 6vw)" }}
+      style={{ padding: "8rem clamp(2rem, 6vw, 6vw) 4rem" }}
     >
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
-      <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          <div className="space-y-6">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/30">
+      <div className="w-full max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 mb-16">
+          <div className="space-y-8">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-xl shadow-orange-500/30 text-2xl">
                 C
               </div>
-              <h2 className="text-xl font-bold tracking-tight text-white leading-none">
+              <h2 className="text-4xl font-black tracking-tight text-white leading-none">
                 CorpLink
               </h2>
             </div>
-            <p className="text-xs leading-5 text-slate-400">
+            <p className="text-xl leading-relaxed text-slate-400">
               The unified corporate ecosystem that powers the world's most
               capable teams.
             </p>
@@ -29,16 +29,16 @@ export default function Footer() {
               {/* Social Icons would go here */}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6 md:col-span-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:col-span-2">
             <div>
-              <h3 className="text-xs font-semibold leading-5 text-white uppercase tracking-wider">
+              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
                 Solutions
               </h3>
-              <ul role="list" className="mt-4 space-y-3">
+              <ul role="list" className="space-y-4">
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Workspace Admin
                   </a>
@@ -46,7 +46,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Employee Engagement
                   </a>
@@ -54,7 +54,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Task Analytics
                   </a>
@@ -62,14 +62,14 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="text-xs font-semibold leading-5 text-white uppercase tracking-wider">
+              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
                 Support
               </h3>
-              <ul role="list" className="mt-4 space-y-3">
+              <ul role="list" className="space-y-4">
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Pricing
                   </a>
@@ -77,7 +77,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Documentation
                   </a>
@@ -85,7 +85,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Guides
                   </a>
@@ -93,14 +93,14 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="text-xs font-semibold leading-5 text-white uppercase tracking-wider">
+              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
                 Company
               </h3>
-              <ul role="list" className="mt-4 space-y-3">
+              <ul role="list" className="space-y-4">
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     About
                   </a>
@@ -108,7 +108,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Blog
                   </a>
@@ -116,7 +116,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Jobs
                   </a>
@@ -124,14 +124,14 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="text-xs font-semibold leading-5 text-white uppercase tracking-wider">
+              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
                 Legal
               </h3>
-              <ul role="list" className="mt-4 space-y-3">
+              <ul role="list" className="space-y-4">
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Privacy
                   </a>
@@ -139,7 +139,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="#"
-                    className="text-xs leading-5 text-slate-400 hover:text-white transition"
+                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
                   >
                     Terms
                   </a>
@@ -148,8 +148,8 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-white/10 pt-8">
-          <p className="text-xs leading-4 text-slate-400">
+        <div className="border-t border-white/10 pt-10">
+          <p className="text-lg leading-6 text-slate-400 text-center lg:text-left">
             &copy; {new Date().getFullYear()} CorpLink Inc. All rights reserved.
           </p>
         </div>

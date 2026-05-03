@@ -31,29 +31,29 @@ export default function Security() {
     >
       <div className="w-full">
         <div
-          className="text-center mb-16 mx-auto"
-          style={{ maxWidth: "800px" }}
+          className="text-center mb-24 mx-auto"
+          style={{ maxWidth: "1200px" }}
         >
           <h2
-            style={{ fontSize: "clamp(2rem, 3.5vw, 3.2rem)" }}
+            style={{ fontSize: "clamp(3.5rem, 5vw, 5rem)" }}
             className="font-bold tracking-tight text-slate-900"
           >
             Bank-grade security. <br /> Built for enterprise scale.
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 w-full">
           {securityFeatures.map((feat) => {
             const Icon = feat.icon;
             return (
               <div
                 key={feat.title}
-                className="bg-slate-50 p-6 rounded-lg border border-slate-100 flex flex-col items-center text-center hover:shadow-md transition-shadow"
+                className="bg-slate-50 p-10 rounded-3xl border-2 border-slate-100 flex flex-col items-center text-center hover:shadow-xl transition-shadow"
               >
-                <Icon className="h-8 w-8 text-orange-500 mb-3" />
-                <h3 className="font-bold text-slate-900 mb-2 text-sm">
+                <Icon className="h-14 w-14 text-orange-500 mb-6" />
+                <h3 className="font-bold text-slate-900 mb-4 text-2xl">
                   {feat.title}
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-lg text-slate-600 leading-relaxed">
                   {feat.desc}
                 </p>
               </div>

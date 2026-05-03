@@ -48,11 +48,22 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />
   }
 
+  if (!profile) {
+    // If authenticated but no profile exists, their account is broken or incomplete
+    return <Navigate to="/login" replace />
+  }
+
   // Check corporate approval status
-  if (profile && profile.role !== "super_admin") {
+  if (profile.role !== "super_admin") {
     if (companyStatus === "pending" || companyStatus === "rejected") {
       return <Navigate to="/pending-approval" replace />
     }
+  }
+
+  // Prevent employees from accessing admin routes
+  const ADMIN_ROLES = ["super_admin", "admin", "corporate_admin", "hr"];
+  if (!ADMIN_ROLES.includes(profile.role)) {
+    return <Navigate to="/employee/dashboard" replace />
   }
 
   return children

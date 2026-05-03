@@ -12,6 +12,7 @@ function Employees() {
   const [message, setMessage] = useState("")
   const [editingId, setEditingId] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const [form, setForm] = useState({
     name: "",
@@ -222,12 +223,41 @@ function Employees() {
     return dept ? dept.name : null;
   }
 
+  const handleCopyInviteCode = () => {
+    if (profile?.company_id) {
+      navigator.clipboard.writeText(profile.company_id)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
   return (
     <AppLayout
       title="Employee Management"
       subtitle="Add, update and manage your company employees"
     >
       <div className="space-y-6">
+        {/* Invite Code Card */}
+        <div className="bg-linear-to-r from-blue-600 to-blue-800 rounded-2xl shadow-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+          <div>
+            <h3 className="text-xl font-bold mb-1">Company Invite Code</h3>
+            <p className="text-blue-200 text-sm">
+              Share this code with your employees so they can join your workspace.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 bg-black/20 p-2 pl-4 rounded-xl border border-white/10 w-full md:w-auto">
+            <code className="font-mono font-bold text-sm select-all">
+              {profile?.company_id || "Loading..."}
+            </code>
+            <button
+              onClick={handleCopyInviteCode}
+              className="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+            >
+              {copied ? "Copied!" : "Copy Code"}
+            </button>
+          </div>
+        </div>
+
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
           <form onSubmit={handleSubmit} className="grid md:grid-cols-4 gap-4">
             <input

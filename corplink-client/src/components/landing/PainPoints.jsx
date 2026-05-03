@@ -35,31 +35,31 @@ export default function PainPoints() {
     >
       <div className="w-full">
         <div
-          className="text-center mb-16 mx-auto"
-          style={{ maxWidth: "800px" }}
+          className="text-center mb-24 mx-auto"
+          style={{ maxWidth: "1200px" }}
         >
           <h2
-            style={{ fontSize: "clamp(2rem, 3.5vw, 3.2rem)" }}
+            style={{ fontSize: "clamp(3.5rem, 5vw, 5rem)" }}
             className="font-bold tracking-tight text-slate-900"
           >
             Why modern businesses are slowing down
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
           {painPoints.map((point) => {
             const Icon = point.icon;
             return (
               <div
                 key={point.title}
-                className="flex flex-col bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-lg transition-shadow duration-200"
+                className="flex flex-col bg-white rounded-3xl p-10 shadow-sm border border-slate-200 hover:shadow-xl transition-shadow duration-300"
               >
-                <dt className="flex items-center gap-3 text-base font-semibold leading-6 text-slate-900 mb-4">
-                  <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-orange-50 text-orange-600 shrink-0">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+                <dt className="flex items-center gap-4 text-2xl font-bold leading-8 text-slate-900 mb-6">
+                  <div className="h-16 w-16 flex items-center justify-center rounded-2xl bg-orange-50 text-orange-600 shrink-0">
+                    <Icon className="h-8 w-8" aria-hidden="true" />
                   </div>
                   {point.title}
                 </dt>
-                <dd className="flex flex-auto flex-col text-sm leading-6 text-slate-600">
+                <dd className="flex flex-auto flex-col text-xl leading-relaxed text-slate-600">
                   <p className="flex-auto">{point.description}</p>
                 </dd>
               </div>

@@ -55,106 +55,196 @@ function Register() {
     setMessage("");
     const { companyName, companyId, fullName, email, password } = formData;
 
-    if (!fullName || !email || !password) {
+    // Basic validation
+    if (!fullName.trim() || !email.trim() || !password) {
       setError("Please fill all required fields");
       setLoading(false);
       return;
     }
-    if (mode === "create" && !companyName) {
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
+    }
+    if (mode === "create" && !companyName.trim()) {
       setError("Company name is required");
       setLoading(false);
       return;
     }
-    if (mode === "join" && !companyId) {
-      setError("Company ID (Invite Code) is required");
+    if (mode === "join" && !companyId.trim()) {
+      setError("Company Invite Code is required");
       setLoading(false);
       return;
     }
 
     try {
-      let employeeData = null;
-      if (mode === "join") {
-        const { data: cData, error: cErr } = await supabase
-          .from("companies")
-          .select("id")
-          .eq("id", companyId)
-          .single();
-        if (cErr || !cData) {
-          setError("Invalid Company Code");
-          setLoading(false);
-          return;
-        }
-        const { data: eData } = await supabase
-          .from("employees")
-          .select("*")
-          .eq("email", email)
-          .eq("company_id", companyId)
-          .single();
-        if (!eData) {
-          setError("Email not found. Ask your HR/Admin to add you first.");
-          setLoading(false);
-          return;
-        }
-        employeeData = eData;
-      }
-
-      const { data: signUpData, error: signUpError } =
-        await supabase.auth.signUp({ email, password });
-      if (signUpError) {
-        setError(signUpError.message);
-        setLoading(false);
-        return;
-      }
-      const user = signUpData?.user;
-      if (!user) {
-        setError("Failed to create account.");
-        setLoading(false);
-        return;
-      }
-
       if (mode === "create") {
+        // ── CREATE COMPANY FLOW ──────────────────────────────────────────
+        const { data: signUpData, error: signUpError } =
+          await supabase.auth.signUp({ email: email.trim(), password });
+
+        if (signUpError) {
+          setError(signUpError.message);
+          setLoading(false);
+          return;
+        }
+
+        const user = signUpData?.user;
+        if (!user) {
+          setError("Failed to create account. Please try again.");
+          setLoading(false);
+          return;
+        }
+
         const { data: companyData, error: companyError } = await supabase
           .from("companies")
-          .insert([{ name: companyName, created_by: user.id }])
+          .insert([{ name: companyName.trim(), created_by: user.id }])
           .select()
           .single();
+
         if (companyError) {
-          setError(companyError.message);
+          setError("Failed to create company: " + companyError.message);
           setLoading(false);
           return;
         }
-        await supabase.from("profiles").insert([
-          {
-            id: user.id,
-            company_id: companyData.id,
-            full_name: fullName,
-            email,
-            role: "corporate_admin",
-          },
-        ]);
-      } else {
-        await supabase.from("profiles").insert([
-          {
-            id: user.id,
-            company_id: companyId,
-            full_name: fullName,
-            email,
-            role: employeeData.role,
-          },
-        ]);
-        await supabase
-          .from("employees")
-          .update({ onboarded: true })
-          .eq("id", employeeData.id);
-      }
 
-      setMessage("Account created! Redirecting to login...");
-      setTimeout(() => {
-        navigate("/login");
-      }, 1400);
+        const { error: profileError } = await supabase.from("profiles").insert([{
+          id: user.id,
+          company_id: companyData.id,
+          full_name: fullName.trim(),
+          email: email.trim().toLowerCase(),
+          role: "corporate_admin",
+        }]);
+
+        if (profileError && profileError.code !== "23505") {
+          setError("Profile setup failed: " + profileError.message);
+          setLoading(false);
+          return;
+        }
+
+        setMessage("Company workspace created! Redirecting to login...");
+        setTimeout(() => navigate("/login"), 1800);
+
+      } else {
+        // ── JOIN WORKSPACE FLOW ──────────────────────────────────────────
+        // NOTE: We sign up the user FIRST because RLS blocks anonymous users
+        // from querying the companies/employees tables.
+        const trimmedEmail = email.trim().toLowerCase();
+        const trimmedCompanyId = companyId.trim();
+
+        // STEP 1: Sign up or sign in the user FIRST (so they become authenticated)
+        let authUser = null;
+
+        const { data: signUpData, error: signUpError } =
+          await supabase.auth.signUp({ email: trimmedEmail, password });
+
+        if (signUpError) {
+          const errMsg = signUpError.message.toLowerCase();
+          if (
+            errMsg.includes("already registered") ||
+            errMsg.includes("user already exists") ||
+            signUpError.status === 400
+          ) {
+            // User already exists in auth — try signing in
+            const { data: signInData, error: signInError } =
+              await supabase.auth.signInWithPassword({ email: trimmedEmail, password });
+
+            if (signInError) {
+              setError("An account with this email already exists. Check your password or use the login page.");
+              setLoading(false);
+              return;
+            }
+            authUser = signInData?.user;
+          } else {
+            setError(signUpError.message);
+            setLoading(false);
+            return;
+          }
+        } else {
+          authUser = signUpData?.user;
+        }
+
+        if (!authUser) {
+          setError("Could not create account. Please try again.");
+          setLoading(false);
+          return;
+        }
+
+        // STEP 2: Now as authenticated user, verify the Company Code
+        const { data: cData, error: cErr } = await supabase
+          .from("companies")
+          .select("id, name, status")
+          .eq("id", trimmedCompanyId)
+          .maybeSingle();
+
+        if (cErr || !cData) {
+          // Sign out and show error
+          await supabase.auth.signOut();
+          setError("Invalid Company Code. Please check and try again.");
+          setLoading(false);
+          return;
+        }
+
+        if (cData.status === "pending" || cData.status === "rejected") {
+          await supabase.auth.signOut();
+          setError("This company is not yet approved. Please contact support.");
+          setLoading(false);
+          return;
+        }
+
+        // STEP 3: Insert a temporary profile so RLS allows querying employees table
+        const { error: profileTempErr } = await supabase.from("profiles").upsert([{
+          id: authUser.id,
+          company_id: trimmedCompanyId,
+          full_name: fullName.trim(),
+          email: trimmedEmail,
+          role: "employee",
+        }], { onConflict: "id" });
+
+        if (profileTempErr) {
+          await supabase.auth.signOut();
+          setError("Could not set up your profile: " + profileTempErr.message);
+          setLoading(false);
+          return;
+        }
+
+        // STEP 4: Check if this email exists in the employees table for this company
+        const { data: empData, error: empErr } = await supabase
+          .from("employees")
+          .select("id, name, email, role")
+          .eq("email", trimmedEmail)
+          .eq("company_id", trimmedCompanyId)
+          .maybeSingle();
+
+        if (empErr || !empData) {
+          // ROLLBACK: This person is not an authorized employee — delete profile and sign out
+          await supabase.from("profiles").delete().eq("id", authUser.id);
+          await supabase.auth.signOut();
+          setError("Your email is not registered in this company. Ask your HR or Admin to add you first.");
+          setLoading(false);
+          return;
+        }
+
+        // STEP 5: Update profile with correct name and role from employees table
+        await supabase.from("profiles").update({
+          full_name: empData.name || fullName.trim(),
+          role: empData.role || "employee",
+        }).eq("id", authUser.id);
+
+        // STEP 6: Mark employee as onboarded in the employees table
+        await supabase.from("employees")
+          .update({ onboarded: true })
+          .eq("id", empData.id);
+
+        // STEP 7: Sign out so they log in fresh with a clean session
+        await supabase.auth.signOut();
+
+        setMessage("✅ Account created successfully! Please log in with your email and password.");
+        setTimeout(() => navigate("/login"), 2000);
+      }
     } catch (err) {
-      console.error(err);
-      setError("Something went wrong.");
+      console.error("Register error:", err);
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -165,7 +255,7 @@ function Register() {
   return (
     <div className="h-screen w-screen flex bg-white dark:bg-slate-950 overflow-hidden">
       {/* ── Left Panel: Branding ── */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 flex-col justify-between p-12">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 flex-col justify-between p-12 xl:p-16 2xl:p-24">
         {/* Background grid */}
         <div
           className="absolute inset-0 opacity-10"
@@ -175,25 +265,25 @@ function Register() {
             backgroundSize: "32px 32px",
           }}
         />
-        <div className="absolute top-10 right-10 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-10 right-10 w-[24rem] h-[24rem] lg:w-[32rem] lg:h-[32rem] bg-blue-600/15 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-0 w-72 h-72 lg:w-96 lg:h-96 bg-orange-500/10 rounded-full blur-3xl" />
 
         {/* Logo */}
         <div className="relative z-10">
-          <Link to="/" className="flex items-center gap-3 w-fit">
-            <div className="w-11 h-11 rounded-xl bg-orange-500 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-orange-500/30">
+          <Link to="/" className="flex items-center gap-5 w-fit">
+            <div className="w-16 h-16 rounded-3xl bg-orange-500 flex items-center justify-center font-black text-white text-3xl shadow-xl shadow-orange-500/30">
               C
             </div>
-            <span className="text-2xl font-black text-white tracking-tight">
+            <span className="text-4xl font-black text-white tracking-tight">
               CorpLink
             </span>
           </Link>
         </div>
 
         {/* Center content */}
-        <div className="relative z-10 my-auto">
-          <div className="mb-8">
-            <h2 className="text-4xl font-black text-white leading-tight mb-3">
+        <div className="relative z-10 mt-16 xl:mt-24 mb-auto">
+          <div className="mb-10">
+            <h2 className="text-[4rem] lg:text-[5rem] font-black text-white leading-[1.1] mb-6 tracking-tight">
               {mode === "create" ? (
                 <>
                   Start your
@@ -212,7 +302,7 @@ function Register() {
                 </>
               )}
             </h2>
-            <p className="text-slate-400 text-base leading-relaxed max-w-sm">
+            <p className="text-slate-300 text-2xl leading-relaxed max-w-xl">
               {mode === "create"
                 ? "Register your company and become the Corporate Admin. Invite your team and start managing workflows instantly."
                 : "Your HR/Admin has already added you. Enter your invite code and join your workspace in seconds."}
@@ -220,15 +310,15 @@ function Register() {
           </div>
 
           {/* Feature list */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {features.map((item, i) => {
               const Icon = item.icon;
               return (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                    <Icon className="h-4 w-4 text-blue-400" />
+                <div key={i} className="flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
+                    <Icon className="h-8 w-8 text-blue-400" />
                   </div>
-                  <p className="text-slate-300 text-sm">{item.text}</p>
+                  <p className="text-slate-200 text-xl font-medium">{item.text}</p>
                 </div>
               );
             })}
@@ -254,47 +344,41 @@ function Register() {
           </Link>
         </div>
 
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-xl">
           {/* Header */}
-          <div className="mb-6">
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-1">
+          <div className="mb-10">
+            <h2 className="text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
               Get started
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
+            <p className="text-slate-500 dark:text-slate-400 text-xl">
               Create your workspace or join an existing one
             </p>
           </div>
 
           {/* Mode Toggle */}
-          <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-6 gap-1">
+          <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl mb-10 gap-1.5">
             <button
               type="button"
-              onClick={() => {
-                setMode("create");
-                setError("");
-              }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-lg transition-all ${
+              onClick={() => { setMode("create"); setError(""); setMessage(""); }}
+              className={`flex-1 flex items-center justify-center gap-3 py-3 text-lg font-bold rounded-xl transition-all ${
                 mode === "create"
-                  ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
               }`}
             >
-              <Building2 className="h-4 w-4" />
+              <Building2 className="h-5 w-5" />
               Create Workspace
             </button>
             <button
               type="button"
-              onClick={() => {
-                setMode("join");
-                setError("");
-              }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-lg transition-all ${
+              onClick={() => { setMode("join"); setError(""); setMessage(""); }}
+              className={`flex-1 flex items-center justify-center gap-3 py-3 text-lg font-bold rounded-xl transition-all ${
                 mode === "join"
-                  ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
               }`}
             >
-              <Hash className="h-4 w-4" />
+              <Hash className="h-5 w-5" />
               Join via Invite
             </button>
           </div>
@@ -303,14 +387,14 @@ function Register() {
           <form onSubmit={handleRegister} className="space-y-4">
             {/* Company Name OR Invite Code */}
             {mode === "create" ? (
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <div className="space-y-3">
+                <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
                   Company Name
                 </label>
                 <div className="relative">
                   <Building2
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                    style={{ width: "18px", height: "18px" }}
+                    className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none"
+                    style={{ width: "24px", height: "24px" }}
                   />
                   <input
                     type="text"
@@ -318,19 +402,19 @@ function Register() {
                     placeholder="Acme Corp, TechStartup..."
                     value={formData.companyName}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
                   />
                 </div>
               </div>
             ) : (
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <div className="space-y-3">
+                <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
                   Company Invite Code
                 </label>
                 <div className="relative">
                   <Hash
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                    style={{ width: "18px", height: "18px" }}
+                    className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none"
+                    style={{ width: "24px", height: "24px" }}
                   />
                   <input
                     type="text"
@@ -338,24 +422,24 @@ function Register() {
                     placeholder="Paste your company ID here"
                     value={formData.companyId}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
                   />
                 </div>
-                <p className="text-xs text-slate-400 ml-1">
+                <p className="text-sm text-slate-400 ml-1 mt-1">
                   Ask your HR or Admin for the Company ID
                 </p>
               </div>
             )}
 
             {/* Full Name */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <div className="space-y-3">
+              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
                 Full Name
               </label>
               <div className="relative">
                 <User
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                  style={{ width: "18px", height: "18px" }}
+                  className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none"
+                  style={{ width: "24px", height: "24px" }}
                 />
                 <input
                   type="text"
@@ -363,20 +447,20 @@ function Register() {
                   placeholder="John Doe"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
                 />
               </div>
             </div>
 
             {/* Email */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <div className="space-y-3">
+              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
                 Work Email
               </label>
               <div className="relative">
                 <Mail
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                  style={{ width: "18px", height: "18px" }}
+                  className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none"
+                  style={{ width: "24px", height: "24px" }}
                 />
                 <input
                   type="email"
@@ -384,38 +468,38 @@ function Register() {
                   placeholder="you@company.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
                 />
               </div>
             </div>
 
             {/* Password */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            <div className="space-y-3">
+              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
                 Password
               </label>
               <div className="relative">
                 <Lock
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                  style={{ width: "18px", height: "18px" }}
+                  className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none"
+                  style={{ width: "24px", height: "24px" }}
                 />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  placeholder="Min. 8 characters"
+                  placeholder="Min. 6 characters"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-12 py-3.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full pl-14 pr-16 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
                 >
                   {showPassword ? (
-                    <EyeOff style={{ width: "18px", height: "18px" }} />
+                    <EyeOff style={{ width: "24px", height: "24px" }} />
                   ) : (
-                    <Eye style={{ width: "18px", height: "18px" }} />
+                    <Eye style={{ width: "24px", height: "24px" }} />
                   )}
                 </button>
               </div>
@@ -447,47 +531,32 @@ function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-3.5 rounded-xl font-bold text-base transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 mt-2"
+              className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-5 rounded-2xl font-black text-xl transition-all shadow-xl shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 mt-6"
             >
               {loading ? (
                 <>
-                  <svg
-                    className="animate-spin h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
+                  <svg className="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
                   Processing...
                 </>
               ) : (
                 <>
                   {mode === "create" ? "Create Workspace" : "Join Workspace"}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-6 w-6" />
                 </>
               )}
             </button>
           </form>
 
           {/* Divider + Login link */}
-          <div className="relative my-6">
+          <div className="relative my-10">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200 dark:border-slate-800" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-white dark:bg-slate-950 px-3 text-xs text-slate-400 font-medium">
+              <span className="bg-white dark:bg-slate-950 px-4 text-base text-slate-400 font-medium">
                 Already have an account?
               </span>
             </div>
@@ -495,9 +564,9 @@ function Register() {
 
           <Link
             to="/login"
-            className="w-full flex items-center justify-center gap-2 py-3.5 border-2 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-700 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all text-sm"
+            className="w-full flex items-center justify-center gap-3 py-5 border-[3px] border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all text-lg"
           >
-            Sign into your workspace <ArrowRight className="h-4 w-4" />
+            Sign into your workspace <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
       </div>

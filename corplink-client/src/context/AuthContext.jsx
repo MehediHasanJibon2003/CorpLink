@@ -8,11 +8,11 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchProfile = async (userId) => {
+  const fetchProfile = async (currentUser) => {
     const { data, error } = await supabase
       .from("profiles")
       .select('*')
-      .eq("id", userId)
+      .eq("id", currentUser.id)
       .single()
 
     if (error) {
@@ -32,6 +32,20 @@ export function AuthProvider({ children }) {
       if (companyData) {
         data.companies = { name: companyData.name }
       }
+
+      // Fetch employee ID for this user so we can query tasks assigned to them
+      if (currentUser.email) {
+        const { data: empData } = await supabase
+          .from("employees")
+          .select("id")
+          .eq("email", currentUser.email)
+          .eq("company_id", data.company_id)
+          .maybeSingle()
+        
+        if (empData) {
+          data.employee_id = empData.id
+        }
+      }
     }
 
     setProfile(data)
@@ -49,7 +63,7 @@ export function AuthProvider({ children }) {
       setUser(currentUser)
 
       if (currentUser) {
-        await fetchProfile(currentUser.id)
+        await fetchProfile(currentUser)
       } else {
         setProfile(null)
       }
@@ -67,7 +81,7 @@ export function AuthProvider({ children }) {
 
       if (currentUser) {
         setLoading(true)
-        fetchProfile(currentUser.id).finally(() => {
+        fetchProfile(currentUser).finally(() => {
           setLoading(false)
         })
       } else {
