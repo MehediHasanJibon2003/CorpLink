@@ -24,7 +24,7 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-30 md:hidden" onClick={() => setIsOpen(false)} />
       )}
 
-      <aside className={`fixed inset-y-0 left-0 z-40 w-64 flex flex-col shrink-0 h-screen
+      <aside className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] flex flex-col shrink-0 h-screen
         transition-colors transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0 md:relative
@@ -35,16 +35,14 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
           style={{ background: "linear-gradient(90deg, transparent, #7c3aed, #4f46e5, transparent)" }} />
 
         {/* Brand Header */}
-        <div className="relative h-20 shrink-0 flex items-center justify-between px-5 overflow-hidden">
+        <div className="relative h-16 md:h-24 shrink-0 flex items-center justify-between px-5 md:px-8 overflow-hidden border-b-2 border-slate-200 dark:border-violet-500/15">
           {/* Header glow */}
           <div className="absolute inset-0 opacity-20"
             style={{ background: "radial-gradient(ellipse at 50% 0%, #7c3aed, transparent 70%)" }} />
-          <div className="absolute bottom-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent)" }} />
-
-          <Link to="/super-admin" className="flex items-center gap-3 relative z-10">
+ 
+          <Link to="/super-admin" className="flex items-center gap-3 md:gap-4 relative z-10">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-lg shadow-xl"
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-base md:text-xl shadow-xl"
                 style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", boxShadow: "0 0 20px rgba(124,58,237,0.5)" }}>
                 C
               </div>
@@ -52,8 +50,8 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                 style={{ boxShadow: "0 0 8px rgba(52,211,153,0.8)" }} />
             </div>
             <div>
-              <p className="text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">CorpLink</p>
-              <p className="text-[9px] font-bold uppercase tracking-widest text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
+              <p className="text-xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-widest leading-tight">CorpLink</p>
+              <p className="text-[10px] md:text-xs font-black tracking-widest uppercase text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
                 Super Admin
               </p>
             </div>
@@ -65,27 +63,27 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
         </div>
 
         {/* Admin Profile Card */}
-        <div className="mx-3 mt-3 mb-2 p-3 rounded-2xl relative overflow-hidden bg-violet-50/50 dark:bg-violet-900/10 border border-violet-100 dark:border-violet-500/20">
+        <div className="mx-4 md:mx-6 mt-6 md:mt-8 mb-6 md:mb-8 p-4 md:p-6 rounded-2xl md:rounded-3xl relative overflow-hidden bg-violet-50/50 dark:bg-violet-900/10 border-2 border-violet-100 dark:border-violet-500/20">
           <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-10 dark:opacity-20 -translate-y-4 translate-x-4"
             style={{ background: "radial-gradient(circle, #7c3aed, transparent)" }} />
-          <div className="flex items-center gap-2.5 relative z-10">
-            <div className="w-9 h-9 rounded-xl font-bold text-white text-sm flex items-center justify-center shrink-0 shadow-lg"
+          <div className="flex items-center gap-3 md:gap-4 relative z-10">
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl font-black text-white text-base md:text-xl flex items-center justify-center shrink-0 shadow-lg"
               style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
               {(profile?.full_name || "S").charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-slate-800 dark:text-white truncate">{profile?.full_name || "Super Admin"}</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <Shield className="h-2.5 w-2.5 text-violet-500 dark:text-violet-400" />
-                <p className="text-[9px] font-semibold text-violet-500 dark:text-violet-400 uppercase tracking-wider">Full Access</p>
+              <p className="text-sm md:text-lg font-black text-slate-800 dark:text-white truncate uppercase tracking-widest">{profile?.full_name || "Super Admin"}</p>
+              <div className="flex items-center gap-2 mt-1">
+                <Shield className="h-3 w-3 md:h-4 md:w-4 text-violet-500 dark:text-violet-400" />
+                <p className="text-[10px] md:text-xs font-black text-violet-500 dark:text-violet-400 uppercase tracking-widest">Full Access</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-2 px-3 space-y-1">
-          <p className="px-3 py-2 text-[9px] font-bold uppercase tracking-[0.15em] text-violet-600">Navigation</p>
+        <nav className="flex-1 overflow-y-auto py-8 md:py-10 pl-4 pr-2 md:pl-6 md:pr-4 space-y-2 md:space-y-3 custom-scrollbar">
+          <p className="px-4 md:px-6 text-xs md:text-sm font-black uppercase tracking-[0.15em] text-violet-600 mb-3 md:mb-5">Navigation</p>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon
             return (
@@ -94,8 +92,8 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                 to={item.path}
                 end={item.exact}
                 className={({ isActive }) =>
-                  `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 relative overflow-hidden ${
-                    isActive ? "text-violet-900 dark:text-white" : "text-slate-500 dark:text-violet-400/70 hover:text-slate-800 dark:hover:text-violet-200"
+                  `group flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-sm md:text-base font-black uppercase tracking-widest transition-all duration-200 relative overflow-hidden ${
+                    isActive ? "text-violet-900 dark:text-white shadow-lg shadow-violet-900/20" : "text-slate-500 dark:text-violet-400/70 hover:text-slate-800 dark:hover:text-violet-200 hover:bg-slate-50 dark:hover:bg-violet-500/10"
                   }`
                 }
               >
@@ -103,15 +101,11 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                   <>
                     {/* Active background */}
                     {isActive && (
-                      <div className="absolute inset-0 rounded-xl bg-violet-100 dark:bg-violet-500/20 border border-violet-200 dark:border-violet-500/30" />
+                      <div className="absolute inset-0 rounded-2xl md:rounded-3xl bg-violet-100 dark:bg-violet-500/20 border-2 border-violet-200 dark:border-violet-500/30" />
                     )}
-                    {/* Hover background */}
-                    {!isActive && (
-                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity bg-slate-50 dark:bg-violet-500/10" />
-                    )}
-
+ 
                     {/* Icon container */}
-                    <div className={`relative z-10 w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                    <div className={`relative z-10 w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                       isActive ? "shadow-md dark:shadow-lg" : "opacity-60 group-hover:opacity-90 bg-slate-100 dark:bg-violet-500/10"
                     }`}
                       style={isActive ? {
@@ -119,14 +113,14 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                         boxShadow: `0 4px 12px ${item.colorStart}66`
                       } : {}}
                     >
-                      <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-white' : 'text-slate-500 dark:text-white'}`} />
+                      <Icon className={`h-4 w-4 md:h-5 md:w-5 ${isActive ? 'text-white' : 'text-slate-500 dark:text-white'}`} />
                     </div>
-
+ 
                     <span className="relative z-10">{item.name}</span>
-
+ 
                     {isActive && (
-                      <div className="ml-auto relative z-10 w-1.5 h-1.5 rounded-full bg-violet-400"
-                        style={{ boxShadow: "0 0 6px rgba(167,139,250,0.8)" }} />
+                      <div className="ml-auto relative z-10 w-2 h-2 rounded-full bg-violet-400"
+                        style={{ boxShadow: "0 0 8px rgba(167,139,250,0.8)" }} />
                     )}
                   </>
                 )}
@@ -136,18 +130,18 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
         </nav>
 
         {/* Bottom Status */}
-        <div className="p-3 mt-auto">
-          <div className="relative p-3 rounded-2xl overflow-hidden bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/15">
+        <div className="p-4 md:p-6 mt-auto">
+          <div className="relative p-4 md:p-6 rounded-2xl md:rounded-[2rem] overflow-hidden bg-emerald-50 dark:bg-emerald-500/10 border-2 border-emerald-100 dark:border-emerald-500/15">
             <div className="absolute top-0 right-0 w-16 h-16 opacity-10 -translate-y-4 translate-x-4"
               style={{ background: "radial-gradient(circle, #10b981, transparent)" }} />
-            <div className="flex items-center gap-2 relative z-10">
-              <div className="flex items-center gap-2">
-                <Zap className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
-                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-300">All Systems Online</p>
+            <div className="flex items-center gap-3 md:gap-4 relative z-10">
+              <div className="flex items-center gap-2 md:gap-3">
+                <Zap className="h-4 w-4 md:h-5 md:w-5 text-emerald-500 dark:text-emerald-400" />
+                <p className="text-xs md:text-sm font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-300">All Systems Online</p>
               </div>
-              <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+              <div className="ml-auto w-2 h-2 md:w-3 md:h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
             </div>
-            <p className="text-[10px] text-emerald-600/70 dark:text-emerald-600 mt-0.5 relative z-10">Platform fully operational</p>
+            <p className="text-[10px] md:text-xs text-emerald-600/70 dark:text-emerald-600 font-bold uppercase tracking-wider mt-1 relative z-10">Platform fully operational</p>
           </div>
         </div>
 

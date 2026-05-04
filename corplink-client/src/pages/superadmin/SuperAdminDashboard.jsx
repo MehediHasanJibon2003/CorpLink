@@ -92,123 +92,123 @@ export default function SuperAdminDashboard() {
 
       {/* Pending Alert Banner */}
       {stats.pending > 0 && (
-        <div className="mb-6 flex items-center gap-3 px-5 py-3.5 rounded-2xl relative overflow-hidden bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/25">
+        <div className="mb-8 md:mb-12 flex items-center gap-4 md:gap-6 px-6 md:px-10 py-5 md:py-8 rounded-3xl md:rounded-[2.5rem] relative overflow-hidden bg-amber-50 dark:bg-amber-500/10 border-2 border-amber-200 dark:border-amber-500/25 shadow-lg shadow-amber-500/10">
           <div className="absolute inset-0 opacity-5 dark:opacity-10 bg-gradient-to-r from-amber-500 to-red-500" />
-          <AlertTriangle className="h-5 w-5 text-amber-500 dark:text-amber-400 shrink-0 relative z-10 dark:drop-shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
-          <p className="text-sm font-medium relative z-10 text-amber-700 dark:text-amber-200">
-            <span className="font-black">{stats.pending} corporate{stats.pending > 1 ? "s" : ""}</span> awaiting your approval
+          <AlertTriangle className="h-6 w-6 md:h-8 md:w-8 text-amber-500 dark:text-amber-400 shrink-0 relative z-10 dark:drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+          <p className="text-sm md:text-lg font-black relative z-10 text-amber-800 dark:text-amber-200 uppercase tracking-widest">
+            <span className="text-amber-600 dark:text-amber-400">{stats.pending} corporate{stats.pending > 1 ? "s" : ""}</span> awaiting approval
           </p>
           <Link to="/super-admin/corporates"
-            className="ml-auto flex items-center gap-1 text-xs font-bold relative z-10 hover:gap-2 transition-all text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300">
-            Review Now <ArrowRight className="h-3 w-3" />
+            className="ml-auto flex items-center gap-2 text-xs md:text-sm font-black relative z-10 hover:gap-3 transition-all text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 uppercase tracking-widest">
+            Review Now <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
           </Link>
         </div>
       )}
 
       {/* Gradient Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 mb-10 md:mb-16">
         {STAT_CARDS.map(card => (
-          <div key={card.key} className="relative rounded-2xl p-5 overflow-hidden group cursor-default bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
+          <div key={card.key} className="relative rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 overflow-hidden group cursor-default bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 shadow-sm hover:shadow-xl transition-all duration-300">
             {/* Corner glow */}
-            <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-10 dark:opacity-30 transition-opacity group-hover:opacity-20 dark:group-hover:opacity-50"
+            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-10 dark:opacity-30 transition-opacity group-hover:opacity-25 dark:group-hover:opacity-60 blur-xl"
               style={{ background: `radial-gradient(circle, ${card.glow}, transparent 70%)` }} />
-
+ 
             <div className="flex items-start justify-between relative z-10">
               <div>
-                <p className="text-xs font-semibold text-slate-500 dark:text-white/50 uppercase tracking-wider mb-2">{card.title}</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white dark:drop-shadow-[0_0_30px_var(--glow)]" style={{ "--glow": card.glow }}>
+                <p className="text-[10px] md:text-xs font-black text-slate-500 dark:text-white/50 uppercase tracking-widest mb-3 md:mb-4">{card.title}</p>
+                <p className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white dark:drop-shadow-[0_0_30px_var(--glow)]" style={{ "--glow": card.glow }}>
                   {loading ? "—" : stats[card.key]}
                 </p>
                 {card.key === "total" && !loading && (
-                  <p className="text-xs mt-1 text-slate-600 dark:text-white/80" style={{ color: "var(--glow-text)" }}>
-                    <span style={{ "--glow-text": card.glow.replace("0.4", "0.9") }} className="dark:inline hidden">{stats.pending} pending</span>
-                    <span className="dark:hidden text-violet-600 font-medium">{stats.pending} pending</span>
+                  <p className="text-[10px] md:text-xs mt-2 md:mt-3 font-black uppercase tracking-wider" style={{ color: "var(--glow-text)" }}>
+                    <span style={{ "--glow-text": card.glow.replace("0.4", "0.9") }} className="dark:inline hidden">{stats.pending} pending approval</span>
+                    <span className="dark:hidden text-violet-600 font-bold">{stats.pending} pending approval</span>
                   </p>
                 )}
               </div>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-md dark:shadow-[0_4px_16px_var(--glow)]"
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-lg dark:shadow-[0_8px_30px_var(--glow)] transition-transform group-hover:scale-110 duration-300"
                 style={{ background: card.iconBg, "--glow": card.glow }}>
-                <card.icon className="h-5 w-5 text-white" />
+                <card.icon className="h-6 w-6 md:h-8 md:w-8 text-white" />
               </div>
             </div>
-
+ 
             {/* Bottom gradient bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 opacity-100 dark:opacity-60"
+            <div className="absolute bottom-0 left-0 right-0 h-1 md:h-1.5 opacity-100 dark:opacity-60"
               style={{ background: card.gradient }} />
           </div>
         ))}
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10 md:mb-16">
         {QUICK_LINKS.map(item => (
           <Link key={item.path} to={item.path}
-            className="group relative flex items-center justify-between px-4 py-3.5 rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-0.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 shadow-sm">
+            className="group relative flex items-center justify-between px-6 md:px-8 py-5 md:py-8 rounded-2xl md:rounded-[1.5rem] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
             {/* Hover glow */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-100 transition-opacity"
               style={{ background: `linear-gradient(135deg, ${item.hover}, transparent)` }} />
-            <span className="text-sm font-semibold text-slate-700 dark:text-white/70 group-hover:text-slate-900 dark:group-hover:text-white transition-colors relative z-10">{item.label}</span>
-            <ArrowRight className="h-3.5 w-3.5 text-slate-400 dark:text-white/30 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all relative z-10" />
+            <span className="text-sm md:text-lg font-black text-slate-700 dark:text-white/70 group-hover:text-slate-900 dark:group-hover:text-white transition-colors relative z-10 uppercase tracking-widest">{item.label}</span>
+            <ArrowRight className="h-5 w-5 text-slate-400 dark:text-white/30 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-all relative z-10" />
           </Link>
         ))}
       </div>
 
       {/* Recent Activity */}
-      <div className="rounded-2xl overflow-hidden bg-white dark:bg-white/5 border border-slate-200 dark:border-violet-500/15 shadow-sm">
+      <div className="rounded-3xl md:rounded-[3rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
         {/* Header */}
-        <div className="px-6 py-4 flex items-center justify-between relative overflow-hidden border-b border-slate-100 dark:border-violet-500/15 bg-slate-50 dark:bg-transparent">
+        <div className="px-8 md:px-12 py-6 md:py-8 flex items-center justify-between relative overflow-hidden border-b-2 border-slate-100 dark:border-violet-500/15 bg-slate-50/50 dark:bg-transparent">
           <div className="absolute inset-0 opacity-0 dark:opacity-100" style={{ background: "linear-gradient(90deg, rgba(124,58,237,0.08), transparent)" }} />
-          <div className="flex items-center gap-2.5 relative z-10">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center shadow-md dark:shadow-[0_0_12px_rgba(124,58,237,0.4)]"
+          <div className="flex items-center gap-4 md:gap-6 relative z-10">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-lg dark:shadow-[0_0_20px_rgba(124,58,237,0.4)]"
               style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
-              <Activity className="h-3.5 w-3.5 text-white" />
+              <Activity className="h-5 w-5 md:h-6 md:w-6 text-white" />
             </div>
-            <h2 className="text-sm font-bold text-slate-900 dark:text-white">Recent Platform Activity</h2>
+            <h2 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-widest">Recent Platform Activity</h2>
           </div>
           <Link to="/super-admin/logs"
-            className="text-xs font-bold flex items-center gap-1 hover:gap-1.5 transition-all text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 relative z-10">
-            View all <ArrowRight className="h-3 w-3" />
+            className="text-sm md:text-lg font-black flex items-center gap-2 hover:gap-3 transition-all text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 relative z-10 uppercase tracking-widest">
+            View all <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
-
+ 
         {/* Log rows */}
-        <div>
+        <div className="divide-y-2 divide-slate-100 dark:divide-violet-500/10">
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="flex gap-1">
+            <div className="flex items-center justify-center py-20">
+              <div className="flex gap-2">
                 {[0,1,2].map(i => (
-                  <div key={i} className="w-2 h-2 rounded-full bg-violet-500 animate-bounce"
+                  <div key={i} className="w-3 h-3 rounded-full bg-violet-500 animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }} />
                 ))}
               </div>
             </div>
           ) : logs.length === 0 ? (
-            <div className="text-center py-12">
-              <Zap className="h-8 w-8 text-violet-800 mx-auto mb-2" />
-              <p className="text-violet-600 text-sm">No activity yet</p>
+            <div className="text-center py-20">
+              <Zap className="h-12 w-12 text-violet-800 mx-auto mb-4 opacity-50" />
+              <p className="text-violet-600 text-lg font-black uppercase tracking-widest">No activity yet</p>
             </div>
-          ) : logs.map((log, i) => {
+          ) : logs.map((log) => {
             const sv = severityStyle[log.severity] || severityStyle.info
             return (
                 <div key={log.id}
-                className={`px-6 py-3.5 flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group ${i < logs.length - 1 ? "border-b border-slate-100 dark:border-violet-500/10" : ""}`}>
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: sv.bg, border: `1px solid ${sv.border}` }}>
-                    <Activity className="h-3.5 w-3.5" style={{ color: sv.text }} />
+                className="px-8 md:px-12 py-5 md:py-8 flex items-center justify-between gap-6 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                <div className="flex items-center gap-4 md:gap-6 min-w-0">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0 border-2"
+                    style={{ background: sv.bg, borderColor: sv.border }}>
+                    <Activity className="h-5 w-5 md:h-6 md:w-6" style={{ color: sv.text }} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-slate-800 dark:text-white font-medium truncate">{log.action}</p>
-                    <p className="text-xs text-slate-500 dark:text-violet-500 truncate">{log.entity || "system"}</p>
+                    <p className="text-base md:text-xl text-slate-800 dark:text-white font-black truncate uppercase tracking-wide">{log.action}</p>
+                    <p className="text-xs md:text-sm text-slate-500 dark:text-violet-500 truncate font-bold uppercase tracking-wider mt-1">{log.entity || "system"}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full"
-                    style={{ background: sv.bg, color: sv.text, border: `1px solid ${sv.border}` }}>
+                <div className="flex items-center gap-4 md:gap-6 shrink-0">
+                  <span className="text-[10px] md:text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest border-2"
+                    style={{ background: sv.bg, color: sv.text, borderColor: sv.border }}>
                     {log.severity || "info"}
                   </span>
-                  <span className="text-[10px] text-slate-400 dark:text-violet-600">
-                    {new Date(log.created_at).toLocaleDateString()}
+                  <span className="text-[10px] md:text-xs text-slate-400 dark:text-violet-600 font-black uppercase tracking-widest">
+                    {new Date(log.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
               </div>

@@ -23,16 +23,18 @@ export default function SuperAdminLayout({ children, title, subtitle }) {
         <SuperAdminTopbar onMenuClick={() => setIsSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
-          <div className="w-full px-6 lg:px-8 py-8">
+          <div className="w-full px-8 md:px-12 lg:px-20 py-6 md:py-8 lg:py-12 flex flex-col">
             {(title || subtitle) && (
-              <div className="mb-8">
+              <div className="mb-8 md:mb-12 lg:mb-16">
                 {title && (
-                  <h1 className="text-2xl font-extrabold tracking-tight mb-1 text-slate-900 dark:text-transparent bg-clip-text bg-gradient-to-br from-violet-600 to-indigo-600 dark:from-white dark:to-violet-200">
+                  <h1 className="text-3xl md:text-4xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight mb-2 md:mb-4">
                     {title}
                   </h1>
                 )}
                 {subtitle && (
-                  <p className="text-slate-500 dark:text-violet-400/70 text-sm font-medium">{subtitle}</p>
+                  <p className="text-[11px] md:text-sm lg:text-base text-slate-500 dark:text-violet-400/70 mt-3 md:mt-4 font-black uppercase tracking-widest">
+                    {subtitle}
+                  </p>
                 )}
               </div>
             )}
