@@ -108,13 +108,15 @@ function Register() {
           return;
         }
 
-        const { error: profileError } = await supabase.from("profiles").insert([{
-          id: user.id,
-          company_id: companyData.id,
-          full_name: fullName.trim(),
-          email: email.trim().toLowerCase(),
-          role: "corporate_admin",
-        }]);
+        const { error: profileError } = await supabase.from("profiles").insert([
+          {
+            id: user.id,
+            company_id: companyData.id,
+            full_name: fullName.trim(),
+            email: email.trim().toLowerCase(),
+            role: "corporate_admin",
+          },
+        ]);
 
         if (profileError && profileError.code !== "23505") {
           setError("Profile setup failed: " + profileError.message);
@@ -124,7 +126,6 @@ function Register() {
 
         setMessage("Company workspace created! Redirecting to login...");
         setTimeout(() => navigate("/login"), 1800);
-
       } else {
         // ── JOIN WORKSPACE FLOW ──────────────────────────────────────────
         // NOTE: We sign up the user FIRST because RLS blocks anonymous users
@@ -147,10 +148,15 @@ function Register() {
           ) {
             // User already exists in auth — try signing in
             const { data: signInData, error: signInError } =
-              await supabase.auth.signInWithPassword({ email: trimmedEmail, password });
+              await supabase.auth.signInWithPassword({
+                email: trimmedEmail,
+                password,
+              });
 
             if (signInError) {
-              setError("An account with this email already exists. Check your password or use the login page.");
+              setError(
+                "An account with this email already exists. Check your password or use the login page.",
+              );
               setLoading(false);
               return;
             }
@@ -193,13 +199,20 @@ function Register() {
         }
 
         // STEP 3: Insert a temporary profile so RLS allows querying employees table
-        const { error: profileTempErr } = await supabase.from("profiles").upsert([{
-          id: authUser.id,
-          company_id: trimmedCompanyId,
-          full_name: fullName.trim(),
-          email: trimmedEmail,
-          role: "employee",
-        }], { onConflict: "id" });
+        const { error: profileTempErr } = await supabase
+          .from("profiles")
+          .upsert(
+            [
+              {
+                id: authUser.id,
+                company_id: trimmedCompanyId,
+                full_name: fullName.trim(),
+                email: trimmedEmail,
+                role: "employee",
+              },
+            ],
+            { onConflict: "id" },
+          );
 
         if (profileTempErr) {
           await supabase.auth.signOut();
@@ -220,26 +233,34 @@ function Register() {
           // ROLLBACK: This person is not an authorized employee — delete profile and sign out
           await supabase.from("profiles").delete().eq("id", authUser.id);
           await supabase.auth.signOut();
-          setError("Your email is not registered in this company. Ask your HR or Admin to add you first.");
+          setError(
+            "Your email is not registered in this company. Ask your HR or Admin to add you first.",
+          );
           setLoading(false);
           return;
         }
 
         // STEP 5: Update profile with correct name and role from employees table
-        await supabase.from("profiles").update({
-          full_name: empData.name || fullName.trim(),
-          role: empData.role || "employee",
-        }).eq("id", authUser.id);
+        await supabase
+          .from("profiles")
+          .update({
+            full_name: empData.name || fullName.trim(),
+            role: empData.role || "employee",
+          })
+          .eq("id", authUser.id);
 
         // STEP 6: Mark employee as onboarded in the employees table
-        await supabase.from("employees")
+        await supabase
+          .from("employees")
           .update({ onboarded: true })
           .eq("id", empData.id);
 
         // STEP 7: Sign out so they log in fresh with a clean session
         await supabase.auth.signOut();
 
-        setMessage("✅ Account created successfully! Please log in with your email and password.");
+        setMessage(
+          "✅ Account created successfully! Please log in with your email and password.",
+        );
         setTimeout(() => navigate("/login"), 2000);
       }
     } catch (err) {
@@ -318,7 +339,9 @@ function Register() {
                   <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
                     <Icon className="h-8 w-8 text-blue-400" />
                   </div>
-                  <p className="text-slate-200 text-xl font-medium">{item.text}</p>
+                  <p className="text-slate-200 text-xl font-medium">
+                    {item.text}
+                  </p>
                 </div>
               );
             })}
@@ -359,7 +382,11 @@ function Register() {
           <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl mb-10 gap-1.5">
             <button
               type="button"
-              onClick={() => { setMode("create"); setError(""); setMessage(""); }}
+              onClick={() => {
+                setMode("create");
+                setError("");
+                setMessage("");
+              }}
               className={`flex-1 flex items-center justify-center gap-3 py-3 text-lg font-bold rounded-xl transition-all ${
                 mode === "create"
                   ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
@@ -371,7 +398,11 @@ function Register() {
             </button>
             <button
               type="button"
-              onClick={() => { setMode("join"); setError(""); setMessage(""); }}
+              onClick={() => {
+                setMode("join");
+                setError("");
+                setMessage("");
+              }}
               className={`flex-1 flex items-center justify-center gap-3 py-3 text-lg font-bold rounded-xl transition-all ${
                 mode === "join"
                   ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
@@ -535,9 +566,24 @@ function Register() {
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  <svg
+                    className="animate-spin h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                   Processing...
                 </>

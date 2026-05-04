@@ -183,7 +183,9 @@ function Login() {
                     <p className="text-white font-black text-2xl md:text-3xl tracking-tight">
                       {f.title}
                     </p>
-                    <p className="text-slate-400 text-lg md:text-xl font-medium mt-1">{f.desc}</p>
+                    <p className="text-slate-400 text-lg md:text-xl font-medium mt-1">
+                      {f.desc}
+                    </p>
                   </div>
                 </div>
               );
@@ -232,21 +234,22 @@ function Login() {
           {/* Form */}
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Email */}
-            <div className="space-y-4">
-              <label className="block text-xl md:text-2xl font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest px-2">
-                Corporate Email Address
+            <div className="space-y-3">
+              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
+                Email Address
               </label>
               <div className="relative">
                 <Mail
-                  className="absolute left-8 top-1/2 -translate-y-1/2 h-8 w-8 text-slate-400 pointer-events-none"
+                  className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none"
+                  style={{ width: "24px", height: "24px" }}
                 />
                 <input
                   type="email"
                   name="email"
-                  placeholder="name@enterprise.com"
+                  placeholder="Enter your email address"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-20 pr-8 py-8 md:py-10 border-[4px] border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-400 rounded-3xl md:rounded-[2.5rem] outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-8 focus:ring-blue-500/5 transition-all text-2xl md:text-3xl font-black shadow-inner"
+                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
                 />
               </div>
             </div>
@@ -257,7 +260,10 @@ function Login() {
                 <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
                   Password
                 </label>
-                <Link to="/forgot-password" className="text-base font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                <Link
+                  to="/forgot-password"
+                  className="text-base font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                >
                   Forgot Password?
                 </Link>
               </div>
@@ -290,12 +296,15 @@ function Login() {
 
             {/* Remember Me */}
             <div className="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                id="remember" 
+              <input
+                type="checkbox"
+                id="remember"
                 className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:ring-offset-slate-900"
               />
-              <label htmlFor="remember" className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+              <label
+                htmlFor="remember"
+                className="text-sm text-slate-600 dark:text-slate-400 font-medium"
+              >
                 Remember me for 30 days
               </label>
             </div>
@@ -316,12 +325,12 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-8 md:py-10 rounded-3xl md:rounded-[2.5rem] font-black text-2xl md:text-4xl transition-all shadow-2xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-1 active:translate-y-0 mt-10 tracking-tight"
+              className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-5 rounded-2xl font-black text-xl transition-all shadow-xl shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 mt-6"
             >
               {loading ? (
                 <>
                   <svg
-                    className="animate-spin h-8 w-8"
+                    className="animate-spin h-5 w-5"
                     fill="none"
                     viewBox="0 0 24 24"
                   >
@@ -339,11 +348,11 @@ function Login() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                     />
                   </svg>
-                  Authenticating...
+                  Signing in...
                 </>
               ) : (
                 <>
-                  Secure Sign In <ArrowRight className="h-8 w-8" />
+                  Sign In <ArrowRight className="h-5 w-5" />
                 </>
               )}
             </button>
@@ -370,11 +379,17 @@ function Login() {
 
           <p className="text-center text-xs text-slate-400 mt-6">
             By signing in, you agree to CorpLink's{" "}
-            <Link to="/terms" className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors">
+            <Link
+              to="/terms"
+              className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors"
+            >
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link to="/privacy" className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors">
+            <Link
+              to="/privacy"
+              className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors"
+            >
               Privacy Policy
             </Link>
           </p>

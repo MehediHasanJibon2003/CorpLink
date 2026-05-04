@@ -28,7 +28,7 @@ function AppLayout({ children, title, subtitle }) {
                   </h1>
                 )}
                 {subtitle && (
-                  <p className="text-base md:text-lg lg:text-2xl text-slate-500 dark:text-slate-400 mt-2 lg:mt-3 font-medium">
+                  <p className="text-[11px] md:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-3 md:mt-4 font-black uppercase tracking-widest">
                     {subtitle}
                   </p>
                 )}

@@ -174,12 +174,12 @@ function Sidebar({ isOpen, setIsOpen }) {
       `}
       >
         {/* Brand Header */}
-        <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b border-slate-800 dark:border-slate-800/50">
+        <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-800 dark:border-slate-800/50">
           <Link to="/dashboard" className="flex items-center gap-3 md:gap-4">
-            <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-orange-500 flex items-center justify-center font-bold text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-base md:text-xl">
+            <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-base md:text-xl">
               C
             </div>
-            <span className="text-xl md:text-3xl font-bold tracking-tight text-white">
+            <span className="text-xl md:text-3xl font-black uppercase tracking-widest text-white">
               CorpLink
             </span>
           </Link>
@@ -196,7 +196,7 @@ function Sidebar({ isOpen, setIsOpen }) {
 
             return (
               <div key={groupIndex} className="mb-6 md:mb-8">
-                <h3 className="px-4 md:px-6 text-xs md:text-lg font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 md:mb-5">
+                <h3 className="px-4 md:px-6 text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 md:mb-5">
                   {group.title}
                 </h3>
                 <nav className="space-y-2 md:space-y-3">
@@ -212,9 +212,9 @@ function Sidebar({ isOpen, setIsOpen }) {
                       <Link
                         key={itemIndex}
                         to={item.path}
-                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 rounded-lg md:rounded-xl text-sm md:text-lg font-medium transition-all duration-200 ${
+                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-sm md:text-base font-black uppercase tracking-widest transition-all duration-200 ${
                           isActive
-                            ? "bg-blue-600 text-white shadow-sm md:shadow-md shadow-blue-900/20"
+                            ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
                             : "text-slate-400 hover:text-white hover:bg-slate-800 dark:hover:bg-slate-900"
                         }`}
                       >
@@ -231,15 +231,15 @@ function Sidebar({ isOpen, setIsOpen }) {
           })}
         </div>
 
-        <div className="p-4 md:p-6 border-t border-slate-800 bg-slate-900 sticky bottom-0">
-          <div className="bg-slate-800/50 rounded-2xl md:rounded-3xl p-4 md:p-5 border border-slate-700/50">
+        <div className="p-4 md:p-6 border-t-2 border-slate-800 bg-slate-900 sticky bottom-0">
+          <div className="bg-slate-800/50 rounded-3xl md:rounded-[2.5rem] p-5 md:p-6 border-2 border-slate-700/50">
             <div className="flex items-center gap-3 md:gap-4 mb-1.5 md:mb-2">
               <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] md:shadow-[0_0_12px_rgba(16,185,129,0.8)]"></div>
-              <p className="text-xs md:text-base font-semibold md:font-bold text-slate-200">
+              <p className="text-xs md:text-sm font-black uppercase tracking-widest text-slate-200">
                 System Online
               </p>
             </div>
-            <p className="text-[10px] md:text-sm text-slate-400 font-medium">
+            <p className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">
               All services operational
             </p>
           </div>
