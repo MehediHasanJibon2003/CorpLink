@@ -1,5 +1,6 @@
 import { NavLink, Link } from "react-router-dom"
 import { useAuth } from "../../../context/AuthContext"
+import { useTheme } from "../../../context/ThemeContext"
 import {
   LayoutDashboard, Building2, CreditCard, Settings,
   Activity, Megaphone, BarChart3, Shield, X, Zap, Users
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
 
 export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
   const { profile } = useAuth()
+  const { branding } = useTheme()
 
   return (
     <>
@@ -43,15 +45,21 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
  
           <Link to="/super-admin" className="flex items-center gap-3 md:gap-4 relative z-10">
             <div className="relative">
-              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-base md:text-xl shadow-xl"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", boxShadow: "0 0 20px rgba(124,58,237,0.5)" }}>
-                C
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-base md:text-xl shadow-xl overflow-hidden bg-gradient-to-br from-violet-600 to-indigo-600"
+                style={{ boxShadow: "0 0 20px rgba(124,58,237,0.5)" }}>
+                {branding?.logo_url ? (
+                  <img src={branding.logo_url} className="w-full h-full object-cover" alt="Logo" />
+                ) : (
+                  (branding?.platform_name?.charAt(0) || "C")
+                )}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-[#0d0622] bg-emerald-400"
                 style={{ boxShadow: "0 0 8px rgba(52,211,153,0.8)" }} />
             </div>
             <div>
-              <p className="text-xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-widest leading-tight">CorpLink</p>
+              <p className="text-xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-widest leading-tight">
+                {branding?.platform_name || "CorpLink"}
+              </p>
               <p className="text-[10px] md:text-xs font-black tracking-widest uppercase text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
                 Super Admin
               </p>
