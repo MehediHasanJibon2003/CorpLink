@@ -45,8 +45,8 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
  
           <Link to="/super-admin" className="flex items-center gap-3 md:gap-4 relative z-10">
             <div className="relative">
-              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-base md:text-xl shadow-xl overflow-hidden bg-gradient-to-br from-violet-600 to-indigo-600"
-                style={{ boxShadow: "0 0 20px rgba(124,58,237,0.5)" }}>
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-base md:text-xl shadow-xl overflow-hidden bg-gradient-to-br"
+                style={{ background: "var(--primary-color)", boxShadow: "0 0 20px rgba(124,58,237,0.3)" }}>
                 {branding?.logo_url ? (
                   <img src={branding.logo_url} className="w-full h-full object-cover" alt="Logo" />
                 ) : (
@@ -77,7 +77,7 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
             style={{ background: "radial-gradient(circle, #7c3aed, transparent)" }} />
           <div className="flex items-center gap-3 md:gap-4 relative z-10">
             <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl font-black text-white text-base md:text-xl flex items-center justify-center shrink-0 shadow-lg"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
+              style={{ background: "var(--primary-color)" }}>
               {(profile?.full_name || "S").charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
