@@ -49,6 +49,12 @@ export function AuthProvider({ children }) {
     }
 
     setProfile(data)
+
+    if (data && data.is_blocked) {
+      await supabase.auth.signOut()
+      setUser(null)
+      setProfile(null)
+    }
   }
 
   useEffect(() => {

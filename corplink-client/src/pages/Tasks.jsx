@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
+import { logModuleUsage } from "../services/usageService"
 import AppLayout from "../components/layout/AppLayout"
 
 import ProjectsPanel from "../components/tasks/ProjectsPanel"
@@ -24,11 +25,12 @@ function Tasks() {
 
   useEffect(() => {
     if (profile) {
+      logModuleUsage("Tasks", profile.company_id, user.id)
       supabase.from("employees").select("id, name").eq("company_id", profile.company_id).then(res => {
         if (res.data) setEmployees(res.data)
       })
     }
-  }, [profile])
+  }, [profile, user.id])
 
   const handleSelectProject = (project) => {
     setActiveProject(project)

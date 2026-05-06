@@ -62,28 +62,47 @@ function Login() {
     }
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error: signInError, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (error) {
-        setError(error.message);
+
+      if (signInError) {
+        await supabase.from("login_attempts").insert([{ email, status: "failed" }]);
+        
+        // Re-check if blocked after the failed attempt trigger might have fired
+        const { data: checkBlock } = await supabase.from("profiles").select("is_blocked").eq("email", email).maybeSingle();
+        if (checkBlock?.is_blocked) {
+          setError("Your account has been blocked due to multiple failed login attempts. Contact support.");
+        } else {
+          setError(signInError.message);
+        }
         setLoading(false);
         return;
       }
+
       if (!data?.user) {
         setError("Login failed");
         setLoading(false);
         return;
       }
+
+      await supabase.from("login_attempts").insert([{ email, status: "success" }]);
+
       try {
         const { data: userProfile } = await supabase
           .from("profiles")
-          .select("company_id, role")
+          .select("company_id, role, is_blocked")
           .eq("id", data.user.id)
           .single();
 
-        // Log activity for non-super-admins
+        if (userProfile?.is_blocked) {
+          await supabase.auth.signOut();
+          setError("This account is currently blocked. Please contact a Super Admin.");
+          setLoading(false);
+          return;
+        }
+
         if (userProfile?.company_id) {
           await supabase.from("activity_logs").insert([
             {
@@ -97,7 +116,6 @@ function Login() {
           ]);
         }
 
-        // Role-based redirect
         if (userProfile?.role === "super_admin") {
           navigate("/super-admin");
           return;
@@ -111,7 +129,6 @@ function Login() {
         }
       } catch (err) {
         console.error("Failed to log auth:", err);
-        // Fallback
         navigate("/employee/dashboard");
       }
     } catch (err) {

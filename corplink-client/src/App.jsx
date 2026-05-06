@@ -33,6 +33,8 @@ import PlatformSettings from "./pages/superadmin/PlatformSettings"
 import SystemActivityLogs from "./pages/superadmin/SystemActivityLogs"
 import GlobalAnnouncements from "./pages/superadmin/GlobalAnnouncements"
 import PlatformAnalytics from "./pages/superadmin/PlatformAnalytics"
+import ThreatManagement from "./pages/superadmin/ThreatManagement"
+import UserManagement from "./pages/superadmin/UserManagement"
 
 function App() {
   return (
@@ -203,6 +205,14 @@ function App() {
             <Route
               path="/super-admin/analytics"
               element={<SuperAdminRoute><PlatformAnalytics /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/threats"
+              element={<SuperAdminRoute><ThreatManagement /></SuperAdminRoute>}
+            />
+            <Route
+              path="/super-admin/users"
+              element={<SuperAdminRoute><UserManagement /></SuperAdminRoute>}
             />
           </Routes>
         </BrowserRouter>

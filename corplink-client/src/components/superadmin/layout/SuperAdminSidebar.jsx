@@ -2,7 +2,7 @@ import { NavLink, Link } from "react-router-dom"
 import { useAuth } from "../../../context/AuthContext"
 import {
   LayoutDashboard, Building2, CreditCard, Settings,
-  Activity, Megaphone, BarChart3, Shield, X, Zap,
+  Activity, Megaphone, BarChart3, Shield, X, Zap, Users
 } from "lucide-react"
 
 const NAV_ITEMS = [
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { name: "Platform Settings", path: "/super-admin/settings",      icon: Settings,        colorStart: "#f59e0b", colorEnd: "#f97316" },
   { name: "Activity Logs",     path: "/super-admin/logs",          icon: Activity,        colorStart: "#f43f5e", colorEnd: "#ec4899" },
   { name: "Announcements",     path: "/super-admin/announcements", icon: Megaphone,       colorStart: "#d946ef", colorEnd: "#a855f7" },
+  { name: "Users",             path: "/super-admin/users",         icon: Users,           colorStart: "#ec4899", colorEnd: "#f43f5e" },
   { name: "Analytics",         path: "/super-admin/analytics",     icon: BarChart3,       colorStart: "#6366f1", colorEnd: "#8b5cf6" },
 ]
 

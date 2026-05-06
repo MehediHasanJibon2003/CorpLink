@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
-import { Building2, Users, Activity, CheckCircle2, AlertTriangle, TrendingUp, Zap, ArrowRight } from "lucide-react"
+import { Building2, Users, Activity, CheckCircle2, AlertTriangle, TrendingUp, Zap, ArrowRight, ShieldAlert } from "lucide-react"
 
 const STAT_CARDS = [
   {
@@ -45,12 +45,23 @@ const STAT_CARDS = [
     border: "rgba(245,158,11,0.2)",
     iconBg: "linear-gradient(135deg, #f59e0b, #ef4444)",
   },
+  {
+    key: "threats",
+    title: "Security Threats",
+    icon: ShieldAlert,
+    gradient: "linear-gradient(135deg, #ef4444 0%, #991b1b 100%)",
+    glow: "rgba(239,68,68,0.4)",
+    bg: "linear-gradient(135deg, rgba(239,68,68,0.12), rgba(153,27,27,0.06))",
+    border: "rgba(239,68,68,0.25)",
+    iconBg: "linear-gradient(135deg, #ef4444, #991b1b)",
+  },
 ]
 
 const QUICK_LINKS = [
   { label: "Manage Corporates",  path: "/super-admin/corporates",    grad: "from-violet-600 to-indigo-600", hover: "rgba(124,58,237,0.3)" },
   { label: "Subscriptions",      path: "/super-admin/subscriptions", grad: "from-emerald-600 to-teal-600",  hover: "rgba(16,185,129,0.3)" },
   { label: "Activity Logs",      path: "/super-admin/logs",          grad: "from-rose-600 to-pink-600",     hover: "rgba(244,63,94,0.3)" },
+  { label: "Security Threats",   path: "/super-admin/threats",       grad: "from-red-600 to-red-800",      hover: "rgba(220,38,38,0.3)" },
   { label: "Announcements",      path: "/super-admin/announcements", grad: "from-fuchsia-600 to-purple-600",hover: "rgba(192,38,211,0.3)" },
 ]
 
@@ -68,10 +79,11 @@ export default function SuperAdminDashboard() {
 
   useEffect(() => {
     const load = async () => {
-      const [{ data: companies }, { data: profiles }, { data: activity }] = await Promise.all([
+      const [{ data: companies }, { data: profiles }, { data: activity }, { data: threats }] = await Promise.all([
         supabase.from("companies").select("status"),
         supabase.from("profiles").select("id").neq("role", "super_admin"),
         supabase.from("activity_logs").select("*").order("created_at", { ascending: false }).limit(8),
+        supabase.from("threat_alerts").select("id").eq("resolved", false),
       ])
       const cs = companies || []
       setStats({
@@ -80,6 +92,7 @@ export default function SuperAdminDashboard() {
         active:   cs.filter(c => c.status === "active").length,
         inactive: cs.filter(c => c.status === "inactive").length,
         users:    profiles?.length || 0,
+        threats:  threats?.length || 0,
       })
       setLogs(activity || [])
       setLoading(false)
@@ -101,6 +114,21 @@ export default function SuperAdminDashboard() {
           <Link to="/super-admin/corporates"
             className="ml-auto flex items-center gap-2 text-xs md:text-sm font-black relative z-10 hover:gap-3 transition-all text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 uppercase tracking-widest">
             Review Now <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
+          </Link>
+        </div>
+      )}
+
+      {/* Security Threat Alert Banner */}
+      {stats.threats > 0 && (
+        <div className="mb-8 md:mb-12 flex items-center gap-4 md:gap-6 px-6 md:px-10 py-5 md:py-8 rounded-3xl md:rounded-[2.5rem] relative overflow-hidden bg-red-50 dark:bg-red-500/10 border-2 border-red-200 dark:border-red-500/25 shadow-lg shadow-red-500/20 animate-pulse">
+          <div className="absolute inset-0 opacity-5 dark:opacity-10 bg-gradient-to-r from-red-600 to-red-900" />
+          <ShieldAlert className="h-6 w-6 md:h-8 md:w-8 text-red-600 dark:text-red-500 shrink-0 relative z-10" />
+          <p className="text-sm md:text-lg font-black relative z-10 text-red-800 dark:text-red-200 uppercase tracking-widest">
+            <span className="text-red-600 dark:text-red-400">{stats.threats} unresolved security threat{stats.threats > 1 ? "s" : ""}</span> detected
+          </p>
+          <Link to="/super-admin/threats"
+            className="ml-auto flex items-center gap-2 text-xs md:text-sm font-black relative z-10 hover:gap-3 transition-all text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 uppercase tracking-widest">
+            Manage Threats <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
           </Link>
         </div>
       )}

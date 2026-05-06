@@ -1,7 +1,17 @@
+import { useEffect } from "react";
 import AppLayout from "../components/layout/AppLayout";
 import { MessageCircle, Search, MoreVertical } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { logModuleUsage } from "../services/usageService";
 
 export default function Messages() {
+  const { user, profile } = useAuth();
+
+  useEffect(() => {
+    if (profile) {
+      logModuleUsage("Messaging", profile.company_id, user.id);
+    }
+  }, [profile, user.id]);
   return (
     <AppLayout title="Messages" subtitle="Connect with team members directly">
       <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex h-[700px] md:h-[800px] lg:h-[850px]">

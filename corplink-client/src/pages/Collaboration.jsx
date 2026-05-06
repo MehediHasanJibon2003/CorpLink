@@ -1,9 +1,11 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import AppLayout from "../components/layout/AppLayout"
 import DiscoverPanel from "../components/collaboration/DiscoverPanel"
 import PartnerRequestsPanel from "../components/collaboration/PartnerRequestsPanel"
 import ProposalsPanel from "../components/collaboration/ProposalsPanel"
 import MessagesPanel from "../components/collaboration/MessagesPanel"
+import { useAuth } from "../context/AuthContext"
+import { logModuleUsage } from "../services/usageService"
 
 const TABS = [
   { id: "discover",  label: "Discover",  icon: "🔍" },
@@ -13,7 +15,14 @@ const TABS = [
 ]
 
 function Collaboration() {
+  const { user, profile } = useAuth()
   const [activeTab, setActiveTab] = useState("discover")
+
+  useEffect(() => {
+    if (profile) {
+      logModuleUsage("Collaboration", profile.company_id, user.id)
+    }
+  }, [profile, user.id])
 
   return (
     <AppLayout
