@@ -2,6 +2,15 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  /* Map dynamic primary color to tailwind's scales */
+  --color-violet-500: var(--primary-color);
+  --color-violet-600: var(--primary-color);
+  --color-violet-700: var(--primary-color);
+  --color-indigo-500: var(--primary-color);
+  --color-indigo-600: var(--primary-color);
+}
+
 @layer base {
   * {
     box-sizing: border-box;
