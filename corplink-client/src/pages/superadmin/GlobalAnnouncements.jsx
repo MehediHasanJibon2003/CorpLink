@@ -63,23 +63,21 @@ export default function GlobalAnnouncements() {
         
         <button
           onClick={openNew}
-          className="group flex items-center justify-center gap-3 px-8 md:px-12 py-4 md:py-6 rounded-2xl md:rounded-[2rem] text-sm md:text-lg font-black text-white transition-all hover:scale-105 active:scale-95 shadow-xl relative overflow-hidden bg-gradient-to-br from-fuchsia-600 to-purple-600 dark:shadow-[0_12px_30px_rgba(192,38,211,0.4)] uppercase tracking-[0.2em]"
+          className="w-full md:w-auto px-8 py-3 md:py-4 bg-violet-600 text-white rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all hover:scale-105 active:scale-95"
         >
-          {/* Button Shine Effect */}
-          <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          <Plus className="h-5 w-5 md:h-7 md:w-7 relative z-10 stroke-[3px]" /> <span className="relative z-10">Compose Broadcast</span>
+          <PlusCircle className="h-5 w-5" /> New Announcement
         </button>
       </div>
 
-      {/* Announcements Grid / List */}
-      <div className="grid gap-6 md:gap-10">
+      {/* Announcements Grid - Responsive */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-6">
+          <div className="col-span-full flex flex-col items-center justify-center py-24 gap-6">
             <div className="w-12 h-12 border-4 border-fuchsia-500 border-t-transparent rounded-full animate-spin" />
             <p className="text-slate-600 dark:text-violet-400 font-black uppercase tracking-widest">Broadcasting signals...</p>
           </div>
-        ) : announcements.length === 0 ? (
-          <div className="text-center py-24 md:py-40 rounded-[3rem] relative overflow-hidden bg-white dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/20 shadow-inner">
+        ) : filteredAnnouncements.length === 0 ? (
+          <div className="col-span-full text-center py-24 md:py-40 rounded-[3rem] relative overflow-hidden bg-white dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/20 shadow-inner">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-fuchsia-500/5 dark:bg-fuchsia-500/10 rounded-full blur-[100px]" />
             <Sparkles className="h-20 w-20 md:h-28 md:w-28 text-slate-200 dark:text-violet-500/20 mx-auto mb-8 relative z-10" />
             <p className="text-slate-700 dark:text-violet-300 font-black text-2xl md:text-4xl uppercase tracking-widest relative z-10">The airwaves are quiet.</p>
