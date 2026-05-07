@@ -17,10 +17,24 @@ function PerformanceAnalytics({ profile }) {
 
   const fetchAnalytics = async () => {
     setLoading(true)
+    const role = profile?.role?.toLowerCase()
+    
+    // Fetch Employees filtered by department if not admin
+    let empQuery = supabase.from("employees").select("id, name").eq("company_id", profile.company_id)
+    if (role !== 'admin' && profile.department_id) {
+      empQuery = empQuery.eq("department_id", profile.department_id)
+    }
+    
+    // Fetch Tasks filtered by department if not admin
+    let taskQuery = supabase.from("tasks").select("*").eq("company_id", profile.company_id)
+    if (role !== 'admin' && profile.department_id) {
+      taskQuery = taskQuery.eq("department_id", profile.department_id)
+    }
+
     const [tasksRes, projectsRes, employeesRes] = await Promise.all([
-      supabase.from("tasks").select("*").eq("company_id", profile.company_id),
+      taskQuery,
       supabase.from("projects").select("id").eq("company_id", profile.company_id),
-      supabase.from("employees").select("id, name").eq("company_id", profile.company_id)
+      empQuery
     ])
 
     if (!tasksRes.error && tasksRes.data) {

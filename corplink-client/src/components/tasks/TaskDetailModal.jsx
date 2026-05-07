@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { logAdminActivity } from "../../utils/logger"
 import { X, Send, Paperclip, Link as LinkIcon, CheckCircle2, AlertCircle, Clock, Trash2, ShieldCheck, User as UserIcon, Edit3, Save, Folder, Calendar, Flag, Loader2 } from "lucide-react"
+import { checkPermission } from "../../utils/permissions"
 
 function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comments" }) {
   const [comments, setComments] = useState([])
@@ -30,7 +31,17 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
   })
 
   const messagesEndRef = useRef(null)
-  const isManagement = ["admin", "corporate_admin", "manager"].includes(profile?.role?.toLowerCase())
+  
+  // Permission Context
+  const permContext = {
+    departmentId: currentTask.department_id,
+    assignedToId: currentTask.assigned_to,
+    createdById: currentTask.created_by
+  }
+
+  const canEdit = checkPermission(profile, 'edit_task', permContext)
+  const canManage = checkPermission(profile, 'manage_tasks', permContext)
+  const isRestricted = profile?.role?.toLowerCase() === 'restricted'
 
   const fetchData = async () => {
     const [tRes, cRes, aRes, eRes, pRes] = await Promise.all([
@@ -138,7 +149,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
               </span>
             </div>
             <div className="flex gap-2">
-              {isManagement && (
+              {canEdit && (
                 <button onClick={() => setIsEditing(!isEditing)} className={`w-12 h-12 flex items-center justify-center rounded-2xl transition shadow-sm border ${isEditing ? 'bg-amber-500 text-white border-amber-500' : 'bg-white dark:bg-slate-800 text-slate-400 border-slate-100 dark:border-white/5'}`}>
                   {isEditing ? <Save className="h-5 w-5" onClick={handleUpdateTask} /> : <Edit3 className="h-5 w-5" />}
                 </button>
@@ -218,14 +229,14 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
                   {statusLoading === 'needs_review' ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />} Review
                 </button>
                 <button 
-                  disabled={statusLoading || !isManagement || currentTask.status === 'finished'} 
+                  disabled={statusLoading || !canManage || currentTask.status === 'finished'} 
                   onClick={() => handleStatusChange("finished")} 
                   className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-600/10 text-emerald-600 font-black text-[10px] uppercase tracking-widest border-2 border-transparent hover:border-emerald-200 transition disabled:opacity-30"
                 >
                   {statusLoading === 'finished' ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />} Approve
                 </button>
                 <button 
-                  disabled={statusLoading || !isManagement || currentTask.status === 'finished'} 
+                  disabled={statusLoading || !canManage || currentTask.status === 'finished'} 
                   onClick={() => handleStatusChange("rejected")} 
                   className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-red-50 dark:bg-red-600/10 text-red-600 font-black text-[10px] uppercase tracking-widest border-2 border-transparent hover:border-red-200 transition disabled:opacity-30"
                 >
@@ -292,17 +303,19 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
               </>
             ) : (
               <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-8 custom-scrollbar">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-3xl bg-slate-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all cursor-pointer group">
-                      <Paperclip className="h-8 w-8 text-slate-400 group-hover:text-blue-500 mb-2" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white">{uploading ? "Uploading..." : "Attach Document"}</span>
-                      <input type="file" onChange={handleFileUpload} disabled={uploading} className="hidden" />
-                   </label>
-                   <button onClick={() => setShowLinkInput(!showLinkInput)} className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-3xl bg-slate-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all group">
-                      <LinkIcon className="h-8 w-8 text-slate-400 group-hover:text-blue-500 mb-2" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white">Add URL / Link</span>
-                   </button>
-                </div>
+                {!isRestricted && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-3xl bg-slate-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all cursor-pointer group">
+                        <Paperclip className="h-8 w-8 text-slate-400 group-hover:text-blue-500 mb-2" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white">{uploading ? "Uploading..." : "Attach Document"}</span>
+                        <input type="file" onChange={handleFileUpload} disabled={uploading} className="hidden" />
+                     </label>
+                     <button onClick={() => setShowLinkInput(!showLinkInput)} className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-3xl bg-slate-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-all group">
+                        <LinkIcon className="h-8 w-8 text-slate-400 group-hover:text-blue-500 mb-2" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white">Add URL / Link</span>
+                     </button>
+                  </div>
+                )}
                 {attachments.map(att => (
                   <div key={att.id} className="group bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 p-6 rounded-3xl hover:border-blue-500/30 transition-all flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-5">

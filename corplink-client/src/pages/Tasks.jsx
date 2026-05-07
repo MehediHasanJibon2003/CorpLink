@@ -9,6 +9,7 @@ import TaskKanban from "../components/tasks/TaskKanban"
 import TaskDetailModal from "../components/tasks/TaskDetailModal"
 import PerformanceAnalytics from "../components/tasks/PerformanceAnalytics"
 import { logAdminActivity } from "../utils/logger"
+import { filterDataByHierarchy } from "../utils/permissions"
 
 function Tasks() {
   const { user, profile } = useAuth()

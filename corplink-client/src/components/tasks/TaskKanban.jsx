@@ -16,18 +16,34 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
 
   const fetchTasks = async () => {
     setLoading(true)
+    const role = profile?.role?.toLowerCase()
+    
     let query = supabase
       .from("tasks")
       .select("*, employees(name)")
       .eq("company_id", profile.company_id)
 
+    // Apply Hierarchy Filters
+    if (role !== 'admin') {
+      // Dept Head, Manager, Employee, Restricted all filtered by Department
+      if (profile.department_id) {
+        // Most roles see everything in their department
+        query = query.eq("department_id", profile.department_id)
+      } else if (role === 'employee' || role === 'restricted') {
+        // If no department, just see assigned tasks
+        query = query.eq("assigned_to", profile.id)
+      }
+    }
+
     if (activeProject) {
       query = query.eq("project_id", activeProject.id)
-    } else {
+    } else if (activeProject === null) {
+      // Show Global Inbox only if no project is selected
       query = query.is("project_id", null)
     }
 
-    const { data } = await query.order("created_at", { ascending: false })
+    const { data, error } = await query.order("created_at", { ascending: false })
+    if (error) console.error("Kanban Fetch Error:", error)
     setTasks(data || [])
     setLoading(false)
   }

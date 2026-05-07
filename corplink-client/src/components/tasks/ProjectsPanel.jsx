@@ -14,8 +14,17 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
   const [form, setForm] = useState({ name: "", description: "", department_id: "" })
 
   const fetchProjectsData = async () => {
+    const role = profile?.role?.toLowerCase()
+    
+    let projQuery = supabase.from("projects").select("*").eq("company_id", profile.company_id)
+    
+    // Apply Hierarchy Filter
+    if (role !== 'admin' && profile.department_id) {
+      projQuery = projQuery.eq("department_id", profile.department_id)
+    }
+
     const [projRes, deptRes, tasksRes] = await Promise.all([
-      supabase.from("projects").select("*").eq("company_id", profile.company_id).order("created_at", { ascending: false }),
+      projQuery.order("created_at", { ascending: false }),
       supabase.from("departments").select("id, name").eq("company_id", profile.company_id),
       supabase.from("tasks").select("project_id, status").eq("company_id", profile.company_id)
     ])

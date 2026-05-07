@@ -200,9 +200,11 @@ function Employees() {
                   {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
                 <select value={form.role} onChange={e=>setForm({...form, role: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-4 py-4 text-xs font-black uppercase">
-                  <option value="employee">Employee</option>
-                  <option value="manager">Manager</option>
-                  <option value="admin">Admin</option>
+                  <option value="employee">General Employee</option>
+                  <option value="manager">Team Leader / Manager</option>
+                  <option value="dept_head">Department Head</option>
+                  <option value="admin">Corporate Admin</option>
+                  <option value="restricted">Intern / Trainee (Restricted)</option>
                 </select>
               </div>
 
@@ -260,7 +262,13 @@ function Employees() {
                           <div>
                              <div className="flex flex-wrap items-center gap-2 mb-1">
                                 <h4 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{emp.name}</h4>
-                                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${emp.role === 'manager' ? 'bg-purple-100 text-purple-600' : emp.role === 'admin' ? 'bg-indigo-100 text-indigo-600' : 'bg-blue-100 text-blue-600'}`}>{emp.role}</span>
+                                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                                  emp.role === 'manager' ? 'bg-purple-100 text-purple-600' : 
+                                  emp.role === 'dept_head' ? 'bg-amber-100 text-amber-600' :
+                                  emp.role === 'admin' ? 'bg-red-100 text-red-600' :
+                                  emp.role === 'restricted' ? 'bg-slate-100 text-slate-500' :
+                                  'bg-blue-100 text-blue-600'
+                                }`}>{emp.role.replace('_', ' ')}</span>
                                 {!emp.onboarded && <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-amber-100 text-amber-600">Pending</span>}
                              </div>
                              <div className="flex flex-col gap-1.5">
