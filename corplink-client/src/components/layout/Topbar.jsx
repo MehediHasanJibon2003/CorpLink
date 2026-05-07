@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import { useTheme } from "../../context/ThemeContext"
 import { Shield, Menu, Sun, Moon, LogOut, Bell, Search } from "lucide-react"
+import NotificationDropdown from "./NotificationDropdown"
 
 export default function Topbar({ onMenuClick }) {
   const navigate = useNavigate()
@@ -36,11 +37,7 @@ export default function Topbar({ onMenuClick }) {
           {theme === "dark" ? <Sun className="h-6 w-6 text-amber-400" /> : <Moon className="h-6 w-6" />}
         </button>
 
-        <button className="p-2.5 md:p-4 rounded-xl text-slate-500 dark:text-violet-400 hover:text-slate-900 dark:hover:text-white transition relative group overflow-hidden bg-slate-50 dark:bg-violet-500/10 border-2 border-slate-200 dark:border-violet-500/15">
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl md:rounded-2xl bg-slate-100 dark:bg-violet-500/20" />
-          <Bell className="h-6 w-6 relative z-10" />
-          <span className="absolute top-2 right-2 w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] ring-4 ring-white dark:ring-[#0d0622]" />
-        </button>
+        <NotificationDropdown />
  
         <div className="h-10 md:h-12 w-0.5 mx-2 md:mx-4 opacity-20 hidden md:block" style={{ background: `linear-gradient(180deg, transparent, var(--primary-color), transparent)` }} />
  
@@ -48,6 +45,7 @@ export default function Topbar({ onMenuClick }) {
           <div className="hidden md:block text-right">
             <p className="text-base md:text-lg font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight">{profile?.full_name || "User"}</p>
             <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400 mt-1">{profile?.role}</p>
+            <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mt-0.5">{profile?.companies?.name}</p>
           </div>
           <div className="relative">
             <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl font-black text-white text-lg md:text-2xl flex items-center justify-center shadow-xl border-2 border-white/10" style={{ background: "var(--primary-color)" }}>

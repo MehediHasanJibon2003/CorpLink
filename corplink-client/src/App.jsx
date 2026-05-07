@@ -149,6 +149,10 @@ function App() {
               element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
             />
             <Route
+              path="/employee/messages"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
               path="/employee/tasks"
               element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
             />

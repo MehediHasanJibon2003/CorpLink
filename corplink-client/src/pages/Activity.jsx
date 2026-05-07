@@ -90,9 +90,9 @@ function Activity() {
 
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
-      const matchesAction = item.action?.toLowerCase().includes(searchLower);
-      const matchesUser = item.user?.full_name
-        ?.toLowerCase()
+      const matchesAction = (item.action || "").toLowerCase().includes(searchLower);
+      const matchesUser = (item.user?.full_name || "")
+        .toLowerCase()
         .includes(searchLower);
       if (!matchesAction && !matchesUser) return false;
     }

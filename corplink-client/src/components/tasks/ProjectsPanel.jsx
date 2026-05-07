@@ -90,14 +90,26 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
         })
       } else {
         // Create New Project
-        const { error } = await supabase.from("projects").insert([{
+        const { data: insertData, error: insertError } = await supabase.from("projects").insert([{
           name: form.name.trim(),
           description: form.description.trim(),
           department_id: form.department_id || null,
           company_id: profile.company_id
-        }])
+        }]).select()
 
-        if (error) throw error
+        if (insertError) throw insertError
+
+        // --- AUTO CHAT GROUP CREATION ---
+        if (insertData && insertData.length > 0) {
+          await supabase.from("chat_groups").insert([{
+            name: `${form.name.trim()} Workspace`,
+            company_id: profile.company_id,
+            type: 'project',
+            reference_id: insertData[0].id
+          }])
+        }
+        // --------------------------------
+
         await logAdminActivity({
           company_id: profile.company_id, user_id: user.id,
           action: `Established Project: ${form.name.trim()}`, entity: "project"

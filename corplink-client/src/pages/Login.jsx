@@ -82,7 +82,7 @@ function Login() {
 
       if (signInError) {
         // If the error message is specifically about being blocked, show it
-        if (signInError.message?.toLowerCase().includes("blocked")) {
+        if ((signInError.message || "").toLowerCase().includes("blocked")) {
           setError("This account is blocked due to security reasons.");
         } else {
           setError("Invalid email or password");

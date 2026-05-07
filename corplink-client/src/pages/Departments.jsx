@@ -72,6 +72,17 @@ function Departments() {
 
       if (insertError) throw insertError
 
+      // --- AUTO CHAT GROUP CREATION ---
+      if (insertData && insertData.length > 0) {
+        await supabase.from("chat_groups").insert([{
+          name: `${newDeptName.trim()} Channel`,
+          company_id: profile.company_id,
+          type: 'department',
+          reference_id: insertData[0].id
+        }])
+      }
+      // --------------------------------
+
       await logAdminActivity({
         company_id: profile.company_id, user_id: user.id,
         action: `Created new Department: ${newDeptName.trim()}`, entity: "department"

@@ -49,8 +49,8 @@ export default function ThreatManagement() {
     setSaving(null)
   }
 
-  const filteredAlerts = alerts.filter(a => a.email.toLowerCase().includes(search.toLowerCase()))
-  const filteredBlocked = blockedUsers.filter(u => u.email.toLowerCase().includes(search.toLowerCase()))
+  const filteredAlerts = alerts.filter(a => (a.email || "").toLowerCase().includes(search.toLowerCase()))
+  const filteredBlocked = blockedUsers.filter(u => (u.email || "").toLowerCase().includes(search.toLowerCase()))
 
   return (
     <SuperAdminLayout title="Threat Management" subtitle="Monitor security alerts and manage blocked entities">

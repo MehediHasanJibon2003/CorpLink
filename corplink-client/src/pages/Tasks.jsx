@@ -7,9 +7,11 @@ import AppLayout from "../components/layout/AppLayout"
 import ProjectsPanel from "../components/tasks/ProjectsPanel"
 import TaskKanban from "../components/tasks/TaskKanban"
 import TaskDetailModal from "../components/tasks/TaskDetailModal"
+import ProjectChatPanel from "../components/tasks/ProjectChatPanel"
 import PerformanceAnalytics from "../components/tasks/PerformanceAnalytics"
 import { logAdminActivity } from "../utils/logger"
 import { filterDataByHierarchy } from "../utils/permissions"
+import { createNotification } from "../utils/notificationUtils"
 
 function Tasks() {
   const { user, profile } = useAuth()
@@ -58,9 +60,20 @@ function Tasks() {
       insertData.department_id = activeProject.department_id || null
     }
 
-    const { error } = await supabase.from("tasks").insert([insertData])
+    const { data, error } = await supabase.from("tasks").insert([insertData]).select()
     if (!error) {
       setShowCreateTask(false)
+      
+      // Generate Notification if assigned
+      if (insertData.assigned_to) {
+        await createNotification(
+          insertData.assigned_to,
+          profile.company_id,
+          'task_assigned',
+          `New Task Assigned: ${insertData.title}`
+        )
+      }
+
       setForm({ title: "", description: "", assigned_to: "", deadline: "", priority: "medium" })
       setTriggerRefetch(prev => prev + 1)
       await logAdminActivity({
@@ -78,6 +91,9 @@ function Tasks() {
         <div className="flex gap-2 md:gap-4 min-w-max">
           <button onClick={() => setActiveTab('projects')} className={`px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-lg rounded-lg md:rounded-xl transition ${activeTab === 'projects' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}>📂 All Projects</button>
           <button onClick={() => setActiveTab('kanban')} className={`px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-lg rounded-lg md:rounded-xl transition ${activeTab === 'kanban' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}>📋 {activeProject ? `Board: ${activeProject.name}` : "Global Task Board"}</button>
+          {activeProject && (
+            <button onClick={() => setActiveTab('chat')} className={`px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-lg rounded-lg md:rounded-xl transition ${activeTab === 'chat' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}>💬 Project Chat</button>
+          )}
           <button onClick={() => setActiveTab('analytics')} className={`px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-lg rounded-lg md:rounded-xl transition ${activeTab === 'analytics' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}>📈 Performance Analytics</button>
         </div>
         
@@ -96,6 +112,12 @@ function Tasks() {
             onTaskClick={(t, tab = "comments") => { setActiveTask(t); setInitialTab(tab); }} 
             triggerRefetch={triggerRefetch}
           />
+        </div>
+      )}
+
+      {activeTab === 'chat' && activeProject && (
+        <div className="animate-in slide-in-from-bottom-4 duration-500">
+          <ProjectChatPanel activeProject={activeProject} profile={profile} />
         </div>
       )}
 

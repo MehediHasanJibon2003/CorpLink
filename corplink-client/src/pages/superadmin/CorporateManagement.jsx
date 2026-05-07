@@ -42,8 +42,8 @@ export default function CorporateManagement() {
   }
 
   const filteredCompanies = companies.filter(co => {
-    const matchesSearch = co.name.toLowerCase().includes(search.toLowerCase()) || 
-                          co.email.toLowerCase().includes(search.toLowerCase())
+    const matchesSearch = (co.name || "").toLowerCase().includes(search.toLowerCase()) || 
+                          (co.email || "").toLowerCase().includes(search.toLowerCase())
     const matchesStatus = statusFilter === "all" || co.status === statusFilter
     return matchesSearch && matchesStatus
   })

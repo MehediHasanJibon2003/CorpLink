@@ -249,10 +249,13 @@ function Register() {
           })
           .eq("id", authUser.id);
 
-        // STEP 6: Mark employee as onboarded in the employees table
+        // STEP 6: Mark employee as onboarded and link their Auth ID
         await supabase
           .from("employees")
-          .update({ onboarded: true })
+          .update({ 
+            onboarded: true,
+            user_id: authUser.id 
+          })
           .eq("id", empData.id);
 
         // STEP 7: Sign out so they log in fresh with a clean session

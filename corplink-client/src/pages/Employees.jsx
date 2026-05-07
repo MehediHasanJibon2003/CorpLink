@@ -151,8 +151,8 @@ function Employees() {
   }
 
   const filteredEmployees = employees.filter(emp => {
-    const matchesSearch = emp.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          emp.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = (emp.name || "").toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          (emp.email || "").toLowerCase().includes(searchTerm.toLowerCase())
     const matchesDept = deptFilter === "all" || emp.department_id === deptFilter
     return matchesSearch && matchesDept
   })

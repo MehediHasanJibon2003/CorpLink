@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
-import { Megaphone, Plus, X, Edit2, Trash2, Eye, EyeOff, Sparkles, CheckCircle } from "lucide-react"
+import { Megaphone, PlusCircle, X, Edit2, Trash2, Eye, EyeOff, Sparkles, CheckCircle } from "lucide-react"
 
 export default function GlobalAnnouncements() {
   const { user } = useAuth()
@@ -76,7 +76,7 @@ export default function GlobalAnnouncements() {
             <div className="w-12 h-12 border-4 border-fuchsia-500 border-t-transparent rounded-full animate-spin" />
             <p className="text-slate-600 dark:text-violet-400 font-black uppercase tracking-widest">Broadcasting signals...</p>
           </div>
-        ) : filteredAnnouncements.length === 0 ? (
+        ) : announcements.length === 0 ? (
           <div className="col-span-full text-center py-24 md:py-40 rounded-[3rem] relative overflow-hidden bg-white dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/20 shadow-inner">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-fuchsia-500/5 dark:bg-fuchsia-500/10 rounded-full blur-[100px]" />
             <Sparkles className="h-20 w-20 md:h-28 md:w-28 text-slate-200 dark:text-violet-500/20 mx-auto mb-8 relative z-10" />

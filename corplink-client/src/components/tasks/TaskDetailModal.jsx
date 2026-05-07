@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { logAdminActivity } from "../../utils/logger"
 import { X, Send, Paperclip, Link as LinkIcon, CheckCircle2, AlertCircle, Clock, Trash2, ShieldCheck, User as UserIcon, Edit3, Save, Folder, Calendar, Flag, Loader2 } from "lucide-react"
 import { checkPermission } from "../../utils/permissions"
+import { createNotification } from "../../utils/notificationUtils"
 
 function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comments" }) {
   const [comments, setComments] = useState([])
@@ -42,6 +43,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
   const canEdit = checkPermission(profile, 'edit_task', permContext)
   const canManage = checkPermission(profile, 'manage_tasks', permContext)
   const isRestricted = profile?.role?.toLowerCase() === 'restricted'
+  const isManagement = ['admin', 'corporate_admin', 'manager', 'dept_head'].includes(profile?.role?.toLowerCase())
 
   const fetchData = async () => {
     const [tRes, cRes, aRes, eRes, pRes] = await Promise.all([
@@ -82,6 +84,26 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
         company_id: profile.company_id, user_id: profile.id, 
         action: `Task Tracking Update: ${task.title} -> ${newStatus}`, entity: "task" 
       })
+
+      // Notify the relevant person
+      if (newStatus === 'needs_review') {
+        // Notify creator or admin that task needs review
+        await createNotification(
+          currentTask.created_by,
+          profile.company_id,
+          'task_update',
+          `Task Awaiting Review: ${currentTask.title}`
+        )
+      } else if (newStatus === 'finished' || newStatus === 'rejected') {
+        // Notify assigned employee about approval/rejection
+        await createNotification(
+          currentTask.assigned_to,
+          profile.company_id,
+          newStatus === 'finished' ? 'approval' : 'task_update',
+          `Task ${newStatus === 'finished' ? 'Approved' : 'Rejected'}: ${currentTask.title}`
+        )
+      }
+
       await fetchData()
       onUpdate() 
     } else {

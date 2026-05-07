@@ -23,6 +23,8 @@ import MyProfile from "../components/employee/MyProfile"
  *
  * Layout: EmployeeLayout (own sidebar + topbar, separate from admin)
  */
+import Messages from "./Messages"
+
 function EmployeeDashboard() {
   const location = useLocation()
   const { profile } = useAuth()
@@ -31,6 +33,7 @@ function EmployeeDashboard() {
   const renderView = () => {
     const path = location.pathname
 
+    if (path.startsWith("/employee/messages")) return <Messages isEmployeeView={true} />
     if (path.startsWith("/employee/tasks")) return <MyTasks />
     if (path.startsWith("/employee/projects")) return <MyProjects />
     if (path.startsWith("/employee/feed")) return <CorporateFeed />

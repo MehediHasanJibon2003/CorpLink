@@ -16,6 +16,7 @@ import {
   X,
   LogOut,
   Briefcase,
+  MessageCircle,
 } from "lucide-react";
 
 const EMPLOYEE_NAV = [
@@ -30,6 +31,7 @@ const EMPLOYEE_NAV = [
   {
     group: "Company",
     items: [
+      { name: "Messages", path: "/employee/messages", icon: MessageCircle },
       { name: "Corporate Feed", path: "/employee/feed", icon: Radio },
       { name: "Notifications", path: "/employee/notifications", icon: Bell },
       { name: "Collaboration", path: "/employee/collaboration", icon: Users2 },
@@ -52,6 +54,7 @@ function EmployeeLayout({ children }) {
 
   const pathToView = {
     "/employee/dashboard": "dashboard",
+    "/employee/messages": "messages",
     "/employee/tasks": "tasks",
     "/employee/projects": "projects",
     "/employee/feed": "feed",
@@ -79,11 +82,16 @@ function EmployeeLayout({ children }) {
 
       <aside className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative`}>
         <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-800 dark:border-slate-800/50">
-          <Link to="/employee/dashboard" className="flex items-center gap-3 md:gap-4">
-            <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-base md:text-xl" style={{ background: "var(--primary-color)" }}>
+          <Link to="/employee/dashboard" className="flex items-center gap-3 md:gap-4 overflow-hidden">
+            <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-base md:text-xl shrink-0" style={{ background: "var(--primary-color)" }}>
               {profile?.companies?.name?.charAt(0) || "C"}
             </div>
-            <span className="text-xl md:text-3xl font-black uppercase tracking-widest text-white">CorpLink</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-lg md:text-2xl font-black uppercase tracking-[0.2em] text-white leading-none">CorpLink</span>
+              <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.1em] text-orange-400 truncate mt-2 bg-orange-500/10 px-2 py-0.5 rounded-md self-start">
+                {profile?.companies?.name || "Workspace"}
+              </span>
+            </div>
           </Link>
         </div>
 
@@ -93,6 +101,7 @@ function EmployeeLayout({ children }) {
             <div className="min-w-0">
               <p className="text-sm md:text-base font-black text-blue-300 truncate uppercase tracking-widest">{profile?.full_name}</p>
               <p className="text-[10px] md:text-xs text-slate-500 font-black uppercase tracking-wider mt-0.5">{profile?.role}</p>
+              <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] mt-0.5">{profile?.companies?.name}</p>
             </div>
           </div>
         </div>
@@ -137,6 +146,7 @@ function EmployeeLayout({ children }) {
               <div className="hidden md:block text-right">
                 <p className="text-base md:text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">{profile?.full_name}</p>
                 <p className="text-[10px] md:text-xs text-slate-500 font-black tracking-widest uppercase">{profile?.role}</p>
+                <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] mt-0.5">{profile?.companies?.name}</p>
               </div>
               <div className="h-10 w-10 md:h-14 md:w-14 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center font-black text-white text-lg md:text-2xl shadow-sm" style={{ background: "var(--primary-color)" }}>
                 {(profile?.full_name || "E").charAt(0).toUpperCase()}
