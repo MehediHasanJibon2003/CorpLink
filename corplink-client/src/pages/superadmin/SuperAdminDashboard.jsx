@@ -263,6 +263,76 @@ export default function SuperAdminDashboard() {
           ))}
         </div>
       </div>
+
+      {/* ── Section 2: Pending Approvals Quick-View ── */}
+      <div className="p-8 md:p-12 rounded-[3.5rem] bg-slate-900 dark:bg-[#0a0418] text-white relative overflow-hidden border-2 border-slate-100 dark:border-violet-500/10 mb-12">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4 relative z-10">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+              <Zap className="h-7 w-7" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-black uppercase tracking-tight">Pending Approvals</h3>
+              <p className="text-slate-400 font-bold text-sm uppercase tracking-widest mt-1">Review new corporate registrations</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => window.location.href = '/super-admin/corporates'}
+            className="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest transition-all"
+          >
+            Manage All Corporates
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 relative z-10">
+          {stats.pendingApprovals === 0 ? (
+            <div className="col-span-full py-20 text-center border-2 border-dashed border-white/5 rounded-[2.5rem]">
+               <p className="font-black text-slate-500 uppercase tracking-[0.2em]">No pending approvals at the moment</p>
+            </div>
+          ) : (
+            // Mocking the last 3 pending companies for quick view
+            [
+              { name: "TechFlow Solutions", email: "contact@techflow.com", plan: "Enterprise", date: "Today" },
+              { name: "Global Media Ltd", email: "admin@globalmedia.io", plan: "Standard", date: "Yesterday" },
+              { name: "Nexus Systems", email: "info@nexus.com", plan: "Basic", date: "2 days ago" }
+            ].slice(0, 3).map((item, i) => (
+              <div key={i} className="group p-8 rounded-[2.5rem] bg-white/5 border border-white/10 hover:border-violet-500/30 transition-all flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center font-black text-xl shadow-lg">
+                      {item.name.charAt(0)}
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                      Pending
+                    </span>
+                  </div>
+                  <h4 className="text-xl font-black uppercase tracking-tight mb-1">{item.name}</h4>
+                  <p className="text-slate-400 font-bold text-sm mb-4 truncate">{item.email}</p>
+                  <div className="flex items-center gap-3 mb-8">
+                    <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg bg-white/5 text-slate-400">
+                      Plan: {item.plan}
+                    </span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                      {item.date}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <button className="py-4 rounded-xl bg-emerald-500/10 text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">
+                    Approve
+                  </button>
+                  <button className="py-4 rounded-xl bg-red-500/10 text-red-500 text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </SuperAdminLayout>
   )
 }
