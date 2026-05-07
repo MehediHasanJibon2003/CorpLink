@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
 import { Users, Building2, CreditCard, ShieldAlert, ArrowUpRight, Activity, Zap } from "lucide-react"
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts"
 
 const MOCK_GROWTH_DATA = [
   { month: "Jan", companies: 12, users: 400 },
@@ -14,6 +14,12 @@ const MOCK_GROWTH_DATA = [
   { month: "Jul", companies: 45, users: 2800 },
 ]
 
+const SUBSCRIPTION_DATA = [
+  { name: "Basic", value: 45, color: "#94a3b8" },
+  { name: "Standard", value: 35, color: "#3b82f6" },
+  { name: "Enterprise", value: 20, color: "#8b5cf6" },
+]
+
 export default function SuperAdminDashboard() {
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -22,11 +28,13 @@ export default function SuperAdminDashboard() {
     pendingApprovals: 0,
     activeThreats: 0
   })
+  const [topCompanies, setTopCompanies] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchStats = async () => {
     setLoading(true)
     try {
+      console.log("Starting data fetch...")
       const [users, companies, pending, threats] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("companies").select("id", { count: "exact", head: true }),
@@ -34,6 +42,34 @@ export default function SuperAdminDashboard() {
         supabase.from("threat_alerts").select("id", { count: "exact", head: true }).eq("resolved", false)
       ])
 
+      // Fetch all companies to check counts
+      const { data: companiesData, error: compError } = await supabase
+        .from("companies")
+        .select("id, name, status")
+        .limit(100)
+
+      if (compError) throw compError
+
+      console.log("Raw Companies Data:", companiesData)
+
+      const companiesWithCounts = await Promise.all((companiesData || []).map(async (corp) => {
+        const { count, error: countError } = await supabase
+          .from("employees")
+          .select("id", { count: "exact", head: true })
+          .eq("company_id", corp.id)
+        
+        if (countError) console.error(`Count error for ${corp.name}:`, countError)
+        return { ...corp, employees: count || 0 }
+      }))
+
+      console.log("Processed Companies with Employee Counts:", companiesWithCounts)
+
+      const sorted = companiesWithCounts
+        .filter(c => c.employees > 0) // Only show companies with employees
+        .sort((a, b) => b.employees - a.employees)
+        .slice(0, 4)
+
+      setTopCompanies(sorted)
       setStats({
         totalUsers: users.count || 0,
         totalCompanies: companies.count || 0,
@@ -42,7 +78,7 @@ export default function SuperAdminDashboard() {
         activeThreats: threats.count || 0
       })
     } catch (err) {
-      console.error("Error fetching stats:", err)
+      console.error("Critical Dashboard Error:", err)
     } finally {
       setLoading(false)
     }
@@ -130,8 +166,8 @@ export default function SuperAdminDashboard() {
             </div>
           </div>
           
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-80 w-full min-h-[320px]">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <AreaChart data={MOCK_GROWTH_DATA}>
                 <defs>
                   <linearGradient id="colorCompanies" x1="0" y1="0" x2="0" y2="1">
@@ -331,6 +367,118 @@ export default function SuperAdminDashboard() {
               </div>
             ))
           )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+        {/* ── Section 3: Subscription Distribution ── */}
+        <div className="p-8 md:p-12 rounded-[3.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[32rem] flex flex-col justify-between">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-violet-500/10 text-violet-500 flex items-center justify-center">
+              <CreditCard className="h-7 w-7" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Subscription Distribution</h3>
+              <p className="text-slate-400 font-bold text-sm uppercase tracking-widest mt-1">Platform revenue breakdown</p>
+            </div>
+          </div>
+
+          <div className="h-64 w-full min-h-[250px]">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+              <PieChart>
+                <Pie
+                  data={SUBSCRIPTION_DATA}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={8}
+                  dataKey="value"
+                >
+                  {SUBSCRIPTION_DATA.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#0d0622', 
+                    border: '2px solid rgba(139,92,246,0.2)', 
+                    borderRadius: '20px',
+                    color: '#fff',
+                    fontWeight: '900',
+                    textTransform: 'uppercase',
+                    fontSize: '10px'
+                  }}
+                />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  formatter={(value) => <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-2">{value}</span>}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          
+          <div className="flex justify-center gap-12">
+             <div className="text-center">
+                <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">120+</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Subscriptions</p>
+             </div>
+             <div className="w-px h-12 bg-slate-100 dark:bg-white/10" />
+             <div className="text-center">
+                <p className="text-2xl font-black text-emerald-500 tracking-tight">$42.5K</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Monthly Revenue</p>
+             </div>
+          </div>
+        </div>
+
+        {/* ── Section 4: Top Corporates ── */}
+        <div className="p-8 md:p-12 rounded-[3.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[32rem] flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
+                <Building2 className="h-7 w-7" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Top Corporates</h3>
+                <p className="text-slate-400 font-bold text-sm uppercase tracking-widest mt-1">Leading companies by size</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-8">
+            {topCompanies.length === 0 ? (
+              <div className="py-10 text-center opacity-40 font-bold uppercase tracking-widest text-xs">No active companies found</div>
+            ) : (
+              topCompanies.map((corp, i) => {
+                const colors = ["bg-blue-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500"]
+                const maxEmps = Math.max(...topCompanies.map(c => c.employees)) || 1
+                return (
+                  <div key={i} className="group">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-black text-slate-700 dark:text-white uppercase tracking-wide truncate max-w-[150px]">{corp.name}</span>
+                      <span className="text-xs font-black text-slate-400 uppercase tracking-widest bg-slate-100 dark:bg-white/5 px-3 py-1 rounded-lg">
+                        {corp.employees} Employees
+                      </span>
+                    </div>
+                    <div className="w-full h-3 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full ${colors[i % colors.length]} transition-all duration-1000 shadow-[0_0_15px_rgba(0,0,0,0.1)]`} 
+                        style={{ width: `${(corp.employees / maxEmps) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                )
+              })
+            )}
+          </div>
+
+          <button 
+            onClick={() => window.location.href = '/super-admin/corporates'}
+            className="w-full py-5 rounded-2xl border-2 border-slate-100 dark:border-white/5 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-xs font-black uppercase tracking-[0.2em] mt-6"
+          >
+            View Detailed Directory
+          </button>
         </div>
       </div>
     </SuperAdminLayout>
