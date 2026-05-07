@@ -1,116 +1,119 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { MoreHorizontal, Plus, Clock, MessageSquare, Paperclip, AlertCircle, CheckCircle2, ChevronRight, User } from "lucide-react"
 
 const COLUMNS = [
-  { id: "pending", title: "Pending", color: "bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700", badge: "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200" },
-  { id: "in_progress", title: "In Progress", color: "bg-blue-50 dark:bg-blue-950/40 border-blue-100 dark:border-blue-900/50", badge: "bg-blue-200 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300" },
-  { id: "needs_review", title: "Needs Review", color: "bg-amber-50 dark:bg-amber-950/30 border-amber-100 dark:border-amber-900/40", badge: "bg-amber-200 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300" },
-  { id: "finished", title: "Completed", color: "bg-green-50 dark:bg-green-950/30 border-green-100 dark:border-green-900/40", badge: "bg-green-200 dark:bg-green-900/50 text-green-800 dark:text-green-300" },
-  { id: "rejected", title: "Rejected", color: "bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900/40", badge: "bg-red-200 dark:bg-red-900/50 text-red-800 dark:text-red-300" }
+  { id: "pending", label: "Backlog / Pending", color: "text-slate-400 bg-slate-100/50" },
+  { id: "in_progress", label: "Active Execution", color: "text-blue-500 bg-blue-50" },
+  { id: "needs_review", label: "Quality Audit", color: "text-amber-600 bg-amber-50" },
+  { id: "finished", label: "Finalized", color: "text-emerald-600 bg-emerald-50" },
+  { id: "rejected", label: "Rejected / Blocked", color: "text-red-600 bg-red-50" }
 ]
 
 function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
   const [tasks, setTasks] = useState([])
-  const [employees, setEmployees] = useState([])
-  
+  const [loading, setLoading] = useState(true)
+
   const fetchTasks = async () => {
-    let query = supabase.from("tasks").select("*")
+    setLoading(true)
+    let query = supabase
+      .from("tasks")
+      .select("*, employees(name)")
+      .eq("company_id", profile.company_id)
+
     if (activeProject) {
       query = query.eq("project_id", activeProject.id)
     } else {
       query = query.is("project_id", null)
     }
-    query = query.eq("company_id", profile.company_id).order("created_at", { ascending: false })
 
-    const { data: tasksData } = await query
-    const { data: empsData } = await supabase.from("employees").select("id, name").eq("company_id", profile.company_id)
-    
-    if (tasksData && empsData) {
-      const mapped = tasksData.map(t => {
-        const e = empsData.find(emp => emp.id === t.assigned_to)
-        return { ...t, assignee: e ? e.name : "Unassigned" }
-      })
-      setTasks(mapped)
-      setEmployees(empsData)
-    }
+    const { data } = await query.order("created_at", { ascending: false })
+    setTasks(data || [])
+    setLoading(false)
   }
 
   useEffect(() => {
-    fetchTasks()
-  }, [activeProject, profile, triggerRefetch])
+    if (profile) fetchTasks()
+  }, [activeProject, triggerRefetch, profile])
 
-  const handleDragStart = (e, taskId) => {
-    e.dataTransfer.setData("taskId", taskId)
-  }
-
-  const handleDrop = async (e, newStatus) => {
-    e.preventDefault()
-    const taskId = e.dataTransfer.getData("taskId")
-    if (!taskId) return
-    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t))
-    await supabase.from("tasks").update({ status: newStatus }).eq("id", taskId)
-  }
+  if (loading) return <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Mapping Workspace Workflow...</div>
 
   return (
-    <div className="flex gap-6 md:gap-8 overflow-x-auto pb-6 items-start min-h-[700px] custom-scrollbar">
-      {COLUMNS.map(col => (
-        <div 
-          key={col.id} 
-          className={`flex-shrink-0 w-80 md:w-[26rem] rounded-2xl border-2 ${col.color} p-4 md:p-6 flex flex-col max-h-[85vh]`}
-          onDragOver={e => e.preventDefault()}
-          onDrop={e => handleDrop(e, col.id)}
-        >
-          <div className="flex justify-between items-center mb-6 px-2">
-            <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg md:text-2xl">{col.title}</h4>
-            <span className={`text-sm md:text-base px-3 py-1 rounded-full font-bold ${col.badge}`}>
-              {tasks.filter(t => t.status === col.id).length}
-            </span>
-          </div>
+    <div className="flex gap-6 md:gap-8 overflow-x-auto pb-10 custom-scrollbar snap-x">
+      {COLUMNS.map(col => {
+        const colTasks = tasks.filter(t => t.status === col.id)
+        
+        return (
+          <div key={col.id} className="min-w-[320px] md:min-w-[400px] w-[400px] flex flex-col snap-start">
+            <div className={`p-5 rounded-2xl mb-6 flex justify-between items-center border-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800 shadow-sm`}>
+               <div className="flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full ${col.id === 'finished' ? 'bg-emerald-500' : col.id === 'rejected' ? 'bg-red-500' : 'bg-blue-500'}`} />
+                  <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest">{col.label}</h3>
+               </div>
+               <span className="bg-slate-100 dark:bg-white/10 text-slate-500 px-3 py-1 rounded-lg text-[10px] font-black">{colTasks.length}</span>
+            </div>
 
-          <div className="flex-1 overflow-y-auto space-y-4 px-1 custom-scrollbar">
-            {tasks.filter(t => t.status === col.id).map(task => (
-              <div
-                key={task.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, task.id)}
-                onClick={() => onTaskClick(task)}
-                className="bg-white dark:bg-slate-800 p-5 md:p-6 rounded-xl md:rounded-2xl shadow-sm border md:border-2 border-slate-200 dark:border-slate-700 cursor-grab active:cursor-grabbing hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all"
-              >
-                <div className="flex justify-between items-start mb-3 md:mb-4">
-                  <span className={`text-xs md:text-sm uppercase font-bold tracking-wider ${task.priority === 'high' ? 'text-red-500' : task.priority === 'medium' ? 'text-purple-500' : 'text-slate-400'}`}>
-                    {task.priority || "Normal"}
-                  </span>
-                  {task.deadline && (
-                    <span className="text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-md md:rounded-lg flex items-center">
-                      ⏱ {new Date(task.deadline).toLocaleDateString()}
-                    </span>
-                  )}
+            <div className="flex-1 space-y-4">
+              {colTasks.length === 0 ? (
+                <div className="py-20 text-center bg-slate-50/50 dark:bg-white/5 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-white/5">
+                   <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">No Active Missions</p>
                 </div>
-                <h5 className="font-bold text-slate-800 dark:text-slate-100 text-base md:text-xl mb-2 leading-snug">{task.title}</h5>
-                <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 leading-relaxed">{task.description}</p>
-                
-                <div className="flex justify-between items-center mt-4 md:mt-5 pt-4 md:pt-5 border-t border-slate-100 dark:border-slate-700">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center justify-center text-xs md:text-sm font-black border border-blue-200 dark:border-blue-800/50">
-                      {task.assignee.charAt(0)}
-                    </div>
-                    <span className="text-sm md:text-base font-bold text-slate-600 dark:text-slate-300">{task.assignee}</span>
+              ) : colTasks.map(task => (
+                <div 
+                  key={task.id} 
+                  onClick={() => onTaskClick(task)}
+                  className="group bg-white dark:bg-slate-800 p-6 md:p-8 rounded-[2rem] border-2 border-slate-100 dark:border-white/5 shadow-sm hover:border-blue-500/30 hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                     <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.2em] ${
+                       task.priority === 'high' ? 'bg-red-100 text-red-600' : 
+                       task.priority === 'medium' ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500'
+                     }`}>
+                       {task.priority} Priority
+                     </span>
+                     <MoreHorizontal className="h-4 w-4 text-slate-300 group-hover:text-slate-500" />
                   </div>
-                  <span className="text-sm md:text-base font-semibold text-slate-400 hover:text-blue-500 transition cursor-pointer flex items-center gap-1">
-                    💬 Details
-                  </span>
+                  
+                  <h4 className="text-lg md:text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight mb-4 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{task.title}</h4>
+                  
+                  <div className="flex flex-wrap gap-4 mt-6 pt-6 border-t border-slate-50 dark:border-white/5">
+                     <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <User className="h-3.5 w-3.5 text-blue-500" /> {task.employees?.name?.split(' ')[0] || "No Agent"}
+                     </div>
+                     <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <Clock className="h-3.5 w-3.5 text-amber-500" /> {task.deadline ? new Date(task.deadline).toLocaleDateString([], { month: 'short', day: 'numeric' }) : "TBD"}
+                     </div>
+                  </div>
+
+                  <div className="mt-4 flex justify-end gap-3 opacity-40 group-hover:opacity-100 transition-opacity">
+                     <button 
+                        onClick={(e) => { e.stopPropagation(); onTaskClick(task, "comments"); }}
+                        className="flex items-center gap-1 text-[9px] font-black text-slate-400 hover:text-blue-600 uppercase transition-colors"
+                     >
+                        <MessageSquare className="h-3 w-3" /> Update
+                     </button>
+                     <button 
+                        onClick={(e) => { e.stopPropagation(); onTaskClick(task, "attachments"); }}
+                        className="flex items-center gap-1 text-[9px] font-black text-slate-400 hover:text-blue-600 uppercase transition-colors"
+                     >
+                        <Paperclip className="h-3 w-3" /> Asset
+                     </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-            
-            {tasks.filter(t => t.status === col.id).length === 0 && (
-              <div className="border-2 border-dashed border-slate-300/50 dark:border-slate-600/50 rounded-xl md:rounded-2xl p-8 md:p-10 flex flex-col justify-center items-center text-slate-400 dark:text-slate-500 font-medium italic text-base md:text-lg">
-                Drop task here
-              </div>
-            )}
+              ))}
+              
+              {col.id === 'pending' && (
+                <button className="w-full py-6 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-[2rem] text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all flex flex-col items-center gap-2 group">
+                   <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-all">
+                      <Plus className="h-6 w-6" />
+                   </div>
+                   <span className="text-[10px] font-black uppercase tracking-widest">Initiate Task</span>
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

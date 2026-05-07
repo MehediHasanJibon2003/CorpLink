@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
 import { logAdminActivity } from "../utils/logger"
 import { Building2, Users, ClipboardList, MessageSquare, Plus, Trash2, ShieldCheck, TrendingUp, ChevronRight } from "lucide-react"
+import RoleGate from "../components/roles/RoleGate"
 
 import TeamsPanel from "../components/departments/TeamsPanel"
 import MembersPanel from "../components/departments/MembersPanel"
@@ -189,7 +190,11 @@ function Departments() {
                       <p className="text-slate-500 font-bold text-sm md:text-base mt-1">Established {new Date(activeDept.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
-                  <button onClick={() => handleDeleteDepartment(activeDept.id, activeDept.name)} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all"><Trash2 className="h-6 w-6" /></button>
+                  <RoleGate allowedRoles={["admin", "corporate_admin"]}>
+                    <button onClick={() => handleDeleteDepartment(activeDept.id, activeDept.name)} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                      <Trash2 className="h-6 w-6" />
+                    </button>
+                  </RoleGate>
                 </div>
                 
                 {/* Modern Tabs */}
@@ -225,14 +230,16 @@ function Departments() {
                                 <p className="text-xs font-bold text-slate-500">Department Head</p>
                              </div>
                           </div>
-                          <select 
-                            value={activeDept.head_id || ""}
-                            onChange={(e) => handleAssignHead(activeDept.id, e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest outline-none focus:border-blue-500"
-                          >
-                            <option value="">Reassign Leadership</option>
-                            {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
-                          </select>
+                          <RoleGate allowedRoles={["admin", "corporate_admin"]}>
+                            <select 
+                              value={activeDept.head_id || ""}
+                              onChange={(e) => handleAssignHead(activeDept.id, e.target.value)}
+                              className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest outline-none focus:border-blue-500"
+                            >
+                              <option value="">Reassign Leadership</option>
+                              {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
+                            </select>
+                          </RoleGate>
                        </div>
 
                        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm flex flex-col justify-between">
