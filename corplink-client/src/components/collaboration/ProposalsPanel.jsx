@@ -137,10 +137,11 @@ function ProposalsPanel() {
 
   const typeBadge = (type) => {
     switch(type) {
-      case 'partnership': return <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">General Partnership</span>
-      case 'vendor': return <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Vendor Contract</span>
-      case 'project': return <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Shared Project</span>
-      default: return <span className="text-xs bg-slate-100 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded">Other</span>
+      case 'partnership': return <span className="text-[9px] font-black bg-purple-100 text-purple-700 px-3 py-1 rounded-full uppercase tracking-widest">General Partnership</span>
+      case 'vendor': return <span className="text-[9px] font-black bg-blue-100 text-blue-700 px-3 py-1 rounded-full uppercase tracking-widest">Vendor Contract</span>
+      case 'service_exchange': return <span className="text-[9px] font-black bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase tracking-widest">Service Exchange</span>
+      case 'project': return <span className="text-[9px] font-black bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full uppercase tracking-widest">Shared Project</span>
+      default: return <span className="text-[9px] font-black bg-slate-100 text-slate-700 px-3 py-1 rounded-full uppercase tracking-widest">Collaboration</span>
     }
   }
 
@@ -179,6 +180,7 @@ function ProposalsPanel() {
             >
               <option value="partnership">General Partnership</option>
               <option value="vendor">Vendor / Supplier</option>
+              <option value="service_exchange">Service Exchange Agreement</option>
               <option value="project">Shared Project</option>
               <option value="other">Other Collaboration</option>
             </select>

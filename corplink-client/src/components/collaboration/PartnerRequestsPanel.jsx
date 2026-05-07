@@ -18,7 +18,7 @@ function PartnerRequestsPanel() {
     const { data: receivedData, error: err1 } = await supabase
       .from("partner_requests")
       .select(`
-        id, status, message, created_at,
+        id, status, type, message, created_at,
         from_company:companies!from_company (id, name)
       `)
       .eq("to_company", profile.company_id)
@@ -28,7 +28,7 @@ function PartnerRequestsPanel() {
     const { data: sentData, error: err2 } = await supabase
       .from("partner_requests")
       .select(`
-        id, status, message, created_at,
+        id, status, type, message, created_at,
         to_company:companies!to_company (id, name)
       `)
       .eq("from_company", profile.company_id)
@@ -73,10 +73,19 @@ function PartnerRequestsPanel() {
   }
 
   const statusBadge = (status) => {
-    if (status === "accepted") return <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">✅ Partner</span>
-    if (status === "pending")  return <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">⏳ Pending</span>
-    if (status === "rejected") return <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">❌ Rejected</span>
+    if (status === "accepted") return <span className="text-[10px] font-black bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase tracking-widest">✅ Partner</span>
+    if (status === "pending")  return <span className="text-[10px] font-black bg-amber-100 text-amber-700 px-3 py-1 rounded-full uppercase tracking-widest">⏳ Pending</span>
+    if (status === "rejected") return <span className="text-[10px] font-black bg-red-100 text-red-700 px-3 py-1 rounded-full uppercase tracking-widest">❌ Rejected</span>
     return null
+  }
+
+  const typeBadge = (type) => {
+    const colors = {
+      vendor: "bg-blue-100 text-blue-600",
+      client: "bg-purple-100 text-purple-600",
+      partner: "bg-indigo-100 text-indigo-600"
+    }
+    return <span className={`text-[9px] font-black px-3 py-1 rounded-lg uppercase tracking-[0.15em] ${colors[type] || 'bg-slate-100 text-slate-500'}`}>{type}</span>
   }
 
   if (loading) return <p className="text-slate-500 text-sm p-4">Loading requests...</p>
@@ -99,8 +108,11 @@ function PartnerRequestsPanel() {
               <div key={req.id} className="border-2 border-slate-100 dark:border-slate-700 rounded-3xl p-8 md:p-12 flex flex-col gap-8 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-all">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100">{req.from_company?.name}</h4>
-                    <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">{new Date(req.created_at).toLocaleDateString()}</p>
+                    <div className="flex items-center gap-3 mb-2">
+                       <h4 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-tight">{req.from_company?.name}</h4>
+                       {typeBadge(req.type)}
+                    </div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{new Date(req.created_at).toLocaleDateString()}</p>
                   </div>
                   <div className="transform scale-125 origin-top-right">
                     {statusBadge(req.status)}
