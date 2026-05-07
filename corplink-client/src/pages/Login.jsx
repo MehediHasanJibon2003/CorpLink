@@ -13,6 +13,7 @@ import {
   Users,
   CheckCircle,
   Zap,
+  AlertCircle,
 } from "lucide-react";
 
 const FEATURES = [
@@ -69,20 +70,26 @@ function Login() {
         password,
       });
 
+      // --- SECURITY LOGGING START ---
+      const cleanEmail = email.trim().toLowerCase();
+      await supabase.from("login_attempts").insert([
+        {
+          email: cleanEmail,
+          status: signInError ? "failed" : "success"
+        }
+      ]);
+      // --- SECURITY LOGGING END ---
+
       if (signInError) {
-        await supabase.from("login_attempts").insert([{ email, status: "failed" }]);
-        
-        const { data: checkBlock } = await supabase.from("profiles").select("is_blocked").eq("email", email).maybeSingle();
-        if (checkBlock?.is_blocked) {
-          setError("Your account has been blocked due to multiple failed login attempts. Contact support.");
+        // If the error message is specifically about being blocked, show it
+        if (signInError.message?.toLowerCase().includes("blocked")) {
+          setError("This account is blocked due to security reasons.");
         } else {
-          setError(signInError.message);
+          setError("Invalid email or password");
         }
         setLoading(false);
         return;
       }
-
-      await supabase.from("login_attempts").insert([{ email, status: "success" }]);
 
       try {
         const { data: userProfile } = await supabase
@@ -114,7 +121,7 @@ function Login() {
         navigate("/employee/dashboard");
       }
     } catch (err) {
-      setError("Something went wrong");
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

@@ -1,109 +1,65 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
-import {
-  Search,
-  Bell,
-  MessageSquare,
-  ChevronDown,
-  Moon,
-  Sun,
-  Menu,
-} from "lucide-react";
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../context/AuthContext"
+import { useTheme } from "../../context/ThemeContext"
+import { Shield, Menu, Sun, Moon, LogOut, Bell, Search } from "lucide-react"
 
-function Topbar({ onMenuClick }) {
-  const navigate = useNavigate();
-  const { profile, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+export default function Topbar({ onMenuClick }) {
+  const navigate = useNavigate()
+  const { profile, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
+    await logout()
+    navigate("/login")
+  }
 
   return (
-    <header className="bg-white dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-800 sticky top-0 z-20 shadow-sm transition-colors duration-300 w-full shrink-0 h-20 md:h-24 lg:h-28">
-      <div className="w-full px-4 md:px-8 lg:px-12 h-full flex items-center justify-between gap-4 md:gap-8">
-        {/* Mobile Menu Button */}
-        <button
-          onClick={onMenuClick}
-          className="md:hidden p-3 rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition"
-        >
-          <Menu className="h-6 w-6" />
+    <header className="h-20 md:h-24 lg:h-28 shrink-0 relative flex items-center justify-between px-4 md:px-8 lg:px-12 gap-4 md:gap-8 overflow-hidden
+      bg-white/80 dark:bg-[#0d0622]/85 border-b-2 border-slate-200 dark:border-violet-500/15 backdrop-blur-xl transition-colors duration-300"
+    >
+      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, var(--primary-color), transparent)` }} />
+
+      {/* Search */}
+      <div className="hidden md:flex flex-1 max-w-xl relative group z-10">
+        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-violet-500 transition-colors" />
+        <input type="text" placeholder="Search anything..." 
+          className="w-full bg-slate-50 dark:bg-violet-500/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl md:rounded-3xl pl-16 pr-8 py-4 outline-none focus:border-violet-500/50 transition-all font-bold text-slate-700 dark:text-violet-200" />
+      </div>
+
+      <div className="flex md:hidden items-center gap-3 relative z-10">
+        <button onClick={onMenuClick} className="p-3 rounded-xl text-violet-400"><Menu className="h-6 w-6" /></button>
+        <span className="font-black uppercase tracking-widest text-slate-900 dark:text-white">CorpLink</span>
+      </div>
+
+      <div className="flex items-center gap-3 md:gap-6 relative z-10">
+        <button onClick={toggleTheme} className="p-2.5 md:p-4 rounded-xl bg-slate-50 dark:bg-violet-500/10 border-2 border-slate-200 dark:border-violet-500/15">
+          {theme === "dark" ? <Sun className="h-6 w-6 text-amber-400" /> : <Moon className="h-6 w-6" />}
         </button>
 
-        {/* Left Side - Global Search */}
-        <div className="flex-1 flex items-center">
-          <div className="relative w-full max-w-2xl hidden md:block">
-            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 md:h-6 md:w-6 text-slate-400" />
+        <button className="p-2.5 md:p-4 rounded-xl text-slate-500 dark:text-violet-400 hover:text-slate-900 dark:hover:text-white transition relative group overflow-hidden bg-slate-50 dark:bg-violet-500/10 border-2 border-slate-200 dark:border-violet-500/15">
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl md:rounded-2xl bg-slate-100 dark:bg-violet-500/20" />
+          <Bell className="h-6 w-6 relative z-10" />
+          <span className="absolute top-2 right-2 w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] ring-4 ring-white dark:ring-[#0d0622]" />
+        </button>
+ 
+        <div className="h-10 md:h-12 w-0.5 mx-2 md:mx-4 opacity-20 hidden md:block" style={{ background: `linear-gradient(180deg, transparent, var(--primary-color), transparent)` }} />
+ 
+        <div className="flex items-center gap-3 md:gap-5">
+          <div className="hidden md:block text-right">
+            <p className="text-base md:text-lg font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight">{profile?.full_name || "User"}</p>
+            <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400 mt-1">{profile?.role}</p>
+          </div>
+          <div className="relative">
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl font-black text-white text-lg md:text-2xl flex items-center justify-center shadow-xl border-2 border-white/10" style={{ background: "var(--primary-color)" }}>
+              {(profile?.full_name || "U").charAt(0).toUpperCase()}
             </div>
-            <input
-              type="text"
-              placeholder="Search employees, tasks, or projects..."
-              className="block w-full pl-14 md:pl-16 pr-6 py-4 md:py-5 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-[2rem] bg-slate-50 dark:bg-slate-800 xl:bg-white dark:xl:bg-slate-900 dark:text-white placeholder-slate-400 text-base md:text-lg font-bold outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition duration-150 ease-in-out"
-            />
           </div>
         </div>
-
-        {/* Right Side - Actions & Profile */}
-        <div className="flex items-center gap-3 md:gap-6">
-          <button
-            onClick={toggleTheme}
-            className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-amber-400 relative p-2.5 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-          >
-            {theme === "dark" ? (
-              <Sun className="h-6 w-6 md:h-7 md:w-7" />
-            ) : (
-              <Moon className="h-6 w-6 md:h-7 md:w-7" />
-            )}
-          </button>
-
-          <button className="text-slate-500 dark:text-slate-400 hover:text-blue-600 relative p-2.5 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-            <MessageSquare className="h-6 w-6 md:h-7 md:w-7" />
-            <span className="absolute top-2 right-2 block h-3 w-3 rounded-full bg-blue-500 ring-4 ring-white dark:ring-slate-900"></span>
-          </button>
-
-          <button className="text-slate-500 dark:text-slate-400 hover:text-blue-600 relative p-2.5 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-            <Bell className="h-6 w-6 md:h-7 md:w-7" />
-            <span className="absolute top-2 right-2 block h-3 w-3 rounded-full bg-red-500 ring-4 ring-white dark:ring-slate-900"></span>
-          </button>
-
-          <div className="h-10 md:h-12 w-0.5 bg-slate-200 dark:bg-slate-700 mx-2 hidden md:block"></div>
-
-          <div className="flex items-center gap-3 md:gap-5">
-            <div className="hidden md:block text-right">
-              <p className="text-base md:text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">
-                {profile?.full_name || profile?.name || "Corporate User"}
-              </p>
-              <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-black tracking-widest uppercase flex items-center justify-end gap-2 mt-1">
-                {profile?.companies?.name || "Company"}
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                <span className="">
-                  {profile?.role?.replace("_", " ") || "Admin"}
-                </span>
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="h-10 w-10 md:h-14 md:w-14 rounded-2xl md:rounded-[1.5rem] bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center justify-center font-black text-lg md:text-2xl border-2 border-blue-200 dark:border-blue-800 shadow-sm">
-                {(profile?.full_name || profile?.name || "U")
-                  .charAt(0)
-                  .toUpperCase()}
-              </div>
-            </div>
-
-            <button
-              onClick={handleLogout}
-              className="ml-2 md:ml-4 bg-slate-50 dark:bg-slate-800 hover:bg-red-50 hover:dark:bg-red-900/20 hover:text-red-600 text-slate-600 dark:text-slate-300 px-4 py-2.5 md:px-8 md:py-4 rounded-xl md:rounded-[2rem] text-xs md:text-sm font-black uppercase tracking-widest transition border-2 border-slate-200 dark:border-slate-700 hover:border-red-200 dark:hover:border-red-800"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
+ 
+        <button onClick={handleLogout} className="ml-2 bg-rose-50 dark:bg-rose-500/10 text-rose-500 px-4 py-2.5 md:px-8 md:py-4 rounded-xl font-black uppercase tracking-widest text-xs border-2 border-rose-100 dark:border-violet-500/20">
+          Sign Out
+        </button>
       </div>
     </header>
-  );
+  )
 }
-
-export default Topbar;

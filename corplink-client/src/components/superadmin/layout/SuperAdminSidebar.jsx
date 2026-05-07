@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { name: "Subscriptions",     path: "/super-admin/subscriptions", icon: CreditCard,      colorStart: "#10b981", colorEnd: "#14b8a6" },
   { name: "Platform Settings", path: "/super-admin/settings",      icon: Settings,        colorStart: "#f59e0b", colorEnd: "#f97316" },
   { name: "Activity Logs",     path: "/super-admin/logs",          icon: Activity,        colorStart: "#f43f5e", colorEnd: "#ec4899" },
+  { name: "Threat Management", path: "/super-admin/threats",       icon: Shield,          colorStart: "#ef4444", colorEnd: "#dc2626" },
   { name: "Announcements",     path: "/super-admin/announcements", icon: Megaphone,       colorStart: "#d946ef", colorEnd: "#a855f7" },
   { name: "Users",             path: "/super-admin/users",         icon: Users,           colorStart: "#ec4899", colorEnd: "#f43f5e" },
   { name: "Analytics",         path: "/super-admin/analytics",     icon: BarChart3,       colorStart: "#6366f1", colorEnd: "#8b5cf6" },
