@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
-import { RefreshCw, AlertTriangle } from "lucide-react"
+import { RefreshCw, AlertTriangle, Paperclip, FileIcon, Image as ImageIcon, X, Loader2 } from "lucide-react"
 
 function CommunicationPanel({ activeDept, profile }) {
   const { user } = useAuth()
@@ -10,7 +10,10 @@ function CommunicationPanel({ activeDept, profile }) {
   const [loading, setLoading] = useState(true)
   const [groupId, setGroupId] = useState(null)
   const [syncError, setSyncError] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [attachedFile, setAttachedFile] = useState(null)
   const messagesEndRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   const resolveGroupId = async (force = false) => {
     if (!activeDept || !profile) return
@@ -148,22 +151,60 @@ function CommunicationPanel({ activeDept, profile }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setAttachedFile(e.target.files[0])
+    }
+  }
+
   const handleSendMessage = async (e) => {
     e.preventDefault()
     const msg = newMessage.trim()
-    if (!msg || !user || !groupId) return
+    if ((!msg && !attachedFile) || !user || !groupId) return
 
-    const { error } = await supabase.from("internal_messages").insert([{
-      group_id: groupId,
-      sender_id: user.id,
-      message_text: msg
-    }])
+    setIsUploading(true)
+    let fileUrl = null
+    let fileName = null
+    let fileType = null
 
-    if (!error) {
+    try {
+      if (attachedFile) {
+        const fileExt = attachedFile.name.split('.').pop()
+        const path = `messenger/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
+        
+        const { error: uploadError } = await supabase.storage
+          .from("task-attachments")
+          .upload(path, attachedFile)
+
+        if (uploadError) throw uploadError
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("task-attachments")
+          .getPublicUrl(path)
+
+        fileUrl = publicUrl
+        fileName = attachedFile.name
+        fileType = attachedFile.type
+      }
+
+      const { error } = await supabase.from("internal_messages").insert([{
+        group_id: groupId,
+        sender_id: user.id,
+        message_text: msg,
+        file_url: fileUrl,
+        file_name: fileName,
+        file_type: fileType
+      }])
+
+      if (error) throw error
+
       setNewMessage("")
-    } else {
-      console.error("Send Error:", error)
-      alert("Delivery Failed: " + error.message)
+      setAttachedFile(null)
+    } catch (err) {
+      console.error("Send Error:", err)
+      alert("Delivery Failed: " + err.message)
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -227,6 +268,26 @@ function CommunicationPanel({ activeDept, profile }) {
                     ? 'bg-blue-600 text-white rounded-tr-none' 
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200 dark:border-slate-600'
                 }`}>
+                  {msg.file_url && (
+                    <div className={`mb-4 p-4 rounded-2xl flex items-center gap-4 border-2 ${isMe ? 'bg-white/10 border-white/20' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700'}`}>
+                      {msg.file_type?.startsWith('image/') ? (
+                        <div className="relative group/img">
+                           <img src={msg.file_url} alt={msg.file_name} className="max-w-full rounded-xl cursor-pointer" />
+                           <a href={msg.file_url} target="_blank" rel="noreferrer" className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all rounded-xl text-white font-black uppercase text-xs">View</a>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-500">
+                            <FileIcon className="h-6 w-6" />
+                          </div>
+                          <div className="min-w-0">
+                             <p className="font-black text-xs truncate">{msg.file_name}</p>
+                             <a href={msg.file_url} target="_blank" rel="noreferrer" className={`text-[10px] font-bold uppercase tracking-widest hover:underline ${isMe ? 'text-blue-100' : 'text-blue-500'}`}>Download</a>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
                   {msg.message_text}
                 </div>
               </div>
@@ -237,16 +298,35 @@ function CommunicationPanel({ activeDept, profile }) {
       </div>
 
       <div className="p-6 md:p-10 border-t-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
+        {attachedFile && (
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border-2 border-blue-200 dark:border-blue-800 flex items-center justify-between">
+             <div className="flex items-center gap-3">
+                <FileIcon className="h-5 w-5 text-blue-500" />
+                <span className="font-black text-blue-700 dark:text-blue-300 text-xs truncate max-w-[200px]">{attachedFile.name}</span>
+             </div>
+             <button onClick={() => setAttachedFile(null)} className="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-full">
+                <X className="h-4 w-4 text-blue-600" />
+             </button>
+          </div>
+        )}
         <form onSubmit={handleSendMessage} className="flex gap-4 md:gap-6">
+          <button 
+            type="button" 
+            onClick={() => fileInputRef.current?.click()}
+            className="w-16 h-16 md:w-24 md:h-24 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:border-blue-500 hover:text-blue-600 transition-all"
+          >
+             <Paperclip className="h-6 w-6 md:h-8 md:w-8" />
+          </button>
+          <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
           <input 
             type="text" 
             value={newMessage} 
             onChange={e => setNewMessage(e.target.value)}
-            placeholder="Type a message to the department..."
+            placeholder="Type a message..."
             className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 rounded-[3rem] px-8 py-4 md:py-6 outline-none focus:border-blue-500 text-base md:text-2xl font-bold transition-all shadow-inner"
           />
-          <button type="submit" className="bg-slate-900 hover:bg-black dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 rounded-full w-16 h-16 md:w-24 md:h-24 flex flex-shrink-0 items-center justify-center transition shadow-lg hover:shadow-xl hover:-translate-y-1">
-            <span className="text-3xl md:text-5xl">➤</span>
+          <button type="submit" disabled={isUploading} className="bg-slate-900 hover:bg-black dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 rounded-full w-16 h-16 md:w-24 md:h-24 flex flex-shrink-0 items-center justify-center transition shadow-lg">
+            {isUploading ? <Loader2 className="h-8 w-8 animate-spin" /> : <span className="text-3xl md:text-5xl">➤</span>}
           </button>
         </form>
       </div>
