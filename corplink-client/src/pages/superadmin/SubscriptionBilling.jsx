@@ -4,12 +4,14 @@ import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayou
 import { 
   ChevronRight, ArrowUpRight, Edit3, Settings,
   Bell, AlertTriangle, Send, Zap, Ban, FileText, CheckCircle2,
-  AlertCircle, Clock, DollarSign, CreditCard, RefreshCw, Sparkles, Plus, Trash2
+  AlertCircle, Clock, DollarSign, CreditCard, RefreshCw, Sparkles, Plus, Trash2,
+  Shield
 } from "lucide-react"
 import PlanManagementModal from "../../components/superadmin/PlanManagementModal"
 import SubscriptionControlModal from "../../components/superadmin/SubscriptionControlModal"
 import PaymentActionModal from "../../components/superadmin/PaymentActionModal"
 import InvoiceDetailsModal from "../../components/superadmin/InvoiceDetailsModal"
+import GatewayConfigModal from "../../components/superadmin/GatewayConfigModal"
 
 export default function SubscriptionBilling() {
   const [activeTab, setActiveTab] = useState("subscriptions")
@@ -17,6 +19,7 @@ export default function SubscriptionBilling() {
   const [plans, setPlans] = useState([])
   const [invoices, setInvoices] = useState([])
   const [alerts, setAlerts] = useState([])
+  const [gateways, setGateways] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [selectedSub, setSelectedSub] = useState(null)
@@ -25,6 +28,8 @@ export default function SubscriptionBilling() {
   const [isSubModalOpen, setIsSubModalOpen] = useState(false)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
   const [isInvoiceViewOpen, setIsInvoiceViewOpen] = useState(false)
+  const [isGatewayModalOpen, setIsGatewayModalOpen] = useState(false)
+  const [selectedGateway, setSelectedGateway] = useState(null)
   const [invoiceFilter, setInvoiceFilter] = useState("all")
 
   const fetchData = async () => {
@@ -33,11 +38,13 @@ export default function SubscriptionBilling() {
     const { data: pData } = await supabase.from("subscription_plans").select("*").order("price", { ascending: true })
     const { data: iData } = await supabase.from("invoices").select("*, companies(name), subscription_plans(name)").order("created_at", { ascending: false })
     const { data: aData } = await supabase.from("billing_alerts").select("*, companies(name)").order("created_at", { ascending: false })
+    const { data: gData } = await supabase.from("payment_gateways").select("*").order("name", { ascending: true })
     
     setSubs(sData || [])
     setPlans(pData || [])
     setInvoices(iData || [])
     setAlerts(aData || [])
+    setGateways(gData || [])
     setLoading(false)
   }
 
@@ -65,6 +72,7 @@ export default function SubscriptionBilling() {
           { id: "plans",         label: "Plans",          icon: Sparkles },
           { id: "invoices",      label: "Invoices",       icon: FileText },
           { id: "alerts",        label: "Alerts",         icon: Bell },
+          { id: "gateways",      label: "Gateways",       icon: Shield },
         ].map(tab => (
           <button
             key={tab.id}
@@ -409,7 +417,47 @@ export default function SubscriptionBilling() {
           </div>
         )}
 
-        {/* Modals */}
+        {/* TAB 5: GATEWAYS */}
+        {activeTab === "gateways" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {gateways.map(gw => (
+              <div key={gw.id} className="p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-[3rem] flex flex-col justify-between group hover:border-violet-600/30 transition-all">
+                <div className="space-y-6">
+                  <div className="flex justify-between items-start">
+                    {gw.logo_url ? (
+                      <img src={gw.logo_url} alt={gw.name} className="h-8 md:h-10 object-contain dark:invert" />
+                    ) : (
+                      <div className="w-12 h-12 bg-slate-100 dark:bg-white/10 rounded-2xl flex items-center justify-center text-slate-400">
+                         <CreditCard className="h-6 w-6" />
+                      </div>
+                    )}
+                    <button 
+                      onClick={async () => {
+                        await supabase.from("payment_gateways").update({ is_active: !gw.is_active }).eq("id", gw.id);
+                        fetchData();
+                      }}
+                      className={`w-14 h-8 rounded-full relative transition-all ${gw.is_active ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-white/10'}`}
+                    >
+                      <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all ${gw.is_active ? 'right-1' : 'left-1'}`} />
+                    </button>
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{gw.display_name}</h4>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2">
+                      Status: <span className={gw.is_active ? "text-emerald-500" : "text-red-500"}>{gw.is_active ? 'Online' : 'Disabled'}</span>
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => { setSelectedGateway(gw); setIsGatewayModalOpen(true); }}
+                  className="mt-8 w-full py-4 rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 text-slate-500 dark:text-violet-400 font-black uppercase text-[10px] tracking-widest hover:bg-violet-600 hover:text-white hover:border-violet-600 transition-all flex items-center justify-center gap-2"
+                >
+                  <Settings className="h-4 w-4" /> Configure API
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         {isPlanModalOpen && (
           <PlanManagementModal 
             plan={selectedPlan}
@@ -447,6 +495,17 @@ export default function SubscriptionBilling() {
           <InvoiceDetailsModal 
             invoice={selectedInvoice}
             onClose={() => setIsInvoiceViewOpen(false)}
+          />
+        )}
+
+        {isGatewayModalOpen && (
+          <GatewayConfigModal 
+            gateway={selectedGateway}
+            onClose={() => setIsGatewayModalOpen(false)}
+            onSuccess={() => {
+              setIsGatewayModalOpen(false);
+              fetchData();
+            }}
           />
         )}
 
