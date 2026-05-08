@@ -8,6 +8,7 @@ import {
 } from "lucide-react"
 import PlanManagementModal from "../../components/superadmin/PlanManagementModal"
 import SubscriptionControlModal from "../../components/superadmin/SubscriptionControlModal"
+import PaymentActionModal from "../../components/superadmin/PaymentActionModal"
 
 export default function SubscriptionBilling() {
   const [activeTab, setActiveTab] = useState("subscriptions")
@@ -17,8 +18,11 @@ export default function SubscriptionBilling() {
   const [loading, setLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [selectedSub, setSelectedSub] = useState(null)
+  const [selectedInvoice, setSelectedInvoice] = useState(null)
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false)
   const [isSubModalOpen, setIsSubModalOpen] = useState(false)
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  const [invoiceFilter, setInvoiceFilter] = useState("all")
 
   const fetchData = async () => {
     setLoading(true)
@@ -174,42 +178,75 @@ export default function SubscriptionBilling() {
 
         {/* TAB 3: INVOICES */}
         {activeTab === "invoices" && (
-          <div className="rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[800px] lg:min-w-full">
-                <thead>
-                  <tr className="bg-slate-50/50 dark:bg-violet-500/5 border-b-2 border-slate-100 dark:border-violet-500/10">
-                    <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Invoice</th>
-                    <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Corporate</th>
-                    <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Amount</th>
-                    <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
-                  {invoices.length === 0 ? (
-                    <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase text-xs tracking-widest">No Invoices</td></tr>
-                  ) : invoices.map(inv => (
-                    <tr key={inv.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02]">
-                      <td className="px-8 py-6 md:py-8">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center text-violet-600 shrink-0"><FileText className="h-4 w-4 md:h-5 md:w-5" /></div>
-                          <p className="font-black text-slate-900 dark:text-white uppercase tracking-widest text-[10px] md:text-sm">{inv.invoice_number}</p>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 md:py-8">
-                        <p className="font-black text-slate-900 dark:text-white uppercase text-[10px] md:text-sm truncate max-w-[150px]">{inv.companies?.name}</p>
-                        <p className="text-[9px] md:text-xs font-bold text-slate-500">{inv.subscription_plans?.name} Plan</p>
-                      </td>
-                      <td className="px-8 py-6 md:py-8 font-black text-violet-600 text-sm md:text-lg">${inv.amount}</td>
-                      <td className="px-8 py-6 md:py-8">
-                        <span className={`px-3 md:px-4 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase border-2 flex items-center gap-2 w-fit ${inv.status === 'paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
-                          {inv.status}
-                        </span>
-                      </td>
+          <div className="space-y-6">
+            {/* Invoice Filter */}
+            <div className="flex gap-4 mb-6 overflow-x-auto pb-2">
+              {['all', 'pending', 'paid', 'failed', 'refunded'].map(status => (
+                <button
+                  key={status}
+                  onClick={() => setInvoiceFilter(status)}
+                  className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border-2 ${
+                    invoiceFilter === status 
+                      ? "bg-slate-900 text-white border-slate-900" 
+                      : "bg-white dark:bg-white/5 text-slate-400 border-slate-100 dark:border-white/10"
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+
+            <div className="rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[800px] lg:min-w-full">
+                  <thead>
+                    <tr className="bg-slate-50/50 dark:bg-violet-500/5 border-b-2 border-slate-100 dark:border-violet-500/10">
+                      <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Invoice</th>
+                      <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Corporate</th>
+                      <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Amount</th>
+                      <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Status</th>
+                      <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 text-right">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
+                    {invoices.filter(inv => invoiceFilter === 'all' || inv.status === invoiceFilter).length === 0 ? (
+                      <tr><td colSpan={5} className="py-20 text-center text-slate-400 font-bold uppercase text-xs tracking-widest">No Invoices Found</td></tr>
+                    ) : invoices.filter(inv => invoiceFilter === 'all' || inv.status === invoiceFilter).map(inv => (
+                      <tr key={inv.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
+                        <td className="px-8 py-6 md:py-8">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center text-violet-600 shrink-0"><FileText className="h-4 w-4 md:h-5 md:w-5" /></div>
+                            <p className="font-black text-slate-900 dark:text-white uppercase tracking-widest text-[10px] md:text-sm">{inv.invoice_number}</p>
+                          </div>
+                        </td>
+                        <td className="px-8 py-6 md:py-8">
+                          <p className="font-black text-slate-900 dark:text-white uppercase text-[10px] md:text-sm truncate max-w-[150px]">{inv.companies?.name}</p>
+                          <p className="text-[9px] md:text-xs font-bold text-slate-500">{inv.subscription_plans?.name} Plan</p>
+                        </td>
+                        <td className="px-8 py-6 md:py-8 font-black text-violet-600 text-sm md:text-lg">${inv.amount}</td>
+                        <td className="px-8 py-6 md:py-8">
+                          <span className={`px-3 md:px-4 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase border-2 flex items-center gap-2 w-fit ${
+                            inv.status === 'paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+                            inv.status === 'failed' ? 'bg-red-50 text-red-600 border-red-100' :
+                            inv.status === 'refunded' ? 'bg-slate-50 text-slate-600 border-slate-100' :
+                            'bg-amber-50 text-amber-600 border-amber-100'
+                          }`}>
+                            {inv.status}
+                          </span>
+                        </td>
+                        <td className="px-8 py-6 md:py-8 text-right">
+                          <button 
+                            onClick={() => { setSelectedInvoice(inv); setIsPaymentModalOpen(true); }}
+                            className="px-6 py-2 rounded-xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all opacity-0 group-hover:opacity-100"
+                          >
+                            Process
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -231,6 +268,17 @@ export default function SubscriptionBilling() {
             onClose={() => setIsSubModalOpen(false)}
             onSuccess={() => {
               setIsSubModalOpen(false);
+              fetchData();
+            }}
+          />
+        )}
+
+        {isPaymentModalOpen && (
+          <PaymentActionModal 
+            invoice={selectedInvoice}
+            onClose={() => setIsPaymentModalOpen(false)}
+            onSuccess={() => {
+              setIsPaymentModalOpen(false);
               fetchData();
             }}
           />
