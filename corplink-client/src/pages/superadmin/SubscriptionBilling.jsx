@@ -5,7 +5,7 @@ import {
   ChevronRight, ArrowUpRight, Edit3, Settings,
   Bell, AlertTriangle, Send, Zap, Ban, FileText, CheckCircle2,
   AlertCircle, Clock, DollarSign, CreditCard, RefreshCw, Sparkles, Plus, Trash2,
-  Shield
+  Shield, BarChart3, TrendingUp, PieChart, Activity
 } from "lucide-react"
 import PlanManagementModal from "../../components/superadmin/PlanManagementModal"
 import SubscriptionControlModal from "../../components/superadmin/SubscriptionControlModal"
@@ -20,6 +20,13 @@ export default function SubscriptionBilling() {
   const [invoices, setInvoices] = useState([])
   const [alerts, setAlerts] = useState([])
   const [gateways, setGateways] = useState([])
+  const [metrics, setMetrics] = useState({
+    totalRevenue: 0,
+    mrr: 0,
+    activeSubs: 0,
+    expiredSubs: 0,
+    planStats: []
+  })
   const [loading, setLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [selectedSub, setSelectedSub] = useState(null)
@@ -45,6 +52,34 @@ export default function SubscriptionBilling() {
     setInvoices(iData || [])
     setAlerts(aData || [])
     setGateways(gData || [])
+    
+    // Calculate Metrics
+    const totalRev = (iData || []).filter(i => i.status === 'paid').reduce((acc, curr) => acc + Number(curr.amount), 0)
+    const active = (sData || []).filter(s => s.status === 'active')
+    const expired = (sData || []).filter(s => s.status === 'deactivated' || (s.expiry_date && new Date(s.expiry_date) < new Date()))
+    
+    // MRR Calculation
+    const mrr = active.reduce((acc, curr) => {
+      const plan = (pData || []).find(p => p.id === curr.plan_id)
+      return acc + (plan ? Number(plan.price) : 0)
+    }, 0)
+
+    // Plan Statistics
+    const pStats = (pData || []).map(p => ({
+      name: p.name,
+      count: (sData || []).filter(s => s.plan_id === p.id).length,
+      revenue: (iData || []).filter(i => i.plan_id === p.id && i.status === 'paid').reduce((acc, curr) => acc + Number(curr.amount), 0),
+      color: p.color
+    }))
+
+    setMetrics({
+      totalRevenue: totalRev,
+      mrr: mrr,
+      activeSubs: active.length,
+      expiredSubs: expired.length,
+      planStats: pStats
+    })
+
     setLoading(false)
   }
 
@@ -73,6 +108,7 @@ export default function SubscriptionBilling() {
           { id: "invoices",      label: "Invoices",       icon: FileText },
           { id: "alerts",        label: "Alerts",         icon: Bell },
           { id: "gateways",      label: "Gateways",       icon: Shield },
+          { id: "analytics",     label: "Analytics",      icon: BarChart3 },
         ].map(tab => (
           <button
             key={tab.id}
@@ -456,6 +492,124 @@ export default function SubscriptionBilling() {
                 </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* TAB 6: ANALYTICS */}
+        {activeTab === "analytics" && (
+          <div className="space-y-10 animate-in fade-in duration-500">
+            {/* Top Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              <div className="p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 rounded-[3rem] shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 blur-3xl -mr-12 -mt-12" />
+                <TrendingUp className="h-6 w-6 text-emerald-500 mb-4" />
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Revenue</p>
+                <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">${metrics.totalRevenue.toLocaleString()}</h3>
+                <div className="mt-4 flex items-center gap-2 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 w-fit px-3 py-1 rounded-full">
+                  +12.5% vs last month
+                </div>
+              </div>
+
+              <div className="p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 rounded-[3rem] shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/10 blur-3xl -mr-12 -mt-12" />
+                <Activity className="h-6 w-6 text-violet-500 mb-4" />
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Monthly Recurring (MRR)</p>
+                <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">${metrics.mrr.toLocaleString()}</h3>
+                <div className="mt-4 flex items-center gap-2 text-[10px] font-bold text-violet-500 bg-violet-500/10 w-fit px-3 py-1 rounded-full">
+                  Recurring Income
+                </div>
+              </div>
+
+              <div className="p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 rounded-[3rem] shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 blur-3xl -mr-12 -mt-12" />
+                <CheckCircle2 className="h-6 w-6 text-blue-500 mb-4" />
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Subscriptions</p>
+                <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{metrics.activeSubs}</h3>
+                <div className="mt-4 text-[10px] font-bold text-slate-400">Paying Corporates</div>
+              </div>
+
+              <div className="p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 rounded-[3rem] shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/10 blur-3xl -mr-12 -mt-12" />
+                <AlertCircle className="h-6 w-6 text-red-500 mb-4" />
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Expired/Deactivated</p>
+                <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{metrics.expiredSubs}</h3>
+                <div className="mt-4 text-[10px] font-bold text-red-500">Action Needed</div>
+              </div>
+            </div>
+
+            {/* Middle Section: Plan Stats & Visuals */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+               {/* Per-Plan Revenue */}
+               <div className="lg:col-span-2 p-10 bg-slate-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden">
+                  <div className="absolute bottom-0 right-0 w-64 h-64 bg-violet-600/20 blur-[100px] -mb-32 -mr-32" />
+                  <div className="flex items-center justify-between mb-10">
+                     <div>
+                        <h4 className="text-xl font-black uppercase tracking-tighter">Revenue by Plan</h4>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Income breakdown per tier</p>
+                     </div>
+                     <PieChart className="h-6 w-6 text-violet-400" />
+                  </div>
+                  
+                  <div className="space-y-8">
+                     {metrics.planStats.map(stat => (
+                        <div key={stat.name} className="space-y-3">
+                           <div className="flex justify-between items-end">
+                              <div>
+                                 <span className="text-xs font-black uppercase tracking-widest" style={{ color: stat.color }}>{stat.name}</span>
+                                 <p className="text-sm font-bold text-slate-400">{stat.count} Subscriptions</p>
+                              </div>
+                              <span className="text-lg font-black">${stat.revenue.toLocaleString()}</span>
+                           </div>
+                           <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+                              <div 
+                                 className="h-full rounded-full transition-all duration-1000" 
+                                 style={{ 
+                                    width: `${(stat.revenue / (metrics.totalRevenue || 1)) * 100}%`,
+                                    backgroundColor: stat.color 
+                                 }}
+                              />
+                           </div>
+                        </div>
+                     ))}
+                  </div>
+               </div>
+
+               {/* Retention Visual */}
+               <div className="p-10 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 rounded-[3rem] flex flex-col justify-between">
+                  <div>
+                    <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Growth Status</h4>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Monthly performance</p>
+                  </div>
+
+                  <div className="flex-1 flex items-center justify-center py-10">
+                     <div className="relative">
+                        <svg className="w-48 h-48 -rotate-90">
+                           <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="16" fill="transparent" className="text-slate-100 dark:text-white/5" />
+                           <circle 
+                              cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="16" fill="transparent" 
+                              strokeDasharray={502} 
+                              strokeDashoffset={502 - (502 * (metrics.activeSubs / ((metrics.activeSubs + metrics.expiredSubs) || 1)))} 
+                              className="text-violet-600 transition-all duration-1000"
+                           />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                           <span className="text-3xl font-black text-slate-900 dark:text-white">{Math.round((metrics.activeSubs / ((metrics.activeSubs + metrics.expiredSubs) || 1)) * 100)}%</span>
+                           <span className="text-[8px] font-black uppercase text-slate-400">Retention</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="space-y-4">
+                     <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-2xl">
+                        <span className="text-[10px] font-black uppercase text-slate-500">Target MRR</span>
+                        <span className="text-sm font-black text-slate-900 dark:text-white">$50,000</span>
+                     </div>
+                     <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all">
+                        View Detailed Reports
+                     </button>
+                  </div>
+               </div>
+            </div>
           </div>
         )}
         {isPlanModalOpen && (
