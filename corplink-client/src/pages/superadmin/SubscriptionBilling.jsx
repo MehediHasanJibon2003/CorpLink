@@ -9,6 +9,7 @@ import {
 import PlanManagementModal from "../../components/superadmin/PlanManagementModal"
 import SubscriptionControlModal from "../../components/superadmin/SubscriptionControlModal"
 import PaymentActionModal from "../../components/superadmin/PaymentActionModal"
+import InvoiceDetailsModal from "../../components/superadmin/InvoiceDetailsModal"
 
 export default function SubscriptionBilling() {
   const [activeTab, setActiveTab] = useState("subscriptions")
@@ -22,6 +23,7 @@ export default function SubscriptionBilling() {
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false)
   const [isSubModalOpen, setIsSubModalOpen] = useState(false)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  const [isInvoiceViewOpen, setIsInvoiceViewOpen] = useState(false)
   const [invoiceFilter, setInvoiceFilter] = useState("all")
 
   const fetchData = async () => {
@@ -234,7 +236,14 @@ export default function SubscriptionBilling() {
                             {inv.status}
                           </span>
                         </td>
-                        <td className="px-8 py-6 md:py-8 text-right">
+                        <td className="px-8 py-6 md:py-8 text-right flex justify-end gap-3">
+                          <button 
+                            onClick={() => { setSelectedInvoice(inv); setIsInvoiceViewOpen(true); }}
+                            className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:bg-violet-600 hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                            title="View Invoice"
+                          >
+                            <FileText className="h-4 w-4 md:h-5 md:w-5" />
+                          </button>
                           <button 
                             onClick={() => { setSelectedInvoice(inv); setIsPaymentModalOpen(true); }}
                             className="px-6 py-2 rounded-xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all opacity-0 group-hover:opacity-100"
@@ -251,6 +260,7 @@ export default function SubscriptionBilling() {
           </div>
         )}
 
+        {/* Modals */}
         {isPlanModalOpen && (
           <PlanManagementModal 
             plan={selectedPlan}
@@ -281,6 +291,13 @@ export default function SubscriptionBilling() {
               setIsPaymentModalOpen(false);
               fetchData();
             }}
+          />
+        )}
+
+        {isInvoiceViewOpen && (
+          <InvoiceDetailsModal 
+            invoice={selectedInvoice}
+            onClose={() => setIsInvoiceViewOpen(false)}
           />
         )}
 
