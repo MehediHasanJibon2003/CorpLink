@@ -8,6 +8,7 @@ import CorporateFeed from "../components/employee/CorporateFeed"
 import Notifications from "../components/employee/Notifications"
 import CollaborationRequest from "../components/employee/CollaborationRequest"
 import MyProfile from "../components/employee/MyProfile"
+import MyDepartment from "../components/employee/MyDepartment"
 
 /**
  * EmployeeDashboard.jsx — Main shell for the Employee Module
@@ -40,6 +41,7 @@ function EmployeeDashboard() {
     if (path.startsWith("/employee/notifications")) return <Notifications />
     if (path.startsWith("/employee/collaboration")) return <CollaborationRequest />
     if (path.startsWith("/employee/profile")) return <MyProfile />
+    if (path.startsWith("/employee/department")) return <MyDepartment />
 
     // Default: /employee/dashboard
     return <PersonalDashboard />

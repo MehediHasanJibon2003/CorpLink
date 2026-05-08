@@ -17,6 +17,7 @@ import {
   LogOut,
   Briefcase,
   MessageCircle,
+  Building,
 } from "lucide-react";
 
 const EMPLOYEE_NAV = [
@@ -31,6 +32,7 @@ const EMPLOYEE_NAV = [
   {
     group: "Company",
     items: [
+      { name: "My Department", path: "/employee/department", icon: Building },
       { name: "Messages", path: "/employee/messages", icon: MessageCircle },
       { name: "Corporate Feed", path: "/employee/feed", icon: Radio },
       { name: "Notifications", path: "/employee/notifications", icon: Bell },
@@ -61,6 +63,7 @@ function EmployeeLayout({ children }) {
     "/employee/notifications": "notifications",
     "/employee/collaboration": "collaboration",
     "/employee/profile": "profile",
+    "/employee/department": "department",
   };
 
   const currentView = pathToView[location.pathname] || "dashboard";

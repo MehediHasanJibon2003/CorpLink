@@ -176,6 +176,10 @@ function App() {
               path="/employee/profile"
               element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
             />
+            <Route
+              path="/employee/department"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
 
             {/* Unauthorized / Pending */}
             <Route path="/unauthorized" element={<Unauthorized />} />
