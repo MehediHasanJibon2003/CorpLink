@@ -2,9 +2,9 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
 import { 
-  CreditCard, RefreshCw, Sparkles, Plus, Trash2, 
-  FileText, CheckCircle2, AlertCircle, Clock, DollarSign,
-  ChevronRight, ArrowUpRight, Edit3, Settings
+  ChevronRight, ArrowUpRight, Edit3, Settings,
+  Bell, AlertTriangle, Send, Zap, Ban, FileText, CheckCircle2,
+  AlertCircle, Clock, DollarSign, CreditCard, RefreshCw, Sparkles, Plus, Trash2
 } from "lucide-react"
 import PlanManagementModal from "../../components/superadmin/PlanManagementModal"
 import SubscriptionControlModal from "../../components/superadmin/SubscriptionControlModal"
@@ -16,6 +16,7 @@ export default function SubscriptionBilling() {
   const [subs, setSubs] = useState([])
   const [plans, setPlans] = useState([])
   const [invoices, setInvoices] = useState([])
+  const [alerts, setAlerts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [selectedSub, setSelectedSub] = useState(null)
@@ -31,9 +32,12 @@ export default function SubscriptionBilling() {
     const { data: sData } = await supabase.from("subscriptions").select("*, companies(name)").order("created_at", { ascending: false })
     const { data: pData } = await supabase.from("subscription_plans").select("*").order("price", { ascending: true })
     const { data: iData } = await supabase.from("invoices").select("*, companies(name), subscription_plans(name)").order("created_at", { ascending: false })
+    const { data: aData } = await supabase.from("billing_alerts").select("*, companies(name)").order("created_at", { ascending: false })
+    
     setSubs(sData || [])
     setPlans(pData || [])
     setInvoices(iData || [])
+    setAlerts(aData || [])
     setLoading(false)
   }
 
@@ -60,6 +64,7 @@ export default function SubscriptionBilling() {
           { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
           { id: "plans",         label: "Plans",          icon: Sparkles },
           { id: "invoices",      label: "Invoices",       icon: FileText },
+          { id: "alerts",        label: "Alerts",         icon: Bell },
         ].map(tab => (
           <button
             key={tab.id}
@@ -229,8 +234,8 @@ export default function SubscriptionBilling() {
                         <td className="px-8 py-6 md:py-8">
                           <span className={`px-3 md:px-4 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase border-2 flex items-center gap-2 w-fit ${
                             inv.status === 'paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
-                            inv.status === 'failed' ? 'bg-red-50 text-red-600 border-red-100' :
-                            inv.status === 'refunded' ? 'bg-slate-50 text-slate-600 border-slate-100' :
+                            inv.status === 'failed' ? 'bg-red-50 text-red-600 border-red-100' : 
+                            inv.status === 'refunded' ? 'bg-slate-50 text-slate-600 border-slate-100' : 
                             'bg-amber-50 text-amber-600 border-amber-100'
                           }`}>
                             {inv.status}
@@ -256,6 +261,150 @@ export default function SubscriptionBilling() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: ALERTS */}
+        {activeTab === "alerts" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+               <div className="bg-amber-50 dark:bg-amber-500/5 p-6 rounded-3xl border-2 border-amber-100 dark:border-amber-500/20">
+                  <div className="flex items-center gap-4 mb-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-600">Renewals Due</h4>
+                  </div>
+                  <p className="text-3xl font-black text-slate-900 dark:text-white">{alerts.filter(a => a.type === 'renewal_warning').length}</p>
+               </div>
+               <div className="bg-red-50 dark:bg-red-500/5 p-6 rounded-3xl border-2 border-red-100 dark:border-red-500/20">
+                  <div className="flex items-center gap-4 mb-2">
+                    <Ban className="h-5 w-5 text-red-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-red-600">Expired</h4>
+                  </div>
+                  <p className="text-3xl font-black text-slate-900 dark:text-white">{alerts.filter(a => a.type === 'expired').length}</p>
+               </div>
+               <div className="bg-violet-50 dark:bg-violet-500/5 p-6 rounded-3xl border-2 border-violet-100 dark:border-violet-500/20">
+                  <div className="flex items-center gap-4 mb-2">
+                    <Zap className="h-5 w-5 text-violet-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-violet-600">Upgrades</h4>
+                  </div>
+                  <p className="text-3xl font-black text-slate-900 dark:text-white">{alerts.filter(a => a.type === 'upgrade_suggestion').length}</p>
+               </div>
+            </div>
+
+            <div className="space-y-4">
+               {alerts.length === 0 ? (
+                 <div className="py-20 text-center bg-slate-50 dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-slate-200">
+                    <Bell className="h-10 w-10 text-slate-300 mx-auto mb-4" />
+                    <p className="font-black uppercase text-xs text-slate-400 tracking-widest">System Clear: No Urgent Alerts</p>
+                 </div>
+               ) : alerts.map(alert => (
+                 <div key={alert.id} className="p-6 md:p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-violet-500/30 transition-all">
+                    <div className="flex items-center gap-6 text-center md:text-left">
+                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
+                         alert.priority === 'high' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 
+                         alert.priority === 'medium' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 
+                         'bg-violet-500 text-white shadow-lg shadow-violet-500/20'
+                       }`}>
+                         {alert.type === 'renewal_warning' ? <Clock className="h-6 w-6" /> : 
+                          alert.type === 'expired' ? <AlertCircle className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
+                       </div>
+                       <div>
+                          <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">{alert.companies?.name}</h4>
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{alert.message}</p>
+                       </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                       <button 
+                         onClick={() => alert("Reminder sent to " + alert.companies?.name)}
+                         className="px-6 py-3 rounded-xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest flex items-center gap-2 hover:scale-105 transition-all"
+                       >
+                         <Send className="h-4 w-4" /> Send Reminder
+                       </button>
+                       <button 
+                         onClick={async () => {
+                           await supabase.from("billing_alerts").delete().eq("id", alert.id);
+                           fetchData();
+                         }}
+                         className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-red-500 transition-all"
+                       >
+                         <Trash2 className="h-5 w-5" />
+                       </button>
+                    </div>
+                 </div>
+               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: ALERTS */}
+        {activeTab === "alerts" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+               <div className="bg-amber-50 dark:bg-amber-500/5 p-6 rounded-3xl border-2 border-amber-100 dark:border-amber-500/20">
+                  <div className="flex items-center gap-4 mb-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-600">Renewals Due</h4>
+                  </div>
+                  <p className="text-3xl font-black text-slate-900 dark:text-white">{alerts.filter(a => a.type === 'renewal_warning').length}</p>
+               </div>
+               <div className="bg-red-50 dark:bg-red-500/5 p-6 rounded-3xl border-2 border-red-100 dark:border-red-500/20">
+                  <div className="flex items-center gap-4 mb-2">
+                    <Ban className="h-5 w-5 text-red-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-red-600">Expired</h4>
+                  </div>
+                  <p className="text-3xl font-black text-slate-900 dark:text-white">{alerts.filter(a => a.type === 'expired').length}</p>
+               </div>
+               <div className="bg-violet-50 dark:bg-violet-500/5 p-6 rounded-3xl border-2 border-violet-100 dark:border-violet-500/20">
+                  <div className="flex items-center gap-4 mb-2">
+                    <Zap className="h-5 w-5 text-violet-500" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-violet-600">Upgrades</h4>
+                  </div>
+                  <p className="text-3xl font-black text-slate-900 dark:text-white">{alerts.filter(a => a.type === 'upgrade_suggestion').length}</p>
+               </div>
+            </div>
+
+            <div className="space-y-4">
+               {alerts.length === 0 ? (
+                 <div className="py-20 text-center bg-slate-50 dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-slate-200">
+                    <Bell className="h-10 w-10 text-slate-300 mx-auto mb-4" />
+                    <p className="font-black uppercase text-xs text-slate-400 tracking-widest">System Clear: No Urgent Alerts</p>
+                 </div>
+               ) : alerts.map(alert => (
+                 <div key={alert.id} className="p-6 md:p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-violet-500/30 transition-all">
+                    <div className="flex items-center gap-6 text-center md:text-left">
+                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
+                         alert.priority === 'high' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 
+                         alert.priority === 'medium' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 
+                         'bg-violet-500 text-white shadow-lg shadow-violet-500/20'
+                       }`}>
+                         {alert.type === 'renewal_warning' ? <Clock className="h-6 w-6" /> : 
+                          alert.type === 'expired' ? <AlertCircle className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
+                       </div>
+                       <div>
+                          <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">{alert.companies?.name}</h4>
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{alert.message}</p>
+                       </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                       <button 
+                         onClick={() => alert("Reminder sent to " + alert.companies?.name)}
+                         className="px-6 py-3 rounded-xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest flex items-center gap-2 hover:scale-105 transition-all"
+                       >
+                         <Send className="h-4 w-4" /> Send Reminder
+                       </button>
+                       <button 
+                         onClick={async () => {
+                           await supabase.from("billing_alerts").delete().eq("id", alert.id);
+                           fetchData();
+                         }}
+                         className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-red-500 transition-all"
+                       >
+                         <Trash2 className="h-5 w-5" />
+                       </button>
+                    </div>
+                 </div>
+               ))}
             </div>
           </div>
         )}
