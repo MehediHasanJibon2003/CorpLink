@@ -13,14 +13,18 @@ import {
   ChevronDown,
   Send,
   X,
+  ThumbsUp,
+  Award,
+  Zap,
+  MoreHorizontal,
+  Clock,
+  Share2,
 } from "lucide-react";
 
 // ─── Skeleton ──────────────────────────────────────────────────────
 function Skeleton({ className = "" }) {
   return (
-    <div
-      className={`animate-pulse bg-slate-200 dark:bg-slate-700 rounded-lg ${className}`}
-    />
+    <div className={`animate-pulse bg-slate-200 dark:bg-slate-700/50 rounded-[2rem] ${className}`} />
   );
 }
 
@@ -43,109 +47,129 @@ const typeConfig = {
     label: "Announcement",
     class: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
     icon: Megaphone,
+    gradient: "from-blue-500/10 to-indigo-500/10",
   },
   event: {
-    label: "Event",
-    class:
-      "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
+    label: "Corporate Event",
+    class: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
     icon: Calendar,
+    gradient: "from-purple-500/10 to-pink-500/10",
   },
   promotion: {
-    label: "Promotion",
-    class:
-      "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
-    icon: Radio,
+    label: "Growth & Promo",
+    class: "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
+    icon: Zap,
+    gradient: "from-amber-500/10 to-orange-500/10",
   },
   general: {
-    label: "General",
+    label: "Internal Post",
     class: "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300",
     icon: Radio,
+    gradient: "from-slate-500/10 to-slate-700/10",
   },
 };
 
 // ─── Comment Section ───────────────────────────────────────────────
-function CommentSection({ post, user, profile }) {
+function CommentSection({ postId, user, profile }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchComments();
-  }, [post.id]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     const { data } = await supabase
       .from("post_comments")
-      .select("id, content, created_at, employee_id")
-      .eq("post_id", post.id)
-      .order("created_at", { ascending: true })
-      .limit(20);
+      .select(`
+        id, content, created_at, employee_id,
+        author:profiles!employee_id (
+          full_name,
+          role
+        )
+      `)
+      .eq("post_id", postId)
+      .order("created_at", { ascending: true });
     setComments(data || []);
     setLoading(false);
-  };
+  }, [postId]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
 
   const handleComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
     setSubmitting(true);
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("post_comments")
         .insert([
           {
-            post_id: post.id,
+            post_id: postId,
             employee_id: user.id,
             content: newComment.trim(),
             company_id: profile.company_id,
-            created_at: new Date().toISOString(),
           },
         ])
-        .select()
+        .select(`
+          id, content, created_at, employee_id,
+          author:profiles!employee_id (
+            full_name,
+            role
+          )
+        `)
         .single();
+      
       if (data) setComments((prev) => [...prev, data]);
       setNewComment("");
-    } catch (_) {}
+    } catch (err) {
+      console.error("Comment error:", err);
+    }
     setSubmitting(false);
   };
 
   return (
-    <div className="mt-8 pt-8 border-t-2 border-slate-100 dark:border-slate-700">
+    <div className="mt-10 pt-10 border-t-2 border-slate-100 dark:border-slate-800 space-y-8">
       {loading ? (
-        <Skeleton className="h-12 w-full rouneded-2xl" />
+        <Skeleton className="h-20 w-full" />
       ) : (
         <>
-          {comments.length > 0 && (
-            <div className="space-y-4 mb-6">
-              {comments.map((c) => (
-                <div
-                  key={c.id}
-                  className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl px-6 py-4"
-                >
-                  <p className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-300">
-                    {c.content}
-                  </p>
-                  <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-widest">
-                    {timeAgo(c.created_at)}
-                  </p>
+          <div className="space-y-6 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
+            {comments.length === 0 ? (
+              <p className="text-center text-slate-400 font-bold italic py-4">Be the first to comment on this briefing.</p>
+            ) : (
+              comments.map((c) => (
+                <div key={c.id} className="flex gap-4 group">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-black text-slate-400 text-sm shrink-0">
+                    {c.author?.full_name?.charAt(0) || "?"}
+                  </div>
+                  <div className="flex-1 bg-slate-50 dark:bg-slate-900/50 rounded-[1.5rem] px-6 py-4 border-2 border-transparent group-hover:border-slate-200 dark:group-hover:border-slate-800 transition-all">
+                    <div className="flex items-center justify-between mb-1">
+                       <span className="font-black text-slate-800 dark:text-slate-100 text-sm">{c.author?.full_name || "Member"}</span>
+                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{timeAgo(c.created_at)}</span>
+                    </div>
+                    <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 font-medium">{c.content}</p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            )}
+          </div>
           <form onSubmit={handleComment} className="flex gap-4">
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Write a comment..."
-              className="flex-1 px-6 py-4 text-sm md:text-base bg-slate-100 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-2xl md:rounded-[2rem] text-slate-800 dark:text-slate-200 font-bold placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/20"
-            />
+            <div className="flex-1 relative">
+               <input
+                 type="text"
+                 value={newComment}
+                 onChange={(e) => setNewComment(e.target.value)}
+                 placeholder="Contribute to the discussion..."
+                 className="w-full px-8 py-5 bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-full text-slate-800 dark:text-white font-bold outline-none focus:border-blue-500 transition-all"
+               />
+            </div>
             <button
               type="submit"
               disabled={submitting || !newComment.trim()}
-              className="px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl md:rounded-[2rem] transition disabled:opacity-50 shrink-0"
+              className="px-8 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-black uppercase tracking-widest transition shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-50"
             >
-              <Send className="h-5 w-5 md:h-6 md:w-6" />
+              <Send className="h-6 w-6" />
             </button>
           </form>
         </>
@@ -156,113 +180,154 @@ function CommentSection({ post, user, profile }) {
 
 // ─── Post Card ─────────────────────────────────────────────────────
 function PostCard({ post, user, profile }) {
-  const [liked, setLiked] = useState(post.userLiked || false);
-  const [likeCount, setLikeCount] = useState(post.likeCount || 0);
+  const [reactions, setReactions] = useState([]);
   const [showComments, setShowComments] = useState(false);
-  const [likeLoading, setLikeLoading] = useState(false);
+  const [reacting, setReacting] = useState(false);
 
   const tConf = typeConfig[post.type] || typeConfig.general;
   const TypeIcon = tConf.icon;
 
-  const toggleLike = async () => {
-    if (likeLoading) return;
-    setLikeLoading(true);
+  const fetchReactions = useCallback(async () => {
+    const { data } = await supabase
+      .from("post_reactions")
+      .select("type, employee_id")
+      .eq("post_id", post.id);
+    setReactions(data || []);
+  }, [post.id]);
+
+  useEffect(() => {
+    fetchReactions();
+  }, [fetchReactions]);
+
+  const toggleReaction = async (type = "like") => {
+    if (reacting) return;
+    setReacting(true);
+    const existing = reactions.find(r => r.employee_id === user.id && r.type === type);
+    
     try {
-      if (liked) {
-        await supabase
-          .from("post_reactions")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("employee_id", user.id);
-        setLikeCount((c) => c - 1);
+      if (existing) {
+        await supabase.from("post_reactions").delete().eq("post_id", post.id).eq("employee_id", user.id).eq("type", type);
+        setReactions(prev => prev.filter(r => !(r.employee_id === user.id && r.type === type)));
       } else {
-        await supabase.from("post_reactions").insert([
-          {
-            post_id: post.id,
-            employee_id: user.id,
-            type: "like",
-            company_id: profile.company_id,
-          },
-        ]);
-        setLikeCount((c) => c + 1);
+        const { data } = await supabase.from("post_reactions").insert([{
+          post_id: post.id,
+          employee_id: user.id,
+          type: type,
+          company_id: profile.company_id
+        }]).select().single();
+        if (data) setReactions(prev => [...prev, data]);
       }
-      setLiked(!liked);
-    } catch (_) {}
-    setLikeLoading(false);
+    } catch (err) {
+      console.error("Reaction Error:", err);
+    }
+    setReacting(false);
   };
 
+  const reactionCounts = reactions.reduce((acc, r) => {
+    acc[r.type] = (acc[r.type] || 0) + 1;
+    return acc;
+  }, {});
+
+  const myReactions = reactions.filter(r => r.employee_id === user.id).map(r => r.type);
+
   return (
-    <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm p-8 md:p-12 hover:shadow-xl transition-shadow group">
-      {/* Author row */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-[1.2rem] bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 flex items-center justify-center font-black text-xl shrink-0 group-hover:scale-110 transition-transform">
-            {(post.authorName || "A").charAt(0).toUpperCase()}
+    <div className={`relative border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 rounded-[3rem] p-10 md:p-14 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group`}>
+      <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${tConf.gradient} -mr-32 -mt-32 blur-3xl opacity-50 group-hover:opacity-100 transition-opacity`} />
+      
+      {/* Header */}
+      <div className="relative flex items-center justify-between mb-10">
+        <div className="flex items-center gap-6">
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-[1.8rem] bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-black text-2xl md:text-3xl text-slate-800 dark:text-white shadow-inner">
+            {(post.author?.full_name || "A").charAt(0)}
           </div>
           <div>
-            <p className="text-lg md:text-xl font-black text-slate-800 dark:text-slate-100">
-              {post.authorName || "Admin"}
-            </p>
-            <p className="text-xs md:text-sm font-bold text-slate-400 mt-1 uppercase tracking-widest">
-              {timeAgo(post.created_at)}
-            </p>
+            <h4 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              {post.author?.full_name || "Corporate Admin"}
+            </h4>
+            <div className="flex items-center gap-3 mt-1.5">
+               <span className="text-[10px] md:text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em]">{post.author?.role || "Announcement Hub"}</span>
+               <div className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600" />
+               <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">{timeAgo(post.created_at)}</span>
+            </div>
           </div>
         </div>
-        <span
-          className={`text-xs md:text-sm font-black px-4 py-1.5 rounded-full flex items-center gap-2 uppercase tracking-widest ${tConf.class}`}
-        >
-          <TypeIcon className="h-4 w-4 md:h-5 md:w-5" />
-          {tConf.label}
-        </span>
+        <div className={`px-6 py-2.5 rounded-full flex items-center gap-3 border-2 border-transparent ${tConf.class} shadow-sm`}>
+           <TypeIcon className="h-5 w-5" />
+           <span className="text-xs md:text-sm font-black uppercase tracking-widest">{tConf.label}</span>
+        </div>
       </div>
 
-      {/* Content */}
-      {post.title && (
-        <h3 className="font-black text-slate-800 dark:text-white text-xl md:text-2xl mb-3">
-          {post.title}
-        </h3>
-      )}
-      <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-        {post.content}
-      </p>
+      {/* Body */}
+      <div className="relative space-y-6">
+        {post.title && (
+          <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight tracking-tighter">
+            {post.title}
+          </h2>
+        )}
+        <p className="text-lg md:text-2xl text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+          {post.content}
+        </p>
 
-      {/* Media */}
-      {post.media_url && (
-        <img
-          src={post.media_url}
-          alt="Post media"
-          className="mt-6 rounded-2xl md:rounded-[2rem] w-full object-cover max-h-96 border-2 border-slate-100 dark:border-slate-700"
-        />
-      )}
-
-      {/* Actions */}
-      <div className="flex items-center gap-6 mt-8 pt-6 border-t-2 border-slate-100 dark:border-slate-700">
-        <button
-          onClick={toggleLike}
-          className={`flex items-center gap-2 text-sm md:text-lg font-black uppercase tracking-widest transition px-4 py-2 rounded-xl ${
-            liked
-              ? "text-red-500 bg-red-50 dark:bg-red-900/20"
-              : "text-slate-500 hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-700"
-          }`}
-        >
-          <Heart
-            className={`h-5 w-5 md:h-6 md:w-6 ${liked ? "fill-current" : ""}`}
-          />
-          <span>{likeCount}</span>
-        </button>
-        <button
-          onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-2 text-sm md:text-lg font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition px-4 py-2 rounded-xl"
-        >
-          <MessageCircle className="h-5 w-5 md:h-6 md:w-6" />
-          <span>Comment</span>
-        </button>
+        {post.media_url && (
+          <div className="rounded-[2.5rem] overflow-hidden border-4 border-slate-100 dark:border-slate-700 shadow-lg bg-black">
+            {post.media_type === 'video' ? (
+              <video 
+                src={post.media_url} 
+                controls 
+                className="w-full max-h-[600px] outline-none"
+                poster="/video-placeholder.png" // Optional placeholder
+              />
+            ) : (
+              <img 
+                src={post.media_url} 
+                alt="Update Visual" 
+                className="w-full h-auto object-cover max-h-[600px] hover:scale-105 transition-transform duration-700" 
+              />
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Comments */}
-      {showComments && (
-        <CommentSection post={post} user={user} profile={profile} />
-      )}
+      {/* Footer & Actions */}
+      <div className="relative mt-12 pt-8 border-t-2 border-slate-50 dark:border-slate-700/50 flex flex-col md:flex-row md:items-center justify-between gap-8">
+        <div className="flex items-center gap-3">
+          {[
+            { type: 'like', icon: ThumbsUp, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+            { type: 'love', icon: Heart, color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-900/20' },
+            { type: 'clap', icon: Award, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+            { type: 'insight', icon: Zap, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20' }
+          ].map(r => {
+            const count = reactionCounts[r.type] || 0;
+            const isMine = myReactions.includes(r.type);
+            const Icon = r.icon;
+            return (
+              <button 
+                key={r.type} 
+                onClick={() => toggleReaction(r.type)}
+                className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all active:scale-90 ${isMine ? `${r.bg} ${r.color} ring-2 ring-current ring-offset-2 dark:ring-offset-slate-800` : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500'}`}
+              >
+                <Icon className={`h-5 w-5 ${isMine ? 'fill-current' : ''}`} />
+                <span className="font-black text-sm">{count > 0 ? count : ''}</span>
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="flex items-center gap-6">
+           <button 
+             onClick={() => setShowComments(!showComments)}
+             className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-black uppercase tracking-widest transition-all ${showComments ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'text-slate-500 hover:text-blue-600 hover:bg-blue-50'}`}
+           >
+              <MessageCircle className="h-6 w-6" />
+              <span>Discussion</span>
+           </button>
+           <button className="p-4 rounded-2xl text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+              <Share2 className="h-6 w-6" />
+           </button>
+        </div>
+      </div>
+
+      {showComments && <CommentSection postId={post.id} user={user} profile={profile} />}
     </div>
   );
 }
@@ -270,7 +335,6 @@ function PostCard({ post, user, profile }) {
 // ─── Main Component ────────────────────────────────────────────────
 function CorporateFeed() {
   const { user, profile } = useAuth();
-
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -283,63 +347,39 @@ function CorporateFeed() {
     setError(null);
 
     try {
-      // Try the announcements table (existing in DB)
-      const { data: announcements, error: aErr } = await supabase
+      // 1. Primary Attempt: Fetch Announcements with Profile Join
+      const { data, error: err } = await supabase
         .from("announcements")
-        .select("id, title, content, type, created_at, created_by")
+        .select(`
+          id, title, content, type, created_at, created_by,
+          media_url, media_type,
+          author:profiles!created_by (
+            full_name,
+            role
+          )
+        `)
         .eq("company_id", profile.company_id)
         .order("created_at", { ascending: false })
-        .limit(30);
+        .limit(50);
 
-      if (aErr && aErr.code !== "42P01") throw aErr;
-
-      // Also try posts table (may or may not exist)
-      let postsData = [];
-      try {
-        const { data: pd } = await supabase
-          .from("posts")
-          .select("id, title, content, type, media_url, created_at, author_id")
-          .eq("corporate_id", profile.company_id)
+      if (err) {
+        console.warn("Primary feed fetch failed, attempting fallback...", err);
+        // 2. Fallback: Fetch without join
+        const { data: fallbackData, error: fErr } = await supabase
+          .from("announcements")
+          .select("*")
+          .eq("company_id", profile.company_id)
           .order("created_at", { ascending: false })
-          .limit(30);
-        postsData = pd || [];
-      } catch (_) {}
-
-      // Normalize announcements
-      const normalizedAnnouncements = (announcements || []).map((a) => ({
-        id: `ann-${a.id}`,
-        title: a.title,
-        content: a.content,
-        type: a.type || "announcement",
-        created_at: a.created_at,
-        authorName: "Admin",
-        likeCount: 0,
-        userLiked: false,
-        media_url: null,
-      }));
-
-      // Normalize posts
-      const normalizedPosts = postsData.map((p) => ({
-        id: `post-${p.id}`,
-        title: p.title,
-        content: p.content,
-        type: p.type || "general",
-        created_at: p.created_at,
-        authorName: "Team",
-        likeCount: 0,
-        userLiked: false,
-        media_url: p.media_url,
-      }));
-
-      // Merge and sort
-      const merged = [...normalizedAnnouncements, ...normalizedPosts].sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at),
-      );
-
-      setPosts(merged);
+          .limit(50);
+        
+        if (fErr) throw fErr;
+        setPosts(fallbackData || []);
+      } else {
+        setPosts(data || []);
+      }
     } catch (err) {
       console.error("CorporateFeed error:", err);
-      setError("Could not load the company feed.");
+      setError("Strategic Feed Synchronization Failed.");
     } finally {
       setLoading(false);
     }
@@ -349,88 +389,91 @@ function CorporateFeed() {
     fetchFeed();
   }, [fetchFeed]);
 
-  const filteredPosts =
-    typeFilter === "all" ? posts : posts.filter((p) => p.type === typeFilter);
+  const filteredPosts = typeFilter === "all" ? posts : posts.filter((p) => p.type === typeFilter);
 
   const filterTabs = [
-    { value: "all", label: "All Posts" },
-    { value: "announcement", label: "Announcements" },
-    { value: "event", label: "Events" },
-    { value: "promotion", label: "Promotions" },
+    { value: "all", label: "Intelligence Feed", icon: Radio },
+    { value: "announcement", label: "Strategic Briefings", icon: Megaphone },
+    { value: "event", label: "Operational Events", icon: Calendar },
+    { value: "promotion", label: "Growth & Scaling", icon: Zap },
   ];
 
   return (
-    <div className="space-y-8 md:space-y-12">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tight">
-            <Radio className="h-8 w-8 text-emerald-500" />
-            Corporate Feed
+    <div className="space-y-12 md:space-y-20 pb-20">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b-4 border-slate-100 dark:border-slate-800 pb-12">
+        <div className="space-y-4">
+          <div className="flex items-center gap-4 text-emerald-600 font-black uppercase tracking-[0.4em] text-sm">
+             <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+             Live Stream
+          </div>
+          <h1 className="text-5xl md:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-none">
+            Corporate <br />
+            <span className="text-emerald-500 drop-shadow-sm">Intelligence</span>
           </h1>
-          <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold">
-            Company news, announcements & updates
+          <p className="text-xl md:text-3xl text-slate-500 dark:text-slate-400 font-bold max-w-2xl leading-tight">
+            Centralized hub for strategic updates, promotions, and organizational transparency.
           </p>
         </div>
         <button
           onClick={() => setRefreshKey((k) => k + 1)}
-          className="flex items-center gap-3 text-sm md:text-lg font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-full border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+          className="group flex items-center gap-4 px-10 py-6 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-3xl font-black text-slate-600 dark:text-slate-300 uppercase tracking-[0.2em] hover:bg-slate-50 transition-all shadow-xl active:scale-95"
         >
-          <RefreshCw className="h-5 w-5 md:h-6 md:w-6" />
-          Refresh
+          <RefreshCw className="h-6 w-6 group-hover:rotate-180 transition-transform duration-700" />
+          Refresh Pulse
         </button>
       </div>
 
-      {/* Filter tabs */}
-      <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
-        {filterTabs.map((tab) => (
-          <button
-            key={tab.value}
-            onClick={() => setTypeFilter(tab.value)}
-            className={`shrink-0 px-6 py-3 md:px-8 md:py-4 rounded-2xl text-sm md:text-lg font-black uppercase tracking-widest transition ${
-              typeFilter === tab.value
-                ? "bg-blue-600 text-white shadow-md border-2 border-blue-600"
-                : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Filter Matrix */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        {filterTabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = typeFilter === tab.value;
+          return (
+            <button
+              key={tab.value}
+              onClick={() => setTypeFilter(tab.value)}
+              className={`flex flex-col items-start gap-4 p-8 rounded-[2.5rem] border-2 transition-all duration-300 ${
+                isActive
+                  ? "bg-slate-900 dark:bg-slate-100 border-slate-900 dark:border-slate-100 shadow-2xl scale-105"
+                  : "bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:border-blue-500/50"
+              }`}
+            >
+              <Icon className={`h-8 w-8 ${isActive ? 'text-blue-400' : 'text-slate-400'}`} />
+              <span className={`text-sm md:text-lg font-black uppercase tracking-widest ${isActive ? 'text-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-300'}`}>
+                {tab.label}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
-      {/* Feed */}
-      {loading ? (
-        <div className="space-y-6">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-64 w-full" />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 rounded-3xl md:rounded-[3rem] p-12 text-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <p className="text-red-700 dark:text-red-400 font-bold text-lg md:text-xl">
-            {error}
-          </p>
-        </div>
-      ) : filteredPosts.length === 0 ? (
-        <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm flex flex-col items-center justify-center py-24 text-center px-6">
-          <Radio className="h-20 w-20 text-slate-300 dark:text-slate-600 mb-6" />
-          <h3 className="font-black text-slate-600 dark:text-slate-300 text-2xl">
-            Nothing here yet
-          </h3>
-          <p className="text-slate-400 dark:text-slate-500 text-lg mt-2 font-medium">
-            {typeFilter === "all"
-              ? "No company posts or announcements yet."
-              : `No ${typeFilter} posts found.`}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-8">
-          {filteredPosts.map((post) => (
+      {/* Dynamic Content Stream */}
+      <div className="max-w-6xl mx-auto space-y-16">
+        {loading ? (
+          <div className="space-y-12">
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-[500px] w-full" />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 dark:bg-red-950/20 border-4 border-red-200 dark:border-red-900 rounded-[3rem] p-16 text-center">
+            <AlertCircle className="h-24 w-24 text-red-500 mx-auto mb-8" />
+            <h2 className="text-3xl font-black text-red-700 dark:text-red-400 uppercase tracking-widest">{error}</h2>
+            <button onClick={() => setRefreshKey(k=>k+1)} className="mt-8 px-10 py-4 bg-red-600 text-white rounded-2xl font-black uppercase">Retry Connection</button>
+          </div>
+        ) : filteredPosts.length === 0 ? (
+          <div className="bg-slate-50 dark:bg-slate-900/50 border-4 border-dashed border-slate-200 dark:border-slate-700 rounded-[4rem] flex flex-col items-center justify-center py-40 text-center px-8">
+            <Radio className="h-32 w-32 text-slate-200 dark:text-slate-700 mb-10" />
+            <h3 className="font-black text-slate-600 dark:text-slate-400 text-3xl md:text-4xl uppercase tracking-[0.2em]">Zero Signal Detected</h3>
+            <p className="text-xl md:text-2xl text-slate-400 mt-4 max-w-lg font-bold">The frequency for this briefing category is currently silent. Stand by for future updates.</p>
+          </div>
+        ) : (
+          filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} user={user} profile={profile} />
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }

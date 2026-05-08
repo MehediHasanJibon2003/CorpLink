@@ -101,13 +101,34 @@ function MyTasks() {
     setLoading(true);
     setError(null);
     try {
-      // 1. Fetch tasks
-      const { data: tasksData, error: err } = await supabase
+      // 1. Fetch tasks based on Role
+      const role = profile?.role?.toLowerCase();
+      let query = supabase
         .from("tasks")
         .select("*")
-        .eq("assigned_to", profile?.employee_id || user.id)
-        .eq("company_id", profile.company_id)
-        .order("created_at", { ascending: false });
+        .eq("company_id", profile.company_id);
+
+      if (role === "team_leader") {
+        // Team Leader: Own tasks + tasks in their department
+        if (profile.department_id) {
+          query = query.or(`assigned_to.eq.${profile?.employee_id || user.id},department_id.eq.${profile.department_id}`);
+        } else {
+          query = query.eq("assigned_to", profile?.employee_id || user.id);
+        }
+      } else if (role === "manager") {
+        // Manager: All company tasks (or filtered by their managed teams if that existed)
+        // For now, all company tasks
+      } else if (role === "department_head") {
+        // Dept Head: All tasks in their department
+        if (profile.department_id) {
+          query = query.eq("department_id", profile.department_id);
+        }
+      } else {
+        // Employee / Intern / Trainee: Only own tasks
+        query = query.eq("assigned_to", profile?.employee_id || user.id);
+      }
+
+      const { data: tasksData, error: err } = await query.order("created_at", { ascending: false });
 
       if (err) throw err;
 

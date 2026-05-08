@@ -1,145 +1,222 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
-import { Building2, Handshake, ShieldCheck, Zap } from "lucide-react"
+import { Building2, Users, Handshake, ShieldCheck, Zap, Search, Send, UserCheck } from "lucide-react"
 
 function DiscoverPanel() {
   const { user, profile } = useAuth()
 
-  const [companies, setCompanies]   = useState([])
-  const [requests, setRequests]     = useState([])
-  const [loading, setLoading]       = useState(true)
-  const [sending, setSending]       = useState(null)
-  const [error, setError]           = useState("")
-  const [message, setMessage]       = useState("")
-  const [connType, setConnType]     = useState("partner") // partner, vendor, client
+  const [mode, setMode]               = useState("external") // internal, external
+  const [items, setItems]             = useState([])
+  const [requests, setRequests]       = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [sending, setSending]         = useState(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [error, setError]             = useState("")
+  const [message, setMessage]         = useState("")
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    if (!profile?.company_id) return
     setLoading(true)
-    const { data: allCompanies } = await supabase.from("companies").select("id, name").neq("id", profile.company_id).order("name")
-    const { data: allRequests } = await supabase.from("partner_requests").select("*")
-    setCompanies(allCompanies || [])
-    setRequests(allRequests || [])
-    setLoading(false)
-  }
+    setError("")
+
+    try {
+      if (mode === "external") {
+        // Fetch Other Companies
+        const { data: cos } = await supabase
+          .from("corporates")
+          .select("id, name")
+          .neq("id", profile.company_id)
+          .order("name")
+        setItems(cos || [])
+
+        // Fetch External Requests
+        const { data: reqs } = await supabase
+          .from("collaboration_requests")
+          .select("*")
+          .eq("type", "external")
+        setRequests(reqs || [])
+      } else {
+        // Fetch Colleagues (Internal)
+        const { data: employees } = await supabase
+          .from("profiles")
+          .select("id, full_name, role")
+          .eq("company_id", profile.company_id)
+          .neq("id", user.id)
+          .order("full_name")
+        setItems(employees || [])
+
+        // Fetch Internal Requests
+        const { data: reqs } = await supabase
+          .from("collaboration_requests")
+          .select("*")
+          .eq("type", "internal")
+        setRequests(reqs || [])
+      }
+    } catch (err) {
+      console.error("Discovery error:", err)
+      setError("Failed to sync with corporate network.")
+    } finally {
+      setLoading(false)
+    }
+  }, [mode, profile, user.id])
 
   useEffect(() => {
-    if (profile?.company_id) fetchData()
-  }, [profile?.company_id])
+    fetchData()
+  }, [fetchData])
 
-  const getStatus = (companyId) => {
-    const sent = requests.find(r => r.from_company === profile.company_id && r.to_company === companyId)
-    const received = requests.find(r => r.from_company === companyId && r.to_company === profile.company_id)
-    const req = sent || received
-    return req ? req.status : "none"
-  }
-
-  const handleConnect = async (targetCompanyId, targetName) => {
+  const handleConnect = async (targetId, targetName) => {
     setError("")
     setMessage("")
-    setSending(targetCompanyId)
+    setSending(targetId)
 
-    const { error } = await supabase.from("partner_requests").insert([{
-      from_company: profile.company_id,
-      to_company:   targetCompanyId,
-      status:       "pending",
-      type:         connType,
-      message:      `${profile.companies?.name || "A company"} wants to connect with you as a ${connType.toUpperCase()}.`,
-    }])
+    const payload = {
+      sender_id: user.id,
+      company_id: profile.company_id,
+      type: mode,
+      message: `${profile.full_name} from ${profile.companies?.name || "the team"} requested collaboration.`,
+      status: "pending"
+    }
+
+    if (mode === "external") {
+      payload.corporate_id = targetId
+    } else {
+      payload.receiver_id = targetId
+    }
+
+    const { error } = await supabase.from("collaboration_requests").insert([payload])
 
     if (error) {
       setError(error.message)
     } else {
-      await supabase.from("activity_logs").insert([{
-        company_id: profile.company_id,
-        user_id:    user.id,
-        action:     `Sent ${connType} request to ${targetName}`,
-        entity:     "collaboration",
-      }])
-      setMessage(`Partnership request sent to ${targetName}!`)
+      setMessage(`Collaboration request transmitted to ${targetName}!`)
       setTimeout(() => setMessage(""), 3000)
       fetchData()
     }
     setSending(null)
   }
 
-  const statusBadge = (status) => {
-    if (status === "accepted") return <span className="text-[10px] font-black bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase tracking-widest">✅ Partner</span>
-    if (status === "pending")  return <span className="text-[10px] font-black bg-amber-100 text-amber-700 px-3 py-1 rounded-full uppercase tracking-widest">⏳ Pending</span>
-    if (status === "rejected") return <span className="text-[10px] font-black bg-red-100 text-red-700 px-3 py-1 rounded-full uppercase tracking-widest">❌ Rejected</span>
-    return null
+  const getStatus = (targetId) => {
+    const req = requests.find(r => 
+      (mode === "external" ? r.corporate_id === targetId : r.receiver_id === targetId) &&
+      r.sender_id === user.id
+    )
+    return req ? req.status : "none"
   }
 
-  if (loading) return <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Scanning Corporate Network...</div>
+  const filteredItems = items.filter(item => 
+    (mode === "external" ? item.name : item.full_name).toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      {error   && <p className="text-red-600 text-sm bg-red-50 p-4 rounded-2xl font-bold border-2 border-red-100">{error}</p>}
-      {message && <p className="text-emerald-600 text-sm bg-emerald-50 p-4 rounded-2xl font-bold border-2 border-emerald-100">{message}</p>}
+    <div className="space-y-12 animate-in fade-in duration-700">
+      
+      {/* Discovery Control Header */}
+      <div className="bg-white dark:bg-slate-800 rounded-[3rem] p-10 md:p-14 border-2 border-slate-100 dark:border-white/5 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-10">
+          <div className="space-y-4">
+             <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter">
+                Discover <br />
+                <span className="text-blue-600">Opportunities</span>
+             </h2>
+             <p className="text-xl text-slate-400 font-bold max-w-md">Connect with industry partners or team colleagues for joint ventures.</p>
+          </div>
 
-      {companies.length === 0 ? (
-        <div className="bg-white dark:bg-slate-800 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10 p-20 text-center">
-          <Building2 className="h-20 w-20 mx-auto text-slate-200 mb-6" />
-          <p className="text-slate-400 font-black uppercase tracking-widest">No other corporations found yet.</p>
+          <div className="flex bg-slate-50 dark:bg-slate-900 p-3 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800">
+            <button 
+              onClick={() => setMode("external")}
+              className={`flex items-center gap-4 px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm transition-all ${mode === 'external' ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/20 scale-105' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+            >
+              <Building2 className="h-6 w-6" />
+              External Partners
+            </button>
+            <button 
+              onClick={() => setMode("internal")}
+              className={`flex items-center gap-4 px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm transition-all ${mode === 'internal' ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-500/20 scale-105' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+            >
+              <Users className="h-6 w-6" />
+              Internal Colleagues
+            </button>
+          </div>
+        </div>
+
+        {/* Search Matrix */}
+        <div className="relative mt-12">
+          <Search className="absolute left-10 top-1/2 -translate-y-1/2 h-8 w-8 text-slate-400" />
+          <input 
+            type="text" 
+            placeholder={mode === 'external' ? "Search Strategic Enterprises..." : "Search High-Value Assets (Colleagues)..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-slate-100 dark:bg-slate-900/50 border-4 border-transparent focus:border-blue-500/30 rounded-[2.5rem] py-8 pl-24 pr-10 text-2xl font-black text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300"
+          />
+        </div>
+      </div>
+
+      {(error || message) && (
+        <div className={`p-8 rounded-[2.5rem] font-black uppercase tracking-widest border-4 animate-in slide-in-from-top-4 ${error ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>
+          {error || message}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-64 rounded-[3rem] bg-slate-100 dark:bg-slate-800 animate-pulse" />
+          ))}
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="py-40 text-center border-4 border-dashed border-slate-100 dark:border-slate-800 rounded-[4rem]">
+          <Search className="h-32 w-32 mx-auto text-slate-100 dark:text-slate-800 mb-10" />
+          <h3 className="text-3xl font-black text-slate-400 uppercase tracking-widest">Target not found in range.</h3>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-10">
-          {companies.map((company) => {
-            const status = getStatus(company.id)
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {filteredItems.map((item) => {
+            const status = getStatus(item.id)
+            const name = mode === 'external' ? item.name : item.full_name
             return (
-              <div key={company.id} className="bg-white dark:bg-slate-800 rounded-[2.5rem] border-2 border-slate-100 dark:border-white/5 p-10 flex flex-col justify-between hover:border-blue-500/30 transition-all hover:shadow-2xl group">
-                <div className="flex items-start justify-between mb-8">
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-2xl bg-slate-50 dark:bg-white/5 flex items-center justify-center font-black text-4xl text-slate-400 group-hover:text-blue-600 transition-colors">
-                      {company.name.charAt(0).toUpperCase()}
+              <div key={item.id} className="group relative bg-white dark:bg-slate-800 rounded-[3rem] p-10 border-2 border-slate-100 dark:border-white/5 hover:border-blue-500/30 transition-all hover:shadow-2xl overflow-hidden">
+                <div className="relative z-10 flex flex-col h-full justify-between">
+                  <div>
+                    <div className="flex items-start justify-between mb-8">
+                       <div className="h-20 w-20 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 flex items-center justify-center font-black text-3xl text-slate-800 dark:text-white shadow-inner group-hover:scale-110 transition-transform">
+                          {name.charAt(0)}
+                       </div>
+                       {status !== "none" && (
+                         <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                            {status === 'accepted' ? 'Active' : 'Pending'}
+                         </span>
+                       )}
                     </div>
-                    <div>
-                      <h4 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{company.name}</h4>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Strategic Entity</p>
-                    </div>
+                    <h4 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none mb-3">{name}</h4>
+                    <p className="text-xs font-black text-blue-600 uppercase tracking-widest">{mode === 'external' ? 'Strategic Partner' : item.role}</p>
                   </div>
-                  {statusBadge(status)}
+
+                  <div className="mt-12 pt-8 border-t-2 border-slate-50 dark:border-slate-700/50">
+                    {status === "none" ? (
+                      <button
+                        onClick={() => handleConnect(item.id, name)}
+                        disabled={sending === item.id}
+                        className="w-full flex items-center justify-center gap-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all active:scale-95 shadow-xl"
+                      >
+                        <Send className="h-5 w-5" />
+                        {sending === item.id ? "Transmitting..." : "Initiate Protocol"}
+                      </button>
+                    ) : status === "accepted" ? (
+                      <div className="flex items-center justify-center gap-3 py-6 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900/50">
+                        <UserCheck className="h-6 w-6" />
+                        <span className="font-black uppercase tracking-widest text-xs">Collaborator Active</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center py-6 bg-amber-50 dark:bg-amber-950/20 text-amber-600 rounded-2xl border-2 border-amber-100 dark:border-amber-900/50">
+                        <span className="font-black uppercase tracking-widest text-xs">Awaiting Approval</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-
-                {status === "none" && (
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1">Collaboration Type</label>
-                       <select 
-                         value={connType} 
-                         onChange={(e) => setConnType(e.target.value)}
-                         className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-xs font-black uppercase tracking-widest outline-none focus:border-blue-500 transition-all cursor-pointer"
-                       >
-                          <option value="partner">Strategic Partner</option>
-                          <option value="vendor">Service Vendor</option>
-                          <option value="client">Enterprise Client</option>
-                       </select>
-                    </div>
-                    <button
-                      onClick={() => handleConnect(company.id, company.name)}
-                      disabled={sending === company.id}
-                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 active:scale-95 transition-all"
-                    >
-                      {sending === company.id ? "Sending..." : "🤝 Establish Connection"}
-                    </button>
-                  </div>
-                )}
-
-                {status === "rejected" && (
-                  <button
-                    onClick={() => handleConnect(company.id, company.name)}
-                    disabled={sending === company.id}
-                    className="w-full bg-slate-100 dark:bg-slate-700 text-slate-500 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-slate-200 transition-all"
-                  >
-                    Retry Connection
-                  </button>
-                )}
-                
-                {status === "accepted" && (
-                   <div className="bg-emerald-50 dark:bg-emerald-600/10 p-5 rounded-2xl border border-emerald-100 dark:border-emerald-500/20 text-center">
-                      <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Active Partnership Established</p>
-                   </div>
-                )}
+                {/* Visual Accent */}
+                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${mode === 'external' ? 'from-blue-500/10 to-indigo-500/10' : 'from-emerald-500/10 to-teal-500/10'} -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity`} />
               </div>
             )
           })}

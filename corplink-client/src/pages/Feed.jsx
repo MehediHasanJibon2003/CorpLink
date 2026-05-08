@@ -91,9 +91,13 @@ const PostCard = memo(({ post, user, profile, onLike, onCommentToggle, onShare, 
       </div>
 
       {/* Media */}
-      {post.image_url && (
-        <div className="w-full bg-slate-50 dark:bg-slate-900 border-y-2 border-slate-100 dark:border-white/5">
-          <img src={post.image_url} alt={post.title} className="w-full max-h-[700px] object-contain mx-auto" />
+      {post.media_url && (
+        <div className="w-full bg-slate-50 dark:bg-slate-900 border-y-2 border-slate-100 dark:border-white/5 bg-black">
+          {post.media_type === 'video' ? (
+            <video src={post.media_url} controls className="w-full max-h-[700px] outline-none mx-auto" />
+          ) : (
+            <img src={post.media_url} alt={post.title} className="w-full max-h-[700px] object-contain mx-auto" />
+          )}
         </div>
       )}
 
@@ -222,12 +226,13 @@ function Feed() {
     setImagePreview(URL.createObjectURL(file))
   }
 
-  const uploadImage = async (file) => {
+  const uploadMedia = async (file) => {
     if (!file) return null
     const fileExt = file.name.split(".").pop()
     const fileName = `${Date.now()}.${fileExt}`
     const filePath = `posts/${fileName}`
-    await supabase.storage.from("feed-images").upload(filePath, file)
+    const { error } = await supabase.storage.from("feed-images").upload(filePath, file)
+    if (error) throw error
     const { data } = supabase.storage.from("feed-images").getPublicUrl(filePath)
     return data.publicUrl
   }
@@ -237,10 +242,20 @@ function Feed() {
     if (!form.title.trim() || !form.content.trim()) { setError("Title and content required"); return }
     setLoading(true)
     try {
-      let imageUrl = imagePreview
-      if (selectedImage) imageUrl = await uploadImage(selectedImage)
+      let mediaUrl = imagePreview
+      let mediaType = selectedImage?.type?.startsWith("video") ? "video" : "image"
+      
+      if (selectedImage) {
+        mediaUrl = await uploadMedia(selectedImage)
+      }
 
-      const payload = { ...form, company_id: profile.company_id, image_url: imageUrl, created_by: user.id }
+      const payload = { 
+        ...form, 
+        company_id: profile.company_id, 
+        media_url: mediaUrl, 
+        media_type: mediaType,
+        created_by: user.id 
+      }
       
       if (editingId) {
         await supabase.from("announcements").update(payload).eq("id", editingId)
@@ -253,7 +268,10 @@ function Feed() {
       setForm({ title: "", content: "", visibility: "internal", post_type: "announcement" })
       setSelectedImage(null); setImagePreview(""); setEditingId(null)
       fetchPosts()
-    } catch (err) { setError(err.message) }
+    } catch (err) { 
+      console.error("Submit Error:", err)
+      setError(err.message) 
+    }
     setLoading(false)
     setTimeout(() => setMessage(""), 3000)
   }
@@ -322,11 +340,15 @@ function Feed() {
 
             <div className="flex flex-col md:flex-row items-center gap-6">
               <label className="cursor-pointer bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 px-10 py-5 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-500 transition-all border-2 border-transparent hover:border-slate-300">
-                📸 Attach Media
-                <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                📸 Attach Media (Img/Vid)
+                <input type="file" accept="image/*,video/*" onChange={handleImageChange} className="hidden" />
               </label>
-              {imagePreview && <div className="relative h-20 w-32 rounded-xl overflow-hidden border-2 border-blue-500 shadow-lg animate-in zoom-in-95">
-                <img src={imagePreview} className="w-full h-full object-cover" />
+              {imagePreview && <div className="relative h-20 w-32 rounded-xl overflow-hidden border-2 border-blue-500 shadow-lg animate-in zoom-in-95 bg-black">
+                {selectedImage?.type?.startsWith("video") ? (
+                  <video src={imagePreview} className="w-full h-full object-cover" />
+                ) : (
+                  <img src={imagePreview} className="w-full h-full object-cover" />
+                )}
                 <button type="button" onClick={() => {setImagePreview(""); setSelectedImage(null)}} className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full hover:bg-red-500 transition-colors">×</button>
               </div>}
               
@@ -366,7 +388,12 @@ function Feed() {
                 if (navigator.share) await navigator.share({ title: 'CorpLink Post', url })
                 else { await navigator.clipboard.writeText(url); alert("Link copied!"); }
               }}
-              onEdit={(p) => { setEditingId(p.id); setForm({ title: p.title, content: p.content, visibility: p.visibility, post_type: p.post_type }); setImagePreview(p.image_url); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+              onEdit={(p) => { 
+                setEditingId(p.id); 
+                setForm({ title: p.title, content: p.content, visibility: p.visibility, post_type: p.post_type }); 
+                setImagePreview(p.media_url); 
+                window.scrollTo({ top: 0, behavior: "smooth" }); 
+              }}
               onDelete={async (id) => {
                 if (window.confirm("Delete permanently?")) {
                   await supabase.from("announcements").delete().eq("id", id)

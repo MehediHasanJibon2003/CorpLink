@@ -38,13 +38,6 @@ function Toast({ message, type }) {
   );
 }
 
-// ─── Status options available to employee ─────────────────────────
-const STATUS_OPTIONS = [
-  { value: "pending", label: "Pending" },
-  { value: "in_progress", label: "In Progress" },
-  { value: "needs_review", label: "Submit for Review" },
-  { value: "completed", label: "Completed" },
-];
 
 const priorityConfig = {
   high: {
@@ -68,8 +61,21 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
   const { user, profile } = useAuth();
   const fileInputRef = useRef();
 
+  const role = profile?.role?.toLowerCase();
+  const isManagerial = ["manager", "department_head", "team_leader"].includes(role);
+
+  const STATUS_OPTIONS = [
+    { value: "pending", label: "Pending" },
+    { value: "in_progress", label: "In Progress" },
+    { value: "needs_review", label: "Submit for Review" },
+    ...(isManagerial ? [
+      { value: "finished", label: "Approve & Finish" },
+      { value: "rejected", label: "Reject & Reopen" }
+    ] : [])
+  ];
+
   const [newStatus, setNewStatus] = useState(
-    STATUS_OPTIONS.find((o) => o.value === task.status)?.value || "pending",
+    STATUS_OPTIONS.find((o) => o.value === task.status)?.value || task.status || "pending",
   );
   const [progressNote, setProgressNote] = useState(task.progress_note || "");
   const [attachments, setAttachments] = useState([]);

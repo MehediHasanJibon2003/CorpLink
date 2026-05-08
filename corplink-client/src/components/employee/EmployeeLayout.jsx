@@ -18,31 +18,33 @@ import {
   Briefcase,
   MessageCircle,
   Building,
+  TrendingUp,
 } from "lucide-react";
 
 const EMPLOYEE_NAV = [
   {
     group: "Workspace",
     items: [
-      { name: "Dashboard", path: "/employee/dashboard", icon: LayoutDashboard },
-      { name: "My Tasks", path: "/employee/tasks", icon: CheckSquare },
-      { name: "My Projects", path: "/employee/projects", icon: FolderKanban },
+      { name: "Dashboard", path: "/employee/dashboard", icon: LayoutDashboard, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
+      { name: "Performance", path: "/employee/performance", icon: TrendingUp, roles: ["employee", "team_leader", "manager", "department_head"] },
+      { name: "My Tasks", path: "/employee/tasks", icon: CheckSquare, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
+      { name: "My Projects", path: "/employee/projects", icon: FolderKanban, roles: ["employee", "team_leader", "manager", "department_head"] },
     ],
   },
   {
     group: "Company",
     items: [
-      { name: "My Department", path: "/employee/department", icon: Building },
-      { name: "Messages", path: "/employee/messages", icon: MessageCircle },
-      { name: "Corporate Feed", path: "/employee/feed", icon: Radio },
-      { name: "Notifications", path: "/employee/notifications", icon: Bell },
-      { name: "Collaboration", path: "/employee/collaboration", icon: Users2 },
+      { name: "My Department", path: "/employee/department", icon: Building, roles: ["team_leader", "manager", "department_head"] },
+      { name: "Messages", path: "/employee/messages", icon: MessageCircle, roles: ["employee", "team_leader", "manager", "department_head"] },
+      { name: "Corporate Feed", path: "/employee/feed", icon: Radio, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
+      { name: "Notifications", path: "/employee/notifications", icon: Bell, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
+      { name: "Collaboration", path: "/employee/collaboration", icon: Users2, roles: ["manager", "department_head"] },
     ],
   },
   {
     group: "Account",
     items: [
-      { name: "My Profile", path: "/employee/profile", icon: UserCircle },
+      { name: "My Profile", path: "/employee/profile", icon: UserCircle, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
     ],
   },
 ];
@@ -56,6 +58,7 @@ function EmployeeLayout({ children }) {
 
   const pathToView = {
     "/employee/dashboard": "dashboard",
+    "/employee/performance": "performance",
     "/employee/messages": "messages",
     "/employee/tasks": "tasks",
     "/employee/projects": "projects",
@@ -110,23 +113,31 @@ function EmployeeLayout({ children }) {
         </div>
 
         <div className="flex-1 overflow-y-auto py-8 md:py-10 pl-4 pr-2 md:pl-6 md:pr-4 custom-scrollbar">
-          {EMPLOYEE_NAV.map((section) => (
-            <div key={section.group} className="mb-6 md:mb-8">
-              <h3 className="px-4 md:px-6 text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 md:mb-5">{section.group}</h3>
-              <nav className="space-y-2 md:space-y-3">
-                {section.items.map((item) => {
-                  const isActive = location.pathname === item.path;
-                  const Icon = item.icon;
-                  return (
-                    <button key={item.path} onClick={() => navigate(item.path)} className={`w-full flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-sm md:text-base font-black uppercase tracking-widest transition-all duration-200 ${isActive ? "text-white shadow-lg shadow-blue-900/20" : "text-slate-400 hover:text-white hover:bg-slate-800 dark:hover:bg-slate-900"}`} style={isActive ? { background: "var(--primary-color)" } : {}}>
-                      <Icon className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-500"}`} />
-                      <span>{item.name}</span>
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-          ))}
+          {EMPLOYEE_NAV.map((section) => {
+            const visibleItems = section.items.filter(item => 
+              item.roles.includes(profile?.role?.toLowerCase())
+            );
+
+            if (visibleItems.length === 0) return null;
+
+            return (
+              <div key={section.group} className="mb-6 md:mb-8">
+                <h3 className="px-4 md:px-6 text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 md:mb-5">{section.group}</h3>
+                <nav className="space-y-2 md:space-y-3">
+                  {visibleItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    const Icon = item.icon;
+                    return (
+                      <button key={item.path} onClick={() => navigate(item.path)} className={`w-full flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-sm md:text-base font-black uppercase tracking-widest transition-all duration-200 ${isActive ? "text-white shadow-lg shadow-blue-900/20" : "text-slate-400 hover:text-white hover:bg-slate-800 dark:hover:bg-slate-900"}`} style={isActive ? { background: "var(--primary-color)" } : {}}>
+                        <Icon className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-500"}`} />
+                        <span>{item.name}</span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            );
+          })}
         </div>
       </aside>
 

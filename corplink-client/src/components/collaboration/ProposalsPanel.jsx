@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
+import { Rocket, FileText, CheckCircle2, XCircle, Clock, ArrowRightLeft, UserCircle, Building2 } from "lucide-react"
 
 function ProposalsPanel() {
   const { user, profile } = useAuth()
 
-  const [partners, setPartners] = useState([]) // Only accepted partners
+  const [partners, setPartners] = useState([]) 
   const [proposals, setProposals] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -13,284 +14,250 @@ function ProposalsPanel() {
   const [message, setMessage] = useState("")
 
   const [form, setForm] = useState({
-    to_company: "",
+    target_id: "",
     title: "",
     description: "",
-    proposal_type: "partnership",
+    proposal_type: "project",
   })
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    if (!profile?.company_id) return
     setLoading(true)
 
-    // 1. Fetch established partners (requests where status = 'accepted')
-    // We do this in two queries to avoid complex double-join errors
-    
-    // Sent requests that were accepted
-    const { data: sentAccepted, error: err1 } = await supabase
-      .from("partner_requests")
-      .select("to_company:companies!to_company (id, name)")
-      .eq("status", "accepted")
-      .eq("from_company", profile.company_id)
+    try {
+      // 1. Fetch established partners from collaboration_requests (Accepted status)
+      const { data: collabData } = await supabase
+        .from("collaboration_requests")
+        .select(`
+          id, type, sender_id, receiver_id, corporate_id,
+          sender:profiles!sender_id (id, full_name),
+          receiver:profiles!receiver_id (id, full_name),
+          partner_corp:corporates!corporate_id (id, name)
+        `)
+        .eq("status", "accepted")
+        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id}`)
 
-    // Received requests that were accepted
-    const { data: receivedAccepted, error: err2 } = await supabase
-      .from("partner_requests")
-      .select("from_company:companies!from_company (id, name)")
-      .eq("status", "accepted")
-      .eq("to_company", profile.company_id)
-
-    if (err1) setError(err1.message)
-    if (err2) setError(err2.message)
-
-    const partnerList = []
-    sentAccepted?.forEach((r) => { if (r.to_company) partnerList.push(r.to_company) })
-    receivedAccepted?.forEach((r) => { if (r.from_company) partnerList.push(r.from_company) })
-    
-    setPartners(partnerList)
-
-    // 2. Fetch proposals involving our company
-    const { data: propDataSent, error: err3 } = await supabase
-      .from("collaboration_proposals")
-      .select("*, tc:companies!to_company (id, name)")
-      .eq("from_company", profile.company_id)
+      const partnerList = collabData?.map(c => {
+        if (c.type === 'internal') {
+          const person = c.sender_id === user.id ? c.receiver : c.sender
+          return { id: person.id, name: person.full_name, type: 'internal' }
+        } else {
+          return { id: c.partner_corp.id, name: c.partner_corp.name, type: 'external' }
+        }
+      }) || []
       
-    const { data: propDataReceived, error: err4 } = await supabase
-      .from("collaboration_proposals")
-      .select("*, fc:companies!from_company (id, name)")
-      .eq("to_company", profile.company_id)
+      setPartners(partnerList)
 
-    if (err3) setError(err3.message)
-    if (err4) setError(err4.message)
+      // 2. Fetch proposals involving this user
+      const { data: propData } = await supabase
+        .from("collaboration_proposals")
+        .select(`
+          *,
+          tc:corporates!to_company (id, name),
+          fc:corporates!from_company (id, name),
+          tp:profiles!to_profile_id (id, full_name),
+          fp:profiles!from_profile_id (id, full_name)
+        `)
+        .or(`from_profile_id.eq.${user.id},to_profile_id.eq.${user.id}`)
+        .order("created_at", { ascending: false })
 
-    // Combine and sort proposals
-    const allProps = [...(propDataSent || []), ...(propDataReceived || [])].sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
-
-    setProposals(allProps)
-    setLoading(false)
-  }
+      setProposals(propData || [])
+    } catch (err) {
+      console.error("Proposal fetch error:", err)
+      setError("Intelligence Sync Failed.")
+    } finally {
+      setLoading(false)
+    }
+  }, [user.id, profile.company_id])
 
   useEffect(() => {
-    if (profile?.company_id) fetchData()
-  }, [profile?.company_id])
+    fetchData()
+  }, [fetchData])
 
   const handleSendProposal = async (e) => {
     e.preventDefault()
     setError("")
     setMessage("")
 
-    if (!form.to_company) { setError("Select a partner"); return }
-    if (!form.title.trim()) { setError("Title is required"); return }
+    if (!form.target_id) { setError("Select a Collaborator"); return }
+    if (!form.title.trim()) { setError("Protocol Title required"); return }
 
     setSaving(true)
 
-    const targetPartner = partners.find(p => p.id === form.to_company)
-
-    const { error: insErr } = await supabase.from("collaboration_proposals").insert([{
-      from_company: profile.company_id,
-      to_company: form.to_company,
-      created_by: user.id,
+    const target = partners.find(p => p.id === form.target_id)
+    const payload = {
+      from_profile_id: user.id,
       title: form.title.trim(),
       description: form.description.trim() || null,
       proposal_type: form.proposal_type,
-    }])
+      status: "pending"
+    }
+
+    if (target.type === 'external') {
+      payload.to_company = target.id
+      payload.from_company = profile.company_id
+    } else {
+      payload.to_profile_id = target.id
+    }
+
+    const { error: insErr } = await supabase.from("collaboration_proposals").insert([payload])
 
     if (insErr) {
       setError(insErr.message)
     } else {
-      await supabase.from("activity_logs").insert([{
-        company_id: profile.company_id,
-        user_id: user.id,
-        action: `Sent ${form.proposal_type} proposal to ${targetPartner?.name}`,
-        entity: "collaboration",
-      }])
-      setMessage("Proposal sent successfully!")
-      setForm({ to_company: "", title: "", description: "", proposal_type: "partnership" })
+      setMessage("Strategic Proposal Transmitted!")
+      setForm({ target_id: "", title: "", description: "", proposal_type: "project" })
       setTimeout(() => setMessage(""), 3000)
       fetchData()
     }
-    setSaving(false)
+    setSaving(true)
   }
 
-  const handleUpdateStatus = async (proposalId, newStatus, companyName, propType) => {
+  const handleUpdateStatus = async (proposalId, newStatus) => {
     const { error: updErr } = await supabase
       .from("collaboration_proposals")
       .update({ status: newStatus })
       .eq("id", proposalId)
 
-    if (!updErr) {
-      await supabase.from("activity_logs").insert([{
-        company_id: profile.company_id,
-        user_id: user.id,
-        action: `${newStatus === 'accepted' ? 'Accepted' : 'Rejected'} ${propType} proposal from ${companyName}`,
-        entity: "collaboration",
-      }])
-      fetchData()
-    }
+    if (!updErr) fetchData()
   }
 
-  const statusBadge = (status) => {
-    if (status === "accepted") return <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">✅ Finalized Agreement</span>
-    if (status === "pending")  return <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">⏳ Pending Review</span>
-    if (status === "rejected") return <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">❌ Declined</span>
-    return null
-  }
-
-  const typeBadge = (type) => {
-    switch(type) {
-      case 'partnership': return <span className="text-[9px] font-black bg-purple-100 text-purple-700 px-3 py-1 rounded-full uppercase tracking-widest">General Partnership</span>
-      case 'vendor': return <span className="text-[9px] font-black bg-blue-100 text-blue-700 px-3 py-1 rounded-full uppercase tracking-widest">Vendor Contract</span>
-      case 'service_exchange': return <span className="text-[9px] font-black bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase tracking-widest">Service Exchange</span>
-      case 'project': return <span className="text-[9px] font-black bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full uppercase tracking-widest">Shared Project</span>
-      default: return <span className="text-[9px] font-black bg-slate-100 text-slate-700 px-3 py-1 rounded-full uppercase tracking-widest">Collaboration</span>
-    }
-  }
-
-  if (loading) return <p className="text-slate-500 text-sm p-4">Loading proposals...</p>
+  if (loading) return <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Retaining Strategic Proposals...</div>
 
   return (
-    <div className="space-y-12 md:space-y-16">
+    <div className="space-y-16 pb-20 animate-in fade-in duration-700">
 
-      {/* Write Proposal Form */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] border-2 border-slate-200 dark:border-slate-700 p-10 md:p-16 shadow-sm">
-        <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-10 md:mb-12 tracking-tight flex items-center gap-4">
-          <span className="text-4xl">🚀</span> Create New Proposal
-        </h3>
-        {error && <p className="p-6 bg-red-50 text-red-600 rounded-2xl font-bold mb-8">{error}</p>}
-        {message && <p className="p-6 bg-green-50 text-green-600 rounded-2xl font-bold mb-8">{message}</p>}
+      {/* Write Proposal Matrix */}
+      <div className="bg-white dark:bg-slate-800 rounded-[3rem] p-10 md:p-16 border-2 border-slate-100 dark:border-white/5 shadow-sm">
+        <div className="flex items-center gap-6 mb-12">
+           <div className="h-20 w-20 rounded-[2rem] bg-indigo-600 text-white flex items-center justify-center shadow-2xl shadow-indigo-500/30">
+              <Rocket className="h-10 w-10" />
+           </div>
+           <div>
+              <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none">Draft <br /> Proposal</h3>
+              <p className="text-sm font-black text-slate-400 uppercase tracking-widest mt-1">Strategic Agreement Builder</p>
+           </div>
+        </div>
 
-        <form onSubmit={handleSendProposal} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-          <div className="space-y-2">
-            <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-widest px-2">Select Partner</label>
+        {error && <p className="p-6 bg-red-50 text-red-600 rounded-2xl font-black uppercase tracking-widest text-[10px] mb-8">{error}</p>}
+        {message && <p className="p-6 bg-emerald-50 text-emerald-600 rounded-2xl font-black uppercase tracking-widest text-[10px] mb-8">{message}</p>}
+
+        <form onSubmit={handleSendProposal} className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-3">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Collaborator Asset</label>
             <select
-              value={form.to_company}
-              onChange={(e) => setForm({ ...form, to_company: e.target.value })}
-              className="w-full border-2 border-slate-200 dark:border-slate-700 px-8 py-5 md:py-6 rounded-2xl md:rounded-3xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-lg md:text-2xl font-black text-slate-800 dark:text-slate-100 transition-all cursor-pointer"
+              value={form.target_id}
+              onChange={(e) => setForm({ ...form, target_id: e.target.value })}
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-6 rounded-3xl outline-none focus:border-blue-500 text-lg font-black text-slate-800 dark:text-white transition-all cursor-pointer"
             >
-              <option value="">-- Choose a Connected Partner --</option>
-              {partners.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              <option value="">-- Select Active Connection --</option>
+              {partners.map(p => <option key={p.id} value={p.id}>{p.name} ({p.type.toUpperCase()})</option>)}
             </select>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-widest px-2">Proposal Category</label>
+          <div className="space-y-3">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Agreement Tier</label>
             <select
               value={form.proposal_type}
               onChange={(e) => setForm({ ...form, proposal_type: e.target.value })}
-              className="w-full border-2 border-slate-200 dark:border-slate-700 px-8 py-5 md:py-6 rounded-2xl md:rounded-3xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-lg md:text-2xl font-black text-slate-800 dark:text-slate-100 transition-all cursor-pointer"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-6 rounded-3xl outline-none focus:border-blue-500 text-lg font-black text-slate-800 dark:text-white transition-all cursor-pointer"
             >
-              <option value="partnership">General Partnership</option>
-              <option value="vendor">Vendor / Supplier</option>
-              <option value="service_exchange">Service Exchange Agreement</option>
-              <option value="project">Shared Project</option>
-              <option value="other">Other Collaboration</option>
+              <option value="project">Joint Project Venture</option>
+              <option value="service">Service Exchange</option>
+              <option value="partnership">Strategic Alliance</option>
+              <option value="resource">Resource Sharing</option>
             </select>
           </div>
 
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-widest px-2">Formal Proposal Title</label>
+          <div className="md:col-span-2 space-y-3">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Operational Title</label>
             <input
               type="text"
-              placeholder="Enter a descriptive title for this proposal..."
+              placeholder="Designate the protocol name..."
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full border-2 border-slate-200 dark:border-slate-700 px-8 py-5 md:py-6 rounded-2xl md:rounded-3xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-xl md:text-3xl font-black text-slate-800 dark:text-slate-100 transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-6 rounded-3xl outline-none focus:border-blue-500 text-2xl font-black text-slate-900 dark:text-white transition-all"
             />
           </div>
 
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-widest px-2">Agreement Details & Terms</label>
+          <div className="md:col-span-2 space-y-3">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Scope of Operations</label>
             <textarea
-              placeholder="Detail the scope of work, expected outcomes, and legal terms..."
+              placeholder="Detail the strategic objectives and expected ROIs..."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={5}
-              className="w-full border-2 border-slate-200 dark:border-slate-600 px-8 py-6 rounded-2xl md:rounded-3xl outline-none focus:border-blue-500 resize-none text-lg md:text-2xl font-medium bg-slate-50 dark:bg-slate-900/50 transition-all"
+              rows={4}
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-8 rounded-[2rem] outline-none focus:border-blue-500 text-xl font-medium text-slate-700 dark:text-slate-200 resize-none transition-all"
             />
           </div>
 
           <button
             type="submit"
             disabled={saving || partners.length === 0}
-            className="md:col-span-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-6 md:py-8 rounded-2xl md:rounded-[2.5rem] text-xl md:text-3xl font-black transition-all shadow-xl hover:-translate-y-1 active:translate-y-0"
+            className="md:col-span-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-8 rounded-[2rem] text-2xl font-black uppercase tracking-widest transition-all shadow-2xl active:scale-95 disabled:opacity-50"
           >
-            {partners.length === 0 ? "⚠️ Establish partners to send proposals" : saving ? "🚀 Transmitting..." : "Send Formal Proposal"}
+            {partners.length === 0 ? "Establish Connection First" : "Transmit Protocol Proposal"}
           </button>
         </form>
       </div>
 
-      {/* Proposals List (Agreements and history) */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] border-2 border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
-        <div className="px-10 py-8 md:px-16 md:py-10 border-b-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30">
-          <h3 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Proposal History & Agreements</h3>
-        </div>
-        
-        {proposals.length === 0 ? (
-          <div className="p-24 text-center">
-            <p className="text-xl md:text-3xl text-slate-400 font-bold italic">No active proposals or finalized agreements found.</p>
-          </div>
-        ) : (
-          <div className="divide-y-2 divide-slate-100 dark:divide-slate-800">
-            {proposals.map(prop => {
-              const isReceived = prop.to_company === profile.company_id
-              const otherCompany = isReceived ? prop.fc?.name : prop.tc?.name
-              
-              return (
-                <div key={prop.id} className="p-10 md:p-16 flex flex-col gap-8 transition-all hover:bg-slate-50 dark:hover:bg-slate-700/30">
-                  <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-                    <div className="space-y-4">
-                      <div className="flex flex-wrap items-center gap-4">
-                        {isReceived ? (
-                          <span className="text-sm md:text-lg font-black text-blue-700 bg-blue-100 px-6 py-2 rounded-full border-2 border-blue-200 uppercase tracking-widest flex items-center gap-2">
-                             <span className="text-xl">📥</span> FROM: {otherCompany}
-                          </span>
-                        ) : (
-                          <span className="text-sm md:text-lg font-black text-slate-600 bg-slate-100 px-6 py-2 rounded-full border-2 border-slate-200 uppercase tracking-widest flex items-center gap-2">
-                             <span className="text-xl">↗️</span> TO: {otherCompany}
-                          </span>
-                        )}
-                        <div className="transform scale-110 origin-left">
-                          {typeBadge(prop.proposal_type)}
-                        </div>
+      {/* History Matrix */}
+      <div className="space-y-10">
+         <div className="flex items-center gap-6">
+            <div className="h-16 w-16 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+               <FileText className="h-8 w-8 text-slate-400" />
+            </div>
+            <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Protocol Log</h3>
+         </div>
+
+         <div className="grid grid-cols-1 gap-8">
+            {proposals.length === 0 ? (
+              <div className="py-20 text-center bg-slate-50 dark:bg-slate-900/20 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800">
+                 <p className="text-xl font-black text-slate-300 uppercase tracking-widest">No active protocols detected.</p>
+              </div>
+            ) : (
+              proposals.map(prop => {
+                const isSent = prop.from_profile_id === user.id
+                const other = isSent ? (prop.tc?.name || prop.tp?.full_name) : (prop.fc?.name || prop.fp?.full_name)
+                
+                return (
+                  <div key={prop.id} className="bg-white dark:bg-slate-800 rounded-[3rem] p-10 border-2 border-slate-100 dark:border-white/5 flex flex-col gap-8 group hover:border-blue-500/30 transition-all">
+                    <div className="flex justify-between items-start">
+                       <div className="space-y-2">
+                          <div className="flex items-center gap-3">
+                             <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${isSent ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                                {isSent ? 'Outbound' : 'Inbound'}
+                             </span>
+                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <ArrowRightLeft className="h-3 w-3" />
+                                {other}
+                             </span>
+                          </div>
+                          <h4 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase">{prop.title}</h4>
+                       </div>
+                       <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${prop.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : prop.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                          {prop.status === 'accepted' ? <CheckCircle2 className="h-4 w-4" /> : prop.status === 'rejected' ? <XCircle className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
+                          {prop.status}
+                       </div>
+                    </div>
+
+                    {prop.description && (
+                      <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl text-lg text-slate-700 dark:text-slate-300 font-medium italic border-2 border-transparent group-hover:border-slate-100 dark:group-hover:border-slate-700 transition-all">
+                        "{prop.description}"
                       </div>
-                      <h4 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">{prop.title}</h4>
-                    </div>
-                    <div className="transform scale-150 origin-top-right mt-2 md:mt-4">
-                      {statusBadge(prop.status)}
-                    </div>
+                    )}
+
+                    {!isSent && prop.status === 'pending' && (
+                      <div className="flex gap-4">
+                        <button onClick={() => handleUpdateStatus(prop.id, 'accepted')} className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl active:scale-95 transition-all">Authorize Protocol</button>
+                        <button onClick={() => handleUpdateStatus(prop.id, 'rejected')} className="flex-1 bg-slate-100 dark:bg-slate-700 text-slate-500 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-red-500 hover:text-white transition-all">Reject</button>
+                      </div>
+                    )}
                   </div>
-
-                  {prop.description && (
-                    <div className="bg-slate-50 dark:bg-slate-900/50 p-8 md:p-12 rounded-3xl border-2 border-slate-100 dark:border-slate-700 shadow-inner">
-                      <p className="text-lg md:text-2xl text-slate-700 dark:text-slate-200 font-medium leading-relaxed italic">"{prop.description}"</p>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-4 text-base md:text-xl text-slate-400 font-bold uppercase tracking-widest">
-                    <span className="text-2xl">📅</span> Sent on {new Date(prop.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </div>
-
-                  {/* Actions for received pending proposals */}
-                  {isReceived && prop.status === "pending" && (
-                    <div className="flex flex-col sm:flex-row gap-4 md:gap-6 pt-8 border-t-2 border-slate-100 dark:border-slate-800">
-                      <button
-                        onClick={() => handleUpdateStatus(prop.id, "accepted", otherCompany, prop.proposal_type)}
-                        className="flex-1 bg-green-600 hover:bg-green-700 text-white px-10 py-5 md:py-6 rounded-2xl md:rounded-[2rem] text-lg md:text-2xl font-black transition-all shadow-lg active:scale-95"
-                      >
-                        Accept Terms & Finalize
-                      </button>
-                      <button
-                        onClick={() => handleUpdateStatus(prop.id, "rejected", otherCompany, prop.proposal_type)}
-                        className="flex-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-10 py-5 md:py-6 rounded-2xl md:rounded-[2rem] text-lg md:text-2xl font-black transition-all"
-                      >
-                        Decline
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )}
+                )
+              })
+            )}
+         </div>
       </div>
     </div>
   )

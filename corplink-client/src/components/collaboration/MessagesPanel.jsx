@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
+import { MessageSquare, Send, UserCircle, Building2, Search, ArrowRight, ShieldCheck } from "lucide-react"
 
 function MessagesPanel() {
   const { user, profile } = useAuth()
@@ -13,167 +14,189 @@ function MessagesPanel() {
   
   const bottomRef = useRef(null)
 
-  const fetchPartners = async () => {
+  const fetchPartners = useCallback(async () => {
+    if (!profile?.company_id) return
     setLoading(true)
     
-    // Sent requests that were accepted
-    const { data: sentAccepted } = await supabase
-      .from("partner_requests")
-      .select("to_company:companies!to_company (id, name)")
-      .eq("status", "accepted")
-      .eq("from_company", profile.company_id)
+    try {
+      // Fetch Accepted Collaboration Partners (Internal & External)
+      const { data: collabData } = await supabase
+        .from("collaboration_requests")
+        .select(`
+          id, type, sender_id, receiver_id, corporate_id,
+          sender:profiles!sender_id (id, full_name, role),
+          receiver:profiles!receiver_id (id, full_name, role),
+          partner_corp:corporates!corporate_id (id, name)
+        `)
+        .eq("status", "accepted")
+        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id}`)
 
-    // Received requests that were accepted
-    const { data: receivedAccepted } = await supabase
-      .from("partner_requests")
-      .select("from_company:companies!from_company (id, name)")
-      .eq("status", "accepted")
-      .eq("to_company", profile.company_id)
-
-    const partnerList = []
-    sentAccepted?.forEach((r) => { if (r.to_company) partnerList.push(r.to_company) })
-    receivedAccepted?.forEach((r) => { if (r.from_company) partnerList.push(r.from_company) })
-    
-    setPartners(partnerList)
-    if (partnerList.length > 0 && !activePartner) {
-      setActivePartner(partnerList[0])
+      const partnerList = collabData?.map(c => {
+        if (c.type === 'internal') {
+          const person = c.sender_id === user.id ? c.receiver : c.sender
+          return { id: person.id, name: person.full_name, role: person.role, type: 'internal' }
+        } else {
+          return { id: c.partner_corp.id, name: c.partner_corp.name, role: 'Strategic Partner', type: 'external' }
+        }
+      }) || []
+      
+      setPartners(partnerList)
+      if (partnerList.length > 0 && !activePartner) {
+        setActivePartner(partnerList[0])
+      }
+    } catch (err) {
+      console.error("Fetch partners error:", err)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
-  }
+  }, [user.id, profile.company_id, activePartner])
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     if (!activePartner) return
 
-    const { data, error } = await supabase
-      .from("partner_messages")
-      .select("*")
-      .or(`and(from_company.eq.${profile.company_id},to_company.eq.${activePartner.id}),and(from_company.eq.${activePartner.id},to_company.eq.${profile.company_id})`)
-      .order("created_at", { ascending: true })
+    try {
+      // Note: Reusing a generic partner_messages table if it exists, 
+      // or using internal_messages for internal and partner_messages for external
+      const tableName = activePartner.type === 'external' ? "partner_messages" : "internal_messages"
+      
+      const { data } = await supabase
+        .from(tableName)
+        .select("*")
+        .or(
+          activePartner.type === 'external' 
+            ? `and(from_company.eq.${profile.company_id},to_company.eq.${activePartner.id}),and(from_company.eq.${activePartner.id},to_company.eq.${profile.company_id})`
+            : `and(sender_id.eq.${user.id},receiver_id.eq.${activePartner.id}),and(sender_id.eq.${activePartner.id},receiver_id.eq.${user.id})`
+        )
+        .order("created_at", { ascending: true })
 
-    if (error) console.error("Fetch Messages Error:", error)
-    
-    setMessages(data || [])
-    
-    // Auto scroll
-    setTimeout(() => {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, 100)
-  }
+      setMessages(data || [])
+      
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+      }, 100)
+    } catch (err) {
+      console.error("Fetch messages error:", err)
+    }
+  }, [activePartner, user.id, profile.company_id])
 
   useEffect(() => {
-    if (profile?.company_id) fetchPartners()
-  }, [profile?.company_id])
+    fetchPartners()
+  }, [fetchPartners])
 
   useEffect(() => {
     fetchMessages()
-  }, [activePartner])
+  }, [fetchMessages])
 
   const handleSend = async (e) => {
     e.preventDefault()
     if (!newMessage.trim() || !activePartner) return
 
-    const { error } = await supabase.from("partner_messages").insert([{
+    const tableName = activePartner.type === 'external' ? "partner_messages" : "internal_messages"
+    const payload = activePartner.type === 'external' ? {
       from_company: profile.company_id,
       to_company: activePartner.id,
       sender_id: user.id,
       message_text: newMessage.trim()
-    }])
+    } : {
+      sender_id: user.id,
+      receiver_id: activePartner.id,
+      message_text: newMessage.trim()
+    }
+
+    const { error } = await supabase.from(tableName).insert([payload])
 
     if (!error) {
       setNewMessage("")
-      fetchMessages() // Re-fetch immediately to show message
-    } else {
-      console.error("Send Message Error:", error)
-      alert("Failed to send: " + error.message)
+      fetchMessages()
     }
   }
 
-  if (loading) return <p className="text-slate-500 p-4">Loading contacts...</p>
+  if (loading) return <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Establishing Secure Uplink...</div>
 
   if (partners.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-10 text-center">
-        <div className="text-4xl mb-3">💬</div>
-        <h3 className="font-semibold text-slate-700">No active partners</h3>
-        <p className="text-slate-500 text-sm mt-1">Connect with other companies in the Discover tab first.</p>
+      <div className="py-40 text-center bg-white dark:bg-slate-800 rounded-[4rem] border-4 border-dashed border-slate-100 dark:border-slate-800">
+        <MessageSquare className="h-32 w-32 mx-auto text-slate-100 dark:text-slate-800 mb-10" />
+        <h3 className="text-3xl font-black text-slate-400 uppercase tracking-widest">No Active Channels Detected</h3>
+        <p className="text-sm font-bold text-slate-400 mt-4">Initiate collaboration protocols in the Discovery Hub.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 border-2 flex flex-col xl:flex-row border-slate-200 dark:border-slate-700 rounded-3xl md:rounded-[3rem] shadow-sm overflow-hidden h-[800px] md:h-[900px]">
-      {/* Sidebar: Partners List */}
-      <div className="w-full xl:w-[35rem] bg-slate-50 dark:bg-slate-900/50 border-r-2 border-slate-200 dark:border-slate-700 flex flex-col shrink-0">
-        <div className="p-8 md:p-10 border-b-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50">
-          <h3 className="text-xl md:text-3xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-[0.1em]">Partner Contacts</h3>
+    <div className="bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-white/5 flex flex-col xl:flex-row rounded-[3rem] shadow-sm overflow-hidden h-[800px] md:h-[900px] animate-in fade-in duration-700">
+      
+      {/* Sidebar Matrix */}
+      <div className="w-full xl:w-[35rem] bg-slate-50 dark:bg-slate-900/50 border-r-2 border-slate-100 dark:border-white/5 flex flex-col shrink-0">
+        <div className="p-10 border-b-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800/50">
+          <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-widest">Active Links</h3>
         </div>
-        <div className="overflow-y-auto flex-1 custom-scrollbar">
+        <div className="overflow-y-auto flex-1 custom-scrollbar p-4 space-y-4">
           {partners.map(partner => (
             <button
               key={partner.id}
               onClick={() => setActivePartner(partner)}
-              className={`w-full text-left p-8 md:p-10 border-b-2 border-slate-100 dark:border-slate-800 transition-all flex items-center gap-6 md:gap-8
-                ${activePartner?.id === partner.id ? "bg-blue-600 shadow-lg scale-[1.02] z-10" : "hover:bg-slate-100 dark:hover:bg-slate-700/30"}
-              `}
+              className={`w-full text-left p-6 rounded-3xl transition-all flex items-center gap-6 border-2 ${
+                activePartner?.id === partner.id 
+                  ? "bg-blue-600 border-blue-400 shadow-xl shadow-blue-500/20 scale-[1.02] z-10" 
+                  : "bg-white dark:bg-slate-800 border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+              }`}
             >
-              <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center font-black text-2xl md:text-4xl shadow-md
-                ${activePartner?.id === partner.id ? "bg-white text-blue-600" : "bg-blue-600 text-white"}
-              `}>
-                {partner.name.charAt(0).toUpperCase()}
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl shadow-md ${
+                activePartner?.id === partner.id ? "bg-white text-blue-600" : "bg-slate-100 dark:bg-slate-900 text-slate-400"
+              }`}>
+                {partner.name.charAt(0)}
               </div>
               <div className="truncate">
-                <p className={`font-black text-xl md:text-3xl tracking-tight truncate ${activePartner?.id === partner.id ? "text-white" : "text-slate-800 dark:text-slate-100"}`}>
+                <p className={`font-black text-xl tracking-tight truncate uppercase ${activePartner?.id === partner.id ? "text-white" : "text-slate-900 dark:text-white"}`}>
                   {partner.name}
                 </p>
-                <p className={`text-sm md:text-lg font-bold uppercase tracking-widest mt-1 ${activePartner?.id === partner.id ? "text-blue-100" : "text-slate-500 dark:text-slate-400"}`}>Verified Partner</p>
+                <div className="flex items-center gap-2 mt-1">
+                   {partner.type === 'internal' ? <UserCircle className="h-3 w-3" /> : <Building2 className="h-3 w-3" />}
+                   <p className={`text-[10px] font-black uppercase tracking-widest ${activePartner?.id === partner.id ? "text-blue-100" : "text-slate-400"}`}>{partner.type}</p>
+                </div>
               </div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Chat Area */}
+      {/* Primary Communication Channel */}
       <div className="flex-1 flex flex-col h-full bg-white dark:bg-slate-900/10">
-        {/* Chat header */}
-        <div className="p-8 md:p-10 border-b-2 border-slate-200 dark:border-slate-700 shadow-sm z-10 flex items-center justify-between bg-white dark:bg-slate-800">
+        <div className="p-10 border-b-2 border-slate-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-slate-800">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 font-black text-white flex items-center justify-center text-3xl md:text-4xl shadow-lg border-2 border-white dark:border-slate-700">
-              {activePartner?.name.charAt(0).toUpperCase()}
+            <div className="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-indigo-600 font-black text-white flex items-center justify-center text-3xl shadow-xl border-4 border-white dark:border-slate-700">
+              {activePartner?.name.charAt(0)}
             </div>
             <div>
-              <h3 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100 leading-tight tracking-tight">{activePartner?.name}</h3>
-              <div className="flex items-center gap-3 mt-1">
-                <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                <p className="text-sm md:text-lg text-emerald-600 font-bold uppercase tracking-widest">Connected</p>
-              </div>
+              <h3 className="text-3xl font-black text-slate-900 dark:text-white leading-none uppercase">{activePartner?.name}</h3>
+              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mt-3 flex items-center gap-2">
+                 <ShieldCheck className="h-4 w-4" /> Secure Channel Established
+              </p>
             </div>
           </div>
-          <button className="hidden md:flex p-4 text-slate-400 hover:text-slate-600 transition-colors">
-             <span className="text-3xl">⚙️</span>
-          </button>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-10 md:p-16 space-y-8 md:space-y-12 bg-slate-50 dark:bg-slate-900/50 custom-scrollbar">
+        {/* Message Matrix */}
+        <div className="flex-1 overflow-y-auto p-10 md:p-16 space-y-10 bg-slate-50 dark:bg-slate-950/20 custom-scrollbar">
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-slate-400 gap-6 opacity-50">
-              <span className="text-8xl">💬</span>
-              <p className="text-xl md:text-3xl font-bold italic tracking-tight">Initiate your professional collaboration dialogue...</p>
+            <div className="flex flex-col items-center justify-center h-full text-slate-300 gap-8 opacity-50">
+              <MessageSquare className="h-32 w-32" />
+              <p className="text-2xl font-black uppercase tracking-widest italic">Initiate Operational Dialogue...</p>
             </div>
           ) : (
             messages.map(msg => {
-              const isMine = msg.from_company === profile.company_id
+              const isMine = msg.sender_id === user.id
               return (
                 <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[75%] rounded-[2rem] md:rounded-[3rem] px-8 py-5 md:px-12 md:py-8 shadow-sm transition-all hover:shadow-md ${
+                  <div className={`max-w-[80%] rounded-[2.5rem] px-10 py-6 shadow-sm group relative ${
                     isMine 
-                      ? "bg-blue-600 text-white rounded-br-none scale-105" 
-                      : "bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-bl-none"
+                      ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-br-none" 
+                      : "bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-white/5 text-slate-800 dark:text-white rounded-bl-none"
                   }`}>
-                    <p className="text-lg md:text-2xl font-medium leading-relaxed">{msg.message_text}</p>
-                    <div className={`text-xs md:text-base mt-4 font-bold uppercase tracking-widest flex items-center justify-end gap-2 ${isMine ? "text-blue-200" : "text-slate-400"}`}>
+                    <p className="text-xl font-medium leading-relaxed">{msg.message_text}</p>
+                    <div className={`text-[10px] mt-4 font-black uppercase tracking-widest flex items-center gap-2 ${isMine ? "text-slate-400" : "text-slate-400"}`}>
                       {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}
-                      {isMine && <span>✓✓</span>}
                     </div>
                   </div>
                 </div>
@@ -183,24 +206,22 @@ function MessagesPanel() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input area */}
-        <div className="p-8 md:p-12 border-t-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+        {/* Transmission Input */}
+        <div className="p-10 border-t-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800">
           <form onSubmit={handleSend} className="flex gap-6 items-center">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder={`Type your message to ${activePartner?.name}...`}
-                className="w-full border-2 border-slate-200 dark:border-slate-700 rounded-3xl md:rounded-[2.5rem] px-10 py-6 md:py-8 text-xl md:text-3xl font-medium outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 transition-all shadow-inner"
-              />
-            </div>
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder={`Communicate with ${activePartner?.name}...`}
+              className="flex-1 bg-slate-50 dark:bg-slate-900 border-4 border-transparent focus:border-blue-500/30 rounded-3xl px-10 py-6 text-2xl font-black text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+            />
             <button
               type="submit"
               disabled={!newMessage.trim()}
-              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white w-20 h-20 md:w-28 md:h-28 rounded-3xl md:rounded-[2.5rem] flex items-center justify-center transition-all shadow-xl hover:-translate-y-1 active:scale-95 shrink-0"
+              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white w-24 h-24 rounded-3xl flex items-center justify-center transition-all shadow-xl hover:-translate-y-1 active:scale-95 shrink-0"
             >
-              <span className="text-3xl md:text-5xl">➡️</span>
+              <ArrowRight className="h-10 w-10" />
             </button>
           </form>
         </div>

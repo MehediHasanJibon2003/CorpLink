@@ -248,9 +248,42 @@ function PersonalDashboard() {
           title="Completed"
           value={taskStats.completed}
           icon={CheckCircle2}
-          color="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
+          color="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
           loading={loading}
         />
+      </div>
+
+      {/* Performance Brief */}
+      <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 border-2 border-slate-100 dark:border-white/5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 group hover:border-blue-500/30 transition-all">
+         <div className="flex items-center gap-6">
+            <div className="h-20 w-20 rounded-3xl bg-blue-600 text-white flex items-center justify-center shadow-2xl shadow-blue-500/20">
+               <TrendingUp className="h-10 w-10" />
+            </div>
+            <div>
+               <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Mission Performance</h3>
+               <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Operational Efficiency Overview</p>
+            </div>
+         </div>
+
+         <div className="flex-1 max-w-md w-full px-4">
+            <div className="flex justify-between items-end mb-3">
+               <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Global Success Rate</span>
+               <span className="text-2xl font-black text-blue-600">{taskStats.total > 0 ? Math.round((taskStats.completed/taskStats.total)*100) : 0}%</span>
+            </div>
+            <div className="h-4 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
+               <div 
+                 className="h-full bg-blue-600 rounded-full shadow-[0_0_10px_rgba(37,99,235,0.5)] transition-all duration-1000"
+                 style={{ width: `${taskStats.total > 0 ? Math.round((taskStats.completed/taskStats.total)*100) : 0}%` }}
+               />
+            </div>
+         </div>
+
+         <button 
+           onClick={() => navigate("/employee/performance")}
+           className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-xl"
+         >
+           Detailed Intelligence
+         </button>
       </div>
 
       {/* ── Main Layout ── */}

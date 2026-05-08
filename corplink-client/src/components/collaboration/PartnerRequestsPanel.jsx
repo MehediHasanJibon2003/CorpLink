@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
+import { Inbox, Send, UserCheck, ShieldAlert, Clock, CheckCircle2, XCircle } from "lucide-react"
 
 function PartnerRequestsPanel() {
   const { user, profile } = useAuth()
@@ -11,47 +12,53 @@ function PartnerRequestsPanel() {
   const [error, setError] = useState("")
   const [message, setMessage] = useState("")
 
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
+    if (!profile?.company_id) return
     setLoading(true)
 
-    // Received requests: We are the 'to_company', join with 'from_company' to get their name
-    const { data: receivedData, error: err1 } = await supabase
-      .from("partner_requests")
-      .select(`
-        id, status, type, message, created_at,
-        from_company:companies!from_company (id, name)
-      `)
-      .eq("to_company", profile.company_id)
-      .order("created_at", { ascending: false })
+    try {
+      // Received requests (I am the receiver or my company is the target)
+      const { data: recData } = await supabase
+        .from("collaboration_requests")
+        .select(`
+          *,
+          sender:profiles!sender_id (full_name, role),
+          partner_corp:corporates!corporate_id (name)
+        `)
+        .or(`receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id}`)
+        .order("created_at", { ascending: false })
 
-    // Sent requests: We are the 'from_company', join with 'to_company' to get their name
-    const { data: sentData, error: err2 } = await supabase
-      .from("partner_requests")
-      .select(`
-        id, status, type, message, created_at,
-        to_company:companies!to_company (id, name)
-      `)
-      .eq("from_company", profile.company_id)
-      .order("created_at", { ascending: false })
+      // Sent requests (I am the sender)
+      const { data: sentData } = await supabase
+        .from("collaboration_requests")
+        .select(`
+          *,
+          receiver:profiles!receiver_id (full_name, role),
+          partner_corp:corporates!corporate_id (name)
+        `)
+        .eq("sender_id", user.id)
+        .order("created_at", { ascending: false })
 
-    if (err1) setError(err1.message)
-    if (err2) setError(err2.message)
-
-    setReceived(receivedData || [])
-    setSent(sentData || [])
-    setLoading(false)
-  }
+      setReceived(recData || [])
+      setSent(sentData || [])
+    } catch (err) {
+      console.error("Fetch requests error:", err)
+      setError("Strategic Data Retrieval Failed.")
+    } finally {
+      setLoading(false)
+    }
+  }, [user.id, profile.company_id])
 
   useEffect(() => {
-    if (profile?.company_id) fetchRequests()
-  }, [profile?.company_id])
+    fetchRequests()
+  }, [fetchRequests])
 
-  const handleUpdateStatus = async (requestId, newStatus, fromCompanyName) => {
+  const handleUpdateStatus = async (requestId, newStatus, targetName) => {
     setError("")
     setMessage("")
 
     const { error } = await supabase
-      .from("partner_requests")
+      .from("collaboration_requests")
       .update({ status: newStatus })
       .eq("id", requestId)
 
@@ -60,115 +67,137 @@ function PartnerRequestsPanel() {
       return
     }
 
-    await supabase.from("activity_logs").insert([{
-      company_id: profile.company_id,
-      user_id: user.id,
-      action: `${newStatus === 'accepted' ? 'Accepted' : 'Rejected'} partnership request from ${fromCompanyName}`,
-      entity: "collaboration",
-    }])
-
-    setMessage(`Request ${newStatus}!`)
+    setMessage(`Protocol ${newStatus === 'accepted' ? 'Authorized' : 'Terminated'}.`)
     setTimeout(() => setMessage(""), 3000)
     fetchRequests()
   }
 
-  const statusBadge = (status) => {
-    if (status === "accepted") return <span className="text-[10px] font-black bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase tracking-widest">✅ Partner</span>
-    if (status === "pending")  return <span className="text-[10px] font-black bg-amber-100 text-amber-700 px-3 py-1 rounded-full uppercase tracking-widest">⏳ Pending</span>
-    if (status === "rejected") return <span className="text-[10px] font-black bg-red-100 text-red-700 px-3 py-1 rounded-full uppercase tracking-widest">❌ Rejected</span>
-    return null
+  const statusConfig = {
+    pending: { label: "Pending", class: "bg-amber-100 text-amber-700", icon: Clock },
+    accepted: { label: "Accepted", class: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 },
+    rejected: { label: "Rejected", class: "bg-red-100 text-red-700", icon: XCircle },
   }
 
-  const typeBadge = (type) => {
-    const colors = {
-      vendor: "bg-blue-100 text-blue-600",
-      client: "bg-purple-100 text-purple-600",
-      partner: "bg-indigo-100 text-indigo-600"
+  const RequestCard = ({ req, isSent }) => {
+    const config = statusConfig[req.status] || statusConfig.pending
+    const Icon = config.icon
+    
+    let displayName = ""
+    let displayRole = ""
+    
+    if (req.type === 'internal') {
+      const person = isSent ? req.receiver : req.sender
+      displayName = person?.full_name || "Colleague"
+      displayRole = person?.role || "Team Member"
+    } else {
+      displayName = req.partner_corp?.name || "Partner Corp"
+      displayRole = "Strategic Entity"
     }
-    return <span className={`text-[9px] font-black px-3 py-1 rounded-lg uppercase tracking-[0.15em] ${colors[type] || 'bg-slate-100 text-slate-500'}`}>{type}</span>
-  }
 
-  if (loading) return <p className="text-slate-500 text-sm p-4">Loading requests...</p>
-
-  return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 md:gap-16">
-      {/* Inbox : Received Requests */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] border-2 border-slate-200 dark:border-slate-700 p-10 md:p-16 shadow-sm">
-        <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-10 md:mb-12 tracking-tight flex items-center gap-4">
-           <span className="text-4xl">📥</span> Received Requests
-        </h3>
-        {error && <p className="p-6 bg-red-50 text-red-600 rounded-2xl font-bold mb-8">{error}</p>}
-        {message && <p className="p-6 bg-green-50 text-green-600 rounded-2xl font-bold mb-8">{message}</p>}
-
-        <div className="space-y-8 md:space-y-10">
-          {received.length === 0 ? (
-            <p className="text-xl md:text-2xl text-slate-400 font-bold italic text-center py-20">No incoming requests in the inbox.</p>
-          ) : (
-            received.map((req) => (
-              <div key={req.id} className="border-2 border-slate-100 dark:border-slate-700 rounded-3xl p-8 md:p-12 flex flex-col gap-8 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-all">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                       <h4 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-tight">{req.from_company?.name}</h4>
-                       {typeBadge(req.type)}
-                    </div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{new Date(req.created_at).toLocaleDateString()}</p>
-                  </div>
-                  <div className="transform scale-125 origin-top-right">
-                    {statusBadge(req.status)}
-                  </div>
-                </div>
-
-                <div className="bg-slate-100 dark:bg-slate-900/50 p-6 md:p-10 rounded-2xl md:rounded-[2rem] text-lg md:text-2xl text-slate-700 dark:text-slate-200 font-medium leading-relaxed italic shadow-inner">
-                  "{req.message}"
-                </div>
-
-                {req.status === "pending" && (
-                  <div className="flex flex-col sm:flex-row gap-4 md:gap-6 mt-4">
-                    <button
-                      onClick={() => handleUpdateStatus(req.id, "accepted", req.from_company?.name)}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 md:py-6 rounded-2xl md:rounded-3xl text-lg md:text-2xl font-black transition-all shadow-lg active:scale-95"
-                    >
-                      Accept Partnership
-                    </button>
-                    <button
-                      onClick={() => handleUpdateStatus(req.id, "rejected", req.from_company?.name)}
-                      className="flex-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-4 md:py-6 rounded-2xl md:rounded-3xl text-lg md:text-2xl font-black transition-all"
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
+    return (
+      <div className="group bg-white dark:bg-slate-800 rounded-[2.5rem] border-2 border-slate-100 dark:border-white/5 p-10 hover:border-blue-500/30 transition-all hover:shadow-2xl">
+        <div className="flex items-start justify-between mb-8">
+           <div className="flex items-center gap-6">
+              <div className="h-16 w-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 flex items-center justify-center font-black text-2xl text-slate-800 dark:text-white shadow-inner">
+                {displayName.charAt(0)}
               </div>
-            ))
-          )}
+              <div>
+                <h4 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none">{displayName}</h4>
+                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-2">{displayRole}</p>
+              </div>
+           </div>
+           <div className={`px-4 py-2 rounded-full flex items-center gap-2 ${config.class}`}>
+              <Icon className="h-4 w-4" />
+              <span className="text-[10px] font-black uppercase tracking-widest">{config.label}</span>
+           </div>
+        </div>
+
+        <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl text-lg text-slate-700 dark:text-slate-300 font-medium italic border-2 border-transparent group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all">
+          "{req.message}"
+        </div>
+
+        <div className="mt-8 flex items-center justify-between">
+           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              {new Date(req.created_at).toLocaleDateString()}
+           </span>
+           
+           {!isSent && req.status === 'pending' && (
+             <div className="flex gap-4">
+                <button 
+                  onClick={() => handleUpdateStatus(req.id, 'accepted', displayName)}
+                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg active:scale-95 transition-all"
+                >
+                  Authorize
+                </button>
+                <button 
+                  onClick={() => handleUpdateStatus(req.id, 'rejected', displayName)}
+                  className="px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-200 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-red-500 hover:text-white transition-all active:scale-95"
+                >
+                  Terminate
+                </button>
+             </div>
+           )}
         </div>
       </div>
+    )
+  }
 
-      {/* Outbox : Sent Requests */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] border-2 border-slate-200 dark:border-slate-700 p-10 md:p-16 shadow-sm">
-        <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-10 md:mb-12 tracking-tight flex items-center gap-4">
-           <span className="text-4xl">↗️</span> Sent Requests
-        </h3>
-        
-        <div className="space-y-8 md:space-y-10">
-          {sent.length === 0 ? (
-            <p className="text-xl md:text-2xl text-slate-400 font-bold italic text-center py-20">You haven't sent any requests yet.</p>
-          ) : (
-            sent.map((req) => (
-              <div key={req.id} className="border-2 border-slate-100 dark:border-slate-700 rounded-3xl p-8 md:p-12 flex flex-col gap-6 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-all">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-slate-100">{req.to_company?.name}</h4>
-                    <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">{new Date(req.created_at).toLocaleDateString()}</p>
-                  </div>
-                  <div className="transform scale-125 origin-top-right">
-                    {statusBadge(req.status)}
-                  </div>
-                </div>
+  if (loading) return <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Synchronizing Intelligence...</div>
+
+  return (
+    <div className="space-y-16 animate-in fade-in duration-700 pb-20">
+      {(error || message) && (
+        <div className={`p-8 rounded-[2.5rem] font-black uppercase tracking-widest border-4 ${error ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>
+          {error || message}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-16 md:gap-24">
+        {/* Received Matrix */}
+        <div className="space-y-12">
+           <div className="flex items-center gap-6">
+              <div className="h-20 w-20 rounded-[2rem] bg-blue-600 text-white flex items-center justify-center shadow-2xl shadow-blue-500/30">
+                 <Inbox className="h-10 w-10" />
               </div>
-            ))
-          )}
+              <div>
+                 <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Incoming <br /> Protocols</h3>
+                 <p className="text-sm font-black text-slate-400 uppercase tracking-widest mt-1">Pending Authorization</p>
+              </div>
+           </div>
+
+           <div className="space-y-8">
+              {received.length === 0 ? (
+                <div className="py-20 text-center border-4 border-dashed border-slate-100 dark:border-slate-800 rounded-[3rem]">
+                   <p className="text-2xl font-black text-slate-300 uppercase tracking-widest">Inbound frequency silent.</p>
+                </div>
+              ) : (
+                received.map(req => <RequestCard key={req.id} req={req} isSent={false} />)
+              )}
+           </div>
+        </div>
+
+        {/* Sent Matrix */}
+        <div className="space-y-12">
+           <div className="flex items-center gap-6">
+              <div className="h-20 w-20 rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center shadow-2xl">
+                 <Send className="h-10 w-10" />
+              </div>
+              <div>
+                 <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Transmitted <br /> Requests</h3>
+                 <p className="text-sm font-black text-slate-400 uppercase tracking-widest mt-1">Global Broadcast history</p>
+              </div>
+           </div>
+
+           <div className="space-y-8">
+              {sent.length === 0 ? (
+                <div className="py-20 text-center border-4 border-dashed border-slate-100 dark:border-slate-800 rounded-[3rem]">
+                   <p className="text-2xl font-black text-slate-300 uppercase tracking-widest">Outbound queue empty.</p>
+                </div>
+              ) : (
+                sent.map(req => <RequestCard key={req.id} req={req} isSent={true} />)
+              )}
+           </div>
         </div>
       </div>
     </div>

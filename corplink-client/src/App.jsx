@@ -161,6 +161,10 @@ function App() {
               element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
             />
             <Route
+              path="/employee/performance"
+              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+            />
+            <Route
               path="/employee/feed"
               element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
             />
