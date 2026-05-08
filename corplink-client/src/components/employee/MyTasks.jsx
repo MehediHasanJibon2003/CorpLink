@@ -11,6 +11,7 @@ import {
   Filter,
   ChevronDown,
   RefreshCw,
+  Paperclip,
 } from "lucide-react";
 import TaskUpdateModal from "./TaskUpdateModal";
 
@@ -100,7 +101,8 @@ function MyTasks() {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: err } = await supabase
+      // 1. Fetch tasks
+      const { data: tasksData, error: err } = await supabase
         .from("tasks")
         .select("*")
         .eq("assigned_to", profile?.employee_id || user.id)
@@ -108,7 +110,28 @@ function MyTasks() {
         .order("created_at", { ascending: false });
 
       if (err) throw err;
-      setTasks(data || []);
+
+      // 2. Fetch attachment counts
+      const taskIds = (tasksData || []).map((t) => t.id);
+      let countsMap = {};
+
+      if (taskIds.length > 0) {
+        const { data: attData } = await supabase
+          .from("task_attachments")
+          .select("id, task_id")
+          .in("task_id", taskIds);
+
+        attData?.forEach((a) => {
+          countsMap[a.task_id] = (countsMap[a.task_id] || 0) + 1;
+        });
+      }
+
+      const enrichedTasks = (tasksData || []).map((t) => ({
+        ...t,
+        attachmentCount: countsMap[t.id] || 0,
+      }));
+
+      setTasks(enrichedTasks);
     } catch (err) {
       console.error("MyTasks fetch error:", err);
       setError("Failed to load tasks. Please try again.");
@@ -157,7 +180,7 @@ function MyTasks() {
             <CheckSquare className="h-8 w-8 text-blue-500" />
             My Tasks
           </h1>
-          <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold">
+          <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">
             {tasks.length} task{tasks.length !== 1 ? "s" : ""} assigned to you
           </p>
         </div>
@@ -171,7 +194,7 @@ function MyTasks() {
       </div>
 
       {/* Filters Bar */}
-      <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm p-8 md:p-10">
+      <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm p-6 md:p-8">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Search */}
           <div className="relative flex-1">
@@ -181,7 +204,7 @@ function MyTasks() {
               placeholder="Search by task name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-14 pr-6 py-4 md:py-5 text-lg md:text-xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-200 placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/20 font-bold transition"
+              className="w-full pl-14 pr-6 py-4 md:py-5 text-lg bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-200 placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/20 font-bold transition"
             />
           </div>
 
@@ -201,58 +224,28 @@ function MyTasks() {
             </select>
             <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
           </div>
-
-          {/* Priority Filter */}
-          <div className="relative flex-1 md:flex-initial">
-            <Filter className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 md:h-6 md:w-6 text-slate-400 pointer-events-none" />
-            <select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-              className="w-full md:w-auto pl-14 pr-10 py-4 md:py-5 text-base md:text-lg font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-200 outline-none focus:ring-4 focus:ring-blue-500/20 appearance-none cursor-pointer"
-            >
-              {priorityGroups.map((p) => (
-                <option key={p} value={p}>
-                  {p === "all"
-                    ? "All Priorities"
-                    : priorityConfig[p]?.label || p}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
-          </div>
         </div>
       </div>
 
       {/* Task List */}
       <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm overflow-hidden">
-        {loading ? (
+        {loading && tasks.length === 0 ? (
           <div className="p-8 space-y-4">
-            {[...Array(5)].map((_, i) => (
+            {[...Array(3)].map((_, i) => (
               <Skeleton key={i} className="h-24 w-full" />
             ))}
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center py-20 text-red-500">
+          <div className="flex flex-col items-center justify-center py-20 text-red-500 text-center px-4">
             <AlertCircle className="h-16 w-16 mb-4 opacity-70" />
             <p className="font-bold text-lg md:text-xl">{error}</p>
-            <button
-              onClick={fetchTasks}
-              className="mt-4 text-base font-black text-blue-600 hover:underline tracking-widest uppercase"
-            >
-              Try again
-            </button>
           </div>
         ) : filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400">
             <CheckSquare className="h-20 w-20 mb-6 opacity-30" />
-            <p className="font-black text-2xl text-slate-600 dark:text-slate-300">
+            <h3 className="font-black text-2xl text-slate-600 dark:text-slate-300">
               No tasks found
-            </p>
-            <p className="text-lg mt-2 font-medium">
-              {tasks.length === 0
-                ? "You have no tasks assigned yet."
-                : "Try adjusting your filters."}
-            </p>
+            </h3>
           </div>
         ) : (
           <div className="divide-y-2 divide-slate-100 dark:divide-slate-700/50">
@@ -267,9 +260,7 @@ function MyTasks() {
                   key={task.id}
                   className="flex flex-col md:flex-row md:items-center justify-between px-8 md:px-12 py-8 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors group gap-6"
                 >
-                  {/* Left: Task info */}
                   <div className="flex items-start gap-6 min-w-0">
-                    {/* Priority indicator bar */}
                     <div
                       className={`w-2 h-16 md:h-20 rounded-full shrink-0 mt-1 ${
                         task.priority === "high"
@@ -283,29 +274,29 @@ function MyTasks() {
                       <p className="font-black text-slate-800 dark:text-slate-100 text-lg md:text-2xl group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                         {task.title}
                       </p>
-                      {task.description && (
-                        <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 font-medium leading-relaxed">
-                          {task.description}
-                        </p>
-                      )}
                       <div className="flex flex-wrap items-center gap-4 mt-4">
                         <span
-                          className={`flex items-center gap-1.5 text-xs md:text-sm font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${pConf.class}`}
+                          className={`flex items-center gap-1.5 text-[10px] md:text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest ${pConf.class}`}
                         >
                           {pConf.label}
                         </span>
                         <span
-                          className={`flex items-center gap-1.5 text-xs md:text-sm font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${sConf.class}`}
+                          className={`flex items-center gap-1.5 text-[10px] md:text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest ${sConf.class}`}
                         >
-                          <StatusIcon className="h-4 w-4 md:h-5 md:w-5" />
+                          <StatusIcon className="h-4 w-4" />
                           {sConf.label}
                         </span>
+                        {task.attachmentCount > 0 && (
+                          <span className="flex items-center gap-1 text-[10px] md:text-xs font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full uppercase tracking-widest">
+                            <Paperclip className="h-3.5 w-3.5" />
+                            {task.attachmentCount}
+                          </span>
+                        )}
                         {task.deadline && (
                           <span
-                            className={`flex items-center gap-2 text-xs md:text-sm font-black border-l-2 border-slate-200 dark:border-slate-700 pl-4 uppercase tracking-widest ${overdue ? "text-red-500" : "text-slate-400"}`}
+                            className={`flex items-center gap-2 text-[10px] md:text-xs font-black border-l-2 border-slate-200 dark:border-slate-700 pl-4 uppercase tracking-widest ${overdue ? "text-red-500" : "text-slate-400"}`}
                           >
-                            <Clock className="h-4 w-4 md:h-5 md:w-5" />
-                            {overdue ? "Overdue — " : "Due: "}
+                            <Clock className="h-4 w-4" />
                             {new Date(task.deadline).toLocaleDateString()}
                           </span>
                         )}
@@ -313,17 +304,12 @@ function MyTasks() {
                     </div>
                   </div>
 
-                  {/* Right: Update button */}
-                  {!["finished", "completed", "rejected"].includes(
-                    task.status,
-                  ) && (
-                    <button
-                      onClick={() => setSelectedTask(task)}
-                      className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-lg font-black uppercase tracking-widest px-6 py-3 md:px-8 md:py-4 rounded-2xl md:rounded-full transition shadow-md shadow-blue-500/20 w-full md:w-auto mt-4 md:mt-0"
-                    >
-                      Update Task
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setSelectedTask(task)}
+                    className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm font-black uppercase tracking-widest px-6 py-4 rounded-xl md:rounded-full transition shadow-md shadow-blue-500/20"
+                  >
+                    Manage Workspace
+                  </button>
                 </div>
               );
             })}
@@ -331,7 +317,6 @@ function MyTasks() {
         )}
       </div>
 
-      {/* Task Update Modal */}
       {selectedTask && (
         <TaskUpdateModal
           task={selectedTask}
