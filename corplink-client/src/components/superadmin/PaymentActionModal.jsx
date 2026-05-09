@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { 
   X, DollarSign, CheckCircle2, AlertCircle, 
-  RotateCcw, FileText, Calendar, Hash, Info
+  RotateCcw, FileText, Calendar, Hash, Info, RefreshCw
 } from "lucide-react";
 
 export default function PaymentActionModal({ invoice, onClose, onSuccess }) {

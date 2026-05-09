@@ -1,30 +1,147 @@
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import { useTheme } from "../../context/ThemeContext"
-import { Shield, Menu, Sun, Moon, LogOut, Bell, Search } from "lucide-react"
+import { supabase } from "../../lib/supabase"
+import { 
+  Shield, Menu, Sun, Moon, LogOut, Bell, Search, 
+  User, Briefcase, CheckSquare, Building2, Loader2, X 
+} from "lucide-react"
 import NotificationDropdown from "./NotificationDropdown"
 
 export default function Topbar({ onMenuClick }) {
   const navigate = useNavigate()
   const { profile, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
+  
+  const [searchTerm, setSearchTerm] = useState("")
+  const [results, setResults] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showResults, setShowResults] = useState(false)
+  const searchRef = useRef(null)
 
   const handleLogout = async () => {
     await logout()
     navigate("/login")
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchTerm.length > 0) {
+        setIsSearching(true)
+        setShowResults(true)
+        
+        try {
+          const companyId = profile?.company_id
+          if (!companyId) return
+
+          const [empRes, taskRes, projRes, deptRes] = await Promise.all([
+            supabase.from("employees").select("id, name, email").eq("company_id", companyId).ilike("name", `%${searchTerm}%`).limit(3),
+            supabase.from("tasks").select("id, title").eq("company_id", companyId).ilike("title", `%${searchTerm}%`).limit(3),
+            supabase.from("projects").select("id, name").eq("company_id", companyId).ilike("name", `%${searchTerm}%`).limit(3),
+            supabase.from("departments").select("id, name").eq("company_id", companyId).ilike("name", `%${searchTerm}%`).limit(3)
+          ])
+
+          const formattedResults = [
+            ...(empRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: item.email, type: "Employee", icon: User, path: "/employees" })),
+            ...(taskRes.data || []).map(item => ({ id: item.id, title: item.title, subtitle: "Task", type: "Task", icon: CheckSquare, path: "/tasks" })),
+            ...(projRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: "Project", type: "Project", icon: Briefcase, path: "/tasks" })),
+            ...(deptRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: "Department", type: "Department", icon: Building2, path: "/departments" }))
+          ]
+
+          setResults(formattedResults)
+        } catch (error) {
+          console.error("Search error:", error)
+        } finally {
+          setIsSearching(false)
+        }
+      } else {
+        setResults([])
+        setShowResults(false)
+      }
+    }, 400)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchTerm, profile?.company_id])
+
+  const handleResultClick = (result) => {
+    navigate(result.path)
+    setShowResults(false)
+    setSearchTerm("")
+  }
+
   return (
-    <header className="h-20 md:h-24 lg:h-28 shrink-0 relative flex items-center justify-between px-4 md:px-8 lg:px-12 gap-4 md:gap-8 overflow-hidden
+    <header className="h-20 md:h-24 lg:h-28 shrink-0 relative flex items-center justify-between px-4 md:px-8 lg:px-12 gap-4 md:gap-8 
       bg-white/80 dark:bg-[#0d0622]/85 border-b-2 border-slate-200 dark:border-violet-500/15 backdrop-blur-xl transition-colors duration-300"
     >
       <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, var(--primary-color), transparent)` }} />
 
       {/* Search */}
-      <div className="hidden md:flex flex-1 max-w-xl relative group z-10">
+      <div ref={searchRef} className="hidden md:flex flex-1 max-w-xl relative group z-10">
         <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-violet-500 transition-colors" />
-        <input type="text" placeholder="Search anything..." 
-          className="w-full bg-slate-50 dark:bg-violet-500/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl md:rounded-3xl pl-16 pr-8 py-4 outline-none focus:border-violet-500/50 transition-all font-bold text-slate-700 dark:text-violet-200" />
+        <input 
+          type="text" 
+          placeholder="Search employees, tasks, projects..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={() => searchTerm.length > 1 && setShowResults(true)}
+          className="w-full bg-slate-50 dark:bg-violet-500/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl md:rounded-3xl pl-16 pr-12 py-4 outline-none focus:border-violet-500/50 transition-all font-bold text-slate-700 dark:text-violet-200" 
+        />
+        {searchTerm && (
+          <button 
+            onClick={() => setSearchTerm("")}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-slate-200 dark:hover:bg-white/10 rounded-full text-slate-400"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+
+        {/* Search Results Dropdown */}
+        {showResults && (
+          <div className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1a0f3c] border-2 border-slate-100 dark:border-violet-500/20 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+              {isSearching ? (
+                <div className="p-8 text-center flex flex-col items-center gap-3">
+                  <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-400">Searching Workspace...</p>
+                </div>
+              ) : results.length > 0 ? (
+                <div className="py-4">
+                  <p className="px-6 pb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Found Results</p>
+                  {results.map((result, idx) => (
+                    <button
+                      key={`${result.type}-${result.id}-${idx}`}
+                      onClick={() => handleResultClick(result)}
+                      className="w-full px-6 py-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-left group"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-violet-500/10 flex items-center justify-center text-slate-400 group-hover:text-violet-500 transition-colors">
+                        <result.icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-slate-700 dark:text-white uppercase tracking-tight">{result.title}</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{result.subtitle}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-8 text-center">
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-400">No matches found for "{searchTerm}"</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex md:hidden items-center gap-3 relative z-10">
@@ -61,3 +178,4 @@ export default function Topbar({ onMenuClick }) {
     </header>
   )
 }
+
