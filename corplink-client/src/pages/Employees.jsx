@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
@@ -7,6 +8,7 @@ import { Users, Search, Filter, Plus, Mail, Building, Briefcase, Calendar, Trend
 
 function Employees() {
   const { user, profile } = useAuth()
+  const [searchParams] = useSearchParams()
 
   const [employees, setEmployees] = useState([])
   const [departments, setDepartments] = useState([])
@@ -20,6 +22,14 @@ function Employees() {
   // Filter States
   const [searchTerm, setSearchTerm] = useState("")
   const [deptFilter, setDeptFilter] = useState("all")
+
+  useEffect(() => {
+    const id = searchParams.get("id")
+    if (id && employees.length > 0) {
+      const target = employees.find(e => e.id === id)
+      if (target) setSearchTerm(target.name)
+    }
+  }, [searchParams, employees])
 
   const [form, setForm] = useState({
     name: "",

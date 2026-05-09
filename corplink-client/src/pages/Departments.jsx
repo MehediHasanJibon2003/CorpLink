@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
@@ -13,6 +14,7 @@ import DepartmentTasksPanel from "../components/departments/DepartmentTasksPanel
 
 function Departments() {
   const { user, profile, loading: authLoading } = useAuth()
+  const [searchParams] = useSearchParams()
 
   const [departments, setDepartments] = useState([])
   const [employees, setEmployees] = useState([])
@@ -23,6 +25,11 @@ function Departments() {
   // Master-Detail State
   const [activeDeptId, setActiveDeptId] = useState(null)
   const [activeTab, setActiveTab] = useState("overview")
+
+  useEffect(() => {
+    const id = searchParams.get("id")
+    if (id) setActiveDeptId(id)
+  }, [searchParams])
 
   const fetchDepartments = async () => {
     if (!profile?.company_id) return

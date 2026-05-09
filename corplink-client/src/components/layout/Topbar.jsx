@@ -53,10 +53,10 @@ export default function Topbar({ onMenuClick }) {
           ])
 
           const formattedResults = [
-            ...(empRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: item.email, type: "Employee", icon: User, path: "/employees" })),
-            ...(taskRes.data || []).map(item => ({ id: item.id, title: item.title, subtitle: "Task", type: "Task", icon: CheckSquare, path: "/tasks" })),
-            ...(projRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: "Project", type: "Project", icon: Briefcase, path: "/tasks" })),
-            ...(deptRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: "Department", type: "Department", icon: Building2, path: "/departments" }))
+            ...(empRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: item.email, type: "Employee", icon: User, path: `/employees?id=${item.id}` })),
+            ...(taskRes.data || []).map(item => ({ id: item.id, title: item.title, subtitle: "Task", type: "Task", icon: CheckSquare, path: `/tasks?taskId=${item.id}` })),
+            ...(projRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: "Project", type: "Project", icon: Briefcase, path: `/tasks?projectId=${item.id}` })),
+            ...(deptRes.data || []).map(item => ({ id: item.id, title: item.name, subtitle: "Department", type: "Department", icon: Building2, path: `/departments?id=${item.id}` }))
           ]
 
           setResults(formattedResults)

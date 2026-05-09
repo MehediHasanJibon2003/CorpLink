@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import { logModuleUsage } from "../services/usageService"
@@ -15,6 +16,7 @@ import { createNotification } from "../utils/notificationUtils"
 
 function Tasks() {
   const { user, profile } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
   
   const [activeTab, setActiveTab] = useState("projects") 
   const [activeProject, setActiveProject] = useState(null)
@@ -32,12 +34,35 @@ function Tasks() {
       supabase.from("employees").select("id, name").eq("company_id", profile.company_id).then(res => {
         if (res.data) setEmployees(res.data)
       })
+
+      // Deep Linking Logic
+      const projectId = searchParams.get("projectId")
+      const taskId = searchParams.get("taskId")
+
+      if (projectId) {
+        supabase.from("projects").select("*").eq("id", projectId).single().then(res => {
+          if (res.data) {
+            setActiveProject(res.data)
+            setActiveTab("kanban")
+          }
+        })
+      }
+
+      if (taskId) {
+        supabase.from("tasks").select("*").eq("id", taskId).single().then(res => {
+          if (res.data) {
+            setActiveTask(res.data)
+            setActiveTab("kanban")
+          }
+        })
+      }
     }
-  }, [profile, user.id])
+  }, [profile, user.id, searchParams])
 
   const handleSelectProject = (project) => {
     setActiveProject(project)
     setActiveTab("kanban")
+    setSearchParams({ projectId: project.id })
   }
 
   const handleCreateTask = async (e) => {
