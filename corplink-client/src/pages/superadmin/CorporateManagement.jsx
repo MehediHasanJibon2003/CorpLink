@@ -12,6 +12,7 @@ export default function CorporateManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [rejectionReason, setRejectionReason] = useState("")
   const [actionLoading, setActionLoading] = useState(null)
+  const [activeMenu, setActiveMenu] = useState(null)
 
   const fetchCompanies = async () => {
     setLoading(true)
@@ -148,9 +149,57 @@ export default function CorporateManagement() {
                           </button>
                         </>
                       )}
-                      <button className="p-2 md:p-3 rounded-xl bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 text-slate-400 hover:text-violet-500 transition-all">
-                        <MoreHorizontal className="h-5 w-5" />
-                      </button>
+                      <div className="relative">
+                        <button 
+                          onClick={() => setActiveMenu(activeMenu === co.id ? null : co.id)}
+                          className={`p-2 md:p-3 rounded-xl border-2 transition-all ${
+                            activeMenu === co.id 
+                              ? "bg-violet-600 border-violet-600 text-white" 
+                              : "bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 text-slate-400 hover:text-violet-500"
+                          }`}
+                        >
+                          <MoreHorizontal className="h-5 w-5" />
+                        </button>
+
+                        {activeMenu === co.id && (
+                          <>
+                            <div className="fixed inset-0 z-10" onClick={() => setActiveMenu(null)}></div>
+                            <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-[#1a0b3b] border-2 border-slate-100 dark:border-white/10 rounded-2xl shadow-2xl z-20 py-3 animate-in fade-in slide-in-from-top-5 duration-200">
+                              <button 
+                                onClick={() => { handleUpdateStatus(co.id, co.status === 'blocked' ? 'active' : 'blocked'); setActiveMenu(null); }}
+                                className="w-full px-6 py-3 text-left hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                              >
+                                {co.status === 'blocked' ? (
+                                  <>
+                                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Activate Account</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <AlertCircle className="h-4 w-4 text-amber-500" />
+                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Block Access</span>
+                                  </>
+                                )}
+                              </button>
+                              
+                              <div className="h-px bg-slate-100 dark:bg-white/5 my-2" />
+                              
+                              <button 
+                                onClick={() => { 
+                                  if(window.confirm(`Are you sure you want to PERMANENTLY delete ${co.name}?`)) {
+                                    handleUpdateStatus(co.id, 'deleted');
+                                  }
+                                  setActiveMenu(null);
+                                }}
+                                className="w-full px-6 py-3 text-left hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                              >
+                                <XCircle className="h-4 w-4 text-red-500" />
+                                <span className="text-sm font-bold text-red-600">Terminate Record</span>
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </td>
                 </tr>
