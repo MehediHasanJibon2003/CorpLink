@@ -85,17 +85,24 @@ function Messages({ isEmployeeView = false }) {
       const seenEmails = new Set();
       const myEmail = user.email?.toLowerCase();
 
+      const ADMIN_ROLES = ["admin", "corporate_admin", "hr", "super_admin"];
+
       profs?.forEach((p) => {
         const pEmail = p.email?.toLowerCase();
         if (pEmail === myEmail) return;
-        seenEmails.add(pEmail);
-        allContacts.push({
-          id: p.id,
-          full_name: p.full_name,
-          email: pEmail,
-          role: p.role,
-          type: "admin",
-        });
+        
+        // Only add as 'admin' contact if they have an admin role
+        // This prevents deleted employees (who still have a profile) from showing up
+        if (ADMIN_ROLES.includes(p.role?.toLowerCase())) {
+          seenEmails.add(pEmail);
+          allContacts.push({
+            id: p.id,
+            full_name: p.full_name,
+            email: pEmail,
+            role: p.role,
+            type: "admin",
+          });
+        }
       });
 
       emps?.forEach((e) => {

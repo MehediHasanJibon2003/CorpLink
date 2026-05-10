@@ -278,7 +278,12 @@ function Employees() {
                           </div>
                           <div>
                              <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <h4 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{emp.name}</h4>
+                                <h4 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                                  {emp.name}
+                                  {emp.onboarded && (
+                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] animate-pulse" title="Registered & Active" />
+                                  )}
+                                </h4>
                                 <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
                                   emp.role === 'manager' ? 'bg-purple-100 text-purple-600' : 
                                   emp.role === 'dept_head' ? 'bg-amber-100 text-amber-600' :
