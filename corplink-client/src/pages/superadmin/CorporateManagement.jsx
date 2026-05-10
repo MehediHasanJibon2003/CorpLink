@@ -31,17 +31,28 @@ export default function CorporateManagement() {
 
   const handleUpdateStatus = async (id, status, reason = "") => {
     setActionLoading(id)
-    const updateData = { status }
-    if (reason) updateData.rejection_reason = reason
+    
+    try {
+      if (status === 'deleted') {
+        const { error } = await supabase.from("companies").delete().eq("id", id)
+        if (error) throw error
+      } else {
+        const updateData = { status }
+        if (reason) updateData.rejection_reason = reason
+        const { error } = await supabase.from("companies").update(updateData).eq("id", id)
+        if (error) throw error
+      }
 
-    const { error } = await supabase.from("companies").update(updateData).eq("id", id)
-    if (!error) {
       await fetchCompanies()
       setIsModalOpen(false)
       setSelectedCo(null)
       setRejectionReason("")
+    } catch (err) {
+      console.error("Operation failed:", err)
+      alert("Action failed: " + err.message)
+    } finally {
+      setActionLoading(null)
     }
-    setActionLoading(null)
   }
 
   const filteredCompanies = companies.filter(co => {
