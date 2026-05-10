@@ -85,7 +85,7 @@ function Login() {
         if ((signInError.message || "").toLowerCase().includes("blocked")) {
           setError("This account is blocked due to security reasons.");
         } else {
-          setError("Invalid email or password");
+          setError("Invalid email or password: " + signInError.message);
         }
         setLoading(false);
         return;
@@ -121,7 +121,8 @@ function Login() {
         navigate("/employee/dashboard");
       }
     } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
+      console.error("Critical Login Error:", err);
+      setError("An unexpected error occurred: " + err.message);
     } finally {
       setLoading(false);
     }
