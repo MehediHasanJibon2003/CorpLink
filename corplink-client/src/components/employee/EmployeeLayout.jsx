@@ -25,29 +25,39 @@ const EMPLOYEE_NAV = [
   {
     group: "Workspace",
     items: [
-      { name: "Dashboard", path: "/employee/dashboard", icon: LayoutDashboard, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
-      { name: "Performance", path: "/employee/performance", icon: TrendingUp, roles: ["employee", "team_leader", "manager", "department_head"] },
-      { name: "My Tasks", path: "/employee/tasks", icon: CheckSquare, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
-      { name: "My Projects", path: "/employee/projects", icon: FolderKanban, roles: ["employee", "team_leader", "manager", "department_head"] },
+      // Both employee and restricted (intern) can see dashboard
+      { name: "Dashboard",    path: "/employee/dashboard",    icon: LayoutDashboard, roles: ["employee", "restricted"] },
+      // Performance: only regular employees
+      { name: "Performance",  path: "/employee/performance",  icon: TrendingUp,      roles: ["employee"] },
+      // Tasks: both can see (intern sees only assigned tasks)
+      { name: "My Tasks",     path: "/employee/tasks",        icon: CheckSquare,     roles: ["employee", "restricted"] },
+      // Projects: only regular employees
+      { name: "My Projects",  path: "/employee/projects",     icon: FolderKanban,    roles: ["employee"] },
     ],
   },
   {
     group: "Company",
     items: [
-      { name: "My Department", path: "/employee/department", icon: Building, roles: ["team_leader", "manager", "department_head"] },
-      { name: "Messages", path: "/employee/messages", icon: MessageCircle, roles: ["employee", "team_leader", "manager", "department_head"] },
-      { name: "Corporate Feed", path: "/employee/feed", icon: Radio, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
-      { name: "Notifications", path: "/employee/notifications", icon: Bell, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
-      { name: "Collaboration", path: "/employee/collaboration", icon: Users2, roles: ["manager", "department_head"] },
+      // Department info: only regular employees
+      { name: "My Department",  path: "/employee/department",    icon: Building,       roles: ["employee"] },
+      // Messages: only regular employees
+      { name: "Messages",       path: "/employee/messages",      icon: MessageCircle,  roles: ["employee"] },
+      // Feed: both (read-only for interns is enforced inside component)
+      { name: "Corporate Feed", path: "/employee/feed",          icon: Radio,          roles: ["employee", "restricted"] },
+      // Notifications: both
+      { name: "Notifications",  path: "/employee/notifications", icon: Bell,           roles: ["employee", "restricted"] },
+      // Collaboration: only regular employees
+      { name: "Collaboration",  path: "/employee/collaboration", icon: Users2,         roles: ["employee"] },
     ],
   },
   {
     group: "Account",
     items: [
-      { name: "My Profile", path: "/employee/profile", icon: UserCircle, roles: ["intern", "trainee", "employee", "team_leader", "manager", "department_head"] },
+      { name: "My Profile", path: "/employee/profile", icon: UserCircle, roles: ["employee", "restricted"] },
     ],
   },
 ];
+
 
 function EmployeeLayout({ children }) {
   const { profile, logout } = useAuth();

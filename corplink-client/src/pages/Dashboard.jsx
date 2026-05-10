@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Navigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
@@ -11,6 +11,7 @@ import { Users, Building2, FolderKanban, ListTodo, Clock, AlertCircle, CheckCirc
 
 function Dashboard() {
   const { profile } = useAuth()
+  const navigate = useNavigate()
 
   const [stats, setStats] = useState({
     employees: 0,
@@ -27,13 +28,17 @@ function Dashboard() {
   const [activities, setActivities] = useState([])
 
   const fetchDashboardData = async () => {
-    const { data: employees } = await supabase.from("employees").select("*")
-    const { data: departments } = await supabase.from("departments").select("*")
-    const { data: projects } = await supabase.from("projects").select("*")
-    const { data: tasks } = await supabase.from("tasks").select("*")
+    if (!profile?.company_id) return
+    const cid = profile.company_id
+
+    const { data: employees } = await supabase.from("employees").select("*").eq("company_id", cid)
+    const { data: departments } = await supabase.from("departments").select("*").eq("company_id", cid)
+    const { data: projects } = await supabase.from("projects").select("*").eq("company_id", cid)
+    const { data: tasks } = await supabase.from("tasks").select("*").eq("company_id", cid)
     const { data: logs } = await supabase
       .from("activity_logs")
       .select("*")
+      .eq("company_id", cid)
       .order("created_at", { ascending: false })
       .limit(6)
 
@@ -59,13 +64,13 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    fetchDashboardData()
-  }, [])
+    if (profile?.company_id) fetchDashboardData()
+  }, [profile?.company_id])
 
-  // Non-admin roles are redirected to the dedicated Employee Module
-  const isAdminView = ["admin", "corporate_admin", "manager", "hr"].includes(profile?.role);
+  // Only plain employees & restricted/interns go to the Employee Module
+  const CORPORATE_ROLES = ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead", "super_admin"]
   
-  if (profile && !isAdminView) {
+  if (profile && !CORPORATE_ROLES.includes(profile.role)) {
     return <Navigate to="/employee/dashboard" replace />
   }
 

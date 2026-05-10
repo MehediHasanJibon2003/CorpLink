@@ -94,7 +94,7 @@ export default function Topbar({ onMenuClick }) {
           placeholder="Search employees, tasks, projects..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => searchTerm.length > 1 && setShowResults(true)}
+          onFocus={() => searchTerm.length > 0 && setShowResults(true)}
           className="w-full bg-slate-50 dark:bg-violet-500/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl md:rounded-3xl pl-16 pr-12 py-4 outline-none focus:border-violet-500/50 transition-all font-bold text-slate-700 dark:text-violet-200" 
         />
         {searchTerm && (

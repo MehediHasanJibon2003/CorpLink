@@ -23,40 +23,19 @@ const menuGroups = [
         name: "My Dashboard",
         path: "/dashboard",
         icon: LayoutDashboard,
-        roles: [
-          "admin",
-          "manager",
-          "team_lead",
-          "hr",
-          "employee",
-          "corporate_admin",
-        ],
+        roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
       },
       {
         name: "Tasks & Projects",
         path: "/tasks",
         icon: CheckSquare,
-        roles: [
-          "admin",
-          "manager",
-          "team_lead",
-          "hr",
-          "employee",
-          "corporate_admin",
-        ],
+        roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
       },
       {
         name: "Messages",
         path: "/messages",
         icon: MessageCircle,
-        roles: [
-          "admin",
-          "manager",
-          "team_lead",
-          "hr",
-          "employee",
-          "corporate_admin",
-        ],
+        roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
       },
     ],
   },
@@ -64,22 +43,24 @@ const menuGroups = [
     title: "Organization",
     items: [
       {
+        // Managers & HR can view/manage employees; dept_head and team_lead cannot manage company-wide
         name: "Employees",
         path: "/employees",
         icon: Users,
-        roles: ["admin", "manager", "hr", "corporate_admin"],
+        roles: ["admin", "corporate_admin", "manager", "hr"],
       },
       {
         name: "Teams",
         path: "/teams",
         icon: Shield,
-        roles: ["admin", "manager", "team_lead", "hr", "corporate_admin"],
+        roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
       },
       {
+        // dept_head can manage their own department; team_lead cannot
         name: "Departments",
         path: "/departments",
         icon: Building2,
-        roles: ["admin", "hr", "corporate_admin"],
+        roles: ["admin", "corporate_admin", "hr", "dept_head"],
       },
     ],
   },
@@ -90,27 +71,13 @@ const menuGroups = [
         name: "News Feed",
         path: "/feed",
         icon: Radio,
-        roles: [
-          "admin",
-          "manager",
-          "team_lead",
-          "hr",
-          "employee",
-          "corporate_admin",
-        ],
+        roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
       },
       {
         name: "Collaboration",
         path: "/collaboration",
         icon: Network,
-        roles: [
-          "admin",
-          "manager",
-          "team_lead",
-          "hr",
-          "employee",
-          "corporate_admin",
-        ],
+        roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
       },
     ],
   },
@@ -118,18 +85,21 @@ const menuGroups = [
     title: "System",
     items: [
       {
+        // Analytics: only top-level admins
         name: "Analytics",
         path: "/analytics",
         icon: BarChart3,
         roles: ["admin", "corporate_admin"],
       },
       {
+        // System Logs: admins and HR (for compliance)
         name: "System Logs",
         path: "/activity",
         icon: Activity,
-        roles: ["admin", "hr", "corporate_admin"],
+        roles: ["admin", "corporate_admin", "hr"],
       },
       {
+        // Settings: only admins
         name: "Settings",
         path: "/settings",
         icon: SettingsIcon,
@@ -139,18 +109,12 @@ const menuGroups = [
         name: "My Profile",
         path: "/profile",
         icon: User,
-        roles: [
-          "admin",
-          "manager",
-          "team_lead",
-          "hr",
-          "employee",
-          "corporate_admin",
-        ],
+        roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
       },
     ],
   },
 ];
+
 
 function Sidebar({ isOpen, setIsOpen }) {
   const { profile } = useAuth();

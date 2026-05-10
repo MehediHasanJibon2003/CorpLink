@@ -63,12 +63,16 @@ export default function SuperAdminDashboard() {
       setPendingList(pendingData || [])
       setTopCompanies(companiesWithCounts.sort((a, b) => b.employees - a.employees).slice(0, 4))
       
+      const prices = { Basic: 49, Standard: 99, Enterprise: 299 }
+      const totalMRR = activeComps.reduce((acc, curr) => acc + (prices[curr.plan] || 0), 0)
+
       setStats({
         totalUsers: users.count || 0,
         totalCompanies: companies.count || 0,
         activeSubscriptions: activeComps.length, 
         pendingApprovals: pending.count || 0,
-        activeThreats: threats.count || 0
+        activeThreats: threats.count || 0,
+        totalMRR: totalMRR
       })
     } catch (err) {
       console.error(err)
@@ -301,7 +305,7 @@ export default function SuperAdminDashboard() {
                 <p className="text-[9px] md:text-[10px] font-black uppercase text-slate-400">Active</p>
              </div>
              <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-emerald-500/5 text-center">
-                <p className="text-sm md:text-lg font-black text-emerald-500">${(stats.activeSubscriptions * 99).toLocaleString()}</p>
+                <p className="text-sm md:text-lg font-black text-emerald-500">${(stats.totalMRR || 0).toLocaleString()}</p>
                 <p className="text-[9px] md:text-[10px] font-black uppercase text-slate-400">MRR</p>
              </div>
           </div>

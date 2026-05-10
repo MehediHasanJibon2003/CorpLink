@@ -60,9 +60,17 @@ function ProtectedRoute({ children }) {
     }
   }
 
-  // Prevent employees from accessing admin routes
-  const ADMIN_ROLES = ["super_admin", "admin", "corporate_admin", "hr"];
-  if (!ADMIN_ROLES.includes(profile.role)) {
+  // Prevent plain employees / restricted (interns) from accessing corporate routes
+  const CORPORATE_ROLES = [
+    "super_admin",
+    "admin",
+    "corporate_admin",
+    "hr",
+    "manager",
+    "dept_head",
+    "team_lead",
+  ];
+  if (!CORPORATE_ROLES.includes(profile.role)) {
     return <Navigate to="/employee/dashboard" replace />
   }
 

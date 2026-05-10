@@ -35,16 +35,18 @@ function EmployeeDashboard() {
   const role = profile?.role?.toLowerCase();
 
   const rolePermissions = {
-    "/employee/dashboard": ["intern", "trainee", "employee", "team_leader", "manager", "department_head"],
-    "/employee/performance": ["employee", "team_leader", "manager", "department_head"],
-    "/employee/tasks": ["intern", "trainee", "employee", "team_leader", "manager", "department_head"],
-    "/employee/projects": ["employee", "team_leader", "manager", "department_head"],
-    "/employee/feed": ["intern", "trainee", "employee", "team_leader", "manager", "department_head"],
-    "/employee/notifications": ["intern", "trainee", "employee", "team_leader", "manager", "department_head"],
-    "/employee/collaboration": ["manager", "department_head"],
-    "/employee/profile": ["intern", "trainee", "employee", "team_leader", "manager", "department_head"],
-    "/employee/department": ["team_leader", "manager", "department_head"],
-    "/employee/messages": ["employee", "team_leader", "manager", "department_head"],
+    // restricted = intern/trainee — limited read-only access
+    "/employee/dashboard":    ["employee", "restricted"],
+    "/employee/tasks":        ["employee", "restricted"],  // sees only assigned tasks
+    "/employee/feed":         ["employee", "restricted"],  // read-only feed
+    "/employee/notifications":["employee", "restricted"],
+    "/employee/profile":      ["employee", "restricted"],
+    // Regular employee only below
+    "/employee/performance":  ["employee"],
+    "/employee/projects":     ["employee"],
+    "/employee/messages":     ["employee"],
+    "/employee/department":   ["employee"],
+    "/employee/collaboration":["employee"],
   };
 
   // Determine which sub-component to render based on URL path

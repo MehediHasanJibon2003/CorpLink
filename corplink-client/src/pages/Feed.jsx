@@ -199,7 +199,11 @@ function Feed() {
   const [message, setMessage] = useState("")
 
   const fetchPosts = async () => {
-    const { data: announcementsData } = await supabase.from("announcements").select("*, companies(name)").order("created_at", { ascending: false })
+    let query = supabase.from("announcements").select("*, companies(name)").order("created_at", { ascending: false })
+    if (profile?.role !== "super_admin" && profile?.company_id) {
+      query = query.or(`visibility.eq.public,and(visibility.eq.internal,company_id.eq.${profile.company_id})`)
+    }
+    const { data: announcementsData } = await query
     const { data: likesData } = await supabase.from("announcement_likes").select("*")
     const { data: commentsData } = await supabase.from("announcement_comments").select("*").order("created_at", { ascending: true })
 
@@ -243,7 +247,9 @@ function Feed() {
     setLoading(true)
     try {
       let mediaUrl = imagePreview
-      let mediaType = selectedImage?.type?.startsWith("video") ? "video" : "image"
+      let mediaType = selectedImage 
+        ? (selectedImage.type?.startsWith("video") ? "video" : "image")
+        : (editingId ? posts.find(p => p.id === editingId)?.media_type : "image")
       
       if (selectedImage) {
         mediaUrl = await uploadMedia(selectedImage)

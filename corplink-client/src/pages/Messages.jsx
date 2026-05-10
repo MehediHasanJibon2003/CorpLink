@@ -145,11 +145,13 @@ function Messages({ isEmployeeView = false }) {
     if (error) {
       console.error("Fetch Messages Error:", error)
       // Fallback if profiles join fails
-      const { data: fallbackData } = await supabase
-        .from("internal_messages")
-        .select("*")
-        .eq(chat.type === 'group' ? "group_id" : "receiver_id", chat.id)
-        .order("created_at", { ascending: true })
+      let fallbackQuery = supabase.from("internal_messages").select("*").order("created_at", { ascending: true });
+      if (chat.type === 'group') {
+        fallbackQuery = fallbackQuery.eq("group_id", chat.id);
+      } else {
+        fallbackQuery = fallbackQuery.or(`and(sender_id.eq.${user.id},receiver_id.eq.${chat.id}),and(sender_id.eq.${chat.id},receiver_id.eq.${user.id})`);
+      }
+      const { data: fallbackData } = await fallbackQuery;
       setMessages(fallbackData || [])
     } else {
       setMessages(data || [])

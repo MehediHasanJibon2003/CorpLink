@@ -342,32 +342,32 @@ export default function SubscriptionBilling() {
                     <Bell className="h-10 w-10 text-slate-300 mx-auto mb-4" />
                     <p className="font-black uppercase text-xs text-slate-400 tracking-widest">System Clear: No Urgent Alerts</p>
                  </div>
-               ) : alerts.map(alert => (
-                 <div key={alert.id} className="p-6 md:p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-violet-500/30 transition-all">
+               ) : alerts.map(billingAlert => (
+                 <div key={billingAlert.id} className="p-6 md:p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-violet-500/30 transition-all">
                     <div className="flex items-center gap-6 text-center md:text-left">
                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
-                         alert.priority === 'high' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 
-                         alert.priority === 'medium' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 
+                         billingAlert.priority === 'high' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 
+                         billingAlert.priority === 'medium' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 
                          'bg-violet-500 text-white shadow-lg shadow-violet-500/20'
                        }`}>
-                         {alert.type === 'renewal_warning' ? <Clock className="h-6 w-6" /> : 
-                          alert.type === 'expired' ? <AlertCircle className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
+                         {billingAlert.type === 'renewal_warning' ? <Clock className="h-6 w-6" /> : 
+                          billingAlert.type === 'expired' ? <AlertCircle className="h-6 w-6" /> : <Zap className="h-6 w-6" />}
                        </div>
                        <div>
-                          <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">{alert.companies?.name}</h4>
-                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{alert.message}</p>
+                          <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">{billingAlert.companies?.name}</h4>
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{billingAlert.message}</p>
                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                        <button 
-                         onClick={() => alert("Reminder sent to " + alert.companies?.name)}
+                         onClick={() => window.alert("Reminder sent to " + billingAlert.companies?.name)}
                          className="px-6 py-3 rounded-xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest flex items-center gap-2 hover:scale-105 transition-all"
                        >
                          <Send className="h-4 w-4" /> Send Reminder
                        </button>
                        <button 
                          onClick={async () => {
-                           await supabase.from("billing_alerts").delete().eq("id", alert.id);
+                           await supabase.from("billing_alerts").delete().eq("id", billingAlert.id);
                            fetchData();
                          }}
                          className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-red-500 transition-all"

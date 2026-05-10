@@ -15,8 +15,16 @@ function EmployeeRoute({ children }) {
   const [companyStatus, setCompanyStatus] = useState(null)
   const [checkingStatus, setCheckingStatus] = useState(true)
 
-  // Admin roles that should NOT access employee routes
-  const ADMIN_ROLES = ["super_admin", "admin", "corporate_admin", "hr"]
+  // Corporate-level roles that should NOT access employee routes
+  const ADMIN_ROLES = [
+    "super_admin",
+    "admin",
+    "corporate_admin",
+    "hr",
+    "manager",
+    "dept_head",
+    "team_lead",
+  ]
 
   useEffect(() => {
     async function checkStatus() {
