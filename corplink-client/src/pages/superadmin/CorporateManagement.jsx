@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
+import { useConfirm } from "../../context/ConfirmContext"
 import { Building2, Search, Filter, MoreHorizontal, CheckCircle2, XCircle, AlertCircle, Mail, Globe, Users, CreditCard, ChevronRight } from "lucide-react"
 
 export default function CorporateManagement() {
@@ -13,6 +14,7 @@ export default function CorporateManagement() {
   const [rejectionReason, setRejectionReason] = useState("")
   const [actionLoading, setActionLoading] = useState(null)
   const [activeMenu, setActiveMenu] = useState(null)
+  const { showConfirm } = useConfirm()
 
   const fetchCompanies = async () => {
     setLoading(true)
@@ -186,9 +188,11 @@ export default function CorporateManagement() {
                               
                               <button 
                                 onClick={() => { 
-                                  if(window.confirm(`Are you sure you want to PERMANENTLY delete ${co.name}?`)) {
-                                    handleUpdateStatus(co.id, 'deleted');
-                                  }
+                                  showConfirm({
+                                    title: "Terminate Corporate Record",
+                                    message: `Are you sure you want to PERMANENTLY delete ${co.name}? This action is irreversible and will wipe all associated data.`,
+                                    onConfirm: () => handleUpdateStatus(co.id, 'deleted')
+                                  });
                                   setActiveMenu(null);
                                 }}
                                 className="w-full px-6 py-3 text-left hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
