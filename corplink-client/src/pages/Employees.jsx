@@ -5,9 +5,11 @@ import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
 import RoleGate from "../components/roles/RoleGate"
 import { Users, Search, Filter, Plus, Mail, Building, Briefcase, Calendar, TrendingUp, CheckCircle2, Clock, Trash2, Edit3, ClipboardList } from "lucide-react"
+import { useConfirm } from "../context/ConfirmContext"
 
 function Employees() {
   const { user, profile } = useAuth()
+  const { showConfirm } = useConfirm()
   const [searchParams] = useSearchParams()
 
   const [employees, setEmployees] = useState([])
@@ -147,17 +149,22 @@ function Employees() {
     } catch (err) { setError(err.message) } finally { setLoading(false) }
   }
 
-  const handleDelete = async (emp) => {
-    if (!window.confirm(`Delete ${emp.name}? This will remove their profile record.`)) return
-    const { error } = await supabase.from("employees").delete().eq("id", emp.id)
-    if (!error) {
-      await supabase.from("activity_logs").insert([{
-        company_id: profile.company_id, user_id: user.id,
-        action: `Deleted Employee Record: ${emp.name}`, entity: "employee", severity: "warning"
-      }])
-      setMessage("Employee deleted")
-      fetchEmployees()
-    }
+  const handleDelete = (emp) => {
+    showConfirm({
+      title: "Delete Employee",
+      message: `Are you sure you want to delete ${emp.name}? This will remove their profile record.`,
+      onConfirm: async () => {
+        const { error } = await supabase.from("employees").delete().eq("id", emp.id)
+        if (!error) {
+          await supabase.from("activity_logs").insert([{
+            company_id: profile.company_id, user_id: user.id,
+            action: `Deleted Employee Record: ${emp.name}`, entity: "employee", severity: "warning"
+          }])
+          setMessage("Employee deleted")
+          fetchEmployees()
+        }
+      }
+    })
   }
 
   const filteredEmployees = employees.filter(emp => {

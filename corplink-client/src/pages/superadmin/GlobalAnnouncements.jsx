@@ -3,9 +3,11 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
 import { Megaphone, PlusCircle, X, Edit2, Trash2, Eye, EyeOff, Sparkles, CheckCircle } from "lucide-react"
+import { useConfirm } from "../../context/ConfirmContext"
 
 export default function GlobalAnnouncements() {
   const { user } = useAuth()
+  const { showConfirm } = useConfirm()
   const [announcements, setAnnouncements] = useState([])
   const [loading, setLoading]  = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -38,10 +40,15 @@ export default function GlobalAnnouncements() {
     setShowForm(false)
   }
 
-  const deleteAnn = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this announcement? This action cannot be undone.")) return
-    await supabase.from("global_announcements").delete().eq("id", id)
-    await fetch()
+  const deleteAnn = (id) => {
+    showConfirm({
+      title: "Delete Announcement",
+      message: "Are you sure you want to delete this announcement? This action cannot be undone.",
+      onConfirm: async () => {
+        await supabase.from("global_announcements").delete().eq("id", id)
+        await fetch()
+      }
+    })
   }
 
   const toggleActive = async (id, val) => {

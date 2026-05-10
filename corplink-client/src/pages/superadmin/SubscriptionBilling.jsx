@@ -12,8 +12,10 @@ import SubscriptionControlModal from "../../components/superadmin/SubscriptionCo
 import PaymentActionModal from "../../components/superadmin/PaymentActionModal"
 import InvoiceDetailsModal from "../../components/superadmin/InvoiceDetailsModal"
 import GatewayConfigModal from "../../components/superadmin/GatewayConfigModal"
+import { useConfirm } from "../../context/ConfirmContext"
 
 export default function SubscriptionBilling() {
+  const { showConfirm } = useConfirm()
   const [activeTab, setActiveTab] = useState("subscriptions")
   const [subs, setSubs] = useState([])
   const [plans, setPlans] = useState([])
@@ -83,11 +85,16 @@ export default function SubscriptionBilling() {
     setLoading(false)
   }
 
-  const handleDeletePlan = async (id) => {
-    if (!confirm("Are you sure you want to delete this plan? This may affect existing subscriptions.")) return
-    const { error } = await supabase.from("subscription_plans").delete().eq("id", id)
-    if (error) alert(error.message)
-    else fetchData()
+  const handleDeletePlan = (id) => {
+    showConfirm({
+      title: "Delete Plan",
+      message: "Are you sure you want to delete this plan? This may affect existing subscriptions.",
+      onConfirm: async () => {
+        const { error } = await supabase.from("subscription_plans").delete().eq("id", id)
+        if (error) alert(error.message)
+        else fetchData()
+      }
+    })
   }
 
   const openPlanModal = (plan = null) => {

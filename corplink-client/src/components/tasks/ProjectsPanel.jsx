@@ -2,8 +2,10 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { logAdminActivity } from "../../utils/logger"
 import { FolderKanban, Plus, Trash2, Building, Layout, ChevronRight, Activity, CheckCircle2, Edit3, X } from "lucide-react"
+import { useConfirm } from "../../context/ConfirmContext"
 
 function ProjectsPanel({ profile, user, onSelectProject }) {
+  const { showConfirm } = useConfirm()
   const [projects, setProjects] = useState([])
   const [departments, setDepartments] = useState([])
   const [projectStats, setProjectStats] = useState({})
@@ -124,13 +126,18 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
     }
   }
 
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Permanently delete project "${name}"?`)) return
-    await supabase.from("projects").delete().eq("id", id)
-    fetchProjectsData()
-    await logAdminActivity({
-      company_id: profile.company_id, user_id: user.id,
-      action: `Deleted Project: ${name}`, entity: "project", severity: "warning"
+  const handleDelete = (id, name) => {
+    showConfirm({
+      title: "Delete Project",
+      message: `Are you sure you want to permanently delete project "${name}"?`,
+      onConfirm: async () => {
+        await supabase.from("projects").delete().eq("id", id)
+        fetchProjectsData()
+        await logAdminActivity({
+          company_id: profile.company_id, user_id: user.id,
+          action: `Deleted Project: ${name}`, entity: "project", severity: "warning"
+        })
+      }
     })
   }
 

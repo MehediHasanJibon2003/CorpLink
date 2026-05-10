@@ -6,6 +6,7 @@ import AppLayout from "../components/layout/AppLayout"
 import { logAdminActivity } from "../utils/logger"
 import { Building2, Users, ClipboardList, MessageSquare, Plus, Trash2, ShieldCheck, TrendingUp, ChevronRight } from "lucide-react"
 import RoleGate from "../components/roles/RoleGate"
+import { useConfirm } from "../context/ConfirmContext"
 
 import TeamsPanel from "../components/departments/TeamsPanel"
 import MembersPanel from "../components/departments/MembersPanel"
@@ -14,6 +15,7 @@ import DepartmentTasksPanel from "../components/departments/DepartmentTasksPanel
 
 function Departments() {
   const { user, profile, loading: authLoading } = useAuth()
+  const { showConfirm } = useConfirm()
   const [searchParams] = useSearchParams()
 
   const [departments, setDepartments] = useState([])
@@ -105,17 +107,22 @@ function Departments() {
     }
   }
 
-  const handleDeleteDepartment = async (id, name) => {
-    if (!window.confirm(`Delete the ${name} department? This will affect team structure.`)) return
-    const { error } = await supabase.from("departments").delete().eq("id", id)
-    if (!error) {
-       await logAdminActivity({
-        company_id: profile.company_id, user_id: user.id,
-        action: `Deleted Department: ${name}`, entity: "department", severity: "critical"
-      })
-      if (activeDeptId === id) setActiveDeptId(null)
-      fetchDepartments()
-    }
+  const handleDeleteDepartment = (id, name) => {
+    showConfirm({
+      title: "Delete Department",
+      message: `Are you sure you want to delete the ${name} department? This will affect team structure.`,
+      onConfirm: async () => {
+        const { error } = await supabase.from("departments").delete().eq("id", id)
+        if (!error) {
+           await logAdminActivity({
+            company_id: profile.company_id, user_id: user.id,
+            action: `Deleted Department: ${name}`, entity: "department", severity: "critical"
+          })
+          if (activeDeptId === id) setActiveDeptId(null)
+          fetchDepartments()
+        }
+      }
+    })
   }
 
   const handleAssignHead = async (deptId, empId) => {

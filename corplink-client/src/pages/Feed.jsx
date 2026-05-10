@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
 import { logAdminActivity } from "../utils/logger"
 import { Eye, Heart, MessageSquare, Share2, Globe, Lock, Megaphone, Calendar, Tag, MoreVertical, Trash2, Edit3, Send } from "lucide-react"
+import { useConfirm } from "../context/ConfirmContext"
 
 const POST_TYPES = [
   { value: "announcement", label: "Announcement", color: "bg-blue-50 text-blue-700 border-blue-200", icon: <Megaphone className="h-4 w-4" /> },
@@ -184,6 +185,7 @@ const PostCard = memo(({ post, user, profile, onLike, onCommentToggle, onShare, 
 
 function Feed() {
   const { user, profile } = useAuth()
+  const { showConfirm } = useConfirm()
   const [posts, setPosts] = useState([])
   const [filter, setFilter] = useState("all")
   
@@ -400,11 +402,15 @@ function Feed() {
                 setImagePreview(p.media_url); 
                 window.scrollTo({ top: 0, behavior: "smooth" }); 
               }}
-              onDelete={async (id) => {
-                if (window.confirm("Delete permanently?")) {
-                  await supabase.from("announcements").delete().eq("id", id)
-                  fetchPosts()
-                }
+              onDelete={(id) => {
+                showConfirm({
+                  title: "Delete Post",
+                  message: "Are you sure you want to permanently delete this post?",
+                  onConfirm: async () => {
+                    await supabase.from("announcements").delete().eq("id", id)
+                    fetchPosts()
+                  }
+                })
               }}
               expandedComments={expandedComments}
               commentInput={commentInputs[post.id]}

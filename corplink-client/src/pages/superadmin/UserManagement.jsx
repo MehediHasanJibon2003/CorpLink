@@ -5,8 +5,10 @@ import {
   Users, Search, Filter, MoreHorizontal, UserX, UserCheck, 
   Mail, Building2, Shield, Trash2, Key, ChevronRight 
 } from "lucide-react"
+import { useConfirm } from "../../context/ConfirmContext"
 
 export default function UserManagement() {
+  const { showConfirm } = useConfirm()
   const [users, setUsers] = useState([])
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
@@ -34,12 +36,17 @@ export default function UserManagement() {
     setActionLoading(null)
   }
 
-  const handleDeleteUser = async (userId, name) => {
-    if (!window.confirm(`Delete ${name}?`)) return
-    setActionLoading(userId)
-    await supabase.from("profiles").delete().eq("id", userId)
-    await fetchData()
-    setActionLoading(null)
+  const handleDeleteUser = (userId, name) => {
+    showConfirm({
+      title: "Delete User",
+      message: `Are you sure you want to delete ${name}? This action cannot be undone.`,
+      onConfirm: async () => {
+        setActionLoading(userId)
+        await supabase.from("profiles").delete().eq("id", userId)
+        await fetchData()
+        setActionLoading(null)
+      }
+    })
   }
 
   const handleResetPassword = async (email) => {

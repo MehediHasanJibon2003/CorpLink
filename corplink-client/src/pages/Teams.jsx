@@ -3,9 +3,11 @@ import { supabase } from "../lib/supabase"
 import { useAuth } from "../context/AuthContext"
 import AppLayout from "../components/layout/AppLayout"
 import RoleGate from "../components/roles/RoleGate"
+import { useConfirm } from "../context/ConfirmContext"
 
 export default function Teams() {
   const { user, profile } = useAuth()
+  const { showConfirm } = useConfirm()
   const [teams, setTeams] = useState([])
   const [departments, setDepartments] = useState([])
   const [employees, setEmployees] = useState([])
@@ -62,10 +64,15 @@ export default function Teams() {
     setLoading(false)
   }
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this team?")) return
-    await supabase.from("teams").delete().eq("id", id)
-    fetchData()
+  const handleDelete = (id, name) => {
+    showConfirm({
+      title: "Delete Team",
+      message: `Are you sure you want to delete the ${name} team?`,
+      onConfirm: async () => {
+        await supabase.from("teams").delete().eq("id", id)
+        fetchData()
+      }
+    })
   }
 
   return (
@@ -132,7 +139,7 @@ export default function Teams() {
                    </div>
                    <RoleGate allowedRoles={["admin", "manager", "hr", "corporate_admin"]}>
                      <button 
-                       onClick={() => handleDelete(team.id)}
+                       onClick={() => handleDelete(team.id, team.name)}
                        className="bg-slate-100 dark:bg-slate-700 hover:bg-red-600 text-slate-700 dark:text-slate-200 hover:text-white px-6 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-base md:text-xl transition-all shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-600 hover:border-red-600 text-center w-full md:w-auto mt-4 md:mt-0"
                      >
                        Delete Team

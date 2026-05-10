@@ -5,8 +5,10 @@ import {
   ShieldAlert, ShieldCheck, UserX, UserCheck, 
   Trash2, RefreshCw, Search, MoreHorizontal 
 } from "lucide-react"
+import { useConfirm } from "../../context/ConfirmContext"
 
 export default function ThreatManagement() {
+  const { showConfirm } = useConfirm()
   const [alerts, setAlerts] = useState([])
   const [blockedUsers, setBlockedUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -41,12 +43,17 @@ export default function ThreatManagement() {
     setSaving(null)
   }
 
-  const deleteAlert = async (id) => {
-    if (!window.confirm("Delete this alert?")) return
-    setSaving(id)
-    await supabase.from("threat_alerts").delete().eq("id", id)
-    await fetchData()
-    setSaving(null)
+  const deleteAlert = (id) => {
+    showConfirm({
+      title: "Delete Alert",
+      message: "Are you sure you want to delete this threat alert?",
+      onConfirm: async () => {
+        setSaving(id)
+        await supabase.from("threat_alerts").delete().eq("id", id)
+        await fetchData()
+        setSaving(null)
+      }
+    })
   }
 
   const filteredAlerts = alerts.filter(a => (a.email || "").toLowerCase().includes(search.toLowerCase()))
