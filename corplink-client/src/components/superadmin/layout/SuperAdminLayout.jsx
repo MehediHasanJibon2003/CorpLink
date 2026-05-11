@@ -6,7 +6,7 @@ export default function SuperAdminLayout({ children, title, subtitle }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="h-screen w-screen flex overflow-hidden relative transition-colors duration-300 bg-white dark:bg-black">
+    <div className="super-admin-root h-screen w-screen flex overflow-hidden relative transition-colors duration-300 bg-white dark:bg-black">
       {/* Ambient glow blobs — decorative background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px]"

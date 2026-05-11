@@ -119,7 +119,8 @@ main {
 /* Scoped fonts for Landing Page */
 .landing-page-root,
 .login-page-root,
-.register-page-root {
+.register-page-root,
+.super-admin-root {
   font-family: var(--font-inter);
 }
 
@@ -140,6 +141,12 @@ main {
 .register-page-root h3,
 .register-page-root h4,
 .register-page-root h5,
-.register-page-root h6 {
+.register-page-root h6,
+.super-admin-root h1,
+.super-admin-root h2,
+.super-admin-root h3,
+.super-admin-root h4,
+.super-admin-root h5,
+.super-admin-root h6 {
   font-family: var(--font-plus-jakarta) !important;
 }
