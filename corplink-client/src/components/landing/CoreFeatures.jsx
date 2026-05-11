@@ -4,96 +4,165 @@ import {
   MessageCircle,
   BarChart3,
   Network,
-  Columns3,
+  ShieldAlert,
+  BellRing,
+  History,
+  Globe,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function CoreFeatures() {
   const features = [
     {
-      name: "Employee Management",
+      name: "Workforce Architecture",
       description:
-        "Maintain comprehensive profiles, track designations, and organize teams efficiently without the spreadsheet chaos.",
+        "Define complex organizational structures with departments, teams, and dynamic reporting lines.",
       icon: Users,
+      color: "bg-orange-500",
     },
     {
-      name: "Task & Project Tracking",
+      name: "Strategic Tasking",
       description:
-        "Assign responsibilities, monitor real-time progress, and never miss a deadline with dynamic Kanban and list views.",
+        "Enterprise-grade Kanban and Gantt tracking with automated priority escalation and resource mapping.",
       icon: CheckSquare,
+      color: "bg-blue-500",
     },
     {
-      name: "Corporate Collaboration",
+      name: "Global Announcements",
       description:
-        "Unite teams around shared goals. Share files securely and brainstorm seamlessly across departments.",
-      icon: Network,
+        "Instantly broadcast mission-critical updates across the entire organization with read-receipt tracking.",
+      icon: BellRing,
+      color: "bg-emerald-500",
     },
     {
-      name: "Smart Messaging System",
+      name: "Secure Communication",
       description:
-        "Instant peer-to-peer and group communication without leaving the workspace. Secure and fast.",
+        "End-to-end encrypted messaging for teams and departments. Instant, secure, and fully archived.",
       icon: MessageCircle,
+      color: "bg-purple-500",
     },
     {
-      name: "Role-Based Access Control",
+      name: "Real-time Auditing",
       description:
-        "Granular permissions ensure employees only see what they need to, protecting sensitive corporate data.",
-      icon: Columns3,
+        "Every action is logged. Complete transparency with system-wide activity logs and security auditing.",
+      icon: History,
+      color: "bg-pink-500",
     },
     {
-      name: "Analytics Dashboard",
+      name: "Predictive Analytics",
       description:
-        "Beautiful visual metrics and automated reports give leadership instant insight into organizational performance.",
+        "Leverage organizational data to predict project delays and employee performance trends.",
       icon: BarChart3,
+      color: "bg-cyan-500",
+    },
+    {
+      name: "Threat Management",
+      description:
+        "Advanced security protocols monitor for unusual activity, protecting your corporate IP 24/7.",
+      icon: ShieldAlert,
+      color: "bg-red-500",
+    },
+    {
+      name: "Inter-Corporate Hub",
+      description:
+        "Seamlessly collaborate with external partners while maintaining total data sovereignty.",
+      icon: Globe,
+      color: "bg-indigo-500",
+    },
+    {
+      name: "Neural Networking",
+      description:
+        "An internal corporate feed that fosters engagement and builds a unified company culture.",
+      icon: Network,
+      color: "bg-amber-500",
     },
   ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 },
+    },
+  };
 
   return (
     <section
       id="features"
-      className="w-full bg-slate-900 relative overflow-hidden text-white"
-      style={{ padding: "6rem clamp(2rem, 6vw, 6vw)" }}
+      className="w-full bg-slate-950 relative overflow-hidden text-white"
+      style={{ padding: "10rem clamp(2rem, 6vw, 6vw)" }}
     >
-      <div className="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent pointer-events-none"></div>
+      <div className="absolute inset-0 bg-linear-to-b from-orange-500/5 via-transparent to-transparent pointer-events-none"></div>
 
       <div className="relative z-10 w-full">
         <div
-          className="text-center mb-24 mx-auto"
+          className="text-center mb-32 mx-auto"
           style={{ maxWidth: "1200px" }}
         >
-          <h2
-            style={{ fontSize: "clamp(3.5rem, 5vw, 5rem)" }}
-            className="font-bold tracking-tight text-white mb-6"
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ fontSize: "clamp(3.5rem, 6vw, 6.5rem)" }}
+            className="font-black tracking-tight text-white mb-10 leading-tight"
           >
-            Everything your company needs
-          </h2>
-          <p
-            style={{ fontSize: "clamp(1.25rem, 2vw, 1.5rem)" }}
-            className="leading-relaxed text-slate-400 max-w-3xl mx-auto"
+            The Operating System <br /> for <span className="text-orange-500">Modern Industry.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            style={{ fontSize: "clamp(1.5rem, 2.5vw, 2rem)" }}
+            className="leading-relaxed text-slate-400 max-w-4xl mx-auto font-medium"
           >
-            CorpLink combines the structural rigidity of an ERP with the fluid
-            user experience of modern collaborative SaaS.
-          </p>
+            Built on a multi-tenant cloud architecture, CorpLink provides the security 
+            and scale required by global enterprises.
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 w-full">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 w-full"
+        >
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <div key={feature.name} className="relative pl-24 group">
-                <dt className="text-2xl font-bold leading-8 text-white">
-                  <div className="absolute left-0 top-0 flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500 group-hover:bg-orange-400 transition-colors">
-                    <Icon className="h-8 w-8 text-white" aria-hidden="true" />
+              <motion.div 
+                key={feature.name} 
+                variants={itemVariants}
+                whileHover={{ y: -10 }}
+                className="relative pl-28 group"
+              >
+                <dt className="text-3xl font-black leading-tight text-white mb-4">
+                  <div className={`absolute left-0 top-0 flex h-20 w-20 items-center justify-center rounded-[1.5rem] ${feature.color} shadow-2xl shadow-${feature.color.split('-')[1]}-500/30 group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className="h-10 w-10 text-white" aria-hidden="true" />
                   </div>
                   {feature.name}
                 </dt>
-                <dd className="mt-4 text-xl leading-relaxed text-slate-400">
+                <dd className="text-xl leading-relaxed text-slate-400 font-medium">
                   {feature.description}
                 </dd>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
+
