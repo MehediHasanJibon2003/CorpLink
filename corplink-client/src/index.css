@@ -120,7 +120,8 @@ main {
 .landing-page-root,
 .login-page-root,
 .register-page-root,
-.super-admin-root {
+.super-admin-root,
+.corporate-admin-root {
   font-family: var(--font-inter);
 }
 
@@ -147,6 +148,12 @@ main {
 .super-admin-root h3,
 .super-admin-root h4,
 .super-admin-root h5,
-.super-admin-root h6 {
+.super-admin-root h6,
+.corporate-admin-root h1,
+.corporate-admin-root h2,
+.corporate-admin-root h3,
+.corporate-admin-root h4,
+.corporate-admin-root h5,
+.corporate-admin-root h6 {
   font-family: var(--font-plus-jakarta) !important;
 }

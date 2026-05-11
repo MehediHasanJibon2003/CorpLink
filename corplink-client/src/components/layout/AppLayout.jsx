@@ -12,7 +12,7 @@ function AppLayout({ children, title, subtitle }) {
   }, [location.pathname]);
 
   return (
-    <div className="h-screen w-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300 flex overflow-hidden">
+    <div className="corporate-admin-root h-screen w-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300 flex overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
       <div className="flex-1 flex flex-col w-0 h-screen">
