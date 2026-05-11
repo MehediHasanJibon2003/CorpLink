@@ -1,62 +1,77 @@
 import { ShieldCheck, Server, Lock, Layers } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Security() {
   const securityFeatures = [
     {
-      title: "Multi-tenant Architecture",
+      title: "Data Sovereignty",
       icon: Layers,
-      desc: "Total isolation of your corporate data in shared cloud environments.",
+      desc: "Multi-tenant isolation ensures your corporate data remains strictly partitioned and private.",
     },
     {
-      title: "Role-Based Access Control",
+      title: "Granular RBAC",
       icon: ShieldCheck,
-      desc: "Strict granular permissions across admin, manager, HR, and employees.",
+      desc: "Military-grade access controls from Super Admin to general staff with audit logging.",
     },
     {
-      title: "Cloud Infrastructure",
+      title: "Quantum-Ready Infra",
       icon: Server,
-      desc: "Powered by Supabase and scalable cloud databases for 99.9% uptime.",
+      desc: "Distributed cloud infrastructure with 99.99% uptime and instant failover protection.",
     },
     {
-      title: "Secure Authentication",
+      title: "Encrypted Auth",
       icon: Lock,
-      desc: "Enterprise-grade credential handling and session management.",
+      desc: "Sophisticated session management and end-to-end encryption for all sensitive operations.",
     },
   ];
 
   return (
     <section
-      className="w-full bg-white overflow-hidden"
-      style={{ padding: "6rem clamp(2rem, 6vw, 6vw)" }}
+      className="w-full bg-slate-950 overflow-hidden relative"
+      id="security"
+      style={{ padding: "10rem clamp(2rem, 6vw, 6vw)" }}
     >
-      <div className="w-full">
+      <div className="absolute inset-0 bg-linear-to-t from-orange-500/5 to-transparent pointer-events-none"></div>
+      
+      <div className="w-full relative z-10">
         <div
-          className="text-center mb-24 mx-auto"
+          className="text-center mb-32 mx-auto"
           style={{ maxWidth: "1200px" }}
         >
-          <h2
-            style={{ fontSize: "clamp(3.5rem, 5vw, 5rem)" }}
-            className="font-bold tracking-tight text-slate-900"
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ fontSize: "clamp(3.5rem, 6vw, 6.5rem)" }}
+            className="font-black tracking-tight text-white leading-tight"
           >
-            Bank-grade security. <br /> Built for enterprise scale.
-          </h2>
+            Bank-grade Security. <br /> <span className="text-orange-500">Zero Compromise.</span>
+          </motion.h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 w-full">
-          {securityFeatures.map((feat) => {
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 w-full">
+          {securityFeatures.map((feat, idx) => {
             const Icon = feat.icon;
             return (
-              <div
+              <motion.div
                 key={feat.title}
-                className="bg-slate-50 p-10 rounded-3xl border-2 border-slate-100 flex flex-col items-center text-center hover:shadow-xl transition-shadow"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                whileHover={{ y: -10 }}
+                className="bg-white/5 p-12 rounded-[2.5rem] border border-white/10 flex flex-col items-center text-center backdrop-blur-xl hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300"
               >
-                <Icon className="h-14 w-14 text-orange-500 mb-6" />
-                <h3 className="font-bold text-slate-900 mb-4 text-2xl">
+                <div className="p-5 bg-orange-500/20 rounded-3xl mb-8">
+                  <Icon className="h-14 w-14 text-orange-500" />
+                </div>
+                <h3 className="font-black text-white mb-6 text-3xl tracking-tight">
                   {feat.title}
                 </h3>
-                <p className="text-lg text-slate-600 leading-relaxed">
+                <p className="text-xl text-slate-400 leading-relaxed font-medium">
                   {feat.desc}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -64,3 +79,4 @@ export default function Security() {
     </section>
   );
 }
+

@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export default function Testimonials() {
   const testimonials = [
     {
@@ -28,49 +30,62 @@ export default function Testimonials() {
 
   return (
     <section
-      className="w-full bg-slate-50 overflow-hidden"
-      style={{ padding: "6rem clamp(2rem, 6vw, 6vw)" }}
+      className="w-full bg-slate-950 overflow-hidden relative"
+      id="reviews"
+      style={{ padding: "10rem clamp(2rem, 6vw, 6vw)" }}
     >
-      <div className="w-full">
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-orange-500/5 to-transparent pointer-events-none"></div>
+
+      <div className="w-full relative z-10">
         <div
-          className="text-center mb-24 mx-auto"
+          className="text-center mb-32 mx-auto"
           style={{ maxWidth: "1200px" }}
         >
-          <p
-            style={{ fontSize: "clamp(3.5rem, 5vw, 5rem)" }}
-            className="font-bold tracking-tight text-slate-900"
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ fontSize: "clamp(3.5rem, 6vw, 6.5rem)" }}
+            className="font-black tracking-tight text-white mb-6 leading-tight"
           >
-            Trusted by modern enterprises
-          </p>
+            Trusted by the <br /> <span className="text-orange-500">Global Elite.</span>
+          </motion.h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
-          {testimonials.map((testimonial) => (
-            <div
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 w-full">
+          {testimonials.map((testimonial, idx) => (
+            <motion.div
               key={testimonial.author.handle}
-              className="rounded-3xl bg-white shadow-sm border border-slate-200 p-10 transform hover:shadow-xl transition duration-300 flex flex-col"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.2 }}
+              whileHover={{ y: -10 }}
+              className="rounded-[3rem] bg-white/5 border border-white/10 p-12 backdrop-blur-xl flex flex-col hover:bg-white/10 hover:border-white/20 transition-all duration-500"
             >
               <figure className="h-full flex flex-col justify-between">
-                <blockquote className="text-slate-700 text-xl leading-relaxed mb-8">
+                <blockquote className="text-slate-300 text-2xl font-medium leading-relaxed mb-12 italic">
                   <p>"{testimonial.body}"</p>
                 </blockquote>
-                <figcaption className="flex items-center gap-5 pt-6 border-t border-slate-100">
-                  <div className="h-14 w-14 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 font-bold border border-slate-200 shrink-0 text-xl">
+                <figcaption className="flex items-center gap-6 pt-10 border-t border-white/10">
+                  <div className="h-16 w-16 flex items-center justify-center rounded-2xl bg-orange-500 text-white font-black border border-white/10 shrink-0 text-2xl shadow-2xl shadow-orange-500/40">
                     {testimonial.author.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-bold text-slate-900 text-lg">
+                    <div className="font-black text-white text-xl tracking-tight">
                       {testimonial.author.name}
                     </div>
-                    <div className="text-slate-500 text-sm leading-relaxed mt-1">
+                    <div className="text-slate-500 text-base font-bold uppercase tracking-widest mt-1">
                       {testimonial.author.role}
                     </div>
                   </div>
                 </figcaption>
               </figure>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
     </section>
   );
 }
+

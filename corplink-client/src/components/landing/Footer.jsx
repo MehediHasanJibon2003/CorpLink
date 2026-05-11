@@ -1,158 +1,124 @@
-import { Link } from "react-router-dom";
+import { Globe, Link2, Code2, Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer
-      className="w-full bg-slate-950"
+      className="w-full bg-slate-950 border-t border-white/5"
       aria-labelledby="footer-heading"
-      style={{ padding: "8rem clamp(2rem, 6vw, 6vw) 4rem" }}
     >
-      <h2 id="footer-heading" className="sr-only">
-        Footer
-      </h2>
-      <div className="w-full max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 mb-16">
-          <div className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-xl shadow-orange-500/30 text-2xl">
+      <h2 id="footer-heading" className="sr-only">Footer</h2>
+
+      {/* Main Footer Content */}
+      <div
+        className="w-full"
+        style={{ padding: "8rem clamp(2rem, 6vw, 6vw) 6rem" }}
+      >
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-20">
+          {/* Brand Column */}
+          <div className="xl:col-span-1 space-y-10">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/30 text-3xl">
                 C
               </div>
-              <h2 className="text-4xl font-black tracking-tight text-white leading-none">
-                CorpLink
+              <h2 className="text-4xl font-black tracking-tighter text-white leading-none">
+                CorpLink<span className="text-orange-500">.</span>
               </h2>
             </div>
-            <p className="text-xl leading-relaxed text-slate-400">
-              The unified corporate ecosystem that powers the world's most
-              capable teams.
+            <p className="text-xl leading-relaxed text-slate-400 font-medium">
+              The definitive operating system for the modern enterprise.
+              Built for scale, secured by intelligence.
             </p>
-            <div className="flex space-x-6">
-              {/* Social Icons would go here */}
+            <div className="flex space-x-5">
+              {[Globe, Link2, Code2].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="p-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-orange-500 hover:border-orange-500/50 transition-all duration-300"
+                >
+                  <Icon className="h-6 w-6" />
+                </a>
+              ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:col-span-2">
+
+          {/* Links Columns */}
+          <div className="xl:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-12">
             <div>
-              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
+              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
                 Solutions
               </h3>
-              <ul role="list" className="space-y-4">
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Workspace Admin
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Employee Engagement
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Task Analytics
-                  </a>
-                </li>
+              <ul className="space-y-5">
+                {["Workforce Admin", "Task Velocity", "Audit Intelligence", "Corporate Social"].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-base font-semibold text-slate-400 hover:text-white transition duration-300">
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
-              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
-                Support
+              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
+                Resources
               </h3>
-              <ul role="list" className="space-y-4">
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Guides
-                  </a>
-                </li>
+              <ul className="space-y-5">
+                {["Documentation", "API Reference", "Enterprise SLA", "Compliance"].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-base font-semibold text-slate-400 hover:text-white transition duration-300">
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
-              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
+              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
                 Company
               </h3>
-              <ul role="list" className="space-y-4">
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Jobs
-                  </a>
-                </li>
+              <ul className="space-y-5">
+                {["About CorpLink", "Security Labs", "Careers", "Newsroom"].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-base font-semibold text-slate-400 hover:text-white transition duration-300">
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
-              <h3 className="text-base font-bold leading-6 text-white uppercase tracking-wider mb-6">
-                Legal
+              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
+                Connect
               </h3>
-              <ul role="list" className="space-y-4">
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Privacy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-lg leading-6 text-slate-400 hover:text-white transition"
-                  >
-                    Terms
-                  </a>
-                </li>
-              </ul>
+              <div className="space-y-5">
+                <div className="flex items-center gap-3 text-slate-400 font-semibold text-base">
+                  <Mail className="h-5 w-5 text-orange-500 shrink-0" />
+                  corplink.dev@gmail.com
+                </div>
+                <div className="flex items-center gap-3 text-slate-400 font-semibold text-base">
+                  <MapPin className="h-5 w-5 text-orange-500 shrink-0" />
+                  Dhaka, Bangladesh
+                </div>
+                <div className="flex items-center gap-3 text-slate-400 font-semibold text-base">
+                  <Phone className="h-5 w-5 text-orange-500 shrink-0" />
+                  +8801794320858
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div className="border-t border-white/10 pt-10">
-          <p className="text-lg leading-6 text-slate-400 text-center lg:text-left">
-            &copy; {new Date().getFullYear()} CorpLink Inc. All rights reserved.
-          </p>
-        </div>
+      </div>
+
+      {/* Copyright Bar — full width, centered */}
+      <div className="w-full border-t border-white/5 py-8">
+        <p className="text-base font-semibold text-slate-500 text-center">
+          &copy; {new Date().getFullYear()} CorpLink Enterprise Systems Inc.
+          &nbsp;·&nbsp;
+          <a href="#" className="hover:text-white transition">Privacy Policy</a>
+          &nbsp;·&nbsp;
+          <a href="#" className="hover:text-white transition">Terms of Service</a>
+          &nbsp;·&nbsp;
+          <a href="#" className="hover:text-white transition">Cookie Policy</a>
+        </p>
       </div>
     </footer>
   );
