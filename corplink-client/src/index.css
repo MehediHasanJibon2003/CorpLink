@@ -117,7 +117,9 @@ main {
   max-width: 100%;
 }
 /* Scoped fonts for Landing Page */
-.landing-page-root {
+.landing-page-root,
+.login-page-root,
+.register-page-root {
   font-family: var(--font-inter);
 }
 
@@ -126,6 +128,18 @@ main {
 .landing-page-root h3,
 .landing-page-root h4,
 .landing-page-root h5,
-.landing-page-root h6 {
+.landing-page-root h6,
+.login-page-root h1,
+.login-page-root h2,
+.login-page-root h3,
+.login-page-root h4,
+.login-page-root h5,
+.login-page-root h6,
+.register-page-root h1,
+.register-page-root h2,
+.register-page-root h3,
+.register-page-root h4,
+.register-page-root h5,
+.register-page-root h6 {
   font-family: var(--font-plus-jakarta) !important;
 }

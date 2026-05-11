@@ -129,7 +129,7 @@ function Login() {
   };
 
   return (
-    <div className="h-screen w-screen flex bg-white dark:bg-slate-950 overflow-hidden">
+    <div className="login-page-root h-screen w-screen flex bg-white dark:bg-slate-950 overflow-hidden">
       {/* ── Left Panel: Branding ── */}
       <div className="hidden lg:flex lg:w-1/2 xl:w-[45%] 2xl:w-1/2 relative overflow-hidden bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 flex-col justify-between p-12 xl:p-16 2xl:p-24">
         <div
