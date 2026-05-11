@@ -13,7 +13,7 @@ import BackgroundOrbs from "../components/landing/BackgroundOrbs";
 
 function Landing() {
   return (
-    <div className="bg-slate-950 w-full min-h-screen overflow-x-hidden relative selection:bg-orange-500 selection:text-white">
+    <div className="landing-page-root bg-slate-950 w-full min-h-screen overflow-x-hidden relative selection:bg-orange-500 selection:text-white">
       <BackgroundOrbs />
       <div className="relative z-10">
         <Navbar />
