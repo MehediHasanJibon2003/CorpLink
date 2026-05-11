@@ -91,7 +91,7 @@ function EmployeeLayout({ children }) {
   };
 
   return (
-    <div className="h-screen w-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300 flex overflow-hidden">
+    <div className="employee-root h-screen w-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300 flex overflow-hidden">
       {isSidebarOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 md:hidden" onClick={() => setIsSidebarOpen(false)} />
       )}

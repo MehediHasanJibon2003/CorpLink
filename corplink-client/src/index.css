@@ -121,7 +121,8 @@ main {
 .login-page-root,
 .register-page-root,
 .super-admin-root,
-.corporate-admin-root {
+.corporate-admin-root,
+.employee-root {
   font-family: var(--font-inter);
 }
 
@@ -154,6 +155,12 @@ main {
 .corporate-admin-root h3,
 .corporate-admin-root h4,
 .corporate-admin-root h5,
-.corporate-admin-root h6 {
+.corporate-admin-root h6,
+.employee-root h1,
+.employee-root h2,
+.employee-root h3,
+.employee-root h4,
+.employee-root h5,
+.employee-root h6 {
   font-family: var(--font-plus-jakarta) !important;
 }
