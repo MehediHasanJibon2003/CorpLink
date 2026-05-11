@@ -1,94 +1,175 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Play, CheckCircle } from "lucide-react";
+import { ArrowRight, Play, CheckCircle, Users, BarChart3, Shield } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Hero() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
   return (
     <div
-      className="relative w-full min-h-screen overflow-hidden bg-slate-900 text-white pt-32"
+      className="relative w-full min-h-screen overflow-hidden bg-slate-950 text-white pt-40 pb-20"
       style={{ padding: "clamp(2rem, 10vw, 10vw) clamp(2rem, 6vw, 6vw)" }}
     >
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-96 opacity-20 pointer-events-none">
-        <div className="absolute inset-0 bg-linear-to-b from-orange-500/40 via-orange-500/5 to-transparent blur-3xl"></div>
+      {/* Background Glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] opacity-30 pointer-events-none">
+        <div className="absolute inset-0 bg-linear-to-b from-orange-500/30 via-transparent to-transparent blur-[120px]"></div>
       </div>
 
-      <div className="relative z-10 w-full flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 mb-10 backdrop-blur-md">
-          <span className="flex h-3 w-3 rounded-full bg-orange-500"></span>
-          <span className="text-lg font-medium text-slate-300">
-            CorpLink v2.0 is now live
-          </span>
-        </div>
-
-        <h1
-          style={{ fontSize: "clamp(4rem, 8vw, 7.5rem)" }}
-          className="font-extrabold tracking-tight mb-8 leading-[1.1] max-w-7xl"
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10 w-full flex flex-col items-center text-center"
+      >
+        <motion.div 
+          variants={itemVariants}
+          className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 mb-12 backdrop-blur-xl shadow-2xl shadow-orange-500/10"
         >
-          Unified Corporate Solutions. <br />
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600">
-            Unlimited Possibilities.
+          <span className="flex h-3 w-3 rounded-full bg-orange-500 animate-pulse"></span>
+          <span className="text-xl font-semibold tracking-wide text-orange-100">
+            CorpLink v2.5 Enterprise is now live
           </span>
-        </h1>
+        </motion.div>
 
-        <p
-          style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)" }}
-          className="text-slate-400 leading-relaxed mb-12 max-w-5xl"
+        <motion.h1
+          variants={itemVariants}
+          style={{ fontSize: "clamp(4.5rem, 9vw, 8.5rem)" }}
+          className="font-black tracking-tighter mb-10 leading-[0.95] max-w-7xl"
         >
-          Manage employees, tasks, collaboration, and corporate networking in
-          one powerful cloud platform. Say goodbye to fragmented tools and
-          expensive ERPs.
-        </p>
+          Unified Corporate <br />
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 via-orange-500 to-orange-700 animate-gradient">
+            Intelligence.
+          </span>
+        </motion.h1>
 
-        <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+        <motion.p
+          variants={itemVariants}
+          style={{ fontSize: "clamp(1.5rem, 2.5vw, 2.2rem)" }}
+          className="text-slate-400 leading-relaxed mb-16 max-w-5xl font-medium"
+        >
+          Empowering the modern enterprise with a single, seamless ecosystem for 
+          workforce management, real-time collaboration, and global analytics.
+        </motion.p>
+
+        <motion.div 
+          variants={itemVariants}
+          className="flex flex-col sm:flex-row gap-8 justify-center mb-16"
+        >
           <Link
             to="/register"
-            className="inline-flex justify-center items-center gap-3 rounded-2xl bg-orange-500 px-10 py-5 text-xl font-bold text-white shadow-sm hover:bg-orange-400 transition transform hover:-translate-y-0.5"
+            className="group relative inline-flex justify-center items-center gap-4 rounded-2xl bg-orange-500 px-12 py-6 text-2xl font-bold text-white shadow-2xl shadow-orange-500/40 hover:bg-orange-400 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
           >
-            Get Started <ArrowRight className="h-6 w-6" />
+            Deploy Now <ArrowRight className="h-7 w-7 group-hover:translate-x-1 transition-transform" />
           </Link>
           <a
             href="#demo"
-            className="inline-flex justify-center items-center gap-3 rounded-2xl bg-white/5 px-10 py-5 text-xl font-bold text-white hover:bg-white/10 ring-1 ring-inset ring-white/10 transition"
+            className="inline-flex justify-center items-center gap-4 rounded-2xl bg-white/5 px-12 py-6 text-2xl font-bold text-white hover:bg-white/10 ring-1 ring-inset ring-white/10 transition-all backdrop-blur-md"
           >
-            <Play className="h-6 w-6" /> Request Demo
+            <Play className="h-7 w-7 text-orange-500 fill-orange-500/20" /> Watch Demo
           </a>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-lg text-slate-400">
+        <motion.div 
+          variants={itemVariants}
+          className="flex flex-wrap items-center justify-center gap-12 text-xl font-semibold text-slate-500"
+        >
           <div className="flex items-center gap-3">
-            <CheckCircle className="h-6 w-6 text-orange-500" /> No credit card
-            required
+            <CheckCircle className="h-7 w-7 text-orange-500" /> Enterprise SLA
           </div>
           <div className="flex items-center gap-3">
-            <CheckCircle className="h-6 w-6 text-orange-500" /> 14-day free
-            trial
+            <CheckCircle className="h-7 w-7 text-orange-500" /> ISO 27001 Certified
           </div>
-        </div>
+          <div className="flex items-center gap-3">
+            <CheckCircle className="h-7 w-7 text-orange-500" /> 24/7 Priority Support
+          </div>
+        </motion.div>
+      </motion.div>
+
+      {/* Floating Decorative Metric Cards */}
+      <div className="absolute inset-0 pointer-events-none hidden xl:block">
+        <motion.div
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[35%] left-[5%] p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl"
+        >
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-blue-500/20"><Users className="text-blue-400" /></div>
+            <div>
+              <div className="text-sm text-slate-400 font-bold uppercase tracking-widest">Active Employees</div>
+              <div className="text-3xl font-black text-white">12,480+</div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          animate={{ y: [0, 20, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute top-[55%] right-[5%] p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl"
+        >
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-emerald-500/20"><BarChart3 className="text-emerald-400" /></div>
+            <div>
+              <div className="text-sm text-slate-400 font-bold uppercase tracking-widest">Global Output</div>
+              <div className="text-3xl font-black text-white">+24.8%</div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          animate={{ x: [0, 10, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+          className="absolute bottom-[15%] left-[20%] p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl"
+        >
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-orange-500/20"><Shield className="text-orange-400" /></div>
+            <div className="text-lg font-bold text-white">Threat Shield: Active</div>
+          </div>
+        </motion.div>
       </div>
 
-      {/* Dashboard Mockup Glow Box */}
-      <div
-        className="relative w-full mt-16 sm:mt-24"
-        style={{ maxWidth: "calc(85vw)" }}
+      {/* Dashboard Mockup */}
+      <motion.div
+        initial={{ opacity: 0, y: 100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.5 }}
+        className="relative w-full mt-32 max-w-[1400px] mx-auto"
       >
-        <div
-          style={{ margin: "4rem auto 0" }}
-          className="rounded-3xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm shadow-2xl shadow-orange-500/10 ring-1 ring-white/10"
-        >
-          <div className="rounded-2xl overflow-hidden bg-slate-800 aspect-video flex items-center justify-center border border-slate-700/50 relative">
-            {/* Minimal Mockup Representation */}
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
+        <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-4 backdrop-blur-md shadow-[0_0_100px_rgba(249,115,22,0.15)] ring-1 ring-white/10">
+          <div className="rounded-[2rem] overflow-hidden bg-slate-900 aspect-video flex items-center justify-center border border-slate-700/50 relative group">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center opacity-40 mix-blend-overlay group-hover:scale-105 transition-transform duration-1000"></div>
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-24 h-24 rounded-full bg-orange-500/20 flex items-center justify-center mb-6 backdrop-blur-md">
-                <Play className="h-12 w-12 text-orange-500 ml-2" />
-              </div>
-              <p className="text-white font-bold text-2xl">
-                See CorpLink in action
+              <motion.div 
+                whileHover={{ scale: 1.1 }}
+                className="w-32 h-32 rounded-full bg-orange-500 flex items-center justify-center mb-8 backdrop-blur-md cursor-pointer shadow-2xl shadow-orange-500/50"
+              >
+                <Play className="h-16 w-16 text-white ml-2" fill="currentColor" />
+              </motion.div>
+              <p className="text-white font-black text-4xl tracking-tight">
+                The Future of Management. <span className="text-orange-500 underline decoration-4 underline-offset-8">Previewed.</span>
               </p>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
+
