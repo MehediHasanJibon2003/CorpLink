@@ -23,7 +23,7 @@ export default function SuperAdminLayout({ children, title, subtitle }) {
         <SuperAdminTopbar onMenuClick={() => setIsSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
-          <div className="w-full px-8 md:px-12 lg:px-20 py-6 md:py-8 lg:py-12 flex flex-col">
+          <div className="w-full px-4 md:px-12 lg:px-20 py-6 md:py-10 lg:py-16 flex flex-col">
             {(title || subtitle) && (
               <div className="mb-8 md:mb-12 lg:mb-16">
                 {title && (

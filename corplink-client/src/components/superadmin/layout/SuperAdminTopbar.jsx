@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../../context/AuthContext"
 import { useTheme } from "../../../context/ThemeContext"
-import { Shield, Menu, Sun, Moon, Bell } from "lucide-react"
+import { Shield, Menu, Sun, Moon, Bell, LogOut } from "lucide-react"
 
 export default function SuperAdminTopbar({ onMenuClick }) {
   const navigate = useNavigate()
@@ -20,17 +20,17 @@ export default function SuperAdminTopbar({ onMenuClick }) {
       <div className="absolute top-0 left-0 right-0 h-px"
         style={{ background: `linear-gradient(90deg, transparent, var(--primary-color), transparent)` }} />
  
-      <div className="flex items-center gap-3 md:gap-4 relative z-10">
-        <button onClick={onMenuClick} className="md:hidden p-3 rounded-xl text-violet-400">
+      <div className="flex items-center gap-2 md:gap-4 relative z-10">
+        <button onClick={onMenuClick} className="md:hidden p-2 rounded-xl text-violet-400 hover:bg-violet-500/10 transition-colors">
           <Menu className="h-6 w-6" />
         </button>
 
-        <div className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-violet-50 dark:bg-violet-500/15 border-2 border-violet-100 dark:border-violet-500/25">
+        <div className="flex items-center gap-2 md:gap-3 px-3 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-violet-50 dark:bg-violet-500/15 border-2 border-violet-100 dark:border-violet-500/25">
           <Shield className="h-4 w-4 md:h-5 md:w-5 text-violet-500" />
-          <span className="text-label md:text-body font-black uppercase tracking-widest text-violet-700 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
+          <span className="hidden xs:block text-label md:text-body font-black uppercase tracking-widest text-violet-700 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
             Super Admin Portal
           </span>
-          <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-400 ml-1.5 md:ml-2 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+          <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-400 ml-0.5 md:ml-2 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
         </div>
       </div>
  
@@ -60,8 +60,13 @@ export default function SuperAdminTopbar({ onMenuClick }) {
           </div>
         </div>
  
-        <button onClick={handleLogout} className="ml-2 bg-rose-50 dark:bg-violet-500/10 text-rose-500 px-4 py-2.5 md:px-8 md:py-4 rounded-xl font-black uppercase tracking-widest text-label border-2 border-rose-100 dark:border-violet-500/20">
-          Sign Out
+        <button 
+          onClick={handleLogout} 
+          className="ml-1 md:ml-2 bg-rose-50 dark:bg-rose-500/10 text-rose-500 p-2.5 md:px-8 md:py-4 rounded-xl font-black uppercase tracking-widest text-label border-2 border-rose-100 dark:border-violet-500/20 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all flex items-center gap-2"
+          title="Sign Out"
+        >
+          <LogOut className="h-5 w-5 md:h-6 md:w-6" />
+          <span className="hidden md:block">Sign Out</span>
         </button>
       </div>
     </header>
