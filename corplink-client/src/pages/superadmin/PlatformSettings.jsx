@@ -113,12 +113,12 @@ export default function PlatformSettings() {
               {loading ? (
                 <div className="flex justify-center py-10"><RefreshCw className="h-6 w-6 animate-spin text-violet-500" /></div>
               ) : (
-                <div className={`${isCoListOpen ? 'flex' : 'hidden'} lg:flex flex-col gap-2 overflow-y-auto lg:max-h-[500px] no-scrollbar transition-all duration-300`}>
+                <div className={`${isCoListOpen ? 'flex flex-col max-h-[250px] overflow-y-auto' : 'hidden'} lg:flex lg:flex-col gap-2 lg:max-h-[500px] lg:overflow-y-auto pr-1 no-scrollbar transition-all duration-300`}>
                   {companies.map(co => (
                     <button
                       key={co.id}
                       onClick={() => { setSelectedCo(co); setIsCoListOpen(false); }}
-                      className={`text-left px-5 md:px-6 py-3.5 md:py-4 rounded-xl font-black uppercase text-[9px] md:text-label tracking-widest transition-all border-2 ${
+                      className={`text-left px-5 md:px-6 py-3.5 md:py-4 rounded-xl font-black uppercase text-[9px] md:text-label tracking-widest transition-all border-2 shrink-0 ${
                         selectedCo?.id === co.id 
                           ? "bg-violet-600 text-white border-transparent shadow-md" 
                           : "bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-violet-300 border-slate-100 dark:border-white/5"

@@ -63,124 +63,181 @@ export default function ThreatManagement() {
     <SuperAdminLayout title="Threat Management" subtitle="Monitor security alerts and manage blocked entities">
       
       {/* Search & Tabs */}
-      <div className="flex flex-col md:flex-row gap-6 justify-between mb-8 md:mb-12">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+      <div className="flex flex-col lg:flex-row gap-6 justify-between mb-8 md:mb-12">
+        <div className="relative flex-1 max-w-full lg:max-w-md order-2 lg:order-1">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input 
             type="text" 
             placeholder="Search by email..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 md:py-4 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 outline-none focus:border-violet-500 font-bold text-slate-900 dark:text-white"
+            className="w-full pl-14 pr-6 py-4 md:py-5 rounded-2xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 outline-none focus:border-violet-500 font-black text-slate-900 dark:text-white text-badge md:text-heading-3 uppercase tracking-tight"
           />
         </div>
 
-        <div className="flex p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl border-2 border-slate-200 dark:border-violet-500/10">
+        <div className="flex p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl border-2 border-slate-200 dark:border-violet-500/10 order-1 lg:order-2">
           <button
             onClick={() => setTab("alerts")}
-            className={`px-6 py-3 rounded-xl text-[10px] md:text-label font-black uppercase tracking-widest transition-all ${
+            className={`flex-1 lg:flex-none px-4 md:px-8 py-3.5 rounded-xl text-[9px] md:text-label font-black uppercase tracking-widest transition-all ${
               tab === "alerts" ? "bg-violet-600 text-white shadow-lg" : "text-slate-500 dark:text-violet-400"
             }`}
           >
-            Threat Alerts ({alerts.filter(a => !a.resolved).length})
+            Threats ({alerts.filter(a => !a.resolved).length})
           </button>
           <button
             onClick={() => setTab("blocked")}
-            className={`px-6 py-3 rounded-xl text-[10px] md:text-label font-black uppercase tracking-widest transition-all ${
+            className={`flex-1 lg:flex-none px-4 md:px-8 py-3.5 rounded-xl text-[9px] md:text-label font-black uppercase tracking-widest transition-all ${
               tab === "blocked" ? "bg-red-600 text-white shadow-lg" : "text-slate-500 dark:text-violet-400"
             }`}
           >
-            Blocked Users ({blockedUsers.length})
+            Blocked ({blockedUsers.length})
           </button>
         </div>
       </div>
 
-      <div className="rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
+      <div className="rounded-3xl md:rounded-[3rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
         {loading ? (
           <div className="py-40 text-center flex flex-col items-center gap-6">
             <div className="w-12 h-12 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
-            <p className="font-black text-slate-500 dark:text-violet-400 uppercase tracking-widest">Scanning infrastructure...</p>
+            <p className="font-black text-slate-500 dark:text-violet-400 uppercase tracking-widest text-badge">Scanning Infrastructure...</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[800px]">
-              <thead>
-                <tr className="bg-slate-50/50 dark:bg-violet-500/5 border-b-2 border-slate-100 dark:border-violet-500/10">
-                  <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Target Identity</th>
-                  <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Incident Details</th>
-                  <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Severity/Status</th>
-                  <th className="px-8 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
-                {tab === "alerts" ? (
-                  filteredAlerts.length === 0 ? (
-                    <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No threats detected</td></tr>
-                  ) : filteredAlerts.map(alert => (
-                    <tr key={alert.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02]">
-                      <td className="px-8 py-6 md:py-8">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0 ${alert.resolved ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500 animate-pulse'}`}>
-                            {alert.resolved ? <ShieldCheck className="h-6 w-6" /> : <ShieldAlert className="h-6 w-6" />}
+          <>
+            {/* Desktop View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50/50 dark:bg-violet-500/5 border-b-2 border-slate-100 dark:border-violet-500/10">
+                    <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Target Identity</th>
+                    <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Incident Details</th>
+                    <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Severity/Status</th>
+                    <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
+                  {tab === "alerts" ? (
+                    filteredAlerts.length === 0 ? (
+                      <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-badge">No Threats Detected</td></tr>
+                    ) : filteredAlerts.map(alert => (
+                      <tr key={alert.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
+                        <td className="px-10 py-8">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${alert.resolved ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500 animate-pulse'}`}>
+                              {alert.resolved ? <ShieldCheck className="h-6 w-6" /> : <ShieldAlert className="h-6 w-6" />}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate max-w-[200px]">{alert.email}</p>
+                              <p className="text-badge font-bold text-slate-400">{new Date(alert.created_at).toLocaleString()}</p>
+                            </div>
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-body md:text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate">{alert.email}</p>
-                            <p className="text-[10px] font-bold text-slate-500">{new Date(alert.created_at).toLocaleString()}</p>
+                        </td>
+                        <td className="px-10 py-8">
+                          <p className="text-label font-black uppercase text-slate-700 dark:text-white tracking-widest">{alert.type}</p>
+                          <p className="text-badge font-bold text-slate-500 truncate max-w-[200px]">{alert.description}</p>
+                        </td>
+                        <td className="px-10 py-8">
+                          <span className={`px-4 py-1.5 rounded-full text-badge font-black uppercase tracking-widest border-2 ${
+                            alert.severity === 'high' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'
+                          }`}>
+                            {alert.severity}
+                          </span>
+                        </td>
+                        <td className="px-10 py-8 text-right flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                            {!alert.resolved && (
+                              <button onClick={() => resolveAlert(alert.id)} className="px-6 py-2.5 rounded-xl bg-emerald-600 text-white text-badge font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20 active:scale-95 transition-all">Resolve</button>
+                            )}
+                            <button onClick={() => deleteAlert(alert.id)} className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-red-500 transition-all hover:bg-red-50"><Trash2 className="h-5 w-5" /></button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    filteredBlocked.length === 0 ? (
+                      <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-badge">No Blocked Users</td></tr>
+                    ) : filteredBlocked.map(user => (
+                      <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
+                        <td className="px-10 py-8">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-red-600/10 text-red-600 flex items-center justify-center shrink-0"><UserX className="h-6 w-6" /></div>
+                            <div className="min-w-0">
+                              <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate max-w-[200px]">{user.full_name || "Unknown"}</p>
+                              <p className="text-badge font-bold text-slate-500">{user.email}</p>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 md:py-8">
-                        <p className="text-[10px] md:text-label font-black uppercase text-slate-700 dark:text-white tracking-widest">{alert.type}</p>
-                        <p className="text-[9px] md:text-[10px] font-bold text-slate-400 truncate max-w-[200px]">{alert.description}</p>
-                      </td>
-                      <td className="px-8 py-6 md:py-8">
-                        <span className={`px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border-2 ${
-                          alert.severity === 'high' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'
-                        }`}>
-                          {alert.severity}
-                        </span>
-                      </td>
-                      <td className="px-8 py-6 md:py-8">
-                        <div className="flex items-center justify-end gap-3">
+                        </td>
+                        <td className="px-10 py-8 text-label font-black text-slate-500 uppercase tracking-widest">Account Suspended</td>
+                        <td className="px-10 py-8">
+                          <span className="px-4 py-1.5 rounded-full bg-red-50 text-red-600 border-2 border-red-100 text-badge font-black uppercase tracking-widest">Blocked</span>
+                        </td>
+                        <td className="px-10 py-8 text-right flex justify-end opacity-0 group-hover:opacity-100 transition-all">
+                            <button onClick={() => toggleUserBlock(user.id, true)} className="px-6 py-3 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 text-badge font-black uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-95">
+                              <UserCheck className="h-4 w-4" /> Unblock
+                            </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y-2 divide-slate-100 dark:divide-violet-500/5">
+              {tab === "alerts" ? (
+                filteredAlerts.length === 0 ? (
+                  <div className="py-20 text-center text-slate-400 font-bold uppercase text-badge">No Detected Threats</div>
+                ) : filteredAlerts.map(alert => (
+                  <div key={alert.id} className="p-6 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-3">
+                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${alert.resolved ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500 animate-pulse'}`}>
+                            {alert.resolved ? <ShieldCheck className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
+                         </div>
+                         <div>
+                            <p className="text-badge font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{alert.email}</p>
+                            <p className="text-[9px] font-bold text-slate-500 uppercase mt-0.5">{alert.type}</p>
+                         </div>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border-2 ${
+                        alert.severity === 'high' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'
+                      }`}>
+                        {alert.severity}
+                      </span>
+                    </div>
+                    <p className="text-[10px] font-bold text-slate-500 line-clamp-2">{alert.description}</p>
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-white/5 mt-2">
+                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest shrink-0">{new Date(alert.created_at).toLocaleDateString()}</p>
+                       <div className="flex items-center gap-2 flex-nowrap shrink-0">
                           {!alert.resolved && (
-                            <button onClick={() => resolveAlert(alert.id)} className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20">Resolve</button>
+                            <button onClick={() => resolveAlert(alert.id)} className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-[9px] font-black uppercase tracking-widest shadow-md whitespace-nowrap">Resolve</button>
                           )}
-                          <button onClick={() => deleteAlert(alert.id)} className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-red-500 transition-all"><Trash2 className="h-5 w-5" /></button>
+                          <button onClick={() => deleteAlert(alert.id)} className="p-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 border-2 border-red-100 dark:border-red-500/20 shrink-0"><Trash2 className="h-4 w-4" /></button>
+                       </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                filteredBlocked.length === 0 ? (
+                  <div className="py-20 text-center text-slate-400 font-bold uppercase text-badge">No Blocked Users</div>
+                ) : filteredBlocked.map(user => (
+                  <div key={user.id} className="p-6 space-y-4">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-red-600/10 text-red-600 flex items-center justify-center shrink-0"><UserX className="h-5 w-5" /></div>
+                        <div>
+                           <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase">{user.full_name || "Unknown"}</p>
+                           <p className="text-badge font-bold text-slate-500">{user.email}</p>
                         </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  filteredBlocked.length === 0 ? (
-                    <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No blocked users</td></tr>
-                  ) : filteredBlocked.map(user => (
-                    <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02]">
-                      <td className="px-8 py-6 md:py-8">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0"><UserX className="h-6 w-6" /></div>
-                          <div className="min-w-0">
-                            <p className="text-body md:text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate">{user.full_name || "Unknown"}</p>
-                            <p className="text-[10px] font-bold text-slate-500">{user.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 md:py-8 text-label font-black text-slate-500 uppercase tracking-widest">Account Suspended</td>
-                      <td className="px-8 py-6 md:py-8">
-                        <span className="px-4 py-1.5 rounded-full bg-red-50 text-red-600 border-2 border-red-100 text-[10px] font-black uppercase tracking-widest">Blocked</span>
-                      </td>
-                      <td className="px-8 py-6 md:py-8">
-                        <div className="flex items-center justify-end">
-                          <button onClick={() => toggleUserBlock(user.id, true)} className="px-6 py-3 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
-                            <UserCheck className="h-4 w-4" /> Unblock
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                     </div>
+                     <div className="flex items-center justify-between pt-2">
+                        <span className="px-3 py-1 rounded-full bg-red-50 text-red-600 border-2 border-red-100 text-[9px] font-black uppercase tracking-widest">Blocked</span>
+                        <button onClick={() => toggleUserBlock(user.id, true)} className="px-5 py-2.5 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+                          <UserCheck className="h-4 w-4" /> Unblock
+                        </button>
+                     </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </>
         )}
       </div>
     </SuperAdminLayout>
