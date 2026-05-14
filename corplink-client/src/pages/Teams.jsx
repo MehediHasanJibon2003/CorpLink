@@ -91,29 +91,29 @@ export default function Teams() {
       <div className="space-y-8 md:space-y-12">
         {/* Only Admin/Manager can create teams */}
         <RoleGate allowedRoles={["admin", "manager", "hr", "corporate_admin"]}>
-          <div className="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 className="text-heading-2 font-bold text-slate-800 dark:text-slate-100 mb-6">
-              Create New Team
+          <div className="bg-white dark:bg-slate-800 p-8 md:p-10 rounded-[2.5rem] shadow-xl border-2 border-slate-100 dark:border-violet-500/15">
+            <h3 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8">
+              Initialize New Team
             </h3>
             <form
               onSubmit={handleSubmit}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6"
             >
               <input
                 type="text"
-                placeholder="Team Name"
+                placeholder="Team Designation"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-input transition-colors"
+                className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all shadow-inner"
               />
               <select
                 value={form.department_id}
                 onChange={(e) =>
                   setForm({ ...form, department_id: e.target.value })
                 }
-                className="border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-input transition-colors"
+                className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-label font-black uppercase outline-none focus:border-blue-500 transition-all"
               >
-                <option value="">Select Department</option>
+                <option value="">Department Hub</option>
                 {departments.map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.name}
@@ -125,66 +125,73 @@ export default function Teams() {
                 onChange={(e) =>
                   setForm({ ...form, team_lead_id: e.target.value })
                 }
-                className="border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-xl outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-900/50 text-input transition-colors"
+                className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-label font-black uppercase outline-none focus:border-blue-500 transition-all"
               >
-                <option value="">Select Team Lead (Optional)</option>
+                <option value="">Team Leader</option>
                 {employees.map((e) => (
                   <option key={e.id} value={e.id}>
-                    {e.name} ({e.email})
+                    {e.name}
                   </option>
                 ))}
               </select>
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 py-2.5 font-semibold text-button shadow-md transition hover:-translate-y-0.5 w-full md:w-auto"
+                className="w-full bg-blue-600 text-white py-4 md:py-0 rounded-2xl font-black uppercase text-label tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all"
               >
-                {loading ? "Adding..." : "Add Team"}
+                {loading ? "Syncing..." : "Add Team Asset"}
               </button>
             </form>
           </div>
         </RoleGate>
 
-        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30">
-            <h3 className="text-heading-2 font-bold text-slate-800 dark:text-slate-100">
-              Existing Teams
+        <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl border-2 border-slate-100 dark:border-white/5 overflow-hidden">
+          <div className="px-8 py-6 border-b-2 border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/30">
+            <h3 className="text-heading-2 font-black text-slate-400 uppercase tracking-[0.2em]">
+              Operational Directory
             </h3>
           </div>
           {teams.length === 0 ? (
-            <p className="p-8 text-center text-slate-500 dark:text-slate-400 text-body font-medium italic">
-              No teams created yet. Create one to organize employees.
-            </p>
+            <div className="py-20 text-center opacity-30">
+              <p className="text-heading-2 font-black uppercase tracking-widest text-slate-300 italic">
+                Strategic Units Offline
+              </p>
+            </div>
           ) : (
-            <div className="divide-y divide-slate-200 dark:divide-slate-700">
+            <div className="divide-y-2 divide-slate-50 dark:divide-white/5">
               {teams.map((team) => (
                 <div
                   key={team.id}
-                  className="p-6 md:p-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                  className="p-6 md:p-10 flex flex-col md:flex-row md:justify-between md:items-center gap-6 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group"
                 >
-                  <div>
-                    <h4 className="text-heading-3 font-bold text-slate-800 dark:text-slate-100 mb-1">
-                      {team.name}
-                    </h4>
-                    <p className="text-body text-slate-600 dark:text-slate-300 font-medium mb-1">
-                      <span className="text-slate-400 font-normal">
-                        Department:
-                      </span>{" "}
-                      {team.departments?.name || "N/A"}
-                    </p>
-                    <p className="text-body text-slate-600 dark:text-slate-300 font-medium">
-                      <span className="text-slate-400 font-normal">Lead:</span>{" "}
-                      {team.team_lead?.name || "Unassigned"}
-                    </p>
+                  <div className="flex items-center gap-6">
+                    <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-1 shadow-lg">
+                      {team.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h4 className="text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                        {team.name}
+                      </h4>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 mt-1">
+                        <p className="text-[10px] md:text-label font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                           {team.departments?.name || "N/A"}
+                        </p>
+                        <p className="text-[10px] md:text-label font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                           Lead: {team.team_lead?.name || "Unassigned"}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   <RoleGate
                     allowedRoles={["admin", "manager", "hr", "corporate_admin"]}
                   >
                     <button
                       onClick={() => handleDelete(team.id, team.name)}
-                      className="bg-slate-100 dark:bg-slate-700 hover:bg-red-600 text-slate-700 dark:text-slate-200 hover:text-white px-4 py-2 rounded-lg font-semibold text-button transition-all shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-600 hover:border-red-600 text-center w-full md:w-auto mt-4 md:mt-0"
+                      className="w-full md:w-auto bg-red-50 text-red-500 px-6 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest border-2 border-red-100 hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-95"
                     >
-                      Delete Team
+                      Deactivate Unit
                     </button>
                   </RoleGate>
                 </div>
