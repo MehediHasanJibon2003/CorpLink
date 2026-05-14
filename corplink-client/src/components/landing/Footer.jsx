@@ -17,14 +17,14 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="xl:col-span-1 space-y-10">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/30 text-3xl">
+              <div className="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/30 text-heading-1">
                 C
               </div>
-              <h2 className="text-4xl font-black tracking-tighter text-white leading-none">
+              <h2 className="text-heading-1 font-black tracking-tighter text-white leading-none">
                 CorpLink<span className="text-orange-500">.</span>
               </h2>
             </div>
-            <p className="text-xl leading-relaxed text-slate-400 font-medium">
+            <p className="text-heading-2 leading-relaxed text-slate-400 font-medium">
               The definitive operating system for the modern enterprise.
               Built for scale, secured by intelligence.
             </p>
@@ -44,13 +44,13 @@ export default function Footer() {
           {/* Links Columns */}
           <div className="xl:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-12">
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
+              <h3 className="text-body font-black text-white uppercase tracking-widest mb-8">
                 Solutions
               </h3>
               <ul className="space-y-5">
                 {["Workforce Admin", "Task Velocity", "Audit Intelligence", "Corporate Social"].map((item) => (
                   <li key={item}>
-                    <a href="#" className="text-base font-semibold text-slate-400 hover:text-white transition duration-300">
+                    <a href="#" className="text-body font-semibold text-slate-400 hover:text-white transition duration-300">
                       {item}
                     </a>
                   </li>
@@ -58,13 +58,13 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
+              <h3 className="text-body font-black text-white uppercase tracking-widest mb-8">
                 Resources
               </h3>
               <ul className="space-y-5">
                 {["Documentation", "API Reference", "Enterprise SLA", "Compliance"].map((item) => (
                   <li key={item}>
-                    <a href="#" className="text-base font-semibold text-slate-400 hover:text-white transition duration-300">
+                    <a href="#" className="text-body font-semibold text-slate-400 hover:text-white transition duration-300">
                       {item}
                     </a>
                   </li>
@@ -72,13 +72,13 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
+              <h3 className="text-body font-black text-white uppercase tracking-widest mb-8">
                 Company
               </h3>
               <ul className="space-y-5">
                 {["About CorpLink", "Security Labs", "Careers", "Newsroom"].map((item) => (
                   <li key={item}>
-                    <a href="#" className="text-base font-semibold text-slate-400 hover:text-white transition duration-300">
+                    <a href="#" className="text-body font-semibold text-slate-400 hover:text-white transition duration-300">
                       {item}
                     </a>
                   </li>
@@ -86,19 +86,19 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8">
+              <h3 className="text-body font-black text-white uppercase tracking-widest mb-8">
                 Connect
               </h3>
               <div className="space-y-5">
-                <div className="flex items-center gap-3 text-slate-400 font-semibold text-base">
+                <div className="flex items-center gap-3 text-slate-400 font-semibold text-body">
                   <Mail className="h-5 w-5 text-orange-500 shrink-0" />
                   corplink.dev@gmail.com
                 </div>
-                <div className="flex items-center gap-3 text-slate-400 font-semibold text-base">
+                <div className="flex items-center gap-3 text-slate-400 font-semibold text-body">
                   <MapPin className="h-5 w-5 text-orange-500 shrink-0" />
                   Dhaka, Bangladesh
                 </div>
-                <div className="flex items-center gap-3 text-slate-400 font-semibold text-base">
+                <div className="flex items-center gap-3 text-slate-400 font-semibold text-body">
                   <Phone className="h-5 w-5 text-orange-500 shrink-0" />
                   +8801794320858
                 </div>
@@ -110,7 +110,7 @@ export default function Footer() {
 
       {/* Copyright Bar — full width, centered */}
       <div className="w-full border-t border-white/5 py-8">
-        <p className="text-base font-semibold text-slate-500 text-center">
+        <p className="text-body font-semibold text-slate-500 text-center">
           &copy; {new Date().getFullYear()} CorpLink Enterprise Systems Inc.
           &nbsp;·&nbsp;
           <a href="#" className="hover:text-white transition">Privacy Policy</a>
@@ -123,3 +123,4 @@ export default function Footer() {
     </footer>
   );
 }
+

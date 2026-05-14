@@ -30,11 +30,11 @@ export default function Navbar() {
           >
             <motion.div 
               whileHover={{ rotate: 10, scale: 1.1 }}
-              className="w-16 h-16 rounded-2xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/40 text-4xl"
+              className="w-16 h-16 rounded-2xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/40 text-heading-1"
             >
               C
             </motion.div>
-            <span className="text-4xl font-black tracking-tighter text-white">
+            <span className="text-heading-1 font-black tracking-tighter text-white">
               CorpLink<span className="text-orange-500">.</span>
             </span>
           </Link>
@@ -66,7 +66,7 @@ export default function Navbar() {
             <a
               key={item.label}
               href={item.href}
-              className="text-lg font-bold leading-7 text-slate-300 hover:text-orange-500 transition-colors duration-300 relative group"
+              className="text-heading-3 font-bold leading-7 text-slate-300 hover:text-orange-500 transition-colors duration-300 relative group"
             >
               {item.label}
               <span className="absolute -bottom-2 left-0 w-0 h-1 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
@@ -77,13 +77,13 @@ export default function Navbar() {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-10">
           <Link
             to="/login"
-            className="text-xl font-bold leading-7 text-slate-300 hover:text-white transition"
+            className="text-heading-2 font-bold leading-7 text-slate-300 hover:text-white transition"
           >
             Log in
           </Link>
           <Link
             to="/register"
-            className="group inline-flex items-center gap-3 text-xl font-black bg-orange-500 hover:bg-orange-400 text-white px-10 py-5 rounded-2xl shadow-2xl shadow-orange-500/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
+            className="group inline-flex items-center gap-3 text-heading-2 font-black bg-orange-500 hover:bg-orange-400 text-white px-10 py-5 rounded-2xl shadow-2xl shadow-orange-500/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
           >
             Sign up <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -112,7 +112,7 @@ export default function Navbar() {
                   key={item.label}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-2xl font-bold text-slate-300 hover:text-orange-500 transition-colors py-2 border-b border-white/5"
+                  className="text-heading-1 font-bold text-slate-300 hover:text-orange-500 transition-colors py-2 border-b border-white/5"
                 >
                   {item.label}
                 </a>
@@ -121,14 +121,14 @@ export default function Navbar() {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center text-2xl font-bold text-white py-4 rounded-2xl border border-white/10 hover:bg-white/5 transition"
+                  className="text-center text-heading-1 font-bold text-white py-4 rounded-2xl border border-white/10 hover:bg-white/5 transition"
                 >
                   Log in
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center text-2xl font-black text-white bg-orange-500 hover:bg-orange-400 py-4 rounded-2xl transition shadow-xl shadow-orange-500/20"
+                  className="text-center text-heading-1 font-black text-white bg-orange-500 hover:bg-orange-400 py-4 rounded-2xl transition shadow-xl shadow-orange-500/20"
                 >
                   Sign up →
                 </Link>
@@ -140,4 +140,5 @@ export default function Navbar() {
     </nav>
   );
 }
+
 

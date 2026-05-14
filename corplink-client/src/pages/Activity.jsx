@@ -105,19 +105,19 @@ function Activity() {
     switch (severity) {
       case "critical":
         return (
-          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-bold border border-red-200">
+          <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-label font-bold border border-red-200">
             Critical
           </span>
         );
       case "warning":
         return (
-          <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-xs font-bold border border-orange-200">
+          <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-label font-bold border border-orange-200">
             Warning
           </span>
         );
       default:
         return (
-          <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-semibold border border-blue-100">
+          <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-label font-semibold border border-blue-100">
             Info
           </span>
         );
@@ -127,12 +127,12 @@ function Activity() {
   const getStatusIcon = (status) => {
     if (status === "failed")
       return (
-        <span title="Failed" className="text-red-600 font-bold text-lg">
+        <span title="Failed" className="text-red-600 font-bold text-heading-3">
           ✕
         </span>
       );
     return (
-      <span title="Success" className="text-green-600 font-bold text-lg">
+      <span title="Success" className="text-green-600 font-bold text-heading-3">
         ✓
       </span>
     );
@@ -147,13 +147,13 @@ function Activity() {
         {/* Top Controls: Search & Filter */}
         <div className="p-10 md:p-12 border-b-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex flex-col xl:flex-row gap-8 items-center justify-between">
           <div className="relative w-full xl:w-[40rem]">
-            <span className="absolute left-6 top-6 text-3xl text-slate-400">🔍</span>
+            <span className="absolute left-6 top-6 text-heading-1 text-slate-400">🔍</span>
             <input
               type="text"
               placeholder="Filter by action, user or system event..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-16 pr-8 py-6 md:py-8 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-3xl outline-none focus:border-blue-500 bg-white dark:bg-slate-800 text-lg md:text-2xl font-medium shadow-inner transition-all"
+              className="w-full pl-16 pr-8 py-6 md:py-8 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-3xl outline-none focus:border-blue-500 bg-white dark:bg-slate-800 text-heading-3 md:text-heading-1 font-medium shadow-inner transition-all"
             />
           </div>
 
@@ -161,7 +161,7 @@ function Activity() {
             <select
               value={filterModule}
               onChange={(e) => setFilterModule(e.target.value)}
-              className="flex-1 xl:flex-none border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 outline-none focus:border-blue-500 text-lg md:text-xl font-black text-slate-700 dark:text-slate-200 cursor-pointer shadow-sm"
+              className="flex-1 xl:flex-none border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 outline-none focus:border-blue-500 text-heading-3 md:text-heading-2 font-black text-slate-700 dark:text-slate-200 cursor-pointer shadow-sm"
             >
               <option value="all">Global Modules</option>
               <option value="auth">🔐 Security / Auth</option>
@@ -175,7 +175,7 @@ function Activity() {
             <select
               value={filterSeverity}
               onChange={(e) => setFilterSeverity(e.target.value)}
-              className="flex-1 xl:flex-none border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 outline-none focus:border-blue-500 text-lg md:text-xl font-black text-slate-700 dark:text-slate-200 cursor-pointer shadow-sm"
+              className="flex-1 xl:flex-none border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 outline-none focus:border-blue-500 text-heading-3 md:text-heading-2 font-black text-slate-700 dark:text-slate-200 cursor-pointer shadow-sm"
             >
               <option value="all">All Priorities</option>
               <option value="info">Info</option>
@@ -187,21 +187,21 @@ function Activity() {
 
         {/* Data Table */}
         {error ? (
-          <div className="p-20 text-center text-red-600 bg-red-50 font-black text-2xl">
+          <div className="p-20 text-center text-red-600 bg-red-50 font-black text-heading-1">
             {error}
           </div>
         ) : loading ? (
           <div className="p-32 text-center">
              <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-blue-600 mx-auto mb-8"></div>
-             <p className="text-2xl md:text-3xl text-slate-500 dark:text-slate-400 font-black tracking-tight">Decrypting secure audit logs...</p>
+             <p className="text-heading-1 md:text-heading-1 text-slate-500 dark:text-slate-400 font-black tracking-tight">Decrypting secure audit logs...</p>
           </div>
         ) : filteredActivities.length === 0 ? (
           <div className="p-32 text-center">
             <div className="text-8xl mb-8">🛡️</div>
-            <h3 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h3 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
               No Logs Found
             </h3>
-            <p className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 mt-4 font-medium italic">
+            <p className="text-heading-2 md:text-heading-1 text-slate-500 dark:text-slate-400 mt-4 font-medium italic">
               The security vault has no matches for your current parameters.
             </p>
           </div>
@@ -209,7 +209,7 @@ function Activity() {
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left border-collapse min-w-[1200px]">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-900/80 border-b-2 border-slate-200 dark:border-slate-700 text-sm md:text-base uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-black">
+                <tr className="bg-slate-50 dark:bg-slate-900/80 border-b-2 border-slate-200 dark:border-slate-700 text-body md:text-body uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-black">
                   <th className="p-8 w-24 text-center">STS</th>
                   <th className="p-8">Temporal Reference</th>
                   <th className="p-8">Actor / Role</th>
@@ -218,7 +218,7 @@ function Activity() {
                   <th className="p-8 text-right">Priority</th>
                 </tr>
               </thead>
-              <tbody className="divide-y-2 divide-slate-100 dark:divide-slate-800 text-lg md:text-xl">
+              <tbody className="divide-y-2 divide-slate-100 dark:divide-slate-800 text-heading-3 md:text-heading-2">
                 {filteredActivities.map((log) => (
                   <tr
                     key={log.id}
@@ -231,20 +231,20 @@ function Activity() {
                     </td>
                     <td className="p-8">
                       <div className="font-black text-slate-800 dark:text-slate-100 tracking-tight">{new Date(log.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                      <div className="text-sm md:text-base text-slate-400 font-bold uppercase mt-1">
+                      <div className="text-body md:text-body text-slate-400 font-bold uppercase mt-1">
                         {new Date(log.created_at).toLocaleTimeString()}
                       </div>
                     </td>
                     <td className="p-8">
-                      <div className="font-black text-slate-900 dark:text-white text-xl md:text-2xl">
+                      <div className="font-black text-slate-900 dark:text-white text-heading-2 md:text-heading-1">
                         {log.user?.full_name || "SYSTEM_DAEMON"}
                       </div>
-                      <div className="text-sm md:text-base text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest mt-1">
+                      <div className="text-body md:text-body text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest mt-1">
                         {log.user?.role || "SYSTEM"}
                       </div>
                     </td>
                     <td className="p-8">
-                      <span className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-6 py-2 rounded-full text-xs md:text-sm font-black uppercase tracking-[0.15em] shadow-md">
+                      <span className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-6 py-2 rounded-full text-label md:text-body font-black uppercase tracking-[0.15em] shadow-md">
                         {log.entity}
                       </span>
                     </td>
@@ -268,3 +268,4 @@ function Activity() {
 }
 
 export default Activity;
+

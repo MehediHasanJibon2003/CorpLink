@@ -25,3 +25,4 @@ export const createNotification = async (userId, companyId, type, message) => {
     console.error("Critical Notification Error:", err)
   }
 }
+

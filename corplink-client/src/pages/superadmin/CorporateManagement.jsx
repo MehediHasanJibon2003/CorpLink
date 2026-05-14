@@ -74,7 +74,7 @@ export default function CorporateManagement() {
             placeholder="Search by name or email..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 md:py-4 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 outline-none focus:border-violet-500 transition-all font-bold text-slate-900 dark:text-white text-sm md:text-base"
+            className="w-full pl-12 pr-4 py-3 md:py-4 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 outline-none focus:border-violet-500 transition-all font-bold text-slate-900 dark:text-white text-body md:text-body"
           />
         </div>
         
@@ -83,7 +83,7 @@ export default function CorporateManagement() {
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`px-6 py-2.5 md:py-3 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest transition-all border-2 shrink-0 ${
+              className={`px-6 py-2.5 md:py-3 rounded-full text-[10px] md:text-label font-black uppercase tracking-widest transition-all border-2 shrink-0 ${
                 statusFilter === status 
                   ? "bg-violet-600 text-white border-violet-600 shadow-lg shadow-violet-600/30" 
                   : "bg-white dark:bg-white/5 text-slate-500 dark:text-violet-400 border-slate-100 dark:border-violet-500/15"
@@ -111,26 +111,26 @@ export default function CorporateManagement() {
               {loading ? (
                 <tr><td colSpan={4} className="py-20 text-center font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Corporates...</td></tr>
               ) : filteredCompanies.length === 0 ? (
-                <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">No records found</td></tr>
+                <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No records found</td></tr>
               ) : filteredCompanies.map(co => (
                 <tr key={co.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
                   <td className="px-6 md:px-10 py-6 md:py-8">
                     <div className="flex items-center gap-4 md:gap-5">
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-lg md:text-2xl shadow-lg shrink-0">
+                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-3 md:text-heading-1 shadow-lg shrink-0">
                         {co.name.charAt(0)}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-base md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
+                        <p className="text-body md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
                         <div className="flex flex-wrap gap-2 md:gap-4 mt-1">
-                          <span className="flex items-center gap-1 text-[10px] md:text-xs font-bold text-slate-500"><Mail className="h-3 w-3" /> {co.email}</span>
-                          {co.website && <span className="flex items-center gap-1 text-[10px] md:text-xs font-bold text-slate-500"><Globe className="h-3 w-3" /> {co.website}</span>}
+                          <span className="flex items-center gap-1 text-[10px] md:text-label font-bold text-slate-500"><Mail className="h-3 w-3" /> {co.email}</span>
+                          {co.website && <span className="flex items-center gap-1 text-[10px] md:text-label font-bold text-slate-500"><Globe className="h-3 w-3" /> {co.website}</span>}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 md:px-10 py-6 md:py-8">
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs md:text-sm font-black text-slate-700 dark:text-white uppercase tracking-tight">{co.plan || "Trial"} Plan</span>
+                      <span className="text-label md:text-body font-black text-slate-700 dark:text-white uppercase tracking-tight">{co.plan || "Trial"} Plan</span>
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Cycle</span>
                     </div>
                   </td>
@@ -185,12 +185,12 @@ export default function CorporateManagement() {
                                 {co.status === 'blocked' ? (
                                   <>
                                     <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Activate Account</span>
+                                    <span className="text-body font-bold text-slate-700 dark:text-slate-200">Activate Account</span>
                                   </>
                                 ) : (
                                   <>
                                     <AlertCircle className="h-4 w-4 text-amber-500" />
-                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Block Access</span>
+                                    <span className="text-body font-bold text-slate-700 dark:text-slate-200">Block Access</span>
                                   </>
                                 )}
                               </button>
@@ -209,7 +209,7 @@ export default function CorporateManagement() {
                                 className="w-full px-6 py-3 text-left hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                               >
                                 <XCircle className="h-4 w-4 text-red-500" />
-                                <span className="text-sm font-bold text-red-600">Terminate Record</span>
+                                <span className="text-body font-bold text-red-600">Terminate Record</span>
                               </button>
                             </div>
                           </>
@@ -229,7 +229,7 @@ export default function CorporateManagement() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
           <div className="relative bg-white dark:bg-[#0d0622] w-full max-w-lg rounded-[2.5rem] p-8 md:p-12 border-2 border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
-            <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-4">Reject Registration</h3>
+            <h3 className="text-heading-1 font-black text-white uppercase tracking-tight mb-4">Reject Registration</h3>
             <p className="text-slate-400 font-bold mb-8">Please provide a reason for rejecting <span className="text-violet-400">{selectedCo?.name}</span>. This will be sent to their email.</p>
             
             <textarea 
@@ -242,14 +242,14 @@ export default function CorporateManagement() {
             <div className="flex gap-4">
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="flex-1 py-4 rounded-2xl bg-white/5 text-slate-400 font-black uppercase text-xs tracking-widest hover:bg-white/10 transition-all"
+                className="flex-1 py-4 rounded-2xl bg-white/5 text-slate-400 font-black uppercase text-label tracking-widest hover:bg-white/10 transition-all"
               >
                 Cancel
               </button>
               <button 
                 onClick={() => handleUpdateStatus(selectedCo.id, 'rejected', rejectionReason)}
                 disabled={!rejectionReason || actionLoading}
-                className="flex-1 py-4 rounded-2xl bg-red-600 text-white font-black uppercase text-xs tracking-widest shadow-xl shadow-red-600/20 disabled:opacity-50"
+                className="flex-1 py-4 rounded-2xl bg-red-600 text-white font-black uppercase text-label tracking-widest shadow-xl shadow-red-600/20 disabled:opacity-50"
               >
                 Confirm Rejection
               </button>
@@ -260,3 +260,4 @@ export default function CorporateManagement() {
     </SuperAdminLayout>
   )
 }
+

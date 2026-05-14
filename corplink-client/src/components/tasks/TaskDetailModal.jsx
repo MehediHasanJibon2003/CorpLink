@@ -184,16 +184,16 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
             <div className="space-y-6 animate-in slide-in-from-top-2">
                <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1">Mission Title</label>
-                  <input type="text" value={editForm.title} onChange={e=>setEditForm({...editForm, title: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-blue-500 rounded-2xl px-6 py-4 text-xl font-black uppercase tracking-tight outline-none" />
+                  <input type="text" value={editForm.title} onChange={e=>setEditForm({...editForm, title: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-blue-500 rounded-2xl px-6 py-4 text-heading-2 font-black uppercase tracking-tight outline-none" />
                </div>
                <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1">Operational Description</label>
-                  <textarea value={editForm.description} onChange={e=>setEditForm({...editForm, description: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-lg font-medium outline-none min-h-[120px]" />
+                  <textarea value={editForm.description} onChange={e=>setEditForm({...editForm, description: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-heading-3 font-medium outline-none min-h-[120px]" />
                </div>
                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1 flex items-center gap-1"><Flag className="h-3 w-3" /> Priority</label>
-                     <select value={editForm.priority} onChange={e=>setEditForm({...editForm, priority: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-sm font-bold outline-none">
+                     <select value={editForm.priority} onChange={e=>setEditForm({...editForm, priority: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-body font-bold outline-none">
                         <option value="low">Low Priority</option>
                         <option value="medium">Medium Priority</option>
                         <option value="high">High Priority</option>
@@ -201,31 +201,31 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
                   </div>
                   <div className="space-y-2">
                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1 flex items-center gap-1"><Calendar className="h-3 w-3" /> Deadline</label>
-                     <input type="date" value={editForm.deadline} onChange={e=>setEditForm({...editForm, deadline: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-sm font-bold outline-none" />
+                     <input type="date" value={editForm.deadline} onChange={e=>setEditForm({...editForm, deadline: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-body font-bold outline-none" />
                   </div>
                </div>
                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1 flex items-center gap-1"><Folder className="h-3 w-3" /> Assign Project</label>
-                     <select value={editForm.project_id} onChange={e=>setEditForm({...editForm, project_id: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-sm font-bold outline-none">
+                     <select value={editForm.project_id} onChange={e=>setEditForm({...editForm, project_id: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-body font-bold outline-none">
                         <option value="">Global Inbox</option>
                         {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                      </select>
                   </div>
                   <div className="space-y-2">
                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-1 flex items-center gap-1"><UserIcon className="h-3 w-3" /> Primary Agent</label>
-                     <select value={editForm.assigned_to} onChange={e=>setEditForm({...editForm, assigned_to: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-sm font-bold outline-none">
+                     <select value={editForm.assigned_to} onChange={e=>setEditForm({...editForm, assigned_to: e.target.value})} className="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-body font-bold outline-none">
                         <option value="">Unassigned</option>
                         {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
                      </select>
                   </div>
                </div>
-               <button onClick={handleUpdateTask} className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all">Save Tracking Parameters</button>
+               <button onClick={handleUpdateTask} className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-label tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all">Save Tracking Parameters</button>
             </div>
           ) : (
             <>
-              <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tight uppercase leading-tight">{currentTask.title}</h2>
-              <p className="text-slate-600 dark:text-slate-300 text-lg md:text-xl mb-12 font-medium leading-relaxed opacity-80">{currentTask.description || "No description provided."}</p>
+              <h2 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tight uppercase leading-tight">{currentTask.title}</h2>
+              <p className="text-slate-600 dark:text-slate-300 text-heading-3 md:text-heading-2 mb-12 font-medium leading-relaxed opacity-80">{currentTask.description || "No description provided."}</p>
             </>
           )}
           
@@ -272,14 +272,14 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
                   <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Target Project</p>
                   <div className="flex items-center gap-3">
                      <Folder className="h-4 w-4 text-blue-500" />
-                     <span className="font-black text-slate-800 dark:text-white text-lg uppercase tracking-tight">{projects.find(p => p.id === currentTask.project_id)?.name || "Global Inbox"}</span>
+                     <span className="font-black text-slate-800 dark:text-white text-heading-3 uppercase tracking-tight">{projects.find(p => p.id === currentTask.project_id)?.name || "Global Inbox"}</span>
                   </div>
                </div>
                <div>
                   <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-3">Assigned Agent</p>
                   <div className="flex items-center gap-3">
                      <UserIcon className="h-4 w-4 text-indigo-500" />
-                     <span className="font-black text-slate-800 dark:text-white text-lg uppercase tracking-tight">{employees.find(e => e.id === currentTask.assigned_to)?.name || "Unassigned"}</span>
+                     <span className="font-black text-slate-800 dark:text-white text-heading-3 uppercase tracking-tight">{employees.find(e => e.id === currentTask.assigned_to)?.name || "Unassigned"}</span>
                   </div>
                </div>
             </div>
@@ -290,7 +290,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
         <div className="flex-1 flex flex-col bg-white dark:bg-slate-800/80">
           <div className="flex bg-slate-50/50 dark:bg-white/5 p-2">
             {['comments', 'attachments'].map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-5 font-black text-xs uppercase tracking-[0.2em] transition-all rounded-2xl ${activeTab === tab ? 'bg-white dark:bg-slate-800 text-blue-600 shadow-sm border border-slate-100 dark:border-white/5' : 'text-slate-400 hover:text-slate-600'}`}>
+              <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-5 font-black text-label uppercase tracking-[0.2em] transition-all rounded-2xl ${activeTab === tab ? 'bg-white dark:bg-slate-800 text-blue-600 shadow-sm border border-slate-100 dark:border-white/5' : 'text-slate-400 hover:text-slate-600'}`}>
                 {tab === 'comments' ? 'Activity Log' : `Field Assets (${attachments.length})`}
               </button>
             ))}
@@ -308,7 +308,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
                           <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{msg.sender?.full_name || "Unknown"}</span>
                           <span className="text-[10px] text-slate-300 font-bold">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
                         </div>
-                        <div className={`px-8 py-5 rounded-[2rem] max-w-[85%] text-lg md:text-xl font-medium shadow-sm leading-relaxed border ${isMe ? 'bg-slate-900 text-white rounded-tr-sm border-slate-800' : 'bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 rounded-tl-sm border-slate-100 dark:border-white/5'}`}>
+                        <div className={`px-8 py-5 rounded-[2rem] max-w-[85%] text-heading-3 md:text-heading-2 font-medium shadow-sm leading-relaxed border ${isMe ? 'bg-slate-900 text-white rounded-tr-sm border-slate-800' : 'bg-slate-50 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 rounded-tl-sm border-slate-100 dark:border-white/5'}`}>
                           {msg.content}
                         </div>
                       </div>
@@ -318,7 +318,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
                 </div>
                 <div className="p-8 md:p-10 border-t-2 border-slate-50 dark:border-white/5">
                   <form onSubmit={handlePostComment} className="flex gap-4">
-                    <input type="text" value={newComment} onChange={e => setNewComment(e.target.value)} placeholder="Type a professional update..." className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-full px-8 py-5 outline-none focus:border-blue-500/50 text-lg font-bold" />
+                    <input type="text" value={newComment} onChange={e => setNewComment(e.target.value)} placeholder="Type a professional update..." className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-full px-8 py-5 outline-none focus:border-blue-500/50 text-heading-3 font-bold" />
                     <button type="submit" disabled={!newComment.trim()} className="bg-blue-600 hover:bg-blue-700 disabled:opacity-30 text-white rounded-full w-16 h-16 flex items-center justify-center transition shadow-lg shadow-blue-500/20 active:scale-95 shrink-0"><Send className="h-6 w-6" /></button>
                   </form>
                 </div>
@@ -343,7 +343,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
                     <div className="flex items-center gap-5">
                        <div className="w-14 h-14 bg-slate-100 dark:bg-white/5 rounded-2xl flex items-center justify-center"><LinkIcon className="h-6 w-6 text-slate-400 group-hover:text-blue-600" /></div>
                        <div>
-                          <h5 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight line-clamp-1">{att.file_name}</h5>
+                          <h5 className="text-heading-3 font-black text-slate-800 dark:text-white uppercase tracking-tight line-clamp-1">{att.file_name}</h5>
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Uploader: {att.uploader?.full_name || "System"}</p>
                        </div>
                     </div>
@@ -360,3 +360,4 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
 }
 
 export default TaskDetailModal
+

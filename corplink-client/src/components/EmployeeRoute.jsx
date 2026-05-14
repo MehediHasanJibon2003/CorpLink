@@ -64,10 +64,10 @@ function EmployeeRoute({ children }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-lg animate-pulse">
+          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-heading-3 animate-pulse">
             C
           </div>
-          <p className="text-slate-400 text-sm font-medium">Loading workspace...</p>
+          <p className="text-slate-400 text-body font-medium">Loading workspace...</p>
         </div>
       </div>
     )
@@ -93,3 +93,4 @@ function EmployeeRoute({ children }) {
 }
 
 export default EmployeeRoute
+

@@ -68,10 +68,10 @@ export default function PainPoints() {
                 <div className="h-20 w-20 flex items-center justify-center rounded-3xl bg-orange-500/10 text-orange-500 mb-8 border border-orange-500/20">
                   <Icon className="h-10 w-10" aria-hidden="true" />
                 </div>
-                <h3 className="text-3xl font-black text-white mb-6 tracking-tight">
+                <h3 className="text-heading-1 font-black text-white mb-6 tracking-tight">
                   {point.title}
                 </h3>
-                <p className="text-xl leading-relaxed text-slate-400 font-medium">
+                <p className="text-heading-2 leading-relaxed text-slate-400 font-medium">
                   {point.description}
                 </p>
               </motion.div>
@@ -82,4 +82,5 @@ export default function PainPoints() {
     </section>
   );
 }
+
 

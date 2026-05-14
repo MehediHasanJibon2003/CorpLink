@@ -197,17 +197,17 @@ function MyTasks() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 md:gap-8">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tight">
+          <h1 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tight">
             <CheckSquare className="h-8 w-8 text-blue-500" />
             My Tasks
           </h1>
-          <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">
+          <p className="text-body md:text-heading-2 text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">
             {tasks.length} task{tasks.length !== 1 ? "s" : ""} assigned to you
           </p>
         </div>
         <button
           onClick={() => setRefreshKey((k) => k + 1)}
-          className="flex items-center gap-3 text-sm md:text-lg font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-full border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition"
+          className="flex items-center gap-3 text-body md:text-heading-3 font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-full border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition"
         >
           <RefreshCw className="h-5 w-5 md:h-6 md:w-6" />
           Refresh
@@ -225,7 +225,7 @@ function MyTasks() {
               placeholder="Search by task name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-14 pr-6 py-4 md:py-5 text-lg bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-200 placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/20 font-bold transition"
+              className="w-full pl-14 pr-6 py-4 md:py-5 text-heading-3 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-200 placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/20 font-bold transition"
             />
           </div>
 
@@ -235,7 +235,7 @@ function MyTasks() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full md:w-auto pl-14 pr-10 py-4 md:py-5 text-base md:text-lg font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-200 outline-none focus:ring-4 focus:ring-blue-500/20 appearance-none cursor-pointer"
+              className="w-full md:w-auto pl-14 pr-10 py-4 md:py-5 text-body md:text-heading-3 font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-200 outline-none focus:ring-4 focus:ring-blue-500/20 appearance-none cursor-pointer"
             >
               {statusGroups.map((s) => (
                 <option key={s} value={s}>
@@ -259,12 +259,12 @@ function MyTasks() {
         ) : error ? (
           <div className="flex flex-col items-center justify-center py-20 text-red-500 text-center px-4">
             <AlertCircle className="h-16 w-16 mb-4 opacity-70" />
-            <p className="font-bold text-lg md:text-xl">{error}</p>
+            <p className="font-bold text-heading-3 md:text-heading-2">{error}</p>
           </div>
         ) : filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400">
             <CheckSquare className="h-20 w-20 mb-6 opacity-30" />
-            <h3 className="font-black text-2xl text-slate-600 dark:text-slate-300">
+            <h3 className="font-black text-heading-1 text-slate-600 dark:text-slate-300">
               No tasks found
             </h3>
           </div>
@@ -292,30 +292,30 @@ function MyTasks() {
                       }`}
                     />
                     <div className="min-w-0">
-                      <p className="font-black text-slate-800 dark:text-slate-100 text-lg md:text-2xl group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                      <p className="font-black text-slate-800 dark:text-slate-100 text-heading-3 md:text-heading-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                         {task.title}
                       </p>
                       <div className="flex flex-wrap items-center gap-4 mt-4">
                         <span
-                          className={`flex items-center gap-1.5 text-[10px] md:text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest ${pConf.class}`}
+                          className={`flex items-center gap-1.5 text-[10px] md:text-label font-black px-3 py-1 rounded-full uppercase tracking-widest ${pConf.class}`}
                         >
                           {pConf.label}
                         </span>
                         <span
-                          className={`flex items-center gap-1.5 text-[10px] md:text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest ${sConf.class}`}
+                          className={`flex items-center gap-1.5 text-[10px] md:text-label font-black px-3 py-1 rounded-full uppercase tracking-widest ${sConf.class}`}
                         >
                           <StatusIcon className="h-4 w-4" />
                           {sConf.label}
                         </span>
                         {task.attachmentCount > 0 && (
-                          <span className="flex items-center gap-1 text-[10px] md:text-xs font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full uppercase tracking-widest">
+                          <span className="flex items-center gap-1 text-[10px] md:text-label font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full uppercase tracking-widest">
                             <Paperclip className="h-3.5 w-3.5" />
                             {task.attachmentCount}
                           </span>
                         )}
                         {task.deadline && (
                           <span
-                            className={`flex items-center gap-2 text-[10px] md:text-xs font-black border-l-2 border-slate-200 dark:border-slate-700 pl-4 uppercase tracking-widest ${overdue ? "text-red-500" : "text-slate-400"}`}
+                            className={`flex items-center gap-2 text-[10px] md:text-label font-black border-l-2 border-slate-200 dark:border-slate-700 pl-4 uppercase tracking-widest ${overdue ? "text-red-500" : "text-slate-400"}`}
                           >
                             <Clock className="h-4 w-4" />
                             {new Date(task.deadline).toLocaleDateString()}
@@ -327,7 +327,7 @@ function MyTasks() {
 
                   <button
                     onClick={() => setSelectedTask(task)}
-                    className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm font-black uppercase tracking-widest px-6 py-4 rounded-xl md:rounded-full transition shadow-md shadow-blue-500/20"
+                    className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white text-label md:text-body font-black uppercase tracking-widest px-6 py-4 rounded-xl md:rounded-full transition shadow-md shadow-blue-500/20"
                   >
                     Manage Workspace
                   </button>
@@ -353,3 +353,4 @@ function MyTasks() {
 }
 
 export default MyTasks;
+

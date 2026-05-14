@@ -21,7 +21,7 @@ import {
 function Toast({ message, type }) {
   return (
     <div
-      className={`fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-sm font-semibold transition-all
+      className={`fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-body font-semibold transition-all
       ${
         type === "success"
           ? "bg-emerald-600 text-white"
@@ -240,7 +240,7 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
         <div className="w-full max-w-3xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-3xl md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between px-8 md:px-12 py-6 md:py-8 border-b-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 shrink-0">
-            <h2 className="font-black text-2xl md:text-3xl text-slate-800 dark:text-white">
+            <h2 className="font-black text-heading-1 md:text-heading-1 text-slate-800 dark:text-white">
               Task Workspace
             </h2>
             <button
@@ -254,23 +254,23 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
           <div className="flex-1 overflow-y-auto custom-scrollbar">
             {/* Task Details */}
             <div className="px-8 md:px-12 py-6 md:py-8 border-b-2 border-slate-100 dark:border-slate-700 bg-blue-50/30 dark:bg-blue-900/10">
-              <h3 className="font-black text-slate-800 dark:text-slate-100 mb-3 text-xl md:text-2xl">
+              <h3 className="font-black text-slate-800 dark:text-slate-100 mb-3 text-heading-2 md:text-heading-1">
                 {task.title}
               </h3>
               {task.description && (
-                <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 mb-5 leading-relaxed font-medium">
+                <p className="text-body md:text-heading-3 text-slate-600 dark:text-slate-400 mb-5 leading-relaxed font-medium">
                   {task.description}
                 </p>
               )}
               <div className="flex flex-wrap gap-4">
                 <span
-                  className={`text-xs md:text-sm font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${pConf.class}`}
+                  className={`text-label md:text-body font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${pConf.class}`}
                 >
                   <Tag className="h-4 w-4 inline mr-2" />
                   {pConf.label} Priority
                 </span>
                 {task.deadline && (
-                  <span className="text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 flex items-center gap-2 bg-white dark:bg-slate-700 px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-600 uppercase tracking-widest">
+                  <span className="text-label md:text-body font-black text-slate-500 dark:text-slate-400 flex items-center gap-2 bg-white dark:bg-slate-700 px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-600 uppercase tracking-widest">
                     <Calendar className="h-4 w-4" />
                     Due: {new Date(task.deadline).toLocaleDateString()}
                   </span>
@@ -286,13 +286,13 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Status Dropdown */}
                 <div>
-                  <label className="block text-sm md:text-base font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
+                  <label className="block text-body md:text-body font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
                     Update Status
                   </label>
                   <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value)}
-                    className="w-full px-6 py-4 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-[1.5rem] bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-base md:text-lg font-bold outline-none focus:ring-4 focus:ring-blue-500/20 transition"
+                    className="w-full px-6 py-4 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-[1.5rem] bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-body md:text-heading-3 font-bold outline-none focus:ring-4 focus:ring-blue-500/20 transition"
                   >
                     {STATUS_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -304,7 +304,7 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
 
                 {/* File Upload Trigger */}
                 <div>
-                  <label className="block text-sm md:text-base font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
+                  <label className="block text-body md:text-body font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
                     Attachments
                   </label>
                   <button
@@ -340,7 +340,7 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <FileText className="h-5 w-5 text-blue-500 shrink-0" />
-                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300 truncate">
+                        <span className="text-body font-bold text-slate-700 dark:text-slate-300 truncate">
                           {file.file_name}
                         </span>
                       </div>
@@ -368,7 +368,7 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
 
               {/* Progress Note */}
               <div>
-                <label className="block text-sm md:text-base font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <label className="block text-body md:text-body font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 md:h-5 md:w-5" />
                   Progress Note / Comment
                 </label>
@@ -377,7 +377,7 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
                   onChange={(e) => setProgressNote(e.target.value)}
                   placeholder="Describe your progress, blockers, or any notes..."
                   rows={4}
-                  className="w-full px-6 py-5 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-[2rem] bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-base md:text-lg font-medium outline-none focus:ring-4 focus:ring-blue-500/20 transition resize-none"
+                  className="w-full px-6 py-5 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-[2rem] bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-body md:text-heading-3 font-medium outline-none focus:ring-4 focus:ring-blue-500/20 transition resize-none"
                 />
               </div>
             </form>
@@ -389,7 +389,7 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-6 py-3 md:px-8 md:py-4 text-sm md:text-lg font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl md:rounded-full transition"
+              className="px-6 py-3 md:px-8 md:py-4 text-body md:text-heading-3 font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl md:rounded-full transition"
             >
               Cancel
             </button>
@@ -397,7 +397,7 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
               type="button"
               onClick={handleSubmit}
               disabled={saving}
-              className="flex items-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-lg font-black uppercase tracking-widest rounded-xl md:rounded-full transition shadow-md shadow-blue-500/20 disabled:opacity-60"
+              className="flex items-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-blue-600 hover:bg-blue-700 text-white text-body md:text-heading-3 font-black uppercase tracking-widest rounded-xl md:rounded-full transition shadow-md shadow-blue-500/20 disabled:opacity-60"
             >
               {saving ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -417,3 +417,4 @@ function TaskUpdateModal({ task, onClose, onSuccess }) {
 }
 
 export default TaskUpdateModal;
+

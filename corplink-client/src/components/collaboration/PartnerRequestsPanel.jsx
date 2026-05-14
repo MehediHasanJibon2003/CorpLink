@@ -98,11 +98,11 @@ function PartnerRequestsPanel() {
       <div className="group bg-white dark:bg-slate-800 rounded-[2.5rem] border-2 border-slate-100 dark:border-white/5 p-10 hover:border-blue-500/30 transition-all hover:shadow-2xl">
         <div className="flex items-start justify-between mb-8">
            <div className="flex items-center gap-6">
-              <div className="h-16 w-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 flex items-center justify-center font-black text-2xl text-slate-800 dark:text-white shadow-inner">
+              <div className="h-16 w-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 flex items-center justify-center font-black text-heading-1 text-slate-800 dark:text-white shadow-inner">
                 {displayName.charAt(0)}
               </div>
               <div>
-                <h4 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none">{displayName}</h4>
+                <h4 className="text-heading-1 font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none">{displayName}</h4>
                 <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-2">{displayRole}</p>
               </div>
            </div>
@@ -112,7 +112,7 @@ function PartnerRequestsPanel() {
            </div>
         </div>
 
-        <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl text-lg text-slate-700 dark:text-slate-300 font-medium italic border-2 border-transparent group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all">
+        <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl text-heading-3 text-slate-700 dark:text-slate-300 font-medium italic border-2 border-transparent group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all">
           "{req.message}"
         </div>
 
@@ -161,15 +161,15 @@ function PartnerRequestsPanel() {
                  <Inbox className="h-10 w-10" />
               </div>
               <div>
-                 <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Incoming <br /> Protocols</h3>
-                 <p className="text-sm font-black text-slate-400 uppercase tracking-widest mt-1">Pending Authorization</p>
+                 <h3 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Incoming <br /> Protocols</h3>
+                 <p className="text-body font-black text-slate-400 uppercase tracking-widest mt-1">Pending Authorization</p>
               </div>
            </div>
 
            <div className="space-y-8">
               {received.length === 0 ? (
                 <div className="py-20 text-center border-4 border-dashed border-slate-100 dark:border-slate-800 rounded-[3rem]">
-                   <p className="text-2xl font-black text-slate-300 uppercase tracking-widest">Inbound frequency silent.</p>
+                   <p className="text-heading-1 font-black text-slate-300 uppercase tracking-widest">Inbound frequency silent.</p>
                 </div>
               ) : (
                 received.map(req => <RequestCard key={req.id} req={req} isSent={false} />)
@@ -184,15 +184,15 @@ function PartnerRequestsPanel() {
                  <Send className="h-10 w-10" />
               </div>
               <div>
-                 <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Transmitted <br /> Requests</h3>
-                 <p className="text-sm font-black text-slate-400 uppercase tracking-widest mt-1">Global Broadcast history</p>
+                 <h3 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Transmitted <br /> Requests</h3>
+                 <p className="text-body font-black text-slate-400 uppercase tracking-widest mt-1">Global Broadcast history</p>
               </div>
            </div>
 
            <div className="space-y-8">
               {sent.length === 0 ? (
                 <div className="py-20 text-center border-4 border-dashed border-slate-100 dark:border-slate-800 rounded-[3rem]">
-                   <p className="text-2xl font-black text-slate-300 uppercase tracking-widest">Outbound queue empty.</p>
+                   <p className="text-heading-1 font-black text-slate-300 uppercase tracking-widest">Outbound queue empty.</p>
                 </div>
               ) : (
                 sent.map(req => <RequestCard key={req.id} req={req} isSent={true} />)
@@ -205,3 +205,4 @@ function PartnerRequestsPanel() {
 }
 
 export default PartnerRequestsPanel
+

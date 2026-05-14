@@ -71,14 +71,14 @@ export default function Workflow() {
               )}
               <div className="relative flex flex-col items-center text-center z-10">
                 <div className="w-24 h-24 rounded-[2rem] bg-orange-500/10 flex items-center justify-center border border-orange-500/20 mb-8 shadow-2xl shadow-orange-500/5 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
-                  <span className="font-black text-4xl text-orange-500 group-hover:text-white">
+                  <span className="font-black text-heading-1 text-orange-500 group-hover:text-white">
                     0{idx + 1}
                   </span>
                 </div>
-                <h3 className="text-3xl font-black text-white mb-6 tracking-tight">
+                <h3 className="text-heading-1 font-black text-white mb-6 tracking-tight">
                   {step.title}
                 </h3>
-                <p className="text-xl text-slate-400 leading-relaxed font-medium">
+                <p className="text-heading-2 text-slate-400 leading-relaxed font-medium">
                   {step.description}
                 </p>
               </div>
@@ -89,4 +89,5 @@ export default function Workflow() {
     </section>
   );
 }
+
 

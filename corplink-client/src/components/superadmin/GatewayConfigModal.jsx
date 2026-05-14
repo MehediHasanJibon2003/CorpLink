@@ -36,7 +36,7 @@ export default function GatewayConfigModal({ gateway, onClose, onSuccess }) {
               <Key className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{gateway.display_name}</h2>
+              <h2 className="text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">{gateway.display_name}</h2>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Configure Credentials</p>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function GatewayConfigModal({ gateway, onClose, onSuccess }) {
                   value={config.bank_details || ""}
                   onChange={e => setConfig({...config, bank_details: e.target.value})}
                   rows={4}
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-3xl outline-none focus:border-violet-600 font-bold text-sm"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-3xl outline-none focus:border-violet-600 font-bold text-body"
                   placeholder="Bank Name: ...&#10;A/C No: ...&#10;Branch: ..."
                 />
               </div>
@@ -122,3 +122,4 @@ export default function GatewayConfigModal({ gateway, onClose, onSuccess }) {
     </div>
   );
 }
+

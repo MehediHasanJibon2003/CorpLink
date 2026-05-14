@@ -211,7 +211,7 @@ function CommunicationPanel({ activeDept, profile }) {
   if (loading) return (
     <div className="p-20 text-center flex flex-col items-center gap-4">
       <RefreshCw className="h-10 w-10 animate-spin text-blue-500" />
-      <p className="text-xl font-bold text-slate-400 uppercase tracking-widest">Synchronizing Encrypted Channel...</p>
+      <p className="text-heading-2 font-bold text-slate-400 uppercase tracking-widest">Synchronizing Encrypted Channel...</p>
     </div>
   )
 
@@ -219,7 +219,7 @@ function CommunicationPanel({ activeDept, profile }) {
     <div className="p-20 text-center flex flex-col items-center gap-6 bg-red-50/50 dark:bg-red-900/10 rounded-[3rem] border-2 border-red-100 dark:border-red-900/20">
       <AlertTriangle className="h-16 w-16 text-red-500" />
       <div>
-        <h3 className="text-2xl font-black text-red-600 uppercase">Comm Link Failure</h3>
+        <h3 className="text-heading-1 font-black text-red-600 uppercase">Comm Link Failure</h3>
         <p className="text-slate-500 font-bold mt-2">{syncError}</p>
       </div>
       <button 
@@ -235,8 +235,8 @@ function CommunicationPanel({ activeDept, profile }) {
     <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm border-2 border-slate-200 dark:border-slate-700 flex flex-col h-[600px] md:h-[750px] overflow-hidden transition-all">
       <div className="p-6 md:p-10 border-b-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
         <div>
-          <h3 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight">#{activeDept.name.toLowerCase().replace(/\s+/g, '-')}</h3>
-          <p className="text-sm md:text-lg text-slate-500 dark:text-slate-400 font-medium mt-1">Internal department workflow communication</p>
+          <h3 className="text-heading-1 md:text-heading-1 font-black text-slate-800 dark:text-slate-100 tracking-tight">#{activeDept.name.toLowerCase().replace(/\s+/g, '-')}</h3>
+          <p className="text-body md:text-heading-3 text-slate-500 dark:text-slate-400 font-medium mt-1">Internal department workflow communication</p>
         </div>
         <button 
           onClick={() => resolveGroupId(true)}
@@ -249,8 +249,8 @@ function CommunicationPanel({ activeDept, profile }) {
 
       <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 md:space-y-8 custom-scrollbar bg-white dark:bg-slate-800/50">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-slate-400 italic text-lg md:text-2xl font-medium opacity-60">
-            <span className="text-4xl md:text-6xl mb-4">💬</span>
+          <div className="h-full flex flex-col items-center justify-center text-slate-400 italic text-heading-3 md:text-heading-1 font-medium opacity-60">
+            <span className="text-heading-1 md:text-6xl mb-4">💬</span>
             No messages yet. Start the conversation!
           </div>
         ) : messages.map((msg) => {
@@ -259,11 +259,11 @@ function CommunicationPanel({ activeDept, profile }) {
             <div key={msg.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
               <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[85%] md:max-w-[70%]`}>
                 <div className="flex items-baseline gap-3 mb-2 px-2">
-                  {!isMe && <span className="text-sm md:text-base font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">{msg.sender?.full_name || "Member"}</span>}
-                  <span className="text-[10px] md:text-xs text-slate-400 font-bold uppercase">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
-                  {isMe && <span className="text-sm md:text-base font-black text-blue-600 uppercase tracking-widest">You</span>}
+                  {!isMe && <span className="text-body md:text-body font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">{msg.sender?.full_name || "Member"}</span>}
+                  <span className="text-[10px] md:text-label text-slate-400 font-bold uppercase">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
+                  {isMe && <span className="text-body md:text-body font-black text-blue-600 uppercase tracking-widest">You</span>}
                 </div>
-                <div className={`px-6 py-4 md:px-8 md:py-6 rounded-[2rem] text-base md:text-2xl shadow-sm font-medium leading-relaxed transition-all hover:shadow-md ${
+                <div className={`px-6 py-4 md:px-8 md:py-6 rounded-[2rem] text-body md:text-heading-1 shadow-sm font-medium leading-relaxed transition-all hover:shadow-md ${
                   isMe 
                     ? 'bg-blue-600 text-white rounded-tr-none' 
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200 dark:border-slate-600'
@@ -273,7 +273,7 @@ function CommunicationPanel({ activeDept, profile }) {
                       {msg.file_type?.startsWith('image/') ? (
                         <div className="relative group/img">
                            <img src={msg.file_url} alt={msg.file_name} className="max-w-full rounded-xl cursor-pointer" />
-                           <a href={msg.file_url} target="_blank" rel="noreferrer" className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all rounded-xl text-white font-black uppercase text-xs">View</a>
+                           <a href={msg.file_url} target="_blank" rel="noreferrer" className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all rounded-xl text-white font-black uppercase text-label">View</a>
                         </div>
                       ) : (
                         <>
@@ -281,7 +281,7 @@ function CommunicationPanel({ activeDept, profile }) {
                             <FileIcon className="h-6 w-6" />
                           </div>
                           <div className="min-w-0">
-                             <p className="font-black text-xs truncate">{msg.file_name}</p>
+                             <p className="font-black text-label truncate">{msg.file_name}</p>
                              <a href={msg.file_url} target="_blank" rel="noreferrer" className={`text-[10px] font-bold uppercase tracking-widest hover:underline ${isMe ? 'text-blue-100' : 'text-blue-500'}`}>Download</a>
                           </div>
                         </>
@@ -302,7 +302,7 @@ function CommunicationPanel({ activeDept, profile }) {
           <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border-2 border-blue-200 dark:border-blue-800 flex items-center justify-between">
              <div className="flex items-center gap-3">
                 <FileIcon className="h-5 w-5 text-blue-500" />
-                <span className="font-black text-blue-700 dark:text-blue-300 text-xs truncate max-w-[200px]">{attachedFile.name}</span>
+                <span className="font-black text-blue-700 dark:text-blue-300 text-label truncate max-w-[200px]">{attachedFile.name}</span>
              </div>
              <button onClick={() => setAttachedFile(null)} className="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-full">
                 <X className="h-4 w-4 text-blue-600" />
@@ -323,10 +323,10 @@ function CommunicationPanel({ activeDept, profile }) {
             value={newMessage} 
             onChange={e => setNewMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 rounded-[3rem] px-8 py-4 md:py-6 outline-none focus:border-blue-500 text-base md:text-2xl font-bold transition-all shadow-inner"
+            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 rounded-[3rem] px-8 py-4 md:py-6 outline-none focus:border-blue-500 text-body md:text-heading-1 font-bold transition-all shadow-inner"
           />
           <button type="submit" disabled={isUploading} className="bg-slate-900 hover:bg-black dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 rounded-full w-16 h-16 md:w-24 md:h-24 flex flex-shrink-0 items-center justify-center transition shadow-lg">
-            {isUploading ? <Loader2 className="h-8 w-8 animate-spin" /> : <span className="text-3xl md:text-5xl">➤</span>}
+            {isUploading ? <Loader2 className="h-8 w-8 animate-spin" /> : <span className="text-heading-1 md:text-5xl">➤</span>}
           </button>
         </form>
       </div>
@@ -335,3 +335,4 @@ function CommunicationPanel({ activeDept, profile }) {
 }
 
 export default CommunicationPanel
+

@@ -34,7 +34,7 @@ function Skeleton({ className = "" }) {
 function Toast({ message, type }) {
   return (
     <div
-      className={`fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-sm font-semibold
+      className={`fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-body font-semibold
       ${type === "success" ? "bg-emerald-600 text-white" : "bg-red-600 text-white"}`}
     >
       {type === "success" ? (
@@ -294,18 +294,18 @@ function MyProfile() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <h1 className="text-heading-1 font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
             <UserCircle className="h-6 w-6 text-blue-500" />
             My Profile
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
+          <p className="text-slate-500 dark:text-slate-400 text-body mt-0.5">
             View and manage your personal information
           </p>
         </div>
         {!editMode ? (
           <button
             onClick={() => setEditMode(true)}
-            className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
+            className="flex items-center gap-2 text-body font-semibold text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
           >
             <Edit3 className="h-4 w-4" />
             Edit Profile
@@ -318,7 +318,7 @@ function MyProfile() {
                 setPhone(employeeData?.phone || "");
                 setPhotoUrl(employeeData?.profile_photo || "");
               }}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+              className="flex items-center gap-2 text-body font-semibold text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
             >
               <X className="h-4 w-4" />
               Cancel
@@ -326,7 +326,7 @@ function MyProfile() {
             <button
               onClick={handleSaveProfile}
               disabled={saving}
-              className="flex items-center gap-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl transition disabled:opacity-60"
+              className="flex items-center gap-2 text-body font-bold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl transition disabled:opacity-60"
             >
               {saving ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -376,10 +376,10 @@ function MyProfile() {
             />
           </div>
 
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             {displayName}
           </h2>
-          <p className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 mt-2 font-bold capitalize">
+          <p className="text-heading-2 md:text-heading-1 text-slate-500 dark:text-slate-400 mt-2 font-bold capitalize">
             {employeeData?.designation ||
               employeeData?.role ||
               profile?.role ||
@@ -387,14 +387,14 @@ function MyProfile() {
           </p>
 
           {/* Active badge */}
-          <div className="inline-flex items-center gap-2 mt-6 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 px-6 py-2 rounded-full text-sm md:text-lg font-black uppercase tracking-widest border-2 border-emerald-200 dark:border-emerald-800 shadow-md">
+          <div className="inline-flex items-center gap-2 mt-6 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 px-6 py-2 rounded-full text-body md:text-heading-3 font-black uppercase tracking-widest border-2 border-emerald-200 dark:border-emerald-800 shadow-md">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             Active Employee
           </div>
 
           {/* Join Date */}
           {employeeData?.joined_at && (
-            <p className="flex items-center justify-center gap-2 text-sm md:text-base text-slate-400 mt-8 font-black uppercase tracking-[0.1em]">
+            <p className="flex items-center justify-center gap-2 text-body md:text-body text-slate-400 mt-8 font-black uppercase tracking-[0.1em]">
               <Calendar className="h-5 w-5" />
               Joined{" "}
               {new Date(employeeData.joined_at).toLocaleDateString("en-US", {
@@ -409,33 +409,33 @@ function MyProfile() {
         <div className="xl:col-span-2 space-y-8 md:space-y-12">
           {/* Personal Information */}
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm p-12 md:p-16">
-            <h3 className="font-black text-slate-800 dark:text-white mb-8 md:mb-10 text-xl md:text-2xl uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <h3 className="font-black text-slate-800 dark:text-white mb-8 md:mb-10 text-heading-2 md:text-heading-1 uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Personal Information
             </h3>
             <div className="grid xl:grid-cols-2 gap-8 md:gap-10">
               {/* Name (read-only) */}
               <div>
-                <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
+                <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
                   <UserCircle className="h-5 w-5" /> Full Name
                 </label>
-                <p className="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
+                <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
                   {displayName}
                 </p>
               </div>
 
               {/* Email (read-only) */}
               <div>
-                <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
+                <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
                   <Mail className="h-5 w-5" /> Email
                 </label>
-                <p className="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700 truncate">
+                <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700 truncate">
                   {displayEmail}
                 </p>
               </div>
 
               {/* Phone (editable) */}
               <div>
-                <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
+                <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
                   <Phone className="h-5 w-5" /> Phone Number
                 </label>
                 {editMode ? (
@@ -444,10 +444,10 @@ function MyProfile() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full px-6 py-4 border-2 border-blue-300 dark:border-blue-700 rounded-2xl bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-lg outline-none focus:ring-4 focus:ring-blue-500/20"
+                    className="w-full px-6 py-4 border-2 border-blue-300 dark:border-blue-700 rounded-2xl bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-heading-3 outline-none focus:ring-4 focus:ring-blue-500/20"
                   />
                 ) : (
-                  <p className="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
+                  <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
                     {employeeData?.phone || "Not set"}
                   </p>
                 )}
@@ -455,10 +455,10 @@ function MyProfile() {
 
               {/* Designation (read-only) */}
               <div>
-                <label className="text-sm md:text-base font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
+                <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
                   <Briefcase className="h-5 w-5" /> Designation
                 </label>
-                <p className="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
+                <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
                   {employeeData?.designation || "Not specified"}
                 </p>
               </div>
@@ -468,13 +468,13 @@ function MyProfile() {
           {/* Security — Password Change */}
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm p-12 md:p-16">
             <div className="flex items-center justify-between mb-8 md:mb-10">
-              <h3 className="font-black text-slate-800 dark:text-white flex items-center gap-4 text-xl md:text-2xl uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <h3 className="font-black text-slate-800 dark:text-white flex items-center gap-4 text-heading-2 md:text-heading-1 uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 <ShieldCheck className="h-8 w-8" />
                 Security
               </h3>
               <button
                 onClick={() => setShowPasswordForm(!showPasswordForm)}
-                className="text-sm md:text-lg font-black text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2"
+                className="text-body md:text-heading-3 font-black text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2"
               >
                 <Lock className="h-5 w-5" />
                 {showPasswordForm ? "Cancel" : "Change Password"}
@@ -487,7 +487,7 @@ function MyProfile() {
                 className="space-y-6 md:space-y-8"
               >
                 <div>
-                  <label className="block text-sm md:text-base font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] mb-3">
+                  <label className="block text-body md:text-body font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] mb-3">
                     New Password
                   </label>
                   <input
@@ -497,11 +497,11 @@ function MyProfile() {
                     placeholder="••••••••"
                     required
                     minLength={6}
-                    className="w-full px-6 py-4 border-2 border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-lg outline-none focus:ring-4 focus:ring-blue-500/20"
+                    className="w-full px-6 py-4 border-2 border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-heading-3 outline-none focus:ring-4 focus:ring-blue-500/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm md:text-base font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] mb-3">
+                  <label className="block text-body md:text-body font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.1em] mb-3">
                     Confirm New Password
                   </label>
                   <input
@@ -510,13 +510,13 @@ function MyProfile() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full px-6 py-4 border-2 border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-lg outline-none focus:ring-4 focus:ring-blue-500/20"
+                    className="w-full px-6 py-4 border-2 border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-heading-3 outline-none focus:ring-4 focus:ring-blue-500/20"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={changingPassword}
-                  className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full text-lg font-black uppercase tracking-widest shadow-md transition disabled:opacity-60"
+                  className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full text-heading-3 font-black uppercase tracking-widest shadow-md transition disabled:opacity-60"
                 >
                   {changingPassword && (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -525,7 +525,7 @@ function MyProfile() {
                 </button>
               </form>
             ) : (
-              <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-bold">
+              <p className="text-heading-3 md:text-heading-2 text-slate-500 dark:text-slate-400 font-bold">
                 Your password is managed securely. Click "Change Password" to
                 update it.
               </p>
@@ -535,7 +535,7 @@ function MyProfile() {
           {/* Recent Activity */}
           {recentActivity.length > 0 && (
             <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm p-12 md:p-16">
-              <h3 className="font-black text-slate-800 dark:text-white mb-8 md:mb-10 text-xl md:text-2xl uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <h3 className="font-black text-slate-800 dark:text-white mb-8 md:mb-10 text-heading-2 md:text-heading-1 uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Recent Activity
               </h3>
               <div className="space-y-6 md:space-y-8">
@@ -548,10 +548,10 @@ function MyProfile() {
                       <Clock className="h-8 w-8" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-100 truncate mb-1">
+                      <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-100 truncate mb-1">
                         {log.action}
                       </p>
-                      <p className="text-sm md:text-base text-slate-500 font-bold uppercase tracking-widest">
+                      <p className="text-body md:text-body text-slate-500 font-bold uppercase tracking-widest">
                         {timeAgo(log.created_at)}
                       </p>
                     </div>
@@ -569,3 +569,4 @@ function MyProfile() {
 }
 
 export default MyProfile;
+

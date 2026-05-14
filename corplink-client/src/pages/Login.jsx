@@ -145,14 +145,14 @@ function Login() {
 
         <div className="relative z-10">
           <Link to="/" className="flex items-center gap-5 w-fit">
-            <div className="w-16 h-16 rounded-3xl bg-orange-500 flex items-center justify-center font-black text-white text-3xl shadow-xl shadow-orange-500/30 overflow-hidden">
+            <div className="w-16 h-16 rounded-3xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-1 shadow-xl shadow-orange-500/30 overflow-hidden">
               {branding.logo_url ? (
                 <img src={branding.logo_url} className="w-full h-full object-cover" alt="Logo" />
               ) : (
                 "C"
               )}
             </div>
-            <span className="text-4xl font-black text-white tracking-tight">
+            <span className="text-heading-1 font-black text-white tracking-tight">
               {branding.platform_name || "CorpLink"}
             </span>
           </Link>
@@ -161,7 +161,7 @@ function Login() {
         <div className="relative z-10 mt-16 xl:mt-24 mb-auto">
           <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-6 py-2.5 mb-10">
             <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-white/90 text-lg font-semibold tracking-wide">
+            <span className="text-white/90 text-heading-3 font-semibold tracking-wide">
               Enterprise Platform
             </span>
           </div>
@@ -169,7 +169,7 @@ function Login() {
             One platform.<br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-orange-400">Every team.</span>
           </h1>
-          <p className="text-slate-300 text-2xl leading-relaxed mb-16 max-w-2xl">
+          <p className="text-slate-300 text-heading-1 leading-relaxed mb-16 max-w-2xl">
             Manage your entire organization — departments, teams, tasks, and communication — from a single unified workspace.
           </p>
 
@@ -182,8 +182,8 @@ function Login() {
                     <Icon className="h-10 w-10 md:h-12 md:w-12 text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-white font-black text-2xl md:text-3xl tracking-tight">{f.title}</p>
-                    <p className="text-slate-400 text-lg md:text-xl font-medium mt-1">{f.desc}</p>
+                    <p className="text-white font-black text-heading-1 md:text-heading-1 tracking-tight">{f.title}</p>
+                    <p className="text-slate-400 text-heading-3 md:text-heading-2 font-medium mt-1">{f.desc}</p>
                   </div>
                 </div>
               );
@@ -191,7 +191,7 @@ function Login() {
           </div>
         </div>
 
-        <div className="relative z-10 flex items-center gap-4 text-slate-500 text-xs">
+        <div className="relative z-10 flex items-center gap-4 text-slate-500 text-label">
           <span>© 2026 {branding.platform_name || "CorpLink"}</span>
           <span>•</span>
           <span>Enterprise-grade security</span>
@@ -207,10 +207,10 @@ function Login() {
       <div className="flex-1 flex flex-col justify-center items-center px-6 py-12 bg-white dark:bg-slate-950 overflow-y-auto">
         <div className="lg:hidden mb-8">
           <Link to="/" className="flex items-center gap-3 justify-center">
-            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center font-black text-white text-lg shadow-lg overflow-hidden">
+            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-3 shadow-lg overflow-hidden">
               {branding.logo_url ? <img src={branding.logo_url} className="w-full h-full object-cover" /> : "C"}
             </div>
-            <span className="text-2xl font-black text-slate-900 dark:text-white">
+            <span className="text-heading-1 font-black text-slate-900 dark:text-white">
               {branding.platform_name || "CorpLink"}
             </span>
           </Link>
@@ -219,12 +219,12 @@ function Login() {
         <div className="w-full max-w-xl">
           <div className="mb-12">
             <h2 className="text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">Welcome back</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-xl">Sign in to your corporate workspace</p>
+            <p className="text-slate-500 dark:text-slate-400 text-heading-2">Sign in to your corporate workspace</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-3">
-              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">Email Address</label>
+              <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400" />
                 <input
@@ -233,15 +233,15 @@ function Login() {
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl outline-none focus:border-blue-500 transition-all text-xl font-bold"
+                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl outline-none focus:border-blue-500 transition-all text-heading-2 font-bold"
                 />
               </div>
             </div>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">Password</label>
-                <Link to="/forgot-password" title="Coming soon" className="text-base font-bold text-blue-600">Forgot Password?</Link>
+                <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">Password</label>
+                <Link to="/forgot-password" title="Coming soon" className="text-body font-bold text-blue-600">Forgot Password?</Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400" />
@@ -251,7 +251,7 @@ function Login() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-14 pr-16 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl outline-none focus:border-blue-500 transition-all text-xl font-bold"
+                  className="w-full pl-14 pr-16 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl outline-none focus:border-blue-500 transition-all text-heading-2 font-bold"
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
                   {showPassword ? <EyeOff /> : <Eye />}
@@ -268,7 +268,7 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-blue-600 text-white py-5 rounded-2xl font-black text-xl shadow-xl shadow-blue-600/20 mt-6"
+              className="w-full flex items-center justify-center gap-3 bg-blue-600 text-white py-5 rounded-2xl font-black text-heading-2 shadow-xl shadow-blue-600/20 mt-6"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
@@ -287,3 +287,4 @@ function Login() {
 }
 
 export default Login;
+

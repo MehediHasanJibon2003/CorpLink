@@ -28,7 +28,7 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
             <div className="w-10 h-10 rounded-xl bg-violet-600 flex items-center justify-center text-white">
               <FileText className="h-5 w-5" />
             </div>
-            <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">Invoice Details</h2>
+            <h2 className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight">Invoice Details</h2>
           </div>
           <div className="flex items-center gap-3">
             <button 
@@ -65,10 +65,10 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
             <div className="flex justify-between items-start">
               <div className="space-y-4">
                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-slate-900 flex items-center justify-center text-white rounded-2xl font-black text-2xl">C</div>
-                    <h1 className="text-3xl font-black tracking-tighter uppercase">CorpLink <span className="text-violet-600">Pro</span></h1>
+                    <div className="w-12 h-12 bg-slate-900 flex items-center justify-center text-white rounded-2xl font-black text-heading-1">C</div>
+                    <h1 className="text-heading-1 font-black tracking-tighter uppercase">CorpLink <span className="text-violet-600">Pro</span></h1>
                  </div>
-                 <div className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
+                 <div className="text-label font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
                    Corporate Management Platform <br />
                    San Francisco, CA 94103 <br />
                    support@corplink.com
@@ -76,7 +76,7 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
               </div>
               <div className="text-right space-y-2">
                  <h2 className="text-5xl font-black text-slate-200 uppercase tracking-tighter">Invoice</h2>
-                 <p className="text-sm font-black text-slate-900 uppercase tracking-widest">#{invoice.invoice_number}</p>
+                 <p className="text-body font-black text-slate-900 uppercase tracking-widest">#{invoice.invoice_number}</p>
                  <span className={`inline-block px-4 py-1 rounded-full text-[10px] font-black uppercase border-2 ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
                     {invoice.status}
                  </span>
@@ -90,9 +90,9 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
                <div className="space-y-4">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Bill To:</p>
                   <div className="space-y-1">
-                    <h3 className="text-xl font-black uppercase text-slate-900">{invoice.companies?.name}</h3>
-                    <p className="text-sm font-bold text-slate-500">{invoice.companies?.industry || "Enterprise Corporate"}</p>
-                    <p className="text-xs font-medium text-slate-400">Client ID: {invoice.company_id.substring(0, 12)}</p>
+                    <h3 className="text-heading-2 font-black uppercase text-slate-900">{invoice.companies?.name}</h3>
+                    <p className="text-body font-bold text-slate-500">{invoice.companies?.industry || "Enterprise Corporate"}</p>
+                    <p className="text-label font-medium text-slate-400">Client ID: {invoice.company_id.substring(0, 12)}</p>
                   </div>
                </div>
                <div className="flex justify-end gap-12">
@@ -119,19 +119,19 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
                   <tbody className="divide-y-2 divide-slate-100">
                      <tr>
                         <td className="px-8 py-10">
-                           <p className="text-lg font-black text-slate-900 uppercase">{invoice.subscription_plans?.name || 'Corporate'} Plan</p>
-                           <p className="text-xs font-bold text-slate-500 mt-1">Full access to enterprise modules and collaboration hub.</p>
+                           <p className="text-heading-3 font-black text-slate-900 uppercase">{invoice.subscription_plans?.name || 'Corporate'} Plan</p>
+                           <p className="text-label font-bold text-slate-500 mt-1">Full access to enterprise modules and collaboration hub.</p>
                         </td>
                         <td className="px-8 py-10 text-right">
-                           <p className="text-xl font-black text-slate-900">${invoice.amount}</p>
+                           <p className="text-heading-2 font-black text-slate-900">${invoice.amount}</p>
                         </td>
                      </tr>
                   </tbody>
                   <tfoot>
                      <tr className="bg-slate-900 text-white">
-                        <td className="px-8 py-6 text-sm font-black uppercase tracking-widest">Total Amount Due</td>
+                        <td className="px-8 py-6 text-body font-black uppercase tracking-widest">Total Amount Due</td>
                         <td className="px-8 py-6 text-right">
-                           <p className="text-2xl font-black">${invoice.amount}</p>
+                           <p className="text-heading-1 font-black">${invoice.amount}</p>
                         </td>
                      </tr>
                   </tfoot>
@@ -141,7 +141,7 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
             {/* Notes */}
             <div className="space-y-4">
                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Terms & Instructions:</p>
-               <p className="text-xs font-bold text-slate-500 leading-relaxed max-w-lg">
+               <p className="text-label font-bold text-slate-500 leading-relaxed max-w-lg">
                   Please make payment by the due date. For bank transfers, include the invoice number in the reference field. 
                   Thank you for using CorpLink for your organizational workflow management.
                </p>
@@ -161,3 +161,4 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
     </div>
   );
 }
+

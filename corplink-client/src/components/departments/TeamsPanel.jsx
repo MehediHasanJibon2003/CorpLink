@@ -73,14 +73,14 @@ function TeamsPanel({ activeDept, user, profile }) {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="bg-white dark:bg-slate-800 rounded-3xl border-2 border-slate-100 dark:border-white/5 p-8 shadow-sm">
-        <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">Create New Strategic Team</h4>
+        <h4 className="text-body font-black text-slate-400 uppercase tracking-widest mb-6">Create New Strategic Team</h4>
         <form onSubmit={handleCreateTeam} className="flex flex-col md:flex-row gap-4">
           <input 
             type="text" value={name} onChange={e => setName(e.target.value)}
             placeholder="Team Title (e.g. Alpha Squad)"
-            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 text-sm font-bold"
+            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 text-body font-bold"
           />
-          <button type="submit" disabled={loading} className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 transition-all">
+          <button type="submit" disabled={loading} className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black uppercase text-label tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 transition-all">
             {loading ? "Adding..." : "Launch Team"}
           </button>
         </form>
@@ -100,8 +100,8 @@ function TeamsPanel({ activeDept, user, profile }) {
                  </div>
                  <button onClick={() => handleDeleteTeam(team.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"><Trash2 className="h-5 w-5" /></button>
               </div>
-              <h5 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-2">{team.name}</h5>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-8">Strategic Operations Unit</p>
+              <h5 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-2">{team.name}</h5>
+              <p className="text-label font-bold text-slate-500 uppercase tracking-widest mb-8">Strategic Operations Unit</p>
             </div>
             
             <div className="space-y-4">
@@ -123,3 +123,4 @@ function TeamsPanel({ activeDept, user, profile }) {
 }
 
 export default TeamsPanel
+

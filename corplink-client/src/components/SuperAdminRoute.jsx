@@ -10,14 +10,14 @@ export default function SuperAdminRoute({ children }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0f0a1e]">
         <div className="flex flex-col items-center gap-6">
-          <div className="w-20 h-20 rounded-2xl bg-violet-600 flex items-center justify-center font-black text-white text-3xl animate-pulse shadow-xl shadow-violet-600/20 overflow-hidden">
+          <div className="w-20 h-20 rounded-2xl bg-violet-600 flex items-center justify-center font-black text-white text-heading-1 animate-pulse shadow-xl shadow-violet-600/20 overflow-hidden">
             {branding?.logo_url ? (
               <img src={branding.logo_url} className="w-full h-full object-cover" />
             ) : (
               (branding?.platform_name?.charAt(0) || "C")
             )}
           </div>
-          <p className="text-violet-300 text-lg font-black uppercase tracking-widest animate-bounce">
+          <p className="text-violet-300 text-heading-3 font-black uppercase tracking-widest animate-bounce">
             {branding?.platform_name || "CorpLink"}
           </p>
         </div>
@@ -34,3 +34,4 @@ export default function SuperAdminRoute({ children }) {
 
   return children
 }
+

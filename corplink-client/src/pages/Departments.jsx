@@ -130,7 +130,7 @@ function Departments() {
     fetchDepartments()
   }
 
-  if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900"><p className="text-lg font-black text-blue-600 animate-pulse">Initializing Corporate Infrastructure...</p></div>
+  if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900"><p className="text-heading-3 font-black text-blue-600 animate-pulse">Initializing Corporate Infrastructure...</p></div>
 
   const activeDept = departments.find(d => d.id === activeDeptId)
 
@@ -149,30 +149,30 @@ function Departments() {
         {/* Left Sidebar: Master List */}
         <div className="xl:w-96 flex flex-col gap-6">
           <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-violet-500/10 p-8">
-            <h3 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-2">
+            <h3 className="text-heading-3 font-black text-slate-800 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-2">
               <Plus className="h-5 w-5 text-blue-500" /> New Unit
             </h3>
             <form onSubmit={handleCreateDepartment} className="space-y-4">
               <input 
                 type="text" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} 
                 placeholder="Dept Name (e.g. Sales)" 
-                className="w-full border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 text-sm font-bold bg-slate-50 dark:bg-slate-900/50" 
+                className="w-full border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 text-body font-bold bg-slate-50 dark:bg-slate-900/50" 
               />
-              <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all">
+              <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase text-label tracking-widest shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all">
                 {loading ? "Creating..." : "Add Department"}
               </button>
             </form>
-            {error && <p className="text-red-500 font-bold text-xs mt-3">{error}</p>}
+            {error && <p className="text-red-500 font-bold text-label mt-3">{error}</p>}
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-violet-500/10 overflow-hidden flex-1">
             <div className="px-8 py-6 border-b-2 border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 flex justify-between items-center">
-              <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest">Active Units</h3>
+              <h3 className="text-body font-black text-slate-500 uppercase tracking-widest">Active Units</h3>
               <span className="bg-blue-100 text-blue-700 text-[10px] font-black px-3 py-1 rounded-full">{departments.length}</span>
             </div>
             <div className="divide-y-2 divide-slate-50 dark:divide-white/5 max-h-[500px] overflow-y-auto custom-scrollbar">
               {departments.length === 0 ? (
-                <p className="p-10 text-slate-400 text-center text-sm font-bold italic">No units established.</p>
+                <p className="p-10 text-slate-400 text-center text-body font-bold italic">No units established.</p>
               ) : departments.map(dept => (
                 <button
                   key={dept.id}
@@ -180,7 +180,7 @@ function Departments() {
                   className={`w-full text-left p-6 transition-all flex items-center justify-between group ${activeDeptId === dept.id ? "bg-blue-50/50 dark:bg-blue-600/10 border-l-4 border-blue-600" : "hover:bg-slate-50 dark:hover:bg-white/5 border-l-4 border-transparent"}`}
                 >
                   <div>
-                    <p className={`text-lg font-black tracking-tight ${activeDeptId === dept.id ? "text-blue-600" : "text-slate-700 dark:text-slate-200"}`}>{dept.name}</p>
+                    <p className={`text-heading-3 font-black tracking-tight ${activeDeptId === dept.id ? "text-blue-600" : "text-slate-700 dark:text-slate-200"}`}>{dept.name}</p>
                     <p className="text-[10px] text-slate-400 font-black uppercase mt-1 tracking-widest">Head: {dept.head?.name || "Unassigned"}</p>
                   </div>
                   <ChevronRight className={`h-5 w-5 transition-transform ${activeDeptId === dept.id ? "text-blue-600 translate-x-1" : "text-slate-300"}`} />
@@ -197,7 +197,7 @@ function Departments() {
               <div className="w-24 h-24 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-8">
                  <Building2 className="h-12 w-12 text-slate-300" />
               </div>
-              <h3 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Select a Department</h3>
+              <h3 className="text-heading-1 font-black text-slate-800 dark:text-white uppercase tracking-tight">Select a Department</h3>
               <p className="text-slate-500 dark:text-slate-400 mt-4 font-medium max-w-sm">Choose an organizational unit from the directory to manage its teams and workflow.</p>
             </div>
           ) : (
@@ -211,8 +211,8 @@ function Departments() {
                       <Building2 className="h-8 w-8 md:h-10 md:w-10" />
                     </div>
                     <div>
-                      <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{activeDept.name} Unit</h2>
-                      <p className="text-slate-500 font-bold text-sm md:text-base mt-1">Established {new Date(activeDept.created_at).toLocaleDateString()}</p>
+                      <h2 className="text-heading-1 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">{activeDept.name} Unit</h2>
+                      <p className="text-slate-500 font-bold text-body md:text-body mt-1">Established {new Date(activeDept.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
                   <RoleGate allowedRoles={["admin", "corporate_admin"]}>
@@ -230,7 +230,7 @@ function Departments() {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`pb-5 flex items-center gap-3 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-4 shrink-0 ${activeTab === tab.id ? "border-blue-600 text-blue-600" : "border-transparent text-slate-400 hover:text-slate-600"}`}
+                        className={`pb-5 flex items-center gap-3 text-[10px] md:text-label font-black uppercase tracking-[0.2em] transition-all border-b-4 shrink-0 ${activeTab === tab.id ? "border-blue-600 text-blue-600" : "border-transparent text-slate-400 hover:text-slate-600"}`}
                       >
                         <Icon className="h-4 w-4 md:h-5 md:w-5" /> {tab.label}
                       </button>
@@ -245,14 +245,14 @@ function Departments() {
                   <div className="space-y-8 animate-in fade-in duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm">
-                          <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Unit Leadership</h4>
+                          <h4 className="text-body font-black text-slate-400 uppercase tracking-widest mb-4">Unit Leadership</h4>
                           <div className="flex items-center gap-6 mb-6">
                              <div className="w-14 h-14 bg-blue-50 dark:bg-blue-600/10 rounded-2xl flex items-center justify-center">
                                 <ShieldCheck className="h-7 w-7 text-blue-600" />
                              </div>
                              <div>
-                                <p className="text-lg font-black text-slate-800 dark:text-white uppercase">{activeDept.head?.name || "No Head Assigned"}</p>
-                                <p className="text-xs font-bold text-slate-500">Department Head</p>
+                                <p className="text-heading-3 font-black text-slate-800 dark:text-white uppercase">{activeDept.head?.name || "No Head Assigned"}</p>
+                                <p className="text-label font-bold text-slate-500">Department Head</p>
                              </div>
                           </div>
                           <RoleGate allowedRoles={["admin", "corporate_admin"]}>
@@ -269,10 +269,10 @@ function Departments() {
 
                        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm flex flex-col justify-between">
                           <div>
-                            <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-2">Unit Performance</h4>
-                            <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Operational</p>
+                            <h4 className="text-body font-black text-slate-400 uppercase tracking-widest mb-2">Unit Performance</h4>
+                            <p className="text-heading-1 font-black text-slate-900 dark:text-white tracking-tighter">Operational</p>
                           </div>
-                          <div className="flex items-center gap-2 text-emerald-500 font-black text-xs uppercase mt-4">
+                          <div className="flex items-center gap-2 text-emerald-500 font-black text-label uppercase mt-4">
                              <TrendingUp className="h-4 w-4" /> Healthy Growth
                           </div>
                        </div>

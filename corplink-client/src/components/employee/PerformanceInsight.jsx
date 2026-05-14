@@ -94,13 +94,13 @@ export default function PerformanceInsight() {
   if (loading) return (
     <div className="h-[60vh] flex flex-col items-center justify-center gap-6">
        <div className="h-20 w-20 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-       <p className="text-xl font-black text-slate-400 uppercase tracking-widest animate-pulse">Syncing Individual Performance Metrics...</p>
+       <p className="text-heading-2 font-black text-slate-400 uppercase tracking-widest animate-pulse">Syncing Individual Performance Metrics...</p>
     </div>
   );
 
   if (!profile) return (
     <div className="p-20 text-center">
-       <h2 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Profile Authorization Required</h2>
+       <h2 className="text-heading-1 font-black text-slate-800 dark:text-white uppercase tracking-tighter">Profile Authorization Required</h2>
        <p className="text-slate-500 mt-4 font-bold uppercase tracking-widest">Please wait while we establish your security context.</p>
     </div>
   );
@@ -120,7 +120,7 @@ export default function PerformanceInsight() {
              <div className={`h-16 w-16 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-6`}>
                 <stat.icon className="h-8 w-8" />
              </div>
-             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{stat.label}</p>
+             <p className="text-label font-black text-slate-400 uppercase tracking-widest mb-2">{stat.label}</p>
              <h3 className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter">{stat.value}</h3>
           </div>
         ))}
@@ -129,7 +129,7 @@ export default function PerformanceInsight() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
         {/* Radar Map */}
         <div className="bg-white dark:bg-slate-800 p-12 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm flex flex-col items-center">
-           <h3 className="text-2xl font-black uppercase tracking-tight text-slate-800 dark:text-white mb-12 flex items-center gap-4 w-full">
+           <h3 className="text-heading-1 font-black uppercase tracking-tight text-slate-800 dark:text-white mb-12 flex items-center gap-4 w-full">
               <TrendingUp className="h-8 w-8 text-blue-600" /> Operational Skill Map
            </h3>
            <div className="h-[400px] w-full">
@@ -146,7 +146,7 @@ export default function PerformanceInsight() {
 
         {/* Task Contribution */}
         <div className="bg-white dark:bg-slate-800 p-12 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm">
-           <h3 className="text-2xl font-black uppercase tracking-tight text-slate-800 dark:text-white mb-12 flex items-center gap-4">
+           <h3 className="text-heading-1 font-black uppercase tracking-tight text-slate-800 dark:text-white mb-12 flex items-center gap-4">
               <BarChart3 className="h-8 w-8 text-purple-600" /> Directive Contribution
            </h3>
            <div className="h-[400px] w-full">
@@ -166,7 +166,7 @@ export default function PerformanceInsight() {
       {/* Activity Log */}
       <div className="bg-white dark:bg-slate-800 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm overflow-hidden">
         <div className="p-10 border-b-2 border-slate-100 dark:border-white/5 flex items-center justify-between bg-slate-50 dark:bg-slate-900/30">
-          <h3 className="text-2xl font-black uppercase tracking-tight text-slate-800 dark:text-white flex items-center gap-4">
+          <h3 className="text-heading-1 font-black uppercase tracking-tight text-slate-800 dark:text-white flex items-center gap-4">
             <Zap className="h-8 w-8 text-orange-500" /> Operational Protocol Log
           </h3>
           <Shield className="h-8 w-8 text-emerald-500" />
@@ -184,9 +184,9 @@ export default function PerformanceInsight() {
                   <div className="flex-1">
                      <div className="flex items-center gap-4 mb-2">
                         <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{act.entity}</span>
-                        <span className="text-xs font-bold text-slate-400">{new Date(act.created_at).toLocaleString()}</span>
+                        <span className="text-label font-bold text-slate-400">{new Date(act.created_at).toLocaleString()}</span>
                      </div>
-                     <p className="text-xl font-black text-slate-700 dark:text-slate-200 tracking-tight">{act.action}</p>
+                     <p className="text-heading-2 font-black text-slate-700 dark:text-slate-200 tracking-tight">{act.action}</p>
                   </div>
                   <div className="hidden md:block">
                      <div className="h-3 w-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
@@ -200,3 +200,4 @@ export default function PerformanceInsight() {
     </div>
   )
 }
+

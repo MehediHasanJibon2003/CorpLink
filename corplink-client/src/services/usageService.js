@@ -21,3 +21,4 @@ export const logModuleUsage = async (moduleName, corporateId, userId) => {
     console.error("Failed to log module usage:", error)
   }
 }
+

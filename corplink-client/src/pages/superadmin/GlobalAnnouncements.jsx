@@ -63,14 +63,14 @@ export default function GlobalAnnouncements() {
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-12">
         <div className="inline-flex items-center gap-4 px-6 md:px-8 py-4 md:py-5 rounded-2xl md:rounded-3xl relative overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
           <Megaphone className="h-5 w-5 md:h-6 md:w-6 text-violet-600 dark:text-violet-400" />
-          <p className="text-sm md:text-lg font-black text-slate-700 dark:text-violet-300 uppercase tracking-widest">
+          <p className="text-body md:text-heading-3 font-black text-slate-700 dark:text-violet-300 uppercase tracking-widest">
             {announcements.length} <span className="opacity-60 font-black ml-2">Total Broadcasts</span>
           </p>
         </div>
         
         <button
           onClick={openNew}
-          className="w-full md:w-auto px-8 py-3 md:py-4 bg-violet-600 text-white rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all hover:scale-105 active:scale-95"
+          className="w-full md:w-auto px-8 py-3 md:py-4 bg-violet-600 text-white rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-label tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all hover:scale-105 active:scale-95"
         >
           <PlusCircle className="h-5 w-5" /> New Announcement
         </button>
@@ -87,9 +87,9 @@ export default function GlobalAnnouncements() {
           <div className="col-span-full text-center py-24 md:py-40 rounded-[3rem] relative overflow-hidden bg-white dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/20 shadow-inner">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-fuchsia-500/5 dark:bg-fuchsia-500/10 rounded-full blur-[100px]" />
             <Sparkles className="h-20 w-20 md:h-28 md:w-28 text-slate-200 dark:text-violet-500/20 mx-auto mb-8 relative z-10" />
-            <p className="text-slate-700 dark:text-violet-300 font-black text-2xl md:text-4xl uppercase tracking-widest relative z-10">The airwaves are quiet.</p>
-            <p className="text-slate-500 dark:text-violet-500 text-sm md:text-lg mt-4 font-bold relative z-10">Compose your first broadcast to notify all corporate users.</p>
-            <button onClick={openNew} className="mt-10 px-10 py-4 rounded-2xl text-xs md:text-sm font-black uppercase tracking-[0.2em] text-fuchsia-600 dark:text-fuchsia-400 bg-fuchsia-50 dark:bg-fuchsia-500/10 hover:bg-fuchsia-100 dark:hover:bg-fuchsia-500/20 transition-all relative z-10 border-2 border-fuchsia-200 dark:border-fuchsia-500/20 hover:scale-105">
+            <p className="text-slate-700 dark:text-violet-300 font-black text-heading-1 md:text-heading-1 uppercase tracking-widest relative z-10">The airwaves are quiet.</p>
+            <p className="text-slate-500 dark:text-violet-500 text-body md:text-heading-3 mt-4 font-bold relative z-10">Compose your first broadcast to notify all corporate users.</p>
+            <button onClick={openNew} className="mt-10 px-10 py-4 rounded-2xl text-label md:text-body font-black uppercase tracking-[0.2em] text-fuchsia-600 dark:text-fuchsia-400 bg-fuchsia-50 dark:bg-fuchsia-500/10 hover:bg-fuchsia-100 dark:hover:bg-fuchsia-500/20 transition-all relative z-10 border-2 border-fuchsia-200 dark:border-fuchsia-500/20 hover:scale-105">
               Create Announcement
             </button>
           </div>
@@ -108,25 +108,25 @@ export default function GlobalAnnouncements() {
               <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 relative z-10">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-4 md:gap-6 mb-6 flex-wrap">
-                    <h3 className="text-xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-tight">{a.title}</h3>
+                    <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight leading-tight">{a.title}</h3>
                     <div className={`inline-flex items-center gap-2.5 px-4 py-2 rounded-xl border-2 ${
                       a.is_active 
                         ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 shadow-[0_0_15px_rgba(52,211,153,0.1)]"
                         : "bg-slate-100 dark:bg-slate-500/10 border-slate-200 dark:border-slate-500/20"
                     }`}>
                       <div className={`w-2.5 h-2.5 rounded-full ${a.is_active ? "bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" : "bg-slate-400"}`} />
-                      <span className={`text-[10px] md:text-xs font-black uppercase tracking-widest ${a.is_active ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400"}`}>
+                      <span className={`text-[10px] md:text-label font-black uppercase tracking-widest ${a.is_active ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400"}`}>
                         {a.is_active ? "Signal Live" : "Broadcast Paused"}
                       </span>
                     </div>
                   </div>
                   
                   <div className="relative mb-8">
-                    <p className="text-base md:text-xl text-slate-600 dark:text-violet-300/90 leading-[1.6] whitespace-pre-wrap font-bold">{a.message}</p>
+                    <p className="text-body md:text-heading-2 text-slate-600 dark:text-violet-300/90 leading-[1.6] whitespace-pre-wrap font-bold">{a.message}</p>
                   </div>
                   
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border-2 border-slate-200 dark:border-violet-500/10 text-[10px] md:text-xs font-black text-slate-500 dark:text-violet-500 uppercase tracking-widest">
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border-2 border-slate-200 dark:border-violet-500/10 text-[10px] md:text-label font-black text-slate-500 dark:text-violet-500 uppercase tracking-widest">
                       <span className="opacity-50">Sent:</span> {new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export default function GlobalAnnouncements() {
             <div className="absolute bottom-0 left-0 w-64 h-64 opacity-10 dark:opacity-20 translate-y-1/2 -translate-x-1/2 blur-[100px]" style={{ background: "radial-gradient(circle, #7c3aed, transparent)" }} />
 
             <div className="flex items-center justify-between mb-12 relative z-10">
-              <h3 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-6">
+              <h3 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-6">
                 <div className="w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] flex items-center justify-center shadow-xl bg-gradient-to-br from-fuchsia-600 to-purple-600 dark:shadow-[0_12px_30px_rgba(192,38,211,0.5)]">
                   {editing ? <Edit2 className="h-8 w-8 text-white stroke-[3px]" /> : <Megaphone className="h-8 w-8 text-white stroke-[3px]" />}
                 </div>
@@ -185,23 +185,23 @@ export default function GlobalAnnouncements() {
 
             <div className="space-y-10 relative z-10">
               <div>
-                <label className="block text-xs md:text-sm font-black text-slate-500 dark:text-violet-400 uppercase tracking-[0.2em] mb-4">Broadcast Headline</label>
+                <label className="block text-label md:text-body font-black text-slate-500 dark:text-violet-400 uppercase tracking-[0.2em] mb-4">Broadcast Headline</label>
                 <input
                   value={form.title}
                   onChange={e => setForm(p => ({ ...p, title: e.target.value }))}
                   placeholder="Headline..."
-                  className="w-full rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 text-lg md:text-2xl font-black text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-violet-500/40 outline-none transition-all shadow-inner bg-slate-50 dark:bg-black/40 border-2 border-slate-100 dark:border-fuchsia-500/20 focus:border-fuchsia-500 dark:focus:border-fuchsia-500/60"
+                  className="w-full rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 text-heading-3 md:text-heading-1 font-black text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-violet-500/40 outline-none transition-all shadow-inner bg-slate-50 dark:bg-black/40 border-2 border-slate-100 dark:border-fuchsia-500/20 focus:border-fuchsia-500 dark:focus:border-fuchsia-500/60"
                 />
               </div>
               
               <div>
-                <label className="block text-xs md:text-sm font-black text-slate-500 dark:text-violet-400 uppercase tracking-[0.2em] mb-4">Detailed Message</label>
+                <label className="block text-label md:text-body font-black text-slate-500 dark:text-violet-400 uppercase tracking-[0.2em] mb-4">Detailed Message</label>
                 <textarea
                   value={form.message}
                   onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
                   rows={6}
                   placeholder="The message..."
-                  className="w-full rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 text-base md:text-xl font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-violet-500/40 outline-none transition-all resize-none shadow-inner custom-scrollbar bg-slate-50 dark:bg-black/40 border-2 border-slate-100 dark:border-fuchsia-500/20 focus:border-fuchsia-500 dark:focus:border-fuchsia-500/60"
+                  className="w-full rounded-2xl md:rounded-3xl px-8 py-6 md:py-8 text-body md:text-heading-2 font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-violet-500/40 outline-none transition-all resize-none shadow-inner custom-scrollbar bg-slate-50 dark:bg-black/40 border-2 border-slate-100 dark:border-fuchsia-500/20 focus:border-fuchsia-500 dark:focus:border-fuchsia-500/60"
                 />
               </div>
               
@@ -211,20 +211,20 @@ export default function GlobalAnnouncements() {
                   {form.is_active && <CheckCircle className="h-5 w-5 text-white stroke-[3px]" />}
                 </div>
                 <div>
-                  <p className="text-lg md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Signal Live Status</p>
-                  <p className="text-sm md:text-base font-bold text-slate-500 dark:text-violet-400 opacity-60">Broadcast immediately to all organizations upon saving.</p>
+                  <p className="text-heading-3 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Signal Live Status</p>
+                  <p className="text-body md:text-body font-bold text-slate-500 dark:text-violet-400 opacity-60">Broadcast immediately to all organizations upon saving.</p>
                 </div>
               </div>
             </div>
 
             <div className="flex gap-6 justify-end mt-12 relative z-10 pt-10 border-t-2 border-slate-50 dark:border-white/5">
-              <button onClick={() => setShowForm(false)} className="px-10 py-5 text-sm md:text-lg font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-2xl transition-all">
+              <button onClick={() => setShowForm(false)} className="px-10 py-5 text-body md:text-heading-3 font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 rounded-2xl transition-all">
                 Discard
               </button>
               <button
                 disabled={saving || !form.title.trim() || !form.message.trim()}
                 onClick={save}
-                className="px-12 py-5 disabled:opacity-50 text-white text-sm md:text-lg font-black uppercase tracking-[0.2em] rounded-2xl md:rounded-3xl transition-all shadow-2xl hover:scale-105 active:scale-95 flex items-center gap-4 bg-gradient-to-br from-fuchsia-600 to-purple-600 dark:shadow-[0_15px_40px_rgba(192,38,211,0.5)]"
+                className="px-12 py-5 disabled:opacity-50 text-white text-body md:text-heading-3 font-black uppercase tracking-[0.2em] rounded-2xl md:rounded-3xl transition-all shadow-2xl hover:scale-105 active:scale-95 flex items-center gap-4 bg-gradient-to-br from-fuchsia-600 to-purple-600 dark:shadow-[0_15px_40px_rgba(192,38,211,0.5)]"
               >
                 {saving ? (
                   <><div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" /> Syncing...</>
@@ -237,3 +237,4 @@ export default function GlobalAnnouncements() {
     </SuperAdminLayout>
   )
 }
+

@@ -89,7 +89,7 @@ export default function Analytics() {
     <AppLayout title="Analytics Hub" subtitle="Processing organizational intelligence...">
       <div className="h-[60vh] flex flex-col items-center justify-center gap-6">
          <Loader2 className="h-16 w-16 text-blue-600 animate-spin" />
-         <p className="text-xl font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Enterprise Metrics...</p>
+         <p className="text-heading-2 font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Enterprise Metrics...</p>
       </div>
     </AppLayout>
   );
@@ -107,7 +107,7 @@ export default function Analytics() {
         ].map(tab => (
           <button
             key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20 scale-105" : "text-slate-500 hover:text-slate-800 dark:hover:text-white"}`}
+            className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-body font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20 scale-105" : "text-slate-500 hover:text-slate-800 dark:hover:text-white"}`}
           >
             <tab.icon className="h-5 w-5" /> {tab.label}
           </button>
@@ -125,14 +125,14 @@ export default function Analytics() {
               ].map((stat, i) => (
                 <div key={i} className="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] border-2 border-slate-100 dark:border-white/5 shadow-sm">
                    <stat.icon className={`h-10 w-10 ${stat.color} mb-6`} />
-                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{stat.label}</p>
+                   <p className="text-label font-black text-slate-400 uppercase tracking-widest mb-2">{stat.label}</p>
                    <h3 className="text-5xl font-black text-slate-800 dark:text-white tracking-tighter">{stat.value}</h3>
                 </div>
               ))}
            </div>
 
            <div className="bg-white dark:bg-slate-800 p-12 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm">
-              <h3 className="text-xl font-black uppercase tracking-tight text-slate-800 dark:text-white mb-10 flex items-center gap-4">
+              <h3 className="text-heading-2 font-black uppercase tracking-tight text-slate-800 dark:text-white mb-10 flex items-center gap-4">
                 <div className="w-4 h-4 rounded-full bg-blue-500" /> Organizational Pulse (7-Day Interaction Trend)
               </h3>
               <div className="h-[400px]">
@@ -159,17 +159,17 @@ export default function Analytics() {
       {activeTab === "performance" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
            <div className="bg-white dark:bg-slate-800 p-12 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm">
-              <h3 className="text-xl font-black uppercase tracking-tight text-slate-800 dark:text-white mb-10">Top Performer Leaderboard</h3>
+              <h3 className="text-heading-2 font-black uppercase tracking-tight text-slate-800 dark:text-white mb-10">Top Performer Leaderboard</h3>
               <div className="space-y-6">
                  {data.performance.map((p, i) => (
                    <div key={i} className="flex items-center gap-6 p-6 bg-slate-50 dark:bg-white/5 rounded-[2rem] border border-slate-100 dark:border-white/5">
-                      <div className="h-14 w-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/20">{i+1}</div>
+                      <div className="h-14 w-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black text-heading-2 shadow-lg shadow-blue-500/20">{i+1}</div>
                       <div className="flex-1">
-                         <p className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">{p.name}</p>
-                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{p.completed} Operations Completed</p>
+                         <p className="text-heading-3 font-black text-slate-800 dark:text-white uppercase tracking-tight">{p.name}</p>
+                         <p className="text-label font-bold text-slate-400 uppercase tracking-widest">{p.completed} Operations Completed</p>
                       </div>
                       <div className="text-right">
-                         <p className="text-2xl font-black text-blue-600 tracking-tighter">{Math.round((p.completed/p.total)*100)}%</p>
+                         <p className="text-heading-1 font-black text-blue-600 tracking-tighter">{Math.round((p.completed/p.total)*100)}%</p>
                          <p className="text-[10px] font-black text-slate-400 uppercase">Success Rate</p>
                       </div>
                    </div>
@@ -178,7 +178,7 @@ export default function Analytics() {
            </div>
 
            <div className="bg-white dark:bg-slate-800 p-12 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm">
-              <h3 className="text-xl font-black uppercase tracking-tight text-slate-800 dark:text-white mb-10 text-center">Efficiency Distribution</h3>
+              <h3 className="text-heading-2 font-black uppercase tracking-tight text-slate-800 dark:text-white mb-10 text-center">Efficiency Distribution</h3>
               <div className="h-[400px]">
                  <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -195,7 +195,7 @@ export default function Analytics() {
 
       {activeTab === "collaboration" && (
         <div className="bg-white dark:bg-slate-800 p-12 md:p-20 rounded-[4rem] border-2 border-slate-100 dark:border-white/5 shadow-sm flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <h3 className="text-2xl font-black uppercase tracking-widest text-slate-800 dark:text-white mb-16">Enterprise Synergy Map</h3>
+           <h3 className="text-heading-1 font-black uppercase tracking-widest text-slate-800 dark:text-white mb-16">Enterprise Synergy Map</h3>
            <div className="h-[500px] w-full max-w-4xl">
               <ResponsiveContainer width="100%" height="100%">
                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data.collaboration}>
@@ -210,7 +210,7 @@ export default function Analytics() {
               {data.collaboration.map((c, i) => (
                 <div key={i} className="text-center">
                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{c.subject}</p>
-                   <p className="text-2xl font-black text-slate-800 dark:text-white">{c.A}%</p>
+                   <p className="text-heading-1 font-black text-slate-800 dark:text-white">{c.A}%</p>
                 </div>
               ))}
            </div>
@@ -220,10 +220,10 @@ export default function Analytics() {
       {activeTab === "engagement" && (
         <div className="bg-white dark:bg-slate-800 p-12 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
            <div className="flex items-center justify-between mb-12">
-              <h3 className="text-xl font-black uppercase tracking-tight text-slate-800 dark:text-white">Communication Density</h3>
+              <h3 className="text-heading-2 font-black uppercase tracking-tight text-slate-800 dark:text-white">Communication Density</h3>
               <div className="flex items-center gap-3 px-6 py-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-blue-600 border border-blue-100 dark:border-blue-800/30">
                  <MousePointer2 className="h-5 w-5" />
-                 <span className="text-xs font-black uppercase tracking-widest">Real-time usage active</span>
+                 <span className="text-label font-black uppercase tracking-widest">Real-time usage active</span>
               </div>
            </div>
            <div className="h-[450px]">
@@ -243,3 +243,4 @@ export default function Analytics() {
     </AppLayout>
   );
 }
+

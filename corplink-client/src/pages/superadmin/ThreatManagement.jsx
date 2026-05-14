@@ -78,7 +78,7 @@ export default function ThreatManagement() {
         <div className="flex p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl border-2 border-slate-200 dark:border-violet-500/10">
           <button
             onClick={() => setTab("alerts")}
-            className={`px-6 py-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+            className={`px-6 py-3 rounded-xl text-[10px] md:text-label font-black uppercase tracking-widest transition-all ${
               tab === "alerts" ? "bg-violet-600 text-white shadow-lg" : "text-slate-500 dark:text-violet-400"
             }`}
           >
@@ -86,7 +86,7 @@ export default function ThreatManagement() {
           </button>
           <button
             onClick={() => setTab("blocked")}
-            className={`px-6 py-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+            className={`px-6 py-3 rounded-xl text-[10px] md:text-label font-black uppercase tracking-widest transition-all ${
               tab === "blocked" ? "bg-red-600 text-white shadow-lg" : "text-slate-500 dark:text-violet-400"
             }`}
           >
@@ -115,7 +115,7 @@ export default function ThreatManagement() {
               <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
                 {tab === "alerts" ? (
                   filteredAlerts.length === 0 ? (
-                    <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">No threats detected</td></tr>
+                    <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No threats detected</td></tr>
                   ) : filteredAlerts.map(alert => (
                     <tr key={alert.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                       <td className="px-8 py-6 md:py-8">
@@ -124,13 +124,13 @@ export default function ThreatManagement() {
                             {alert.resolved ? <ShieldCheck className="h-6 w-6" /> : <ShieldAlert className="h-6 w-6" />}
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm md:text-lg font-black text-slate-900 dark:text-white uppercase truncate">{alert.email}</p>
+                            <p className="text-body md:text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate">{alert.email}</p>
                             <p className="text-[10px] font-bold text-slate-500">{new Date(alert.created_at).toLocaleString()}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-6 md:py-8">
-                        <p className="text-[10px] md:text-xs font-black uppercase text-slate-700 dark:text-white tracking-widest">{alert.type}</p>
+                        <p className="text-[10px] md:text-label font-black uppercase text-slate-700 dark:text-white tracking-widest">{alert.type}</p>
                         <p className="text-[9px] md:text-[10px] font-bold text-slate-400 truncate max-w-[200px]">{alert.description}</p>
                       </td>
                       <td className="px-8 py-6 md:py-8">
@@ -152,19 +152,19 @@ export default function ThreatManagement() {
                   ))
                 ) : (
                   filteredBlocked.length === 0 ? (
-                    <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">No blocked users</td></tr>
+                    <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No blocked users</td></tr>
                   ) : filteredBlocked.map(user => (
                     <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                       <td className="px-8 py-6 md:py-8">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0"><UserX className="h-6 w-6" /></div>
                           <div className="min-w-0">
-                            <p className="text-sm md:text-lg font-black text-slate-900 dark:text-white uppercase truncate">{user.full_name || "Unknown"}</p>
+                            <p className="text-body md:text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate">{user.full_name || "Unknown"}</p>
                             <p className="text-[10px] font-bold text-slate-500">{user.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6 md:py-8 text-xs font-black text-slate-500 uppercase tracking-widest">Account Suspended</td>
+                      <td className="px-8 py-6 md:py-8 text-label font-black text-slate-500 uppercase tracking-widest">Account Suspended</td>
                       <td className="px-8 py-6 md:py-8">
                         <span className="px-4 py-1.5 rounded-full bg-red-50 text-red-600 border-2 border-red-100 text-[10px] font-black uppercase tracking-widest">Blocked</span>
                       </td>
@@ -186,3 +186,4 @@ export default function ThreatManagement() {
     </SuperAdminLayout>
   )
 }
+

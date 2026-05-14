@@ -117,8 +117,8 @@ function MessagesPanel() {
     return (
       <div className="py-40 text-center bg-white dark:bg-slate-800 rounded-[4rem] border-4 border-dashed border-slate-100 dark:border-slate-800">
         <MessageSquare className="h-32 w-32 mx-auto text-slate-100 dark:text-slate-800 mb-10" />
-        <h3 className="text-3xl font-black text-slate-400 uppercase tracking-widest">No Active Channels Detected</h3>
-        <p className="text-sm font-bold text-slate-400 mt-4">Initiate collaboration protocols in the Discovery Hub.</p>
+        <h3 className="text-heading-1 font-black text-slate-400 uppercase tracking-widest">No Active Channels Detected</h3>
+        <p className="text-body font-bold text-slate-400 mt-4">Initiate collaboration protocols in the Discovery Hub.</p>
       </div>
     )
   }
@@ -129,7 +129,7 @@ function MessagesPanel() {
       {/* Sidebar Matrix */}
       <div className="w-full xl:w-[35rem] bg-slate-50 dark:bg-slate-900/50 border-r-2 border-slate-100 dark:border-white/5 flex flex-col shrink-0">
         <div className="p-10 border-b-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800/50">
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-widest">Active Links</h3>
+          <h3 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-widest">Active Links</h3>
         </div>
         <div className="overflow-y-auto flex-1 custom-scrollbar p-4 space-y-4">
           {partners.map(partner => (
@@ -142,13 +142,13 @@ function MessagesPanel() {
                   : "bg-white dark:bg-slate-800 border-transparent hover:border-slate-200 dark:hover:border-slate-700"
               }`}
             >
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl shadow-md ${
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-heading-1 shadow-md ${
                 activePartner?.id === partner.id ? "bg-white text-blue-600" : "bg-slate-100 dark:bg-slate-900 text-slate-400"
               }`}>
                 {partner.name.charAt(0)}
               </div>
               <div className="truncate">
-                <p className={`font-black text-xl tracking-tight truncate uppercase ${activePartner?.id === partner.id ? "text-white" : "text-slate-900 dark:text-white"}`}>
+                <p className={`font-black text-heading-2 tracking-tight truncate uppercase ${activePartner?.id === partner.id ? "text-white" : "text-slate-900 dark:text-white"}`}>
                   {partner.name}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
@@ -165,11 +165,11 @@ function MessagesPanel() {
       <div className="flex-1 flex flex-col h-full bg-white dark:bg-slate-900/10">
         <div className="p-10 border-b-2 border-slate-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-slate-800">
           <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-indigo-600 font-black text-white flex items-center justify-center text-3xl shadow-xl border-4 border-white dark:border-slate-700">
+            <div className="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-indigo-600 font-black text-white flex items-center justify-center text-heading-1 shadow-xl border-4 border-white dark:border-slate-700">
               {activePartner?.name.charAt(0)}
             </div>
             <div>
-              <h3 className="text-3xl font-black text-slate-900 dark:text-white leading-none uppercase">{activePartner?.name}</h3>
+              <h3 className="text-heading-1 font-black text-slate-900 dark:text-white leading-none uppercase">{activePartner?.name}</h3>
               <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mt-3 flex items-center gap-2">
                  <ShieldCheck className="h-4 w-4" /> Secure Channel Established
               </p>
@@ -182,7 +182,7 @@ function MessagesPanel() {
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-slate-300 gap-8 opacity-50">
               <MessageSquare className="h-32 w-32" />
-              <p className="text-2xl font-black uppercase tracking-widest italic">Initiate Operational Dialogue...</p>
+              <p className="text-heading-1 font-black uppercase tracking-widest italic">Initiate Operational Dialogue...</p>
             </div>
           ) : (
             messages.map(msg => {
@@ -194,7 +194,7 @@ function MessagesPanel() {
                       ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-br-none" 
                       : "bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-white/5 text-slate-800 dark:text-white rounded-bl-none"
                   }`}>
-                    <p className="text-xl font-medium leading-relaxed">{msg.message_text}</p>
+                    <p className="text-heading-2 font-medium leading-relaxed">{msg.message_text}</p>
                     <div className={`text-[10px] mt-4 font-black uppercase tracking-widest flex items-center gap-2 ${isMine ? "text-slate-400" : "text-slate-400"}`}>
                       {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}
                     </div>
@@ -214,7 +214,7 @@ function MessagesPanel() {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder={`Communicate with ${activePartner?.name}...`}
-              className="flex-1 bg-slate-50 dark:bg-slate-900 border-4 border-transparent focus:border-blue-500/30 rounded-3xl px-10 py-6 text-2xl font-black text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+              className="flex-1 bg-slate-50 dark:bg-slate-900 border-4 border-transparent focus:border-blue-500/30 rounded-3xl px-10 py-6 text-heading-1 font-black text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
             />
             <button
               type="submit"
@@ -231,3 +231,4 @@ function MessagesPanel() {
 }
 
 export default MessagesPanel
+

@@ -102,13 +102,13 @@ export default function SuperAdminDashboard() {
               <ShieldAlert className="h-6 w-6 md:h-9 md:w-9 text-white" />
             </div>
             <div>
-              <h3 className="text-lg md:text-2xl font-black uppercase tracking-tight line-clamp-1">Security Alert: {stats.activeThreats} Threats</h3>
-              <p className="text-red-100 font-bold text-xs md:text-lg opacity-90">Review the threat logs immediately.</p>
+              <h3 className="text-heading-3 md:text-heading-1 font-black uppercase tracking-tight line-clamp-1">Security Alert: {stats.activeThreats} Threats</h3>
+              <p className="text-red-100 font-bold text-label md:text-heading-3 opacity-90">Review the threat logs immediately.</p>
             </div>
           </div>
           <button 
             onClick={() => window.location.href = '/super-admin/threats'}
-            className="w-full md:w-auto px-8 py-3 md:py-4 bg-white text-red-600 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-sm hover:scale-105 active:scale-95 transition-all shadow-xl"
+            className="w-full md:w-auto px-8 py-3 md:py-4 bg-white text-red-600 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-body hover:scale-105 active:scale-95 transition-all shadow-xl"
           >
             Manage Threats
           </button>
@@ -125,12 +125,12 @@ export default function SuperAdminDashboard() {
                 <div className={`p-3 md:p-4 rounded-xl md:rounded-2xl ${card.bg}`}>
                   <Icon className={`h-6 w-6 md:h-8 md:w-8 ${card.color}`} />
                 </div>
-                <div className="flex items-center gap-1 text-emerald-500 font-black text-[10px] md:text-xs uppercase bg-emerald-500/10 px-2 py-0.5 md:px-3 md:py-1 rounded-full">
+                <div className="flex items-center gap-1 text-emerald-500 font-black text-[10px] md:text-label uppercase bg-emerald-500/10 px-2 py-0.5 md:px-3 md:py-1 rounded-full">
                   <ArrowUpRight className="h-3 w-3 md:h-4 md:w-4" /> 12%
                 </div>
               </div>
-              <p className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{card.label}</p>
-              <h3 className="text-2xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight">
+              <p className="text-[10px] md:text-label font-black text-slate-400 uppercase tracking-widest mb-1">{card.label}</p>
+              <h3 className="text-heading-1 md:text-heading-1 font-black text-slate-900 dark:text-white leading-tight">
                 {loading ? "..." : card.value}
               </h3>
             </div>
@@ -145,7 +145,7 @@ export default function SuperAdminDashboard() {
             <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-violet-500/10 text-violet-500 flex items-center justify-center shrink-0">
               <Activity className="h-5 w-5 md:h-7 md:w-7" />
             </div>
-            <h3 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Growth Telemetry</h3>
+            <h3 className="text-heading-3 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Growth Telemetry</h3>
           </div>
           <div className="h-[250px] md:h-[320px] w-full">
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>
@@ -168,7 +168,7 @@ export default function SuperAdminDashboard() {
 
         {/* System Pulse Section */}
         <div className="p-6 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 shadow-sm">
-          <h3 className="text-lg md:text-2xl font-black uppercase tracking-tight mb-8 md:mb-12 flex items-center gap-4 md:gap-5 text-slate-900 dark:text-white">
+          <h3 className="text-heading-3 md:text-heading-1 font-black uppercase tracking-tight mb-8 md:mb-12 flex items-center gap-4 md:gap-5 text-slate-900 dark:text-white">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0">
               <Zap className="h-5 w-5 md:h-6 md:w-6 text-amber-500 animate-pulse" />
             </div>
@@ -182,8 +182,8 @@ export default function SuperAdminDashboard() {
               { label: "Uptime", value: "99.9%", color: "text-emerald-500" }
             ].map((item, idx) => (
               <div key={idx} className="flex items-center justify-between py-3 md:py-4 border-b border-slate-50 dark:border-white/5 last:border-0">
-                <span className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest">{item.label}</span>
-                <span className={`${item.color} font-black text-[10px] md:text-xs uppercase tracking-widest bg-slate-50 dark:bg-white/5 px-3 md:px-4 py-1 rounded-full`}>{item.value}</span>
+                <span className="text-[10px] md:text-label font-black text-slate-400 uppercase tracking-widest">{item.label}</span>
+                <span className={`${item.color} font-black text-[10px] md:text-label uppercase tracking-widest bg-slate-50 dark:bg-white/5 px-3 md:px-4 py-1 rounded-full`}>{item.value}</span>
               </div>
             ))}
           </div>
@@ -194,7 +194,7 @@ export default function SuperAdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 mb-8 md:mb-12">
         <div className="p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[400px] md:h-[512px] flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-6 md:mb-8">
-            <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-3">
+            <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-3">
               <Activity className="h-5 w-5 md:h-6 md:w-6 text-blue-500" /> Recent
             </h3>
             <div className="relative group/btn">
@@ -212,7 +212,7 @@ export default function SuperAdminDashboard() {
               <div key={i} className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 md:w-10 md:h-10 rounded-xl ${log.bg} ${log.color} flex items-center justify-center shrink-0`}><log.icon className="h-4 w-4 md:h-5 md:w-5" /></div>
-                  <span className="text-[10px] md:text-xs font-black uppercase text-slate-900 dark:text-white line-clamp-1">{log.action}</span>
+                  <span className="text-[10px] md:text-label font-black uppercase text-slate-900 dark:text-white line-clamp-1">{log.action}</span>
                 </div>
                 <span className="text-[9px] md:text-[10px] font-black text-slate-400 shrink-0">{log.time}</span>
               </div>
@@ -223,7 +223,7 @@ export default function SuperAdminDashboard() {
         <div className="p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[400px] md:h-[512px] flex flex-col justify-between">
           <div className="flex items-center gap-3 mb-6 md:mb-8">
             <Building2 className="h-5 w-5 md:h-6 w-6 text-orange-500" />
-            <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Top Corporates</h3>
+            <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">Top Corporates</h3>
           </div>
           <div className="space-y-4 md:space-y-6 flex-1 overflow-y-auto pr-1">
             {topCompanies.length === 0 ? (
@@ -235,7 +235,7 @@ export default function SuperAdminDashboard() {
                 return (
                   <div key={i}>
                     <div className="flex justify-between mb-2">
-                      <span className="text-[10px] md:text-xs font-black uppercase text-slate-900 dark:text-white truncate max-w-[150px]">{corp.name}</span>
+                      <span className="text-[10px] md:text-label font-black uppercase text-slate-900 dark:text-white truncate max-w-[150px]">{corp.name}</span>
                       <span className="text-[9px] md:text-[10px] font-black text-slate-400">{corp.employees} Emps</span>
                     </div>
                     <div className="w-full h-1.5 md:h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
@@ -257,7 +257,7 @@ export default function SuperAdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 mb-8 md:mb-12">
         <div className="p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[400px] md:h-[512px] overflow-hidden flex flex-col shadow-sm">
           <div className="flex items-center justify-between mb-6 md:mb-8">
-            <h3 className="text-lg md:text-xl font-black uppercase tracking-tight flex items-center gap-3 text-slate-900 dark:text-white">
+            <h3 className="text-heading-3 md:text-heading-2 font-black uppercase tracking-tight flex items-center gap-3 text-slate-900 dark:text-white">
               <Zap className="h-5 w-5 md:h-6 md:w-6 text-amber-500" /> Pending
             </h3>
             <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-amber-500 text-black px-2 md:px-3 py-1 rounded-full shrink-0">{stats.pendingApprovals} NEW</span>
@@ -269,7 +269,7 @@ export default function SuperAdminDashboard() {
               pendingList.map((item, i) => (
                 <div key={i} className="p-4 md:p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 flex items-center justify-between">
                   <div className="truncate pr-4">
-                    <h4 className="text-[10px] md:text-xs font-black uppercase text-slate-900 dark:text-white truncate">{item.name}</h4>
+                    <h4 className="text-[10px] md:text-label font-black uppercase text-slate-900 dark:text-white truncate">{item.name}</h4>
                     <p className="text-[9px] md:text-[10px] text-slate-500 uppercase font-black tracking-widest">{item.plan}</p>
                   </div>
                   <button onClick={() => window.location.href = '/super-admin/corporates'} className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0"><ArrowUpRight className="h-4 w-4" /></button>
@@ -286,7 +286,7 @@ export default function SuperAdminDashboard() {
         <div className="p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[400px] md:h-[512px] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <CreditCard className="h-5 w-5 md:h-6 md:w-6 text-violet-500" />
-            <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Subscriptions</h3>
+            <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">Subscriptions</h3>
           </div>
           <div className="h-[200px] md:h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>
@@ -301,11 +301,11 @@ export default function SuperAdminDashboard() {
           </div>
           <div className="grid grid-cols-2 gap-3 md:gap-4 mt-4">
              <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-slate-50 dark:bg-white/5 text-center">
-                <p className="text-sm md:text-lg font-black text-slate-900 dark:text-white">{stats.activeSubscriptions}</p>
+                <p className="text-body md:text-heading-3 font-black text-slate-900 dark:text-white">{stats.activeSubscriptions}</p>
                 <p className="text-[9px] md:text-[10px] font-black uppercase text-slate-400">Active</p>
              </div>
              <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-emerald-500/5 text-center">
-                <p className="text-sm md:text-lg font-black text-emerald-500">${(stats.totalMRR || 0).toLocaleString()}</p>
+                <p className="text-body md:text-heading-3 font-black text-emerald-500">${(stats.totalMRR || 0).toLocaleString()}</p>
                 <p className="text-[9px] md:text-[10px] font-black uppercase text-slate-400">MRR</p>
              </div>
           </div>
@@ -314,3 +314,4 @@ export default function SuperAdminDashboard() {
     </SuperAdminLayout>
   )
 }
+

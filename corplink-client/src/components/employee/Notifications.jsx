@@ -171,16 +171,16 @@ function Notifications() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 md:gap-8">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tight">
+          <h1 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tight">
             <Bell className="h-8 w-8 text-orange-500" />
             Notifications
             {unreadCount > 0 && (
-              <span className="ml-2 bg-red-500 text-white text-sm md:text-lg font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
+              <span className="ml-2 bg-red-500 text-white text-body md:text-heading-3 font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
                 {unreadCount}
               </span>
             )}
           </h1>
-          <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold">
+          <p className="text-body md:text-heading-2 text-slate-500 dark:text-slate-400 mt-2 font-bold">
             {unreadCount > 0
               ? `${unreadCount} unread notification${unreadCount !== 1 ? "s" : ""}`
               : "All caught up!"}
@@ -191,7 +191,7 @@ function Notifications() {
             <button
               onClick={markAllAsRead}
               disabled={markingAll}
-              className="flex items-center gap-3 text-sm md:text-lg font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-full border-2 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
+              className="flex items-center gap-3 text-body md:text-heading-3 font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-full border-2 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
             >
               <CheckCheck className="h-5 w-5 md:h-6 md:w-6" />
               {markingAll ? "Marking..." : "Mark All Read"}
@@ -199,7 +199,7 @@ function Notifications() {
           )}
           <button
             onClick={() => setRefreshKey((k) => k + 1)}
-            className="flex items-center gap-3 text-sm md:text-lg font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-full border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+            className="flex items-center gap-3 text-body md:text-heading-3 font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-full border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
           >
             <RefreshCw className="h-5 w-5 md:h-6 md:w-6" />
             <span className="hidden md:inline">Refresh</span>
@@ -218,20 +218,20 @@ function Notifications() {
         ) : error ? (
           <div className="flex flex-col items-center justify-center py-24 text-amber-500 text-center px-6">
             <AlertCircle className="h-16 w-16 mb-4 opacity-70" />
-            <p className="font-black text-xl md:text-2xl text-amber-700 dark:text-amber-400">
+            <p className="font-black text-heading-2 md:text-heading-1 text-amber-700 dark:text-amber-400">
               {error}
             </p>
-            <p className="text-base md:text-lg font-medium text-slate-400 mt-4">
+            <p className="text-body md:text-heading-3 font-medium text-slate-400 mt-4">
               Ask your admin to set up the notifications table in Supabase.
             </p>
           </div>
         ) : notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-slate-400 text-center px-6">
             <Bell className="h-20 w-20 mb-6 opacity-20" />
-            <h3 className="font-black text-slate-600 dark:text-slate-300 text-2xl md:text-3xl">
+            <h3 className="font-black text-slate-600 dark:text-slate-300 text-heading-1 md:text-heading-1">
               No Notifications
             </h3>
-            <p className="text-lg mt-4 max-w-md font-medium">
+            <p className="text-heading-3 mt-4 max-w-md font-medium">
               When you receive notifications about tasks, projects, or
               announcements, they'll appear here.
             </p>
@@ -258,7 +258,7 @@ function Notifications() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <p
-                      className={`text-base md:text-xl leading-relaxed ${
+                      className={`text-body md:text-heading-2 leading-relaxed ${
                         notif.is_read
                           ? "text-slate-600 dark:text-slate-400 font-medium"
                           : "text-slate-800 dark:text-slate-100 font-black"
@@ -266,7 +266,7 @@ function Notifications() {
                     >
                       {notif.message}
                     </p>
-                    <p className="flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-widest text-slate-400 mt-3 border-l-2 border-slate-200 dark:border-slate-700 pl-4">
+                    <p className="flex items-center gap-2 text-label md:text-body font-bold uppercase tracking-widest text-slate-400 mt-3 border-l-2 border-slate-200 dark:border-slate-700 pl-4">
                       <Clock className="h-4 w-4" />
                       {timeAgo(notif.created_at)}
                     </p>
@@ -293,3 +293,4 @@ function Notifications() {
 }
 
 export default Notifications;
+

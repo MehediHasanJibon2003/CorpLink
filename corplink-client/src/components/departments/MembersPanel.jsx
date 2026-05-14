@@ -65,8 +65,8 @@ function MembersPanel({ activeDept }) {
               <UserPlus className="h-7 w-7 text-emerald-600" />
            </div>
            <div>
-              <h4 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Deploy Personnel</h4>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Assign employees to {activeDept.name}</p>
+              <h4 className="text-heading-2 font-black text-slate-800 dark:text-white uppercase tracking-tight">Deploy Personnel</h4>
+              <p className="text-label font-bold text-slate-500 uppercase tracking-widest mt-1">Assign employees to {activeDept.name}</p>
            </div>
         </div>
         <form onSubmit={handleAddMemberToDept} className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
@@ -80,7 +80,7 @@ function MembersPanel({ activeDept }) {
               <option key={emp.id} value={emp.id}>{emp.name}</option>
             ))}
           </select>
-          <button type="submit" disabled={!selectedNewEmp} className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 transition-all disabled:opacity-50">
+          <button type="submit" disabled={!selectedNewEmp} className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black uppercase text-label tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 transition-all disabled:opacity-50">
             Confirm Assignment
           </button>
         </form>
@@ -89,7 +89,7 @@ function MembersPanel({ activeDept }) {
       {/* Members Grid/List */}
       <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] border-2 border-slate-100 dark:border-white/5 shadow-sm overflow-hidden">
         <div className="px-8 py-6 border-b-2 border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
-           <h4 className="text-sm font-black text-slate-500 uppercase tracking-widest">Department Directory</h4>
+           <h4 className="text-body font-black text-slate-500 uppercase tracking-widest">Department Directory</h4>
         </div>
 
         <div className="overflow-x-auto custom-scrollbar">
@@ -113,8 +113,8 @@ function MembersPanel({ activeDept }) {
                                {emp.name.charAt(0)}
                             </div>
                             <div>
-                               <p className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">{emp.name}</p>
-                               <p className="text-xs font-bold text-slate-500 flex items-center gap-2"><Mail className="h-3 w-3" /> {emp.email}</p>
+                               <p className="text-heading-3 font-black text-slate-800 dark:text-white uppercase tracking-tight">{emp.name}</p>
+                               <p className="text-label font-bold text-slate-500 flex items-center gap-2"><Mail className="h-3 w-3" /> {emp.email}</p>
                             </div>
                          </div>
                       </td>
@@ -155,3 +155,4 @@ function MembersPanel({ activeDept }) {
 }
 
 export default MembersPanel
+

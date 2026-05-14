@@ -70,11 +70,11 @@ function ProjectCard({ project, onJoin }) {
             <FolderKanban className="h-7 w-7 md:h-8 md:w-8" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-black text-slate-800 dark:text-white text-lg md:text-xl truncate">
+            <h3 className="font-black text-slate-800 dark:text-white text-heading-3 md:text-heading-2 truncate">
               {project.name}
             </h3>
             {project.teamName && (
-              <p className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1 uppercase tracking-widest">
+              <p className="text-label md:text-body font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1 uppercase tracking-widest">
                 <Users className="h-4 w-4" />
                 {project.teamName}
               </p>
@@ -82,7 +82,7 @@ function ProjectCard({ project, onJoin }) {
           </div>
         </div>
         <span
-          className={`text-xs md:text-sm font-black px-4 py-1.5 rounded-full shrink-0 ml-4 uppercase tracking-widest ${sConf.class}`}
+          className={`text-label md:text-body font-black px-4 py-1.5 rounded-full shrink-0 ml-4 uppercase tracking-widest ${sConf.class}`}
         >
           {sConf.label}
         </span>
@@ -90,7 +90,7 @@ function ProjectCard({ project, onJoin }) {
 
       {/* Description */}
       {project.description && (
-        <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 leading-relaxed font-medium">
+        <p className="text-body md:text-body text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 leading-relaxed font-medium">
           {project.description}
         </p>
       )}
@@ -100,7 +100,7 @@ function ProjectCard({ project, onJoin }) {
         {isJoined ? (
           <>
             <span
-              className={`text-xs md:text-sm font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${
+              className={`text-label md:text-body font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${
                 project.myRole === "lead"
                   ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400"
                   : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
@@ -108,14 +108,14 @@ function ProjectCard({ project, onJoin }) {
             >
               {project.myRole === "lead" ? "⭐ Lead" : "Member"}
             </span>
-            <span className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest border-l-2 border-slate-200 dark:border-slate-700 pl-3">
+            <span className="text-label md:text-body font-bold text-slate-400 uppercase tracking-widest border-l-2 border-slate-200 dark:border-slate-700 pl-3">
               {project.taskCount} task{project.taskCount !== 1 ? "s" : ""}
             </span>
           </>
         ) : (
           <button
             onClick={() => onJoin(project.id)}
-            className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-colors shadow-lg shadow-blue-500/20"
+            className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-body uppercase tracking-widest transition-colors shadow-lg shadow-blue-500/20"
           >
             <Zap className="h-4 w-4" />
             Join Project
@@ -126,7 +126,7 @@ function ProjectCard({ project, onJoin }) {
       {/* Progress Bar (only if joined) */}
       {isJoined && (
         <div>
-          <div className="flex justify-between text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wide">
+          <div className="flex justify-between text-label md:text-body font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wide">
             <span>Progress</span>
             <span>{progress}%</span>
           </div>
@@ -272,17 +272,17 @@ function MyProjects() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tight">
+          <h1 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tight">
             <FolderKanban className="h-8 w-8 text-purple-500" />
             Project Hub
           </h1>
-          <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">
+          <p className="text-body md:text-heading-2 text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">
             Manage your teams & collaborations
           </p>
         </div>
         <button
           onClick={() => setRefreshKey((k) => k + 1)}
-          className="flex items-center justify-center gap-3 text-sm md:text-lg font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 px-6 py-4 rounded-xl md:rounded-full border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition"
+          className="flex items-center justify-center gap-3 text-body md:text-heading-3 font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 px-6 py-4 rounded-xl md:rounded-full border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition"
         >
           <RefreshCw className={`h-5 w-5 md:h-6 md:w-6 ${loading ? "animate-spin" : ""}`} />
           Refresh
@@ -293,7 +293,7 @@ function MyProjects() {
       <div className="flex items-center gap-4 bg-slate-100/50 dark:bg-slate-900/50 p-2 rounded-2xl w-fit border-2 border-slate-200 dark:border-slate-700">
         <button
           onClick={() => setActiveTab("my")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-body font-black uppercase tracking-widest transition-all ${
             activeTab === "my"
               ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200 dark:border-slate-700"
               : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
@@ -304,7 +304,7 @@ function MyProjects() {
         </button>
         <button
           onClick={() => setActiveTab("discover")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-body font-black uppercase tracking-widest transition-all ${
             activeTab === "discover"
               ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200 dark:border-slate-700"
               : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
@@ -326,10 +326,10 @@ function MyProjects() {
         projects.length === 0 ? (
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm flex flex-col items-center justify-center py-24 text-center px-6">
             <FolderKanban className="h-20 w-20 text-slate-300 dark:text-slate-600 mb-6" />
-            <h3 className="font-black text-slate-600 dark:text-slate-300 text-2xl uppercase tracking-tighter">
+            <h3 className="font-black text-slate-600 dark:text-slate-300 text-heading-1 uppercase tracking-tighter">
               No Projects Yet
             </h3>
-            <p className="text-slate-400 dark:text-slate-500 text-lg mt-2 font-medium max-w-md leading-relaxed">
+            <p className="text-slate-400 dark:text-slate-500 text-heading-3 mt-2 font-medium max-w-md leading-relaxed">
               You haven't joined any projects yet. Browse the discover tab to find opportunities!
             </p>
           </div>
@@ -344,10 +344,10 @@ function MyProjects() {
         discoverProjects.length === 0 ? (
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm flex flex-col items-center justify-center py-24 text-center px-6">
             <Compass className="h-20 w-20 text-slate-300 dark:text-slate-600 mb-6" />
-            <h3 className="font-black text-slate-600 dark:text-slate-300 text-2xl uppercase tracking-tighter">
+            <h3 className="font-black text-slate-600 dark:text-slate-300 text-heading-1 uppercase tracking-tighter">
               All Caught Up
             </h3>
-            <p className="text-slate-400 dark:text-slate-500 text-lg mt-2 font-medium max-w-md leading-relaxed">
+            <p className="text-slate-400 dark:text-slate-500 text-heading-3 mt-2 font-medium max-w-md leading-relaxed">
               There are no more public projects available for you to join right now.
             </p>
           </div>
@@ -371,3 +371,4 @@ function MyProjects() {
 }
 
 export default MyProjects;
+

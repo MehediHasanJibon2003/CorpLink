@@ -23,3 +23,4 @@ export const logAdminActivity = async ({
     console.error("Failed to log activity:", err)
   }
 }
+

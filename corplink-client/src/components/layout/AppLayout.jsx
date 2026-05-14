@@ -23,12 +23,12 @@ function AppLayout({ children, title, subtitle }) {
             {(title || subtitle) && (
               <div className="mb-8 md:mb-12 lg:mb-16">
                 {title && (
-                  <h1 className="text-3xl md:text-4xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight mb-2 md:mb-4">
+                  <h1 className="text-heading-1 md:text-heading-1 lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight mb-2 md:mb-4">
                     {title}
                   </h1>
                 )}
                 {subtitle && (
-                  <p className="text-[11px] md:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-3 md:mt-4 font-black uppercase tracking-widest">
+                  <p className="text-[11px] md:text-body lg:text-body text-slate-500 dark:text-slate-400 mt-3 md:mt-4 font-black uppercase tracking-widest">
                     {subtitle}
                   </p>
                 )}
@@ -46,3 +46,4 @@ function AppLayout({ children, title, subtitle }) {
 }
 
 export default AppLayout;
+

@@ -64,7 +64,7 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
             <div className={`p-5 rounded-2xl mb-6 flex justify-between items-center border-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800 shadow-sm`}>
                <div className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${col.id === 'finished' ? 'bg-emerald-500' : col.id === 'rejected' ? 'bg-red-500' : 'bg-blue-500'}`} />
-                  <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest">{col.label}</h3>
+                  <h3 className="text-body font-black text-slate-800 dark:text-white uppercase tracking-widest">{col.label}</h3>
                </div>
                <span className="bg-slate-100 dark:bg-white/10 text-slate-500 px-3 py-1 rounded-lg text-[10px] font-black">{colTasks.length}</span>
             </div>
@@ -90,7 +90,7 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
                      <MoreHorizontal className="h-4 w-4 text-slate-300 group-hover:text-slate-500" />
                   </div>
                   
-                  <h4 className="text-lg md:text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight mb-4 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{task.title}</h4>
+                  <h4 className="text-heading-3 md:text-heading-2 font-black text-slate-800 dark:text-white uppercase tracking-tight mb-4 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{task.title}</h4>
                   
                   <div className="flex flex-wrap gap-4 mt-6 pt-6 border-t border-slate-50 dark:border-white/5">
                      <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -135,3 +135,4 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
 }
 
 export default TaskKanban
+

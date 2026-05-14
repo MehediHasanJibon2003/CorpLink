@@ -63,8 +63,8 @@ function EmployeeDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 15v2m0 0v2m0-2h2m-2 0H10m11 3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
            </div>
-           <h2 className="text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Security Protocol Breach</h2>
-           <p className="text-xl text-slate-500 dark:text-slate-400 mt-4 max-w-md font-bold uppercase tracking-widest leading-relaxed">
+           <h2 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tighter">Security Protocol Breach</h2>
+           <p className="text-heading-2 text-slate-500 dark:text-slate-400 mt-4 max-w-md font-bold uppercase tracking-widest leading-relaxed">
               Your current clearance level <span className="text-red-600">[{role || "N/A"}]</span> does not permit access to this operational sector.
            </p>
            <button 
@@ -99,3 +99,4 @@ function EmployeeDashboard() {
 }
 
 export default EmployeeDashboard
+

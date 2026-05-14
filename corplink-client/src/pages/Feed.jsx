@@ -48,12 +48,12 @@ const PostCard = memo(({ post, user, profile, onLike, onCommentToggle, onShare, 
       {/* Header */}
       <div className="p-8 md:p-10 flex items-start justify-between border-b-2 border-slate-50 dark:border-slate-900/50 bg-slate-50/30 dark:bg-slate-900/20">
         <div className="flex items-center gap-5">
-          <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-2xl md:text-3xl shadow-lg border-2 border-white dark:border-slate-700 group-hover:scale-105 transition-transform">
+          <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-1 md:text-heading-1 shadow-lg border-2 border-white dark:border-slate-700 group-hover:scale-105 transition-transform">
             {post.companies?.name?.charAt(0)?.toUpperCase() || "C"}
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <h3 className="font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase tracking-tight leading-tight group-hover:text-blue-600 transition-colors">
+              <h3 className="font-black text-heading-1 md:text-heading-1 text-slate-900 dark:text-white uppercase tracking-tight leading-tight group-hover:text-blue-600 transition-colors">
                 {post.companies?.name || "Corporate Entity"}
               </h3>
               <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border flex items-center gap-2 ${typeConfig.color}`}>
@@ -85,8 +85,8 @@ const PostCard = memo(({ post, user, profile, onLike, onCommentToggle, onShare, 
 
       {/* Content */}
       <div className="px-10 py-10 md:px-16">
-        <h4 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tight leading-tight">{post.title}</h4>
-        <p className="text-slate-700 dark:text-slate-200 whitespace-pre-line text-lg md:text-2xl leading-relaxed font-medium opacity-90">
+        <h4 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tight leading-tight">{post.title}</h4>
+        <p className="text-slate-700 dark:text-slate-200 whitespace-pre-line text-heading-3 md:text-heading-1 leading-relaxed font-medium opacity-90">
           {post.content}
         </p>
       </div>
@@ -121,19 +121,19 @@ const PostCard = memo(({ post, user, profile, onLike, onCommentToggle, onShare, 
       <div className="grid grid-cols-3 divide-x-2 divide-slate-100 dark:divide-white/5 border-t-2 border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/30">
         <button 
           onClick={() => onLike(post)} 
-          className={`py-6 flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest transition-all ${post.likedByMe ? 'text-red-500 bg-red-50/30 dark:bg-red-900/20' : 'text-slate-500 hover:bg-white dark:hover:bg-white/5'}`}
+          className={`py-6 flex items-center justify-center gap-3 text-label font-black uppercase tracking-widest transition-all ${post.likedByMe ? 'text-red-500 bg-red-50/30 dark:bg-red-900/20' : 'text-slate-500 hover:bg-white dark:hover:bg-white/5'}`}
         >
           <Heart className={`h-5 w-5 ${post.likedByMe ? 'fill-red-500' : ''}`} /> {post.likedByMe ? 'Liked' : 'Like'}
         </button>
         <button 
           onClick={() => onCommentToggle(post.id)} 
-          className={`py-6 flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest transition-all ${isExpanded ? 'text-blue-600 bg-blue-50/30 dark:bg-blue-900/20' : 'text-slate-500 hover:bg-white dark:hover:bg-white/5'}`}
+          className={`py-6 flex items-center justify-center gap-3 text-label font-black uppercase tracking-widest transition-all ${isExpanded ? 'text-blue-600 bg-blue-50/30 dark:bg-blue-900/20' : 'text-slate-500 hover:bg-white dark:hover:bg-white/5'}`}
         >
           <MessageSquare className="h-5 w-5" /> Comment
         </button>
         <button 
           onClick={() => onShare(post.id)} 
-          className="py-6 flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest text-slate-500 hover:bg-white dark:hover:bg-white/5 transition-all"
+          className="py-6 flex items-center justify-center gap-3 text-label font-black uppercase tracking-widest text-slate-500 hover:bg-white dark:hover:bg-white/5 transition-all"
         >
           <Share2 className="h-5 w-5" /> Share
         </button>
@@ -148,7 +148,7 @@ const PostCard = memo(({ post, user, profile, onLike, onCommentToggle, onShare, 
               value={commentInput || ""}
               onChange={(e) => onCommentChange(post.id, e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && onCommentSubmit(post)}
-              className="flex-1 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-white/10 px-8 py-5 rounded-2xl md:rounded-[2rem] outline-none focus:border-blue-500 shadow-sm text-lg font-bold"
+              className="flex-1 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-white/10 px-8 py-5 rounded-2xl md:rounded-[2rem] outline-none focus:border-blue-500 shadow-sm text-heading-3 font-bold"
             />
             <button onClick={() => onCommentSubmit(post)} className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl md:rounded-[2rem] font-black uppercase text-[10px] tracking-widest shadow-xl active:scale-95 transition-all">
               <Send className="h-5 w-5" />
@@ -170,7 +170,7 @@ const PostCard = memo(({ post, user, profile, onLike, onCommentToggle, onShare, 
                          <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Team Collaborator</span>
                          <span className="text-[9px] font-bold text-slate-400 uppercase">{new Date(comment.created_at).toLocaleDateString()}</span>
                       </div>
-                      <p className="text-lg text-slate-700 dark:text-slate-200 font-medium leading-relaxed">{comment.comment_text}</p>
+                      <p className="text-heading-3 text-slate-700 dark:text-slate-200 font-medium leading-relaxed">{comment.comment_text}</p>
                     </div>
                   </div>
                 </div>
@@ -317,37 +317,37 @@ function Feed() {
         {/* POST CREATOR HUD */}
         <div className="bg-white dark:bg-slate-800 rounded-[3rem] shadow-sm border-2 border-slate-100 dark:border-white/5 p-12 overflow-hidden transition-all hover:shadow-2xl">
           <div className="flex items-center gap-6 mb-10 border-b-2 border-slate-50 dark:border-white/5 pb-8">
-            <div className="h-20 w-20 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center font-black text-3xl shadow-xl">
+            <div className="h-20 w-20 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center font-black text-heading-1 shadow-xl">
               {profile?.full_name?.charAt(0)?.toUpperCase()}
             </div>
             <div>
-              <h3 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Draft an Update</h3>
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Global Broadcast System</p>
+              <h3 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Draft an Update</h3>
+              <p className="text-label font-black text-slate-400 uppercase tracking-widest mt-1">Global Broadcast System</p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <select value={form.visibility} onChange={e => setForm({...form, visibility: e.target.value})} className="bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-5 rounded-2xl text-xs font-black uppercase tracking-widest outline-none focus:border-blue-500 cursor-pointer transition-all">
+               <select value={form.visibility} onChange={e => setForm({...form, visibility: e.target.value})} className="bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-5 rounded-2xl text-label font-black uppercase tracking-widest outline-none focus:border-blue-500 cursor-pointer transition-all">
                   <option value="internal">🔒 Internal Network Only</option>
                   <option value="public">🌍 Public Corporate Hub</option>
                </select>
-               <select value={form.post_type} onChange={e => setForm({...form, post_type: e.target.value})} className="bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-5 rounded-2xl text-xs font-black uppercase tracking-widest outline-none focus:border-blue-500 cursor-pointer transition-all">
+               <select value={form.post_type} onChange={e => setForm({...form, post_type: e.target.value})} className="bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-5 rounded-2xl text-label font-black uppercase tracking-widest outline-none focus:border-blue-500 cursor-pointer transition-all">
                   {POST_TYPES.map(pt => <option key={pt.value} value={pt.value}>{pt.label}</option>)}
                </select>
             </div>
 
             <input
               type="text" placeholder="Enter headline..." value={form.title} onChange={e => setForm({...form, title: e.target.value})}
-              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-6 rounded-3xl outline-none focus:border-blue-500 font-black text-2xl text-slate-900 dark:text-white transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-6 rounded-3xl outline-none focus:border-blue-500 font-black text-heading-1 text-slate-900 dark:text-white transition-all"
             />
             <textarea
               placeholder="Detailed communication..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} rows="4"
-              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-8 rounded-3xl outline-none focus:border-blue-500 font-medium text-xl text-slate-700 dark:text-slate-200 resize-none transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-8 rounded-3xl outline-none focus:border-blue-500 font-medium text-heading-2 text-slate-700 dark:text-slate-200 resize-none transition-all"
             />
 
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <label className="cursor-pointer bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 px-10 py-5 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-500 transition-all border-2 border-transparent hover:border-slate-300">
+              <label className="cursor-pointer bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 px-10 py-5 rounded-2xl text-label font-black uppercase tracking-widest text-slate-500 transition-all border-2 border-transparent hover:border-slate-300">
                 📸 Attach Media (Img/Vid)
                 <input type="file" accept="image/*,video/*" onChange={handleImageChange} className="hidden" />
               </label>
@@ -360,11 +360,11 @@ function Feed() {
                 <button type="button" onClick={() => {setImagePreview(""); setSelectedImage(null)}} className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full hover:bg-red-500 transition-colors">×</button>
               </div>}
               
-              <button type="submit" disabled={loading} className="md:ml-auto w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-16 py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-blue-500/20 active:scale-95 transition-all">
+              <button type="submit" disabled={loading} className="md:ml-auto w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-16 py-5 rounded-2xl font-black uppercase text-label tracking-[0.2em] shadow-xl shadow-blue-500/20 active:scale-95 transition-all">
                 {loading ? "Transmitting..." : editingId ? "Update Feed" : "Publish Global Update"}
               </button>
             </div>
-            {(error || message) && <div className={`p-6 rounded-2xl text-xs font-black uppercase tracking-widest border-2 ${error ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>{error || message}</div>}
+            {(error || message) && <div className={`p-6 rounded-2xl text-label font-black uppercase tracking-widest border-2 ${error ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>{error || message}</div>}
           </form>
         </div>
 
@@ -374,7 +374,7 @@ function Feed() {
             const keys = ["all", "internal", "public", "campaigns"]
             const isActive = filter === keys[idx]
             return (
-              <button key={keys[idx]} onClick={() => setFilter(keys[idx])} className={`whitespace-nowrap px-10 py-4 rounded-full text-xs font-black uppercase tracking-widest transition-all border-2 ${isActive ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white shadow-xl scale-105" : "bg-white dark:bg-slate-800 text-slate-500 border-slate-100 dark:border-white/5"}`}>
+              <button key={keys[idx]} onClick={() => setFilter(keys[idx])} className={`whitespace-nowrap px-10 py-4 rounded-full text-label font-black uppercase tracking-widest transition-all border-2 ${isActive ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white shadow-xl scale-105" : "bg-white dark:bg-slate-800 text-slate-500 border-slate-100 dark:border-white/5"}`}>
                 {tab}
               </button>
             )

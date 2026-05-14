@@ -79,7 +79,7 @@ export default function PlatformSettings() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3.5 md:py-5 rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all border-2 shrink-0 ${
+            className={`flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3.5 md:py-5 rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-label tracking-widest transition-all border-2 shrink-0 ${
               activeTab === tab.id 
                 ? "bg-violet-600 text-white border-violet-600 shadow-lg" 
                 : "bg-white dark:bg-white/5 text-slate-500 dark:text-violet-400 border-slate-100 dark:border-violet-500/15"
@@ -98,7 +98,7 @@ export default function PlatformSettings() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             {/* Company Selector */}
             <div className="rounded-3xl p-6 md:p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15">
-              <h3 className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-6">Corporates</h3>
+              <h3 className="text-[10px] md:text-label font-black text-slate-500 uppercase tracking-widest mb-6">Corporates</h3>
               {loading ? (
                 <div className="flex justify-center py-10"><RefreshCw className="h-6 w-6 animate-spin text-violet-500" /></div>
               ) : (
@@ -107,7 +107,7 @@ export default function PlatformSettings() {
                     <button
                       key={co.id}
                       onClick={() => setSelectedCo(co)}
-                      className={`w-full text-left px-4 md:px-6 py-3 md:py-4 rounded-xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all border-2 ${
+                      className={`w-full text-left px-4 md:px-6 py-3 md:py-4 rounded-xl font-black uppercase text-[10px] md:text-label tracking-widest transition-all border-2 ${
                         selectedCo?.id === co.id 
                           ? "bg-violet-600 text-white border-transparent" 
                           : "bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-violet-300 border-slate-100 dark:border-white/5"
@@ -129,8 +129,8 @@ export default function PlatformSettings() {
                     <div key={mod.key} className={`p-5 md:p-6 rounded-2xl border-2 transition-all ${active ? "bg-violet-50/50 dark:bg-violet-900/10 border-violet-200 dark:border-violet-500/30" : "opacity-60 bg-slate-50 dark:bg-white/[0.02] border-transparent"}`}>
                       <div className="flex items-center justify-between">
                         <div className="min-w-0">
-                          <p className="text-sm md:text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white truncate">{mod.label}</p>
-                          <p className="text-[10px] md:text-xs font-bold text-slate-500 truncate">{mod.desc}</p>
+                          <p className="text-body md:text-heading-3 font-black uppercase tracking-tight text-slate-900 dark:text-white truncate">{mod.label}</p>
+                          <p className="text-[10px] md:text-label font-bold text-slate-500 truncate">{mod.desc}</p>
                         </div>
                         <button onClick={() => toggleModule(mod.key)} disabled={saving === mod.key}>
                           {active ? <ToggleRight className="h-10 w-10 text-violet-600" /> : <ToggleLeft className="h-10 w-10 text-slate-300" />}
@@ -149,14 +149,14 @@ export default function PlatformSettings() {
           <div className="rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
               <div className="space-y-8">
-                <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Security</h3>
+                <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Security</h3>
                 <div className="space-y-4">
                   <div>
                     <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest block mb-2">Password Length</label>
                     <input type="number" value={systemRules.password_min_length} onChange={e=>setSystemRules({...systemRules, password_min_length: e.target.value})} className="w-full bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl px-4 py-3 outline-none font-bold text-slate-900 dark:text-white" />
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10">
-                    <p className="font-black uppercase text-[10px] md:text-xs tracking-widest text-slate-900 dark:text-white">Require Symbols</p>
+                    <p className="font-black uppercase text-[10px] md:text-label tracking-widest text-slate-900 dark:text-white">Require Symbols</p>
                     <button onClick={()=>setSystemRules({...systemRules, require_symbols: !systemRules.require_symbols})}>
                       {systemRules.require_symbols ? <ToggleRight className="h-10 w-10 text-emerald-500" /> : <ToggleLeft className="h-10 w-10 text-slate-300" />}
                     </button>
@@ -165,11 +165,11 @@ export default function PlatformSettings() {
               </div>
 
               <div className="space-y-8">
-                <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Status</h3>
+                <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Status</h3>
                 <div className="space-y-4">
                   <div className={`p-6 rounded-2xl border-2 ${systemRules.maintenance_mode ? 'bg-red-50 dark:bg-red-950/20 border-red-200' : 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200'}`}>
                     <div className="flex items-center justify-between mb-2">
-                      <p className="font-black uppercase tracking-widest text-xs text-slate-900 dark:text-white">Maintenance Mode</p>
+                      <p className="font-black uppercase tracking-widest text-label text-slate-900 dark:text-white">Maintenance Mode</p>
                       <button onClick={()=>setSystemRules({...systemRules, maintenance_mode: !systemRules.maintenance_mode})}>
                         {systemRules.maintenance_mode ? <ToggleRight className="h-10 w-10 text-red-500" /> : <ToggleLeft className="h-10 w-10 text-emerald-500" />}
                       </button>
@@ -188,7 +188,7 @@ export default function PlatformSettings() {
           <div className="rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
               <div className="space-y-8">
-                <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Identity</h3>
+                <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Identity</h3>
                 <div className="space-y-4">
                    <div>
                     <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest block mb-2">Platform Name</label>
@@ -205,7 +205,7 @@ export default function PlatformSettings() {
               </div>
 
               <div className="space-y-8">
-                <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Assets</h3>
+                <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Assets</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <p className="text-[10px] font-black uppercase text-slate-500">Logo</p>
@@ -231,3 +231,4 @@ export default function PlatformSettings() {
     </SuperAdminLayout>
   )
 }
+

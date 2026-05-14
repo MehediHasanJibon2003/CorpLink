@@ -40,26 +40,26 @@ function DepartmentTasksPanel({ activeDept }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm">
            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Tasks</p>
-           <h3 className="text-3xl font-black text-slate-800 dark:text-white">{stats.total}</h3>
+           <h3 className="text-heading-1 font-black text-slate-800 dark:text-white">{stats.total}</h3>
         </div>
         <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm">
            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-2">Completed</p>
-           <h3 className="text-3xl font-black text-emerald-600">{stats.completed}</h3>
+           <h3 className="text-heading-1 font-black text-emerald-600">{stats.completed}</h3>
         </div>
         <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm">
            <p className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-2">Active</p>
-           <h3 className="text-3xl font-black text-blue-600">{stats.inProgress}</h3>
+           <h3 className="text-heading-1 font-black text-blue-600">{stats.inProgress}</h3>
         </div>
         <div className="bg-blue-600 p-6 rounded-3xl shadow-lg shadow-blue-500/20 text-white">
            <p className="text-[10px] font-black uppercase tracking-widest text-blue-100 mb-2">Success Rate</p>
-           <h3 className="text-3xl font-black">{completionRate}%</h3>
+           <h3 className="text-heading-1 font-black">{completionRate}%</h3>
         </div>
       </div>
 
       {/* Task List */}
       <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] border-2 border-slate-100 dark:border-white/5 shadow-sm overflow-hidden">
         <div className="px-8 py-6 border-b-2 border-slate-50 dark:border-white/5 flex items-center justify-between bg-slate-50/50 dark:bg-white/5">
-           <h4 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-3">
+           <h4 className="text-heading-2 font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-3">
               <ClipboardList className="h-5 w-5 text-blue-500" /> Active Department Workflow
            </h4>
         </div>
@@ -85,18 +85,18 @@ function DepartmentTasksPanel({ activeDept }) {
                            {task.status.replace('_', ' ')}
                          </span>
                       </div>
-                      <h5 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 transition-colors">{task.title}</h5>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base font-medium line-clamp-2">{task.description}</p>
+                      <h5 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 transition-colors">{task.title}</h5>
+                      <p className="text-slate-500 dark:text-slate-400 text-body md:text-body font-medium line-clamp-2">{task.description}</p>
                    </div>
                    
                    <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4">
                       <div className="text-right">
                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Assigned To</p>
-                         <p className="text-sm md:text-lg font-black text-slate-800 dark:text-white">{task.employees?.name || "Unassigned"}</p>
+                         <p className="text-body md:text-heading-3 font-black text-slate-800 dark:text-white">{task.employees?.name || "Unassigned"}</p>
                       </div>
                       <div className="text-right">
                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Deadline</p>
-                         <p className="text-sm font-bold text-slate-600 dark:text-slate-300">{task.deadline ? new Date(task.deadline).toLocaleDateString() : "No Date"}</p>
+                         <p className="text-body font-bold text-slate-600 dark:text-slate-300">{task.deadline ? new Date(task.deadline).toLocaleDateString() : "No Date"}</p>
                       </div>
                    </div>
                 </div>
@@ -109,3 +109,4 @@ function DepartmentTasksPanel({ activeDept }) {
 }
 
 export default DepartmentTasksPanel
+

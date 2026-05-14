@@ -147,7 +147,7 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
       {/* Creation/Edit HUD */}
       <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-white/5 p-8 md:p-12">
         <div className="flex justify-between items-center mb-8">
-           <h3 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-3">
+           <h3 className="text-heading-1 font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-3">
              {editingId ? <Edit3 className="h-6 w-6 text-amber-500" /> : <Plus className="h-6 w-6 text-blue-500" />} 
              {editingId ? "Update Project Parameters" : "Initialize Enterprise Project"}
            </h3>
@@ -159,17 +159,17 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
         </div>
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Strategic Title" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none transition-all" />
-          <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Objective" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none transition-all" />
+          <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Strategic Title" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all" />
+          <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Objective" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all" />
           <select value={form.department_id} onChange={e => setForm({...form, department_id: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-4 py-4 text-[10px] font-black uppercase tracking-widest outline-none focus:border-blue-500">
             <option value="">Global Unit</option>
             {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
-          <button type="submit" disabled={loading} className={`${editingId ? 'bg-amber-500' : 'bg-blue-600'} text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl transition-all hover:scale-[1.02]`}>
+          <button type="submit" disabled={loading} className={`${editingId ? 'bg-amber-500' : 'bg-blue-600'} text-white py-4 rounded-2xl font-black uppercase text-label tracking-widest shadow-xl transition-all hover:scale-[1.02]`}>
             {loading ? "Processing..." : editingId ? "Update Project" : "Launch Project"}
           </button>
         </form>
-        {error && <p className="text-red-500 text-xs font-bold mt-4 bg-red-50 p-3 rounded-xl">{error}</p>}
+        {error && <p className="text-red-500 text-label font-bold mt-4 bg-red-50 p-3 rounded-xl">{error}</p>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -179,8 +179,8 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
             <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                <Activity className="h-8 w-8 text-slate-400" />
             </div>
-            <h4 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Global Inbox</h4>
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1 mb-6">Unassigned Workflow</p>
+            <h4 className="text-heading-1 font-black text-slate-800 dark:text-white uppercase tracking-tight">Global Inbox</h4>
+            <p className="text-label font-black text-slate-400 uppercase tracking-widest mt-1 mb-6">Unassigned Workflow</p>
             
             {projectStats['inbox'] && (
               <div className="space-y-2">
@@ -194,7 +194,7 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
               </div>
             )}
           </div>
-          <button onClick={() => onSelectProject(null)} className="mt-12 w-full py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+          <button onClick={() => onSelectProject(null)} className="mt-12 w-full py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-black uppercase text-label tracking-widest shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
             Explore Workflow <ChevronRight className="h-4 w-4" />
           </button>
         </div>
@@ -215,7 +215,7 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
                     <button onClick={() => handleDelete(proj.id, proj.name)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 className="h-5 w-5" /></button>
                   </div>
                 </div>
-                <h4 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1">{proj.name}</h4>
+                <h4 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1">{proj.name}</h4>
                 <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-6 flex items-center gap-2"><Building className="h-3 w-3" /> {proj.department_name}</p>
                 
                 <div className="space-y-3">
@@ -232,7 +232,7 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
                    </div>
                 </div>
               </div>
-              <button onClick={() => onSelectProject(proj)} className="mt-12 w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+              <button onClick={() => onSelectProject(proj)} className="mt-12 w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase text-label tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
                 Launch Board <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -244,3 +244,4 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
 }
 
 export default ProjectsPanel
+

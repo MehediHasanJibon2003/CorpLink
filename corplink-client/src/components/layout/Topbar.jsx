@@ -113,7 +113,7 @@ export default function Topbar({ onMenuClick }) {
               {isSearching ? (
                 <div className="p-8 text-center flex flex-col items-center gap-3">
                   <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-400">Searching Workspace...</p>
+                  <p className="text-label font-black uppercase tracking-widest text-slate-400">Searching Workspace...</p>
                 </div>
               ) : results.length > 0 ? (
                 <div className="py-4">
@@ -128,7 +128,7 @@ export default function Topbar({ onMenuClick }) {
                         <result.icon className="h-5 w-5" />
                       </div>
                       <div>
-                        <p className="text-sm font-black text-slate-700 dark:text-white uppercase tracking-tight">{result.title}</p>
+                        <p className="text-body font-black text-slate-700 dark:text-white uppercase tracking-tight">{result.title}</p>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{result.subtitle}</p>
                       </div>
                     </button>
@@ -136,7 +136,7 @@ export default function Topbar({ onMenuClick }) {
                 </div>
               ) : (
                 <div className="p-8 text-center">
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-400">No matches found for "{searchTerm}"</p>
+                  <p className="text-label font-black uppercase tracking-widest text-slate-400">No matches found for "{searchTerm}"</p>
                 </div>
               )}
             </div>
@@ -160,22 +160,23 @@ export default function Topbar({ onMenuClick }) {
  
         <div className="flex items-center gap-3 md:gap-5">
           <div className="hidden md:block text-right">
-            <p className="text-base md:text-lg font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight">{profile?.full_name || "User"}</p>
-            <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400 mt-1">{profile?.role}</p>
+            <p className="text-body md:text-heading-3 font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight">{profile?.full_name || "User"}</p>
+            <p className="text-[10px] md:text-label font-black uppercase tracking-widest text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400 mt-1">{profile?.role}</p>
             <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mt-0.5">{profile?.companies?.name}</p>
           </div>
           <div className="relative">
-            <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl font-black text-white text-lg md:text-2xl flex items-center justify-center shadow-xl border-2 border-white/10" style={{ background: "var(--primary-color)" }}>
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl font-black text-white text-heading-3 md:text-heading-1 flex items-center justify-center shadow-xl border-2 border-white/10" style={{ background: "var(--primary-color)" }}>
               {(profile?.full_name || "U").charAt(0).toUpperCase()}
             </div>
           </div>
         </div>
  
-        <button onClick={handleLogout} className="ml-2 bg-rose-50 dark:bg-rose-500/10 text-rose-500 px-4 py-2.5 md:px-8 md:py-4 rounded-xl font-black uppercase tracking-widest text-xs border-2 border-rose-100 dark:border-violet-500/20">
+        <button onClick={handleLogout} className="ml-2 bg-rose-50 dark:bg-rose-500/10 text-rose-500 px-4 py-2.5 md:px-8 md:py-4 rounded-xl font-black uppercase tracking-widest text-label border-2 border-rose-100 dark:border-violet-500/20">
           Sign Out
         </button>
       </div>
     </header>
   )
 }
+
 

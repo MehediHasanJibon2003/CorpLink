@@ -39,7 +39,7 @@ function ProtectedRoute({ children }) {
   if (loading || checkingStatus) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900">
-        <p className="text-lg font-medium text-slate-600 dark:text-slate-300">Authenticating...</p>
+        <p className="text-heading-3 font-medium text-slate-600 dark:text-slate-300">Authenticating...</p>
       </div>
     )
   }

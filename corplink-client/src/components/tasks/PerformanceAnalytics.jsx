@@ -117,7 +117,7 @@ function PerformanceAnalytics({ profile }) {
          {/* Employee Performance Leaderboard */}
          <div className="xl:col-span-2 bg-white dark:bg-slate-800 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-sm overflow-hidden">
             <div className="p-10 border-b-2 border-slate-50 dark:border-white/5 flex items-center justify-between bg-slate-50/50 dark:bg-white/5">
-               <h4 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-4">
+               <h4 className="text-heading-2 font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-4">
                   <Users className="h-6 w-6 text-blue-600" /> Human Resource Velocity
                </h4>
                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">By Success Rate</span>
@@ -133,12 +133,12 @@ function PerformanceAnalytics({ profile }) {
                              {emp.name.charAt(0)}
                           </div>
                           <div>
-                             <p className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">{emp.name}</p>
+                             <p className="text-heading-3 font-black text-slate-800 dark:text-white uppercase tracking-tight">{emp.name}</p>
                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{emp.completed} / {emp.total} Tasks Completed</p>
                           </div>
                        </div>
                        <div className="text-right">
-                          <p className="text-2xl font-black text-blue-600 tracking-tighter">{emp.rate}%</p>
+                          <p className="text-heading-1 font-black text-blue-600 tracking-tighter">{emp.rate}%</p>
                           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Efficiency</p>
                        </div>
                     </div>
@@ -153,7 +153,7 @@ function PerformanceAnalytics({ profile }) {
          {/* Task Distribution Donut-style Stats */}
          <div className="xl:col-span-1 space-y-8">
             <div className="bg-white dark:bg-slate-800 rounded-[3rem] border-2 border-slate-100 dark:border-white/5 p-10 shadow-sm">
-               <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-10 flex items-center gap-3">
+               <h4 className="text-body font-black text-slate-400 uppercase tracking-widest mb-10 flex items-center gap-3">
                   <BarChart3 className="h-5 w-5" /> Workflow Mix
                </h4>
                <div className="space-y-6">
@@ -166,9 +166,9 @@ function PerformanceAnalytics({ profile }) {
                     <div key={item.label} className="flex items-center justify-between">
                        <div className="flex items-center gap-4">
                           <div className={`w-3 h-3 rounded-full ${item.color}`} />
-                          <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">{item.label}</span>
+                          <span className="text-body font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">{item.label}</span>
                        </div>
-                       <span className={`text-xl font-black ${item.text}`}>{item.count}</span>
+                       <span className={`text-heading-2 font-black ${item.text}`}>{item.count}</span>
                     </div>
                   ))}
                </div>
@@ -178,8 +178,8 @@ function PerformanceAnalytics({ profile }) {
                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <TrendingUp className="h-8 w-8 text-white" />
                </div>
-               <h4 className="text-xl font-black uppercase tracking-tight mb-2">Predictive Health</h4>
-               <p className="text-blue-100 text-sm font-medium opacity-80 mb-6">Your organization is operating at peak efficiency this quarter.</p>
+               <h4 className="text-heading-2 font-black uppercase tracking-tight mb-2">Predictive Health</h4>
+               <p className="text-blue-100 text-body font-medium opacity-80 mb-6">Your organization is operating at peak efficiency this quarter.</p>
                <div className="py-3 px-6 bg-white/20 rounded-2xl inline-block text-[10px] font-black uppercase tracking-widest">
                   AI Analyzed
                </div>
@@ -191,3 +191,4 @@ function PerformanceAnalytics({ profile }) {
 }
 
 export default PerformanceAnalytics
+

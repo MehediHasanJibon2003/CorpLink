@@ -70,7 +70,7 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
               <DollarSign className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+              <h2 className="text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">
                 Process Payment
               </h2>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
@@ -93,7 +93,7 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
               </div>
               <div>
                 <p className="text-[10px] font-black uppercase text-slate-400">Total Amount</p>
-                <p className="text-2xl font-black text-slate-900 dark:text-white">${invoice?.amount}</p>
+                <p className="text-heading-1 font-black text-slate-900 dark:text-white">${invoice?.amount}</p>
               </div>
             </div>
             <div className="text-right">
@@ -109,7 +109,7 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
                 <select 
                   value={formData.status}
                   onChange={e => setFormData({...formData, status: e.target.value})}
-                  className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black text-xs uppercase outline-none focus:border-emerald-500 transition"
+                  className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black text-label uppercase outline-none focus:border-emerald-500 transition"
                 >
                   <option value="pending">Pending</option>
                   <option value="paid">Confirm Payment</option>
@@ -123,7 +123,7 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
                 <select 
                   value={formData.payment_method}
                   onChange={e => setFormData({...formData, payment_method: e.target.value})}
-                  className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black text-xs uppercase outline-none focus:border-emerald-500 transition"
+                  className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black text-label uppercase outline-none focus:border-emerald-500 transition"
                 >
                   <option value="manual">Manual Bank Transfer</option>
                   <option value="stripe">Stripe Gateway</option>
@@ -141,7 +141,7 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
                   value={formData.transaction_id}
                   onChange={e => setFormData({...formData, transaction_id: e.target.value})}
                   placeholder="e.g. TXN-99008877"
-                  className="w-full pl-12 pr-5 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-bold text-sm outline-none focus:border-emerald-500 transition"
+                  className="w-full pl-12 pr-5 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-bold text-body outline-none focus:border-emerald-500 transition"
                 />
               </div>
             </div>
@@ -153,7 +153,7 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
                 onChange={e => setFormData({...formData, notes: e.target.value})}
                 placeholder="Add any specific details about this payment..."
                 rows={3}
-                className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-3xl font-bold text-sm outline-none focus:border-emerald-500 transition"
+                className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-3xl font-bold text-body outline-none focus:border-emerald-500 transition"
               />
             </div>
           </form>
@@ -163,7 +163,7 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
         <div className="px-10 py-8 border-t-2 border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 flex justify-end gap-4">
           <button 
             onClick={onClose}
-            className="px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-700 transition"
+            className="px-8 py-4 text-label font-black uppercase tracking-widest text-slate-500 hover:text-slate-700 transition"
           >
             Cancel
           </button>
@@ -181,3 +181,4 @@ export default function PaymentActionModal({ invoice, onClose, onSuccess }) {
     </div>
   );
 }
+

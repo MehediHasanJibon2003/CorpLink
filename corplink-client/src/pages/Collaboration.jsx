@@ -37,13 +37,13 @@ function Collaboration() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-3 md:gap-4 px-8 py-4 md:py-6 rounded-2xl md:rounded-[1.8rem] text-lg md:text-2xl font-black transition-all ${
+              className={`flex items-center gap-3 md:gap-4 px-8 py-4 md:py-6 rounded-2xl md:rounded-[1.8rem] text-heading-3 md:text-heading-1 font-black transition-all ${
                 activeTab === tab.id
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105"
                   : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50"
               }`}
             >
-              <span className="text-2xl md:text-3xl">{tab.icon}</span>
+              <span className="text-heading-1 md:text-heading-1">{tab.icon}</span>
               {tab.label}
             </button>
           ))}
@@ -63,3 +63,4 @@ function Collaboration() {
 }
 
 export default Collaboration
+

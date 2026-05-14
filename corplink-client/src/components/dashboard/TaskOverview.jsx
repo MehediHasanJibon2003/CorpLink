@@ -13,11 +13,11 @@ export default function TaskOverview({ pending, inProgress, needsReview, finishe
   return (
     <div className="bg-white dark:bg-slate-800 p-6 md:p-10 rounded-2xl md:rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 h-full">
       <div className="flex items-center justify-between mb-6 md:mb-8">
-        <h3 className="text-xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 dark:text-white flex items-center gap-2 md:gap-3">
+        <h3 className="text-heading-2 md:text-heading-1 font-bold text-slate-800 dark:text-slate-100 dark:text-white flex items-center gap-2 md:gap-3">
           <BarChart3 className="h-6 w-6 md:h-8 md:w-8 text-blue-500" />
           Task Performance
         </h3>
-        <select className="text-sm md:text-lg bg-slate-50 dark:bg-slate-900 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg md:rounded-2xl px-3 py-1.5 md:px-6 md:py-3 outline-none font-medium">
+        <select className="text-body md:text-heading-3 bg-slate-50 dark:bg-slate-900 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg md:rounded-2xl px-3 py-1.5 md:px-6 md:py-3 outline-none font-medium">
           <option>This Week</option>
           <option>This Month</option>
           <option>All Time</option>
@@ -44,3 +44,4 @@ export default function TaskOverview({ pending, inProgress, needsReview, finishe
     </div>
   );
 }
+

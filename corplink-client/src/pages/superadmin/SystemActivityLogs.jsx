@@ -54,16 +54,16 @@ export default function SystemActivityLogs() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search action logs..."
-            className="w-full rounded-2xl pl-14 pr-6 py-4 md:py-5 text-sm md:text-lg font-black text-slate-900 dark:text-white bg-slate-50 dark:bg-black/20 border-2 border-slate-100 dark:border-violet-500/10 focus:border-violet-500 outline-none"
+            className="w-full rounded-2xl pl-14 pr-6 py-4 md:py-5 text-body md:text-heading-3 font-black text-slate-900 dark:text-white bg-slate-50 dark:bg-black/20 border-2 border-slate-100 dark:border-violet-500/10 focus:border-violet-500 outline-none"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-4">
-          <select value={companyId} onChange={e => setCompanyId(e.target.value)} className="rounded-xl px-6 py-4 text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-700 dark:text-white bg-slate-50 dark:bg-black/20 border-2 border-slate-100 dark:border-violet-500/10 outline-none lg:w-48">
+          <select value={companyId} onChange={e => setCompanyId(e.target.value)} className="rounded-xl px-6 py-4 text-[10px] md:text-label font-black uppercase tracking-widest text-slate-700 dark:text-white bg-slate-50 dark:bg-black/20 border-2 border-slate-100 dark:border-violet-500/10 outline-none lg:w-48">
             <option value="all">All Companies</option>
             {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <select value={severity} onChange={e => setSeverity(e.target.value)} className="rounded-xl px-6 py-4 text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-700 dark:text-white bg-slate-50 dark:bg-black/20 border-2 border-slate-100 dark:border-violet-500/10 outline-none lg:w-40">
+          <select value={severity} onChange={e => setSeverity(e.target.value)} className="rounded-xl px-6 py-4 text-[10px] md:text-label font-black uppercase tracking-widest text-slate-700 dark:text-white bg-slate-50 dark:bg-black/20 border-2 border-slate-100 dark:border-violet-500/10 outline-none lg:w-40">
             <option value="all">All Levels</option>
             <option value="info">Info</option>
             <option value="warning">Warning</option>
@@ -88,17 +88,17 @@ export default function SystemActivityLogs() {
               {loading ? (
                 <tr><td colSpan={5} className="py-20 text-center animate-pulse font-black uppercase text-slate-400">Syncing logs...</td></tr>
               ) : logs.length === 0 ? (
-                <tr><td colSpan={5} className="py-20 text-center text-slate-400 font-bold uppercase text-xs">No logs found</td></tr>
+                <tr><td colSpan={5} className="py-20 text-center text-slate-400 font-bold uppercase text-label">No logs found</td></tr>
               ) : logs.map(log => {
                 const sStyle = severityStyle[log.severity] || severityStyle.info;
                 return (
                   <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                     <td className="px-8 py-6 md:py-8">
-                      <p className="text-sm md:text-lg font-black text-slate-900 dark:text-white uppercase truncate max-w-[150px]">{log.profiles?.full_name || "System"}</p>
+                      <p className="text-body md:text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate max-w-[150px]">{log.profiles?.full_name || "System"}</p>
                       <p className="text-[9px] md:text-[10px] font-bold text-slate-400 truncate max-w-[150px]">{log.companies?.name || "Global"}</p>
                     </td>
-                    <td className="px-8 py-6 md:py-8 text-[10px] md:text-xs font-black uppercase text-slate-500 tracking-widest">{log.entity || "—"}</td>
-                    <td className="px-8 py-6 md:py-8 font-black text-slate-900 dark:text-white uppercase tracking-tight text-xs md:text-sm truncate max-w-[200px]">{log.action}</td>
+                    <td className="px-8 py-6 md:py-8 text-[10px] md:text-label font-black uppercase text-slate-500 tracking-widest">{log.entity || "—"}</td>
+                    <td className="px-8 py-6 md:py-8 font-black text-slate-900 dark:text-white uppercase tracking-tight text-label md:text-body truncate max-w-[200px]">{log.action}</td>
                     <td className="px-8 py-6 md:py-8">
                       <span className="px-3 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest border-2" style={{ background: sStyle.bg, color: sStyle.text, borderColor: sStyle.border }}>
                         {log.severity}
@@ -117,7 +117,7 @@ export default function SystemActivityLogs() {
         {/* Responsive Pagination */}
         {totalPages > 1 && (
           <div className="p-6 md:p-10 border-t-2 border-slate-100 dark:border-violet-500/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500">Page {page + 1} of {totalPages}</p>
+            <p className="text-[10px] md:text-label font-black uppercase tracking-widest text-slate-500">Page {page + 1} of {totalPages}</p>
             <div className="flex gap-4 w-full sm:w-auto">
               <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-slate-100 dark:bg-white/5 border-2 border-slate-200 dark:border-violet-500/10 font-black uppercase text-[10px] disabled:opacity-40">Prev</button>
               <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-violet-600 text-white font-black uppercase text-[10px] shadow-lg shadow-violet-600/20">Next</button>
@@ -128,3 +128,4 @@ export default function SystemActivityLogs() {
     </SuperAdminLayout>
   )
 }
+

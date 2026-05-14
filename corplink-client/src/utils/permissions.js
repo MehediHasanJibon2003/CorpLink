@@ -98,3 +98,4 @@ export const filterDataByHierarchy = (dataList, userProfile) => {
     item.department_id === userProfile.department_id
   );
 };
+

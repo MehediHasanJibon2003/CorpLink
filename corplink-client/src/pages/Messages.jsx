@@ -307,7 +307,7 @@ function Messages({ isEmployeeView = false }) {
     return (
       <div className="h-full flex flex-col items-center justify-center space-y-6">
         <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
-        <p className="text-xl font-black text-slate-400 uppercase tracking-[0.2em]">
+        <p className="text-heading-2 font-black text-slate-400 uppercase tracking-[0.2em]">
           Synchronizing Secure Nodes...
         </p>
       </div>
@@ -327,7 +327,7 @@ function Messages({ isEmployeeView = false }) {
       <div className="w-80 md:w-[32rem] border-r-2 border-slate-100 dark:border-white/5 flex flex-col bg-slate-50/50 dark:bg-slate-900/30">
         <div className="p-8 border-b-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">
+            <h3 className="text-body font-black uppercase tracking-[0.2em] text-slate-400">
               Communication Hub
             </h3>
             <div className="flex items-center gap-2">
@@ -344,7 +344,7 @@ function Messages({ isEmployeeView = false }) {
               placeholder="Search secure channels..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-100 dark:bg-slate-900 border-2 border-transparent focus:border-blue-500 rounded-2xl pl-16 pr-6 py-5 text-lg font-black outline-none transition-all"
+              className="w-full bg-slate-100 dark:bg-slate-900 border-2 border-transparent focus:border-blue-500 rounded-2xl pl-16 pr-6 py-5 text-heading-3 font-black outline-none transition-all"
             />
           </div>
         </div>
@@ -381,7 +381,7 @@ function Messages({ isEmployeeView = false }) {
                     )}
                   </div>
                   <div className="text-left flex-1 min-w-0">
-                    <p className="font-black text-lg uppercase truncate">
+                    <p className="font-black text-heading-3 uppercase truncate">
                       {group.name}
                     </p>
                     <p
@@ -415,7 +415,7 @@ function Messages({ isEmployeeView = false }) {
                   className={`w-full flex items-center gap-5 p-5 rounded-3xl transition-all ${activeChat?.id === contact.id ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "hover:bg-white dark:hover:bg-white/5 text-slate-700 dark:text-slate-200"}`}
                 >
                   <div
-                    className={`h-14 w-14 rounded-2xl flex items-center justify-center font-black text-xl overflow-hidden ${activeChat?.id === contact.id ? "bg-white/20" : "bg-slate-100 dark:bg-white/5"}`}
+                    className={`h-14 w-14 rounded-2xl flex items-center justify-center font-black text-heading-2 overflow-hidden ${activeChat?.id === contact.id ? "bg-white/20" : "bg-slate-100 dark:bg-white/5"}`}
                   >
                     {contact.photo ? (
                       <img
@@ -428,7 +428,7 @@ function Messages({ isEmployeeView = false }) {
                     )}
                   </div>
                   <div className="text-left flex-1 min-w-0">
-                    <p className="font-black text-lg uppercase truncate">
+                    <p className="font-black text-heading-3 uppercase truncate">
                       {contact.full_name}
                     </p>
                     <p
@@ -450,7 +450,7 @@ function Messages({ isEmployeeView = false }) {
           <>
             <div className="p-8 border-b-2 border-slate-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-slate-800">
               <div className="flex items-center gap-6">
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-2xl shadow-lg">
+                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-1 shadow-lg">
                   {activeChat.type === "group" ? (
                     activeChat.sub === "project" ? (
                       <Folder className="h-8 w-8" />
@@ -462,7 +462,7 @@ function Messages({ isEmployeeView = false }) {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-black text-2xl text-slate-900 dark:text-white uppercase tracking-tight">
+                  <h3 className="font-black text-heading-1 text-slate-900 dark:text-white uppercase tracking-tight">
                     {activeChat.name}
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
@@ -482,7 +482,7 @@ function Messages({ isEmployeeView = false }) {
               {msgLoading ? (
                 <div className="flex flex-col justify-center items-center h-full gap-4">
                   <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
-                  <p className="text-sm font-black text-slate-400 uppercase tracking-widest">
+                  <p className="text-body font-black text-slate-400 uppercase tracking-widest">
                     Retrieving Messages...
                   </p>
                 </div>
@@ -492,10 +492,10 @@ function Messages({ isEmployeeView = false }) {
                     <MessageCircle className="h-16 w-16" />
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-black uppercase tracking-widest">
+                    <p className="text-heading-1 font-black uppercase tracking-widest">
                       Secure Channel Initialized
                     </p>
-                    <p className="text-lg font-bold mt-2">
+                    <p className="text-heading-3 font-bold mt-2">
                       Start the conversation below
                     </p>
                   </div>
@@ -551,7 +551,7 @@ function Messages({ isEmployeeView = false }) {
                                     href={msg.file_url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all rounded-xl text-white font-black uppercase text-xs"
+                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all rounded-xl text-white font-black uppercase text-label"
                                   >
                                     View Original
                                   </a>
@@ -562,7 +562,7 @@ function Messages({ isEmployeeView = false }) {
                                     <FileIcon className="h-6 w-6" />
                                   </div>
                                   <div className="min-w-0">
-                                    <p className="font-black text-sm truncate">
+                                    <p className="font-black text-body truncate">
                                       {msg.file_name}
                                     </p>
                                     <a
@@ -579,7 +579,7 @@ function Messages({ isEmployeeView = false }) {
                             </div>
                           )}
                           {msg.message_text && (
-                            <p className="text-lg md:text-2xl font-medium leading-relaxed">
+                            <p className="text-heading-3 md:text-heading-1 font-medium leading-relaxed">
                               {msg.message_text}
                             </p>
                           )}
@@ -602,7 +602,7 @@ function Messages({ isEmployeeView = false }) {
                     ) : (
                       <FileIcon className="h-6 w-6 text-blue-500" />
                     )}
-                    <span className="font-black text-blue-700 dark:text-blue-300 text-sm">
+                    <span className="font-black text-blue-700 dark:text-blue-300 text-body">
                       {attachedFile.name}
                     </span>
                   </div>
@@ -635,7 +635,7 @@ function Messages({ isEmployeeView = false }) {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Type a secure message to this channel..."
-                  className="flex-1 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-[2.5rem] px-8 py-5 text-lg md:text-2xl font-bold outline-none focus:border-blue-500 transition-all shadow-inner"
+                  className="flex-1 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-[2.5rem] px-8 py-5 text-heading-3 md:text-heading-1 font-bold outline-none focus:border-blue-500 transition-all shadow-inner"
                 />
 
                 <button
@@ -648,7 +648,7 @@ function Messages({ isEmployeeView = false }) {
                   {isUploading ? (
                     <Loader2 className="h-8 w-8 animate-spin" />
                   ) : (
-                    <span className="text-3xl md:text-5xl ml-1">➤</span>
+                    <span className="text-heading-1 md:text-5xl ml-1">➤</span>
                   )}
                 </button>
               </form>
@@ -660,10 +660,10 @@ function Messages({ isEmployeeView = false }) {
               <MessageCircle className="h-24 w-24" />
             </div>
             <div className="text-center">
-              <p className="text-3xl font-black uppercase tracking-[0.3em]">
+              <p className="text-heading-1 font-black uppercase tracking-[0.3em]">
                 Communication Array Offline
               </p>
-              <p className="text-xl font-bold mt-4">
+              <p className="text-heading-2 font-bold mt-4">
                 Select a channel from the left to synchronize
               </p>
             </div>
@@ -686,3 +686,4 @@ function Messages({ isEmployeeView = false }) {
 }
 
 export default Messages;
+

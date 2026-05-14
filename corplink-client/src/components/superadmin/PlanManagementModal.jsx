@@ -108,10 +108,10 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
               <Sparkles className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+              <h2 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">
                 {plan ? "Configure Plan" : "Create New Plan"}
               </h2>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Define capabilities & pricing tiers</p>
+              <p className="text-label font-bold text-slate-500 uppercase tracking-widest mt-1">Define capabilities & pricing tiers</p>
             </div>
           </div>
           <button onClick={onClose} className="p-3 rounded-2xl hover:bg-slate-200 dark:hover:bg-white/10 transition text-slate-400">
@@ -130,7 +130,7 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
                   required
                   value={formData.name}
                   onChange={e => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-violet-600 outline-none transition font-black uppercase text-sm text-center"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-violet-600 outline-none transition font-black uppercase text-body text-center"
                   placeholder="e.g. PROFESSIONAL"
                 />
               </div>
@@ -144,7 +144,7 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
                     required
                     value={formData.price}
                     onChange={e => setFormData({...formData, price: parseFloat(e.target.value)})}
-                    className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-violet-600 outline-none transition font-black text-lg text-violet-600 text-center"
+                    className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-violet-600 outline-none transition font-black text-heading-3 text-violet-600 text-center"
                   />
                 </div>
               </div>
@@ -189,7 +189,7 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
                     type="text"
                     value={formData.color}
                     onChange={e => setFormData({...formData, color: e.target.value})}
-                    className="flex-1 px-4 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-violet-600 outline-none transition font-black uppercase text-xs text-center"
+                    className="flex-1 px-4 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-violet-600 outline-none transition font-black uppercase text-label text-center"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
             <div className="space-y-6">
               <div className="flex items-center gap-4">
                 <Layout className="h-5 w-5 text-violet-600" />
-                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 dark:text-white">Module Access (Add-ons)</h3>
+                <h3 className="text-body font-black uppercase tracking-widest text-slate-800 dark:text-white">Module Access (Add-ons)</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {MODULE_OPTIONS.map(mod => (
@@ -222,7 +222,7 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
 
             {/* Features List */}
             <div className="space-y-6">
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 dark:text-white flex items-center gap-4">
+              <h3 className="text-body font-black uppercase tracking-widest text-slate-800 dark:text-white flex items-center gap-4">
                 <CheckCircle2 className="h-5 w-5 text-emerald-500" /> Feature Highlights
               </h3>
               <div className="flex gap-4">
@@ -275,7 +275,7 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
         <div className="px-10 py-8 border-t-2 border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 flex justify-end gap-4">
           <button 
             onClick={onClose}
-            className="px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-700 transition"
+            className="px-8 py-4 text-label font-black uppercase tracking-widest text-slate-500 hover:text-slate-700 transition"
           >
             Cancel
           </button>
@@ -292,3 +292,4 @@ export default function PlanManagementModal({ plan, onClose, onSuccess }) {
     </div>
   );
 }
+

@@ -65,10 +65,10 @@ export default function Security() {
                 <div className="p-5 bg-orange-500/20 rounded-3xl mb-8">
                   <Icon className="h-14 w-14 text-orange-500" />
                 </div>
-                <h3 className="font-black text-white mb-6 text-3xl tracking-tight">
+                <h3 className="font-black text-white mb-6 text-heading-1 tracking-tight">
                   {feat.title}
                 </h3>
-                <p className="text-xl text-slate-400 leading-relaxed font-medium">
+                <p className="text-heading-2 text-slate-400 leading-relaxed font-medium">
                   {feat.desc}
                 </p>
               </motion.div>
@@ -79,4 +79,5 @@ export default function Security() {
     </section>
   );
 }
+
 

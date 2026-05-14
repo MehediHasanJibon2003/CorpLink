@@ -180,21 +180,21 @@ function Employees() {
       {/* Top Stats - Responsive Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 md:mb-12">
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-violet-500/10 shadow-sm">
-           <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Total Directory</p>
-           <h3 className="text-4xl font-black text-slate-900 dark:text-white">{employees.length}</h3>
+           <p className="text-label font-black uppercase tracking-widest text-slate-500 mb-2">Total Directory</p>
+           <h3 className="text-heading-1 font-black text-slate-900 dark:text-white">{employees.length}</h3>
         </div>
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-violet-500/10 shadow-sm">
-           <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Activated Users</p>
-           <h3 className="text-4xl font-black text-emerald-500">{employees.filter(e => e.onboarded).length}</h3>
+           <p className="text-label font-black uppercase tracking-widest text-slate-500 mb-2">Activated Users</p>
+           <h3 className="text-heading-1 font-black text-emerald-500">{employees.filter(e => e.onboarded).length}</h3>
         </div>
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-violet-500/10 shadow-sm">
-           <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Department Count</p>
-           <h3 className="text-4xl font-black text-blue-500">{departments.length}</h3>
+           <p className="text-label font-black uppercase tracking-widest text-slate-500 mb-2">Department Count</p>
+           <h3 className="text-heading-1 font-black text-blue-500">{departments.length}</h3>
         </div>
         <div className="bg-blue-600 p-8 rounded-3xl shadow-xl shadow-blue-500/20 flex flex-col justify-between">
-           <p className="text-xs font-black uppercase tracking-widest text-blue-100">Invite Code</p>
+           <p className="text-label font-black uppercase tracking-widest text-blue-100">Invite Code</p>
            <div className="flex items-center justify-between mt-2">
-             <code className="text-xl font-black text-white">{profile?.company_id?.slice(0, 8)}...</code>
+             <code className="text-heading-2 font-black text-white">{profile?.company_id?.slice(0, 8)}...</code>
              <button onClick={() => { navigator.clipboard.writeText(profile.company_id); setCopied(true); setTimeout(()=>setCopied(false), 2000) }} className="text-[10px] font-black uppercase bg-white/20 px-3 py-1 rounded-lg text-white">{copied ? "Copied" : "Copy"}</button>
            </div>
         </div>
@@ -204,19 +204,19 @@ function Employees() {
         {/* Left: Form */}
         <div className="lg:col-span-1">
           <div className="sticky top-8 bg-white dark:bg-slate-800 p-8 md:p-10 rounded-[2.5rem] border-2 border-slate-100 dark:border-violet-500/15 shadow-lg">
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3">
+            <h3 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3">
               <Plus className="h-6 w-6 text-blue-500" /> {editingId ? "Edit Profile" : "Add Employee"}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-5">
-              <input type="text" placeholder="Full Name" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none transition-all" />
-              <input type="email" placeholder="Email Address" value={form.email} onChange={e=>setForm({...form, email: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none transition-all" />
+              <input type="text" placeholder="Full Name" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all" />
+              <input type="email" placeholder="Email Address" value={form.email} onChange={e=>setForm({...form, email: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all" />
               
               <div className="grid grid-cols-2 gap-4">
-                <select value={form.department_id} onChange={e=>setForm({...form, department_id: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-4 py-4 text-xs font-black uppercase">
+                <select value={form.department_id} onChange={e=>setForm({...form, department_id: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-4 py-4 text-label font-black uppercase">
                   <option value="">Department</option>
                   {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
-                <select value={form.role} onChange={e=>setForm({...form, role: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-4 py-4 text-xs font-black uppercase">
+                <select value={form.role} onChange={e=>setForm({...form, role: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-4 py-4 text-label font-black uppercase">
                   <option value="employee">General Employee</option>
                   <option value="manager">Team Leader / Manager</option>
                   <option value="dept_head">Department Head</option>
@@ -225,20 +225,20 @@ function Employees() {
                 </select>
               </div>
 
-              <input type="text" placeholder="Designation (e.g. Senior Designer)" value={form.designation} onChange={e=>setForm({...form, designation: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none transition-all" />
+              <input type="text" placeholder="Designation (e.g. Senior Designer)" value={form.designation} onChange={e=>setForm({...form, designation: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all" />
               
               <div>
                 <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block">Joining Date</label>
-                <input type="date" value={form.joining_date} onChange={e=>setForm({...form, joining_date: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-sm font-bold outline-none" />
+                <input type="date" value={form.joining_date} onChange={e=>setForm({...form, joining_date: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-2xl px-6 py-4 text-body font-bold outline-none" />
               </div>
 
-              <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all">
+              <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-label tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all">
                 {loading ? "Syncing..." : editingId ? "Update Employee" : "Register Employee"}
               </button>
               {editingId && <button type="button" onClick={resetForm} className="w-full text-slate-400 font-black uppercase text-[10px] py-2">Cancel Edit</button>}
             </form>
-            {error && <p className="mt-4 text-red-500 text-xs font-bold bg-red-50 p-4 rounded-xl">{error}</p>}
-            {message && <p className="mt-4 text-emerald-500 text-xs font-bold bg-emerald-50 p-4 rounded-xl">{message}</p>}
+            {error && <p className="mt-4 text-red-500 text-label font-bold bg-red-50 p-4 rounded-xl">{error}</p>}
+            {message && <p className="mt-4 text-emerald-500 text-label font-bold bg-emerald-50 p-4 rounded-xl">{message}</p>}
           </div>
         </div>
 
@@ -248,7 +248,7 @@ function Employees() {
           <div className="bg-white dark:bg-slate-800 p-4 rounded-3xl border-2 border-slate-100 dark:border-violet-500/15 flex flex-col md:flex-row gap-4 items-center">
              <div className="relative flex-1 w-full">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <input type="text" placeholder="Search by name or email..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900/50 rounded-2xl pl-12 pr-4 py-3 text-sm font-bold outline-none border-2 border-transparent focus:border-violet-500/30" />
+                <input type="text" placeholder="Search by name or email..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900/50 rounded-2xl pl-12 pr-4 py-3 text-body font-bold outline-none border-2 border-transparent focus:border-violet-500/30" />
              </div>
              <div className="flex items-center gap-3 w-full md:w-auto">
                 <Filter className="h-5 w-5 text-slate-400" />
@@ -273,12 +273,12 @@ function Employees() {
                  <div key={emp.id} className="group bg-white dark:bg-slate-800 p-6 md:p-8 rounded-[2.5rem] border-2 border-slate-100 dark:border-violet-500/10 shadow-sm hover:border-blue-500/30 transition-all">
                     <div className="flex flex-col md:flex-row justify-between gap-6">
                        <div className="flex gap-5 md:gap-6">
-                          <div className={`w-14 h-14 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center font-black text-xl md:text-3xl text-white shadow-lg shrink-0 ${emp.onboarded ? 'bg-gradient-to-br from-blue-600 to-indigo-600' : 'bg-slate-200 text-slate-400'}`}>
+                          <div className={`w-14 h-14 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center font-black text-heading-2 md:text-heading-1 text-white shadow-lg shrink-0 ${emp.onboarded ? 'bg-gradient-to-br from-blue-600 to-indigo-600' : 'bg-slate-200 text-slate-400'}`}>
                              {emp.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
                              <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <h4 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                                <h4 className="text-heading-3 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                                   {emp.name}
                                   {emp.onboarded && (
                                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] animate-pulse" title="Registered & Active" />
@@ -294,9 +294,9 @@ function Employees() {
                                 {!emp.onboarded && <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-amber-100 text-amber-600">Pending</span>}
                              </div>
                              <div className="flex flex-col gap-1.5">
-                                <p className="text-xs md:text-sm font-bold text-slate-500 flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> {emp.email}</p>
-                                <p className="text-xs md:text-sm font-bold text-slate-500 flex items-center gap-2"><Briefcase className="h-3.5 w-3.5 text-blue-500" /> {emp.designation || "No Designation"}</p>
-                                <p className="text-xs md:text-sm font-bold text-slate-500 flex items-center gap-2"><Building className="h-3.5 w-3.5 text-violet-500" /> {deptName}</p>
+                                <p className="text-label md:text-body font-bold text-slate-500 flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> {emp.email}</p>
+                                <p className="text-label md:text-body font-bold text-slate-500 flex items-center gap-2"><Briefcase className="h-3.5 w-3.5 text-blue-500" /> {emp.designation || "No Designation"}</p>
+                                <p className="text-label md:text-body font-bold text-slate-500 flex items-center gap-2"><Building className="h-3.5 w-3.5 text-violet-500" /> {deptName}</p>
                              </div>
                           </div>
                        </div>
@@ -305,17 +305,17 @@ function Employees() {
                        <div className="flex md:flex-col lg:flex-row items-center gap-4 md:gap-6 bg-slate-50 dark:bg-white/5 p-4 md:p-6 rounded-3xl border-2 border-slate-100 dark:border-white/5">
                           <div className="text-center">
                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tasks</p>
-                             <p className="text-xl font-black text-slate-800 dark:text-white">{stats.total}</p>
+                             <p className="text-heading-2 font-black text-slate-800 dark:text-white">{stats.total}</p>
                           </div>
                           <div className="w-px h-8 bg-slate-200 dark:bg-white/10 hidden lg:block" />
                           <div className="text-center">
                              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Done</p>
-                             <p className="text-xl font-black text-emerald-600">{stats.completed}</p>
+                             <p className="text-heading-2 font-black text-emerald-600">{stats.completed}</p>
                           </div>
                           <div className="w-px h-8 bg-slate-200 dark:bg-white/10 hidden lg:block" />
                           <div className="text-center">
                              <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Active</p>
-                             <p className="text-xl font-black text-blue-600">{stats.inProgress}</p>
+                             <p className="text-heading-2 font-black text-blue-600">{stats.inProgress}</p>
                           </div>
                        </div>
                     </div>

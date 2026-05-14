@@ -43,7 +43,7 @@ export default function Hero() {
           className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 mb-12 backdrop-blur-xl shadow-2xl shadow-orange-500/10"
         >
           <span className="flex h-3 w-3 rounded-full bg-orange-500 animate-pulse"></span>
-          <span className="text-xl font-semibold tracking-wide text-orange-100">
+          <span className="text-heading-2 font-semibold tracking-wide text-orange-100">
             CorpLink v2.5 Enterprise is now live
           </span>
         </motion.div>
@@ -74,13 +74,13 @@ export default function Hero() {
         >
           <Link
             to="/register"
-            className="group relative inline-flex justify-center items-center gap-4 rounded-2xl bg-orange-500 px-12 py-6 text-2xl font-bold text-white shadow-2xl shadow-orange-500/40 hover:bg-orange-400 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
+            className="group relative inline-flex justify-center items-center gap-4 rounded-2xl bg-orange-500 px-12 py-6 text-heading-1 font-bold text-white shadow-2xl shadow-orange-500/40 hover:bg-orange-400 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
           >
             Deploy Now <ArrowRight className="h-7 w-7 group-hover:translate-x-1 transition-transform" />
           </Link>
           <a
             href="#demo"
-            className="inline-flex justify-center items-center gap-4 rounded-2xl bg-white/5 px-12 py-6 text-2xl font-bold text-white hover:bg-white/10 ring-1 ring-inset ring-white/10 transition-all backdrop-blur-md"
+            className="inline-flex justify-center items-center gap-4 rounded-2xl bg-white/5 px-12 py-6 text-heading-1 font-bold text-white hover:bg-white/10 ring-1 ring-inset ring-white/10 transition-all backdrop-blur-md"
           >
             <Play className="h-7 w-7 text-orange-500 fill-orange-500/20" /> Watch Demo
           </a>
@@ -88,7 +88,7 @@ export default function Hero() {
 
         <motion.div 
           variants={itemVariants}
-          className="flex flex-wrap items-center justify-center gap-12 text-xl font-semibold text-slate-500"
+          className="flex flex-wrap items-center justify-center gap-12 text-heading-2 font-semibold text-slate-500"
         >
           <div className="flex items-center gap-3">
             <CheckCircle className="h-7 w-7 text-orange-500" /> Enterprise SLA
@@ -112,8 +112,8 @@ export default function Hero() {
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-blue-500/20"><Users className="text-blue-400" /></div>
             <div>
-              <div className="text-sm text-slate-400 font-bold uppercase tracking-widest">Active Employees</div>
-              <div className="text-3xl font-black text-white">12,480+</div>
+              <div className="text-body text-slate-400 font-bold uppercase tracking-widest">Active Employees</div>
+              <div className="text-heading-1 font-black text-white">12,480+</div>
             </div>
           </div>
         </motion.div>
@@ -126,8 +126,8 @@ export default function Hero() {
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-emerald-500/20"><BarChart3 className="text-emerald-400" /></div>
             <div>
-              <div className="text-sm text-slate-400 font-bold uppercase tracking-widest">Global Output</div>
-              <div className="text-3xl font-black text-white">+24.8%</div>
+              <div className="text-body text-slate-400 font-bold uppercase tracking-widest">Global Output</div>
+              <div className="text-heading-1 font-black text-white">+24.8%</div>
             </div>
           </div>
         </motion.div>
@@ -139,7 +139,7 @@ export default function Hero() {
         >
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-orange-500/20"><Shield className="text-orange-400" /></div>
-            <div className="text-lg font-bold text-white">Threat Shield: Active</div>
+            <div className="text-heading-3 font-bold text-white">Threat Shield: Active</div>
           </div>
         </motion.div>
       </div>
@@ -162,7 +162,7 @@ export default function Hero() {
               >
                 <Play className="h-16 w-16 text-white ml-2" fill="currentColor" />
               </motion.div>
-              <p className="text-white font-black text-4xl tracking-tight">
+              <p className="text-white font-black text-heading-1 tracking-tight">
                 The Future of Management. <span className="text-orange-500 underline decoration-4 underline-offset-8">Previewed.</span>
               </p>
             </div>
@@ -172,4 +172,5 @@ export default function Hero() {
     </div>
   );
 }
+
 

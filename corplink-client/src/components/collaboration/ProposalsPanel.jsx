@@ -134,8 +134,8 @@ function ProposalsPanel() {
               <Rocket className="h-10 w-10" />
            </div>
            <div>
-              <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none">Draft <br /> Proposal</h3>
-              <p className="text-sm font-black text-slate-400 uppercase tracking-widest mt-1">Strategic Agreement Builder</p>
+              <h3 className="text-heading-1 md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none">Draft <br /> Proposal</h3>
+              <p className="text-body font-black text-slate-400 uppercase tracking-widest mt-1">Strategic Agreement Builder</p>
            </div>
         </div>
 
@@ -144,11 +144,11 @@ function ProposalsPanel() {
 
         <form onSubmit={handleSendProposal} className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="space-y-3">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Collaborator Asset</label>
+            <label className="text-label font-black text-slate-400 uppercase tracking-widest px-2">Collaborator Asset</label>
             <select
               value={form.target_id}
               onChange={(e) => setForm({ ...form, target_id: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-6 rounded-3xl outline-none focus:border-blue-500 text-lg font-black text-slate-800 dark:text-white transition-all cursor-pointer"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-6 rounded-3xl outline-none focus:border-blue-500 text-heading-3 font-black text-slate-800 dark:text-white transition-all cursor-pointer"
             >
               <option value="">-- Select Active Connection --</option>
               {partners.map(p => <option key={p.id} value={p.id}>{p.name} ({p.type.toUpperCase()})</option>)}
@@ -156,11 +156,11 @@ function ProposalsPanel() {
           </div>
 
           <div className="space-y-3">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Agreement Tier</label>
+            <label className="text-label font-black text-slate-400 uppercase tracking-widest px-2">Agreement Tier</label>
             <select
               value={form.proposal_type}
               onChange={(e) => setForm({ ...form, proposal_type: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-6 rounded-3xl outline-none focus:border-blue-500 text-lg font-black text-slate-800 dark:text-white transition-all cursor-pointer"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-8 py-6 rounded-3xl outline-none focus:border-blue-500 text-heading-3 font-black text-slate-800 dark:text-white transition-all cursor-pointer"
             >
               <option value="project">Joint Project Venture</option>
               <option value="service">Service Exchange</option>
@@ -170,31 +170,31 @@ function ProposalsPanel() {
           </div>
 
           <div className="md:col-span-2 space-y-3">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Operational Title</label>
+            <label className="text-label font-black text-slate-400 uppercase tracking-widest px-2">Operational Title</label>
             <input
               type="text"
               placeholder="Designate the protocol name..."
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-6 rounded-3xl outline-none focus:border-blue-500 text-2xl font-black text-slate-900 dark:text-white transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-6 rounded-3xl outline-none focus:border-blue-500 text-heading-1 font-black text-slate-900 dark:text-white transition-all"
             />
           </div>
 
           <div className="md:col-span-2 space-y-3">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">Scope of Operations</label>
+            <label className="text-label font-black text-slate-400 uppercase tracking-widest px-2">Scope of Operations</label>
             <textarea
               placeholder="Detail the strategic objectives and expected ROIs..."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={4}
-              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-8 rounded-[2rem] outline-none focus:border-blue-500 text-xl font-medium text-slate-700 dark:text-slate-200 resize-none transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 px-10 py-8 rounded-[2rem] outline-none focus:border-blue-500 text-heading-2 font-medium text-slate-700 dark:text-slate-200 resize-none transition-all"
             />
           </div>
 
           <button
             type="submit"
             disabled={saving || partners.length === 0}
-            className="md:col-span-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-8 rounded-[2rem] text-2xl font-black uppercase tracking-widest transition-all shadow-2xl active:scale-95 disabled:opacity-50"
+            className="md:col-span-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-8 rounded-[2rem] text-heading-1 font-black uppercase tracking-widest transition-all shadow-2xl active:scale-95 disabled:opacity-50"
           >
             {partners.length === 0 ? "Establish Connection First" : "Transmit Protocol Proposal"}
           </button>
@@ -207,13 +207,13 @@ function ProposalsPanel() {
             <div className="h-16 w-16 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
                <FileText className="h-8 w-8 text-slate-400" />
             </div>
-            <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Protocol Log</h3>
+            <h3 className="text-heading-1 font-black text-slate-900 dark:text-white tracking-tight uppercase">Protocol Log</h3>
          </div>
 
          <div className="grid grid-cols-1 gap-8">
             {proposals.length === 0 ? (
               <div className="py-20 text-center bg-slate-50 dark:bg-slate-900/20 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800">
-                 <p className="text-xl font-black text-slate-300 uppercase tracking-widest">No active protocols detected.</p>
+                 <p className="text-heading-2 font-black text-slate-300 uppercase tracking-widest">No active protocols detected.</p>
               </div>
             ) : (
               proposals.map(prop => {
@@ -233,7 +233,7 @@ function ProposalsPanel() {
                                 {other}
                              </span>
                           </div>
-                          <h4 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase">{prop.title}</h4>
+                          <h4 className="text-heading-1 md:text-heading-1 font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase">{prop.title}</h4>
                        </div>
                        <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${prop.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : prop.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
                           {prop.status === 'accepted' ? <CheckCircle2 className="h-4 w-4" /> : prop.status === 'rejected' ? <XCircle className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
@@ -242,15 +242,15 @@ function ProposalsPanel() {
                     </div>
 
                     {prop.description && (
-                      <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl text-lg text-slate-700 dark:text-slate-300 font-medium italic border-2 border-transparent group-hover:border-slate-100 dark:group-hover:border-slate-700 transition-all">
+                      <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl text-heading-3 text-slate-700 dark:text-slate-300 font-medium italic border-2 border-transparent group-hover:border-slate-100 dark:group-hover:border-slate-700 transition-all">
                         "{prop.description}"
                       </div>
                     )}
 
                     {!isSent && prop.status === 'pending' && (
                       <div className="flex gap-4">
-                        <button onClick={() => handleUpdateStatus(prop.id, 'accepted')} className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl active:scale-95 transition-all">Authorize Protocol</button>
-                        <button onClick={() => handleUpdateStatus(prop.id, 'rejected')} className="flex-1 bg-slate-100 dark:bg-slate-700 text-slate-500 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-red-500 hover:text-white transition-all">Reject</button>
+                        <button onClick={() => handleUpdateStatus(prop.id, 'accepted')} className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-label shadow-xl active:scale-95 transition-all">Authorize Protocol</button>
+                        <button onClick={() => handleUpdateStatus(prop.id, 'rejected')} className="flex-1 bg-slate-100 dark:bg-slate-700 text-slate-500 py-5 rounded-2xl font-black uppercase tracking-widest text-label hover:bg-red-500 hover:text-white transition-all">Reject</button>
                       </div>
                     )}
                   </div>
@@ -264,3 +264,4 @@ function ProposalsPanel() {
 }
 
 export default ProposalsPanel
+

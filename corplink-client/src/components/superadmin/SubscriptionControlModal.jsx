@@ -81,7 +81,7 @@ export default function SubscriptionControlModal({ subscription, onClose, onSucc
               <Shield className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+              <h2 className="text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">
                 Control Subscription
               </h2>
               <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">
@@ -111,8 +111,8 @@ export default function SubscriptionControlModal({ subscription, onClose, onSucc
                   {formData.status === 'active' ? <CheckCircle2 className="h-5 w-5" /> : <Ban className="h-5 w-5" />}
                 </div>
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">Service Status</p>
-                  <p className={`text-lg font-black uppercase ${formData.status === 'active' ? "text-emerald-600" : "text-red-600"}`}>
+                  <p className="text-label font-black uppercase tracking-widest text-slate-500">Service Status</p>
+                  <p className={`text-heading-3 font-black uppercase ${formData.status === 'active' ? "text-emerald-600" : "text-red-600"}`}>
                     {formData.status}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ export default function SubscriptionControlModal({ subscription, onClose, onSucc
                 <select 
                   value={formData.plan_id}
                   onChange={e => setFormData({...formData, plan_id: e.target.value})}
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-amber-500 outline-none transition font-black uppercase text-xs"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-amber-500 outline-none transition font-black uppercase text-label"
                 >
                   {plans.map(p => (
                     <option key={p.id} value={p.id}>{p.name} (${p.price})</option>
@@ -154,7 +154,7 @@ export default function SubscriptionControlModal({ subscription, onClose, onSucc
                     type="date"
                     value={formData.expiry_date}
                     onChange={e => setFormData({...formData, expiry_date: e.target.value})}
-                    className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-amber-500 outline-none transition font-black text-xs"
+                    className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl focus:border-amber-500 outline-none transition font-black text-label"
                   />
                 </div>
               </div>
@@ -200,7 +200,7 @@ export default function SubscriptionControlModal({ subscription, onClose, onSucc
         <div className="px-10 py-8 border-t-2 border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 flex justify-end gap-4">
           <button 
             onClick={onClose}
-            className="px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-700 transition"
+            className="px-8 py-4 text-label font-black uppercase tracking-widest text-slate-500 hover:text-slate-700 transition"
           >
             Cancel
           </button>
@@ -217,3 +217,4 @@ export default function SubscriptionControlModal({ subscription, onClose, onSucc
     </div>
   );
 }
+

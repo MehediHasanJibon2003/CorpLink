@@ -17,7 +17,7 @@ export default function DashboardPreview() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 font-bold mb-8 uppercase tracking-widest text-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 font-bold mb-8 uppercase tracking-widest text-body"
           >
             <Zap className="h-4 w-4 fill-orange-500" /> Command Center
           </motion.div>
@@ -52,7 +52,7 @@ export default function DashboardPreview() {
                   <div className="p-4 bg-orange-500/20 rounded-2xl">
                     <Activity className="text-orange-500 h-10 w-10" />
                   </div>
-                  <h3 className="font-black text-2xl tracking-tight">Task Velocity</h3>
+                  <h3 className="font-black text-heading-1 tracking-tight">Task Velocity</h3>
                 </div>
                 <div className="text-orange-500 font-bold flex items-center gap-1">
                   <TrendingUp className="h-5 w-5" /> +12%
@@ -82,7 +82,7 @@ export default function DashboardPreview() {
                 <div className="p-4 bg-blue-500/20 rounded-2xl">
                   <BarChart3 className="text-blue-500 h-10 w-10" />
                 </div>
-                <h3 className="font-black text-2xl tracking-tight">Team Performance</h3>
+                <h3 className="font-black text-heading-1 tracking-tight">Team Performance</h3>
               </div>
               <div className="space-y-8">
                 {[
@@ -91,7 +91,7 @@ export default function DashboardPreview() {
                   { name: "Marketing", val: 64, color: "bg-blue-300" },
                 ].map((item, i) => (
                   <div key={i} className="space-y-3">
-                    <div className="flex justify-between text-lg font-bold text-slate-300">
+                    <div className="flex justify-between text-heading-3 font-bold text-slate-300">
                       <span>{item.name}</span>
                       <span>{item.val}%</span>
                     </div>
@@ -119,7 +119,7 @@ export default function DashboardPreview() {
                 <div className="p-4 bg-emerald-500/20 rounded-2xl">
                   <LineChart className="text-emerald-500 h-10 w-10" />
                 </div>
-                <h3 className="font-black text-2xl tracking-tight">Enterprise Growth</h3>
+                <h3 className="font-black text-heading-1 tracking-tight">Enterprise Growth</h3>
               </div>
               <div className="relative h-48 w-full mt-12">
                  <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -153,4 +153,5 @@ export default function DashboardPreview() {
     </section>
   );
 }
+
 

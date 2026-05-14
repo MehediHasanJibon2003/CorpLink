@@ -115,24 +115,24 @@ function DiscoverPanel() {
       <div className="bg-white dark:bg-slate-800 rounded-[3rem] p-10 md:p-14 border-2 border-slate-100 dark:border-white/5 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-10">
           <div className="space-y-4">
-             <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter">
+             <h2 className="text-heading-1 md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter">
                 Discover <br />
                 <span className="text-blue-600">Opportunities</span>
              </h2>
-             <p className="text-xl text-slate-400 font-bold max-w-md">Connect with industry partners or team colleagues for joint ventures.</p>
+             <p className="text-heading-2 text-slate-400 font-bold max-w-md">Connect with industry partners or team colleagues for joint ventures.</p>
           </div>
 
           <div className="flex bg-slate-50 dark:bg-slate-900 p-3 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800">
             <button 
               onClick={() => setMode("external")}
-              className={`flex items-center gap-4 px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm transition-all ${mode === 'external' ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/20 scale-105' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+              className={`flex items-center gap-4 px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-body transition-all ${mode === 'external' ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/20 scale-105' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
             >
               <Building2 className="h-6 w-6" />
               External Partners
             </button>
             <button 
               onClick={() => setMode("internal")}
-              className={`flex items-center gap-4 px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm transition-all ${mode === 'internal' ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-500/20 scale-105' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+              className={`flex items-center gap-4 px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-body transition-all ${mode === 'internal' ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-500/20 scale-105' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
             >
               <Users className="h-6 w-6" />
               Internal Colleagues
@@ -148,7 +148,7 @@ function DiscoverPanel() {
             placeholder={mode === 'external' ? "Search Strategic Enterprises..." : "Search High-Value Assets (Colleagues)..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100 dark:bg-slate-900/50 border-4 border-transparent focus:border-blue-500/30 rounded-[2.5rem] py-8 pl-24 pr-10 text-2xl font-black text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300"
+            className="w-full bg-slate-100 dark:bg-slate-900/50 border-4 border-transparent focus:border-blue-500/30 rounded-[2.5rem] py-8 pl-24 pr-10 text-heading-1 font-black text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300"
           />
         </div>
       </div>
@@ -168,7 +168,7 @@ function DiscoverPanel() {
       ) : filteredItems.length === 0 ? (
         <div className="py-40 text-center border-4 border-dashed border-slate-100 dark:border-slate-800 rounded-[4rem]">
           <Search className="h-32 w-32 mx-auto text-slate-100 dark:text-slate-800 mb-10" />
-          <h3 className="text-3xl font-black text-slate-400 uppercase tracking-widest">Target not found in range.</h3>
+          <h3 className="text-heading-1 font-black text-slate-400 uppercase tracking-widest">Target not found in range.</h3>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -180,7 +180,7 @@ function DiscoverPanel() {
                 <div className="relative z-10 flex flex-col h-full justify-between">
                   <div>
                     <div className="flex items-start justify-between mb-8">
-                       <div className="h-20 w-20 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 flex items-center justify-center font-black text-3xl text-slate-800 dark:text-white shadow-inner group-hover:scale-110 transition-transform">
+                       <div className="h-20 w-20 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 flex items-center justify-center font-black text-heading-1 text-slate-800 dark:text-white shadow-inner group-hover:scale-110 transition-transform">
                           {name.charAt(0)}
                        </div>
                        {status !== "none" && (
@@ -189,8 +189,8 @@ function DiscoverPanel() {
                          </span>
                        )}
                     </div>
-                    <h4 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none mb-3">{name}</h4>
-                    <p className="text-xs font-black text-blue-600 uppercase tracking-widest">{mode === 'external' ? 'Strategic Partner' : item.role}</p>
+                    <h4 className="text-heading-1 md:text-heading-1 font-black text-slate-900 dark:text-white tracking-tight uppercase leading-none mb-3">{name}</h4>
+                    <p className="text-label font-black text-blue-600 uppercase tracking-widest">{mode === 'external' ? 'Strategic Partner' : item.role}</p>
                   </div>
 
                   <div className="mt-12 pt-8 border-t-2 border-slate-50 dark:border-slate-700/50">
@@ -198,7 +198,7 @@ function DiscoverPanel() {
                       <button
                         onClick={() => handleConnect(item.id, name)}
                         disabled={sending === item.id}
-                        className="w-full flex items-center justify-center gap-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all active:scale-95 shadow-xl"
+                        className="w-full flex items-center justify-center gap-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black uppercase tracking-widest text-label hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all active:scale-95 shadow-xl"
                       >
                         <Send className="h-5 w-5" />
                         {sending === item.id ? "Transmitting..." : "Initiate Protocol"}
@@ -206,11 +206,11 @@ function DiscoverPanel() {
                     ) : status === "accepted" ? (
                       <div className="flex items-center justify-center gap-3 py-6 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900/50">
                         <UserCheck className="h-6 w-6" />
-                        <span className="font-black uppercase tracking-widest text-xs">Collaborator Active</span>
+                        <span className="font-black uppercase tracking-widest text-label">Collaborator Active</span>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center py-6 bg-amber-50 dark:bg-amber-950/20 text-amber-600 rounded-2xl border-2 border-amber-100 dark:border-amber-900/50">
-                        <span className="font-black uppercase tracking-widest text-xs">Awaiting Approval</span>
+                        <span className="font-black uppercase tracking-widest text-label">Awaiting Approval</span>
                       </div>
                     )}
                   </div>
@@ -227,3 +227,4 @@ function DiscoverPanel() {
 }
 
 export default DiscoverPanel
+

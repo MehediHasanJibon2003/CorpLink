@@ -73,13 +73,13 @@ export default function NotificationDropdown() {
           <div className="fixed inset-0 z-40" onClick={() => setShowNotifs(false)} />
           <div className="absolute right-0 mt-4 w-80 md:w-96 bg-white dark:bg-[#0d0622] border-2 border-slate-100 dark:border-violet-500/20 rounded-[2rem] shadow-2xl p-6 z-50 animate-in slide-in-from-top-4 duration-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-black uppercase tracking-widest text-slate-900 dark:text-white text-sm">Recent Alerts</h3>
+              <h3 className="font-black uppercase tracking-widest text-slate-900 dark:text-white text-body">Recent Alerts</h3>
               <span className="text-[10px] font-black bg-violet-600 text-white px-3 py-1 rounded-full uppercase">{unreadCount} New</span>
             </div>
             
             <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               {notifications.length === 0 ? (
-                <div className="py-10 text-center opacity-50 font-bold uppercase text-xs">All clear! No alerts</div>
+                <div className="py-10 text-center opacity-50 font-bold uppercase text-label">All clear! No alerts</div>
               ) : notifications.map(n => (
                 <div 
                   key={n.id} 
@@ -93,7 +93,7 @@ export default function NotificationDropdown() {
                   <div className="flex items-start gap-4">
                     <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${n.is_read ? 'bg-slate-300' : 'bg-violet-500 shadow-[0_0_8px_#8b5cf6]'}`} />
                     <div className="flex-1">
-                      <p className="font-black text-xs uppercase tracking-wide text-slate-900 dark:text-white leading-tight">{n.title}</p>
+                      <p className="font-black text-label uppercase tracking-wide text-slate-900 dark:text-white leading-tight">{n.title}</p>
                       <p className="text-[11px] font-bold text-slate-500 dark:text-violet-300 mt-1 line-clamp-2">{n.message}</p>
                       <div className="flex items-center gap-2 mt-3 opacity-50 text-[9px] font-black uppercase tracking-tighter">
                         <Clock className="h-3 w-3" />
@@ -110,3 +110,4 @@ export default function NotificationDropdown() {
     </div>
   )
 }
+

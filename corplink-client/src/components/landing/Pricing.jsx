@@ -97,26 +97,26 @@ export default function Pricing() {
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-8 py-2 rounded-full text-lg font-black uppercase tracking-widest">
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-8 py-2 rounded-full text-heading-3 font-black uppercase tracking-widest">
                     Most Popular
                   </div>
                 )}
                 <div className={`p-5 rounded-3xl bg-linear-to-br ${tier.color} w-fit mb-10 shadow-2xl`}>
                   <Icon className="h-10 w-10 text-white" />
                 </div>
-                <h3 className="text-3xl font-black text-white mb-4 tracking-tight">
+                <h3 className="text-heading-1 font-black text-white mb-4 tracking-tight">
                   {tier.name}
                 </h3>
                 <div className="flex items-baseline gap-2 mb-6 text-white">
                   <span className="text-5xl font-black">${tier.price}</span>
-                  <span className="text-xl text-slate-400 font-bold">/month</span>
+                  <span className="text-heading-2 text-slate-400 font-bold">/month</span>
                 </div>
-                <p className="text-xl text-slate-400 mb-10 font-medium leading-relaxed">
+                <p className="text-heading-2 text-slate-400 mb-10 font-medium leading-relaxed">
                   {tier.description}
                 </p>
                 <div className="space-y-6 mb-12 flex-1">
                   {tier.features.map((feature) => (
-                    <div key={feature} className="flex items-center gap-4 text-slate-300 font-bold text-lg">
+                    <div key={feature} className="flex items-center gap-4 text-slate-300 font-bold text-heading-3">
                       <div className="p-1 rounded-full bg-emerald-500/20">
                         <Check className="h-5 w-5 text-emerald-500" />
                       </div>
@@ -126,7 +126,7 @@ export default function Pricing() {
                 </div>
                 <Link
                   to="/register"
-                  className={`w-full py-6 rounded-2xl text-2xl font-black text-center transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 ${
+                  className={`w-full py-6 rounded-2xl text-heading-1 font-black text-center transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 ${
                     tier.popular 
                       ? "bg-orange-500 text-white shadow-2xl shadow-orange-500/40 hover:bg-orange-400" 
                       : "bg-white/10 text-white hover:bg-white/20 border border-white/10"
@@ -142,4 +142,5 @@ export default function Pricing() {
     </section>
   );
 }
+
 

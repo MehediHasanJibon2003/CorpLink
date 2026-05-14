@@ -98,15 +98,15 @@ export default function PlatformAnalytics() {
             <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-white bg-gradient-to-br ${m.grad} mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
               <m.icon className="h-5 w-5 md:h-6 md:w-6" />
             </div>
-            <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 mb-1">{m.label}</p>
-            <p className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">{loading ? "..." : m.value}</p>
+            <p className="text-[10px] md:text-label font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 mb-1">{m.label}</p>
+            <p className="text-heading-1 md:text-heading-1 font-black text-slate-900 dark:text-white">{loading ? "..." : m.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8">
         <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
-          <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><Wallet className="h-5 w-5 text-emerald-500" /> Revenue Timeline</h3>
+          <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><Wallet className="h-5 w-5 text-emerald-500" /> Revenue Timeline</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={revenueData}>
@@ -121,7 +121,7 @@ export default function PlatformAnalytics() {
         </div>
 
         <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
-          <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><TrendingUp className="h-5 w-5 text-violet-500" /> Platform Growth</h3>
+          <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><TrendingUp className="h-5 w-5 text-violet-500" /> Platform Growth</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={growthData}>
@@ -138,7 +138,7 @@ export default function PlatformAnalytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
         <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
-          <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><LayoutDashboard className="h-5 w-5 text-blue-500" /> Module Popularity</h3>
+          <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><LayoutDashboard className="h-5 w-5 text-blue-500" /> Module Popularity</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={moduleUsage} layout="vertical" margin={{ left: 20 }}>
@@ -154,7 +154,7 @@ export default function PlatformAnalytics() {
         </div>
 
         <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
-          <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><PieChartIcon className="h-5 w-5 text-pink-500" /> Subscriptions</h3>
+          <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><PieChartIcon className="h-5 w-5 text-pink-500" /> Subscriptions</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -171,3 +171,4 @@ export default function PlatformAnalytics() {
     </SuperAdminLayout>
   )
 }
+

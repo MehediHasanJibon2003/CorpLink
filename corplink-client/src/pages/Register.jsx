@@ -295,10 +295,10 @@ function Register() {
         {/* Logo */}
         <div className="relative z-10">
           <Link to="/" className="flex items-center gap-5 w-fit">
-            <div className="w-16 h-16 rounded-3xl bg-orange-500 flex items-center justify-center font-black text-white text-3xl shadow-xl shadow-orange-500/30">
+            <div className="w-16 h-16 rounded-3xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-1 shadow-xl shadow-orange-500/30">
               C
             </div>
-            <span className="text-4xl font-black text-white tracking-tight">
+            <span className="text-heading-1 font-black text-white tracking-tight">
               CorpLink
             </span>
           </Link>
@@ -326,7 +326,7 @@ function Register() {
                 </>
               )}
             </h2>
-            <p className="text-slate-300 text-2xl leading-relaxed max-w-xl">
+            <p className="text-slate-300 text-heading-1 leading-relaxed max-w-xl">
               {mode === "create"
                 ? "Register your company and become the Corporate Admin. Invite your team and start managing workflows instantly."
                 : "Your HR/Admin has already added you. Enter your invite code and join your workspace in seconds."}
@@ -342,7 +342,7 @@ function Register() {
                   <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
                     <Icon className="h-8 w-8 text-blue-400" />
                   </div>
-                  <p className="text-slate-200 text-xl font-medium">
+                  <p className="text-slate-200 text-heading-2 font-medium">
                     {item.text}
                   </p>
                 </div>
@@ -351,7 +351,7 @@ function Register() {
           </div>
         </div>
 
-        <div className="relative z-10 text-xs text-slate-500">
+        <div className="relative z-10 text-label text-slate-500">
           © 2025 CorpLink Inc. · Enterprise-grade platform
         </div>
       </div>
@@ -361,10 +361,10 @@ function Register() {
         {/* Mobile logo */}
         <div className="lg:hidden mb-8">
           <Link to="/" className="flex items-center gap-3 justify-center">
-            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center font-black text-white text-lg shadow-lg">
+            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-3 shadow-lg">
               C
             </div>
-            <span className="text-2xl font-black text-slate-900 dark:text-white">
+            <span className="text-heading-1 font-black text-slate-900 dark:text-white">
               CorpLink
             </span>
           </Link>
@@ -376,7 +376,7 @@ function Register() {
             <h2 className="text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
               Get started
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-xl">
+            <p className="text-slate-500 dark:text-slate-400 text-heading-2">
               Create your workspace or join an existing one
             </p>
           </div>
@@ -390,7 +390,7 @@ function Register() {
                 setError("");
                 setMessage("");
               }}
-              className={`flex-1 flex items-center justify-center gap-3 py-3 text-lg font-bold rounded-xl transition-all ${
+              className={`flex-1 flex items-center justify-center gap-3 py-3 text-heading-3 font-bold rounded-xl transition-all ${
                 mode === "create"
                   ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
@@ -406,7 +406,7 @@ function Register() {
                 setError("");
                 setMessage("");
               }}
-              className={`flex-1 flex items-center justify-center gap-3 py-3 text-lg font-bold rounded-xl transition-all ${
+              className={`flex-1 flex items-center justify-center gap-3 py-3 text-heading-3 font-bold rounded-xl transition-all ${
                 mode === "join"
                   ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
@@ -422,7 +422,7 @@ function Register() {
             {/* Company Name OR Invite Code */}
             {mode === "create" ? (
               <div className="space-y-3">
-                <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
+                <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">
                   Company Name
                 </label>
                 <div className="relative">
@@ -436,13 +436,13 @@ function Register() {
                     placeholder="Acme Corp, TechStartup..."
                     value={formData.companyName}
                     onChange={handleChange}
-                    className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
+                    className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-heading-2 font-bold"
                   />
                 </div>
               </div>
             ) : (
               <div className="space-y-3">
-                <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
+                <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">
                   Company Invite Code
                 </label>
                 <div className="relative">
@@ -456,10 +456,10 @@ function Register() {
                     placeholder="Paste your company ID here"
                     value={formData.companyId}
                     onChange={handleChange}
-                    className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
+                    className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-heading-2 font-bold"
                   />
                 </div>
-                <p className="text-sm text-slate-400 ml-1 mt-1">
+                <p className="text-body text-slate-400 ml-1 mt-1">
                   Ask your HR or Admin for the Company ID
                 </p>
               </div>
@@ -467,7 +467,7 @@ function Register() {
 
             {/* Full Name */}
             <div className="space-y-3">
-              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
+              <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">
                 Full Name
               </label>
               <div className="relative">
@@ -481,14 +481,14 @@ function Register() {
                   placeholder="John Doe"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
+                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-heading-2 font-bold"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div className="space-y-3">
-              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
+              <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">
                 Work Email
               </label>
               <div className="relative">
@@ -502,14 +502,14 @@ function Register() {
                   placeholder="you@company.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
+                  className="w-full pl-14 pr-5 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-heading-2 font-bold"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div className="space-y-3">
-              <label className="block text-lg font-bold text-slate-700 dark:text-slate-300">
+              <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">
                 Password
               </label>
               <div className="relative">
@@ -523,7 +523,7 @@ function Register() {
                   placeholder="Min. 6 characters"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-14 pr-16 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-xl font-bold"
+                  className="w-full pl-14 pr-16 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-heading-2 font-bold"
                 />
                 <button
                   type="button"
@@ -545,7 +545,7 @@ function Register() {
                 <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-white text-[10px] font-bold">!</span>
                 </div>
-                <p className="text-red-700 dark:text-red-400 text-sm font-medium">
+                <p className="text-red-700 dark:text-red-400 text-body font-medium">
                   {error}
                 </p>
               </div>
@@ -555,7 +555,7 @@ function Register() {
             {message && (
               <div className="flex items-center gap-2 p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
                 <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <p className="text-emerald-700 dark:text-emerald-400 text-sm font-medium">
+                <p className="text-emerald-700 dark:text-emerald-400 text-body font-medium">
                   {message}
                 </p>
               </div>
@@ -565,7 +565,7 @@ function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-5 rounded-2xl font-black text-xl transition-all shadow-xl shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 mt-6"
+              className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-5 rounded-2xl font-black text-heading-2 transition-all shadow-xl shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 mt-6"
             >
               {loading ? (
                 <>
@@ -605,7 +605,7 @@ function Register() {
               <div className="w-full border-t border-slate-200 dark:border-slate-800" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-white dark:bg-slate-950 px-4 text-base text-slate-400 font-medium">
+              <span className="bg-white dark:bg-slate-950 px-4 text-body text-slate-400 font-medium">
                 Already have an account?
               </span>
             </div>
@@ -613,7 +613,7 @@ function Register() {
 
           <Link
             to="/login"
-            className="w-full flex items-center justify-center gap-3 py-5 border-[3px] border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all text-lg"
+            className="w-full flex items-center justify-center gap-3 py-5 border-[3px] border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all text-heading-3"
           >
             Sign into your workspace <ArrowRight className="h-5 w-5" />
           </Link>
@@ -624,3 +624,4 @@ function Register() {
 }
 
 export default Register;
+

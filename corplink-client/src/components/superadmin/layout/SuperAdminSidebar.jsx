@@ -46,7 +46,7 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
  
           <Link to="/super-admin" className="flex items-center gap-3 md:gap-4 relative z-10">
             <div className="relative">
-              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-base md:text-xl shadow-xl overflow-hidden bg-gradient-to-br"
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-body md:text-heading-2 shadow-xl overflow-hidden bg-gradient-to-br"
                 style={{ background: "var(--primary-color)", boxShadow: "0 0 20px rgba(124,58,237,0.3)" }}>
                 {branding?.logo_url ? (
                   <img src={branding.logo_url} className="w-full h-full object-cover" alt="Logo" />
@@ -58,10 +58,10 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                 style={{ boxShadow: "0 0 8px rgba(52,211,153,0.8)" }} />
             </div>
             <div>
-              <p className="text-xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-widest leading-tight">
+              <p className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-widest leading-tight">
                 {branding?.platform_name || "CorpLink"}
               </p>
-              <p className="text-[10px] md:text-xs font-black tracking-widest uppercase text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
+              <p className="text-[10px] md:text-label font-black tracking-widest uppercase text-violet-600 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
                 Super Admin
               </p>
             </div>
@@ -77,15 +77,15 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
           <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-10 dark:opacity-20 -translate-y-4 translate-x-4"
             style={{ background: "radial-gradient(circle, #7c3aed, transparent)" }} />
           <div className="flex items-center gap-3 md:gap-4 relative z-10">
-            <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl font-black text-white text-base md:text-xl flex items-center justify-center shrink-0 shadow-lg"
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl font-black text-white text-body md:text-heading-2 flex items-center justify-center shrink-0 shadow-lg"
               style={{ background: "var(--primary-color)" }}>
               {(profile?.full_name || "S").charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-sm md:text-lg font-black text-slate-800 dark:text-white truncate uppercase tracking-widest">{profile?.full_name || "Super Admin"}</p>
+              <p className="text-body md:text-heading-3 font-black text-slate-800 dark:text-white truncate uppercase tracking-widest">{profile?.full_name || "Super Admin"}</p>
               <div className="flex items-center gap-2 mt-1">
                 <Shield className="h-3 w-3 md:h-4 md:w-4 text-violet-500 dark:text-violet-400" />
-                <p className="text-[10px] md:text-xs font-black text-violet-500 dark:text-violet-400 uppercase tracking-widest">Full Access</p>
+                <p className="text-[10px] md:text-label font-black text-violet-500 dark:text-violet-400 uppercase tracking-widest">Full Access</p>
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-8 md:py-10 pl-4 pr-2 md:pl-6 md:pr-4 space-y-2 md:space-y-3 custom-scrollbar">
-          <p className="px-4 md:px-6 text-xs md:text-sm font-black uppercase tracking-[0.15em] text-violet-600 mb-3 md:mb-5">Navigation</p>
+          <p className="px-4 md:px-6 text-label md:text-body font-black uppercase tracking-[0.15em] text-violet-600 mb-3 md:mb-5">Navigation</p>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon
             return (
@@ -102,7 +102,7 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
                 to={item.path}
                 end={item.exact}
                 className={({ isActive }) =>
-                  `group flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-sm md:text-base font-black uppercase tracking-widest transition-all duration-200 relative overflow-hidden ${
+                  `group flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-body md:text-body font-black uppercase tracking-widest transition-all duration-200 relative overflow-hidden ${
                     isActive ? "text-violet-900 dark:text-white shadow-lg shadow-violet-900/20" : "text-slate-500 dark:text-violet-400/70 hover:text-slate-800 dark:hover:text-violet-200 hover:bg-slate-50 dark:hover:bg-violet-500/10"
                   }`
                 }
@@ -147,11 +147,11 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
             <div className="flex items-center gap-3 md:gap-4 relative z-10">
               <div className="flex items-center gap-2 md:gap-3">
                 <Zap className="h-4 w-4 md:h-5 md:w-5 text-emerald-500 dark:text-emerald-400" />
-                <p className="text-xs md:text-sm font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-300">All Systems Online</p>
+                <p className="text-label md:text-body font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-300">All Systems Online</p>
               </div>
               <div className="ml-auto w-2 h-2 md:w-3 md:h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
             </div>
-            <p className="text-[10px] md:text-xs text-emerald-600/70 dark:text-emerald-600 font-bold uppercase tracking-wider mt-1 relative z-10">Platform fully operational</p>
+            <p className="text-[10px] md:text-label text-emerald-600/70 dark:text-emerald-600 font-bold uppercase tracking-wider mt-1 relative z-10">Platform fully operational</p>
           </div>
         </div>
 
@@ -162,3 +162,4 @@ export default function SuperAdminSidebar({ isOpen, setIsOpen }) {
     </>
   )
 }
+

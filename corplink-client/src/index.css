@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -13,6 +13,18 @@
 
   --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-plus-jakarta: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Custom Font Sizes as Named Tokens */
+  --font-size-heading-1: 24px;
+  --font-size-heading-2: 20px;
+  --font-size-heading-3: 16px;
+  --font-size-heading-4: 14px;
+  --font-size-body: 14px;
+  --font-size-label: 12px;
+  --font-size-button: 14px;
+  --font-size-table: 13px;
+  --font-size-input: 14px;
+  --font-size-badge: 11px;
 }
 
 @layer base {
@@ -37,6 +49,61 @@
 
   body {
     @apply transition-colors duration-300 text-slate-900 bg-slate-50;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    line-height: 1.6;
+  }
+
+  /* Typography Base Elements */
+  h1 { 
+    font-size: var(--font-size-heading-1);
+    @apply font-bold font-plus-jakarta tracking-tight;
+    line-height: 1.4;
+  }
+  h2 { 
+    font-size: var(--font-size-heading-2);
+    @apply font-bold font-plus-jakarta tracking-tight;
+    line-height: 1.4;
+  }
+  h3 { 
+    font-size: var(--font-size-heading-3);
+    @apply font-semibold font-plus-jakarta tracking-tight;
+    line-height: 1.4;
+  }
+  h4 { 
+    font-size: var(--font-size-heading-4);
+    @apply font-semibold font-plus-jakarta tracking-tight;
+    line-height: 1.4;
+  }
+  
+  p { 
+    font-size: var(--font-size-body);
+    @apply font-normal font-inter;
+    line-height: 1.6;
+  }
+  span { 
+    @apply font-inter;
+    line-height: 1.5;
+  }
+  label { 
+    font-size: var(--font-size-label);
+    @apply font-normal font-inter;
+    line-height: 1.5;
+  }
+  button { 
+    font-size: var(--font-size-button);
+    @apply font-medium font-inter cursor-pointer;
+    line-height: 1.5;
+  }
+  input, select, textarea { 
+    font-size: var(--font-size-input);
+    @apply font-normal font-inter outline-none;
+    line-height: 1.5;
+  }
+  table td, table th { 
+    font-size: var(--font-size-table);
+    @apply font-normal font-inter;
+    line-height: 1.5;
   }
 
   /* Global dark mode defaults — fixes ALL invisible text at once */
@@ -116,51 +183,4 @@ main {
   width: 100%;
   max-width: 100%;
 }
-/* Scoped fonts for Landing Page */
-.landing-page-root,
-.login-page-root,
-.register-page-root,
-.super-admin-root,
-.corporate-admin-root,
-.employee-root {
-  font-family: var(--font-inter);
-}
-
-.landing-page-root h1,
-.landing-page-root h2,
-.landing-page-root h3,
-.landing-page-root h4,
-.landing-page-root h5,
-.landing-page-root h6,
-.login-page-root h1,
-.login-page-root h2,
-.login-page-root h3,
-.login-page-root h4,
-.login-page-root h5,
-.login-page-root h6,
-.register-page-root h1,
-.register-page-root h2,
-.register-page-root h3,
-.register-page-root h4,
-.register-page-root h5,
-.register-page-root h6,
-.super-admin-root h1,
-.super-admin-root h2,
-.super-admin-root h3,
-.super-admin-root h4,
-.super-admin-root h5,
-.super-admin-root h6,
-.corporate-admin-root h1,
-.corporate-admin-root h2,
-.corporate-admin-root h3,
-.corporate-admin-root h4,
-.corporate-admin-root h5,
-.corporate-admin-root h6,
-.employee-root h1,
-.employee-root h2,
-.employee-root h3,
-.employee-root h4,
-.employee-root h5,
-.employee-root h6 {
-  font-family: var(--font-plus-jakarta) !important;
-}
+/* Removing legacy scoped font rules as they are now handled by global base styles */

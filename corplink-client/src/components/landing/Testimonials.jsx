@@ -64,18 +64,18 @@ export default function Testimonials() {
               className="rounded-[3rem] bg-white/5 border border-white/10 p-12 backdrop-blur-xl flex flex-col hover:bg-white/10 hover:border-white/20 transition-all duration-500"
             >
               <figure className="h-full flex flex-col justify-between">
-                <blockquote className="text-slate-300 text-2xl font-medium leading-relaxed mb-12 italic">
+                <blockquote className="text-slate-300 text-heading-1 font-medium leading-relaxed mb-12 italic">
                   <p>"{testimonial.body}"</p>
                 </blockquote>
                 <figcaption className="flex items-center gap-6 pt-10 border-t border-white/10">
-                  <div className="h-16 w-16 flex items-center justify-center rounded-2xl bg-orange-500 text-white font-black border border-white/10 shrink-0 text-2xl shadow-2xl shadow-orange-500/40">
+                  <div className="h-16 w-16 flex items-center justify-center rounded-2xl bg-orange-500 text-white font-black border border-white/10 shrink-0 text-heading-1 shadow-2xl shadow-orange-500/40">
                     {testimonial.author.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-black text-white text-xl tracking-tight">
+                    <div className="font-black text-white text-heading-2 tracking-tight">
                       {testimonial.author.name}
                     </div>
-                    <div className="text-slate-500 text-base font-bold uppercase tracking-widest mt-1">
+                    <div className="text-slate-500 text-body font-bold uppercase tracking-widest mt-1">
                       {testimonial.author.role}
                     </div>
                   </div>
@@ -88,4 +88,5 @@ export default function Testimonials() {
     </section>
   );
 }
+
 

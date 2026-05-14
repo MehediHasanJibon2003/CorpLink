@@ -148,13 +148,13 @@ export default function CoreFeatures() {
                 whileHover={{ y: -10 }}
                 className="relative pl-28 group"
               >
-                <dt className="text-3xl font-black leading-tight text-white mb-4">
+                <dt className="text-heading-1 font-black leading-tight text-white mb-4">
                   <div className={`absolute left-0 top-0 flex h-20 w-20 items-center justify-center rounded-[1.5rem] ${feature.color} shadow-2xl shadow-${feature.color.split('-')[1]}-500/30 group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className="h-10 w-10 text-white" aria-hidden="true" />
                   </div>
                   {feature.name}
                 </dt>
-                <dd className="text-xl leading-relaxed text-slate-400 font-medium">
+                <dd className="text-heading-2 leading-relaxed text-slate-400 font-medium">
                   {feature.description}
                 </dd>
               </motion.div>
@@ -165,4 +165,5 @@ export default function CoreFeatures() {
     </section>
   );
 }
+
 

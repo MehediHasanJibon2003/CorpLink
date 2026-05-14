@@ -82,13 +82,13 @@ function Dashboard() {
       
       {/* Quick Actions Row */}
       <div className="flex gap-4 md:gap-6 mb-8 md:mb-12 overflow-x-auto pb-4 custom-scrollbar">
-        <button className="flex items-center gap-2 md:gap-3 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-sm md:text-lg shrink-0 transition shadow-lg shadow-blue-500/20 hover:-translate-y-0.5">
+        <button className="flex items-center gap-2 md:gap-3 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition shadow-lg shadow-blue-500/20 hover:-translate-y-0.5">
           <Plus className="h-5 w-5 md:h-6 md:w-6" /> Add Task
         </button>
-        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-sm md:text-lg shrink-0 transition hover:-translate-y-0.5">
+        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition hover:-translate-y-0.5">
           <Users className="h-5 w-5 md:h-6 md:w-6 text-slate-400" /> Invite Employee
         </button>
-        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-sm md:text-lg shrink-0 transition hover:-translate-y-0.5">
+        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition hover:-translate-y-0.5">
           <Building2 className="h-5 w-5 md:h-6 md:w-6 text-slate-400" /> New Department
         </button>
       </div>
@@ -101,7 +101,7 @@ function Dashboard() {
       </div>
 
       <div className="mt-8 md:mt-12">
-        <h3 className="text-sm md:text-lg font-bold text-slate-500 uppercase tracking-wider mb-4 md:mb-6 px-1">Task Sub-Status</h3>
+        <h3 className="text-body md:text-heading-3 font-bold text-slate-500 uppercase tracking-wider mb-4 md:mb-6 px-1">Task Sub-Status</h3>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
           <StatCard title="Pending" value={stats.pending} icon={Clock} colorClass="bg-amber-50 text-amber-600" />
           <StatCard title="In Progress" value={stats.inProgress} icon={Activity} colorClass="bg-blue-50 text-blue-600" />

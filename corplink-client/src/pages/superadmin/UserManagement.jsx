@@ -81,7 +81,7 @@ export default function UserManagement() {
             placeholder="Search..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 md:py-4 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 outline-none focus:border-violet-500 font-bold text-slate-900 dark:text-white text-sm"
+            className="w-full pl-12 pr-4 py-3.5 md:py-4 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 outline-none focus:border-violet-500 font-bold text-slate-900 dark:text-white text-body"
           />
         </div>
         
@@ -123,18 +123,18 @@ export default function UserManagement() {
                 <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
                   <td className="px-8 py-6 md:py-8">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-sm md:text-xl shrink-0">
+                      <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-body md:text-heading-2 shrink-0">
                         {user.full_name?.charAt(0) || "U"}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm md:text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{user.full_name}</p>
-                        <p className="text-[10px] md:text-xs font-bold text-slate-500 truncate">{user.email}</p>
+                        <p className="text-body md:text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{user.full_name}</p>
+                        <p className="text-[10px] md:text-label font-bold text-slate-500 truncate">{user.email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-8 py-6 md:py-8">
                     <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-white truncate">
+                      <div className="flex items-center gap-2 text-label font-bold text-slate-700 dark:text-white truncate">
                         <Building2 className="h-3.5 w-3.5 text-violet-500 shrink-0" /> {user.companies?.name || "Platform Admin"}
                       </div>
                       <div className="flex items-center gap-2">
@@ -191,3 +191,4 @@ export default function UserManagement() {
     </SuperAdminLayout>
   )
 }
+

@@ -13,10 +13,10 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
           <div className="w-20 h-20 bg-red-50 dark:bg-red-500/10 rounded-[1.5rem] flex items-center justify-center mb-6 shadow-inner border border-red-100 dark:border-red-500/20">
             <AlertTriangle className="h-10 w-10 text-red-500" />
           </div>
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-3">
+          <h3 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-3">
             {title || "Confirm Action"}
           </h3>
-          <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-relaxed">
+          <p className="text-body font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-relaxed">
             {message || "Are you sure you want to proceed? This action cannot be undone."}
           </p>
         </div>
@@ -39,3 +39,4 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
     </div>
   )
 }
+

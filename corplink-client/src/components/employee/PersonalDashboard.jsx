@@ -43,10 +43,10 @@ function StatCard({ title, value, icon: Icon, color, loading }) {
           >
             <Icon className="h-5 w-5" />
           </div>
-          <p className="text-2xl font-extrabold text-slate-900 dark:text-white">
+          <p className="text-heading-1 font-extrabold text-slate-900 dark:text-white">
             {value}
           </p>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
+          <p className="text-body text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
             {title}
           </p>
         </>
@@ -60,7 +60,7 @@ function QuickLink({ label, icon: Icon, path, color, navigate }) {
   return (
     <button
       onClick={() => navigate(path)}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl border font-semibold text-sm transition-all hover:scale-[1.02] active:scale-100 ${color}`}
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl border font-semibold text-body transition-all hover:scale-[1.02] active:scale-100 ${color}`}
     >
       <Icon className="h-4 w-4 shrink-0" />
       {label}
@@ -188,14 +188,14 @@ function PersonalDashboard() {
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-1">
               <Zap className="h-4 w-4 text-blue-200" />
-              <span className="text-blue-200 text-sm font-medium uppercase tracking-widest">
+              <span className="text-blue-200 text-body font-medium uppercase tracking-widest">
                 Personal Dashboard
               </span>
             </div>
-            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-heading-1 md:text-heading-1 font-extrabold tracking-tight">
               Welcome back, {profile?.full_name?.split(" ")[0] || "Employee"}! 👋
             </h1>
-            <p className="text-blue-100 text-base md:text-lg mt-2 max-w-md font-medium leading-relaxed">
+            <p className="text-blue-100 text-body md:text-heading-3 mt-2 max-w-md font-medium leading-relaxed">
               You have <span className="font-black text-white">{taskStats.pending} pending tasks</span> that need your attention today.
             </p>
           </div>
@@ -203,18 +203,18 @@ function PersonalDashboard() {
 
         {/* Profile Card */}
         <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 border-2 border-slate-100 dark:border-slate-700 shadow-sm flex flex-col items-center text-center">
-          <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-3xl font-black text-white shadow-lg mb-4">
+          <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-heading-1 font-black text-white shadow-lg mb-4">
             {(profile?.full_name || "E").charAt(0).toUpperCase()}
           </div>
-          <h3 className="text-xl font-black text-slate-800 dark:text-white truncate w-full px-2">
+          <h3 className="text-heading-2 font-black text-slate-800 dark:text-white truncate w-full px-2">
             {profile?.full_name}
           </h3>
-          <p className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-1">
+          <p className="text-label font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-1">
             {profile?.role}
           </p>
           <button 
             onClick={() => navigate("/employee/profile")}
-            className="mt-4 w-full py-3 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl font-black text-xs uppercase tracking-widest transition-all"
+            className="mt-4 w-full py-3 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl font-black text-label uppercase tracking-widest transition-all"
           >
             Manage Profile
           </button>
@@ -260,15 +260,15 @@ function PersonalDashboard() {
                <TrendingUp className="h-10 w-10" />
             </div>
             <div>
-               <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Mission Performance</h3>
-               <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Operational Efficiency Overview</p>
+               <h3 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Mission Performance</h3>
+               <p className="text-body font-bold text-slate-400 uppercase tracking-widest mt-1">Operational Efficiency Overview</p>
             </div>
          </div>
 
          <div className="flex-1 max-w-md w-full px-4">
             <div className="flex justify-between items-end mb-3">
-               <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Global Success Rate</span>
-               <span className="text-2xl font-black text-blue-600">{taskStats.total > 0 ? Math.round((taskStats.completed/taskStats.total)*100) : 0}%</span>
+               <span className="text-label font-black text-slate-400 uppercase tracking-widest">Global Success Rate</span>
+               <span className="text-heading-1 font-black text-blue-600">{taskStats.total > 0 ? Math.round((taskStats.completed/taskStats.total)*100) : 0}%</span>
             </div>
             <div className="h-4 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
                <div 
@@ -280,7 +280,7 @@ function PersonalDashboard() {
 
          <button 
            onClick={() => navigate("/employee/performance")}
-           className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-xl"
+           className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-label hover:scale-105 active:scale-95 transition-all shadow-xl"
          >
            Detailed Intelligence
          </button>
@@ -293,13 +293,13 @@ function PersonalDashboard() {
           {/* Recent Tasks */}
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-8 md:px-12 py-6 border-b-2 border-slate-100 dark:border-slate-700">
-              <h2 className="font-black text-xl md:text-2xl text-slate-800 dark:text-white flex items-center gap-3">
+              <h2 className="font-black text-heading-2 md:text-heading-1 text-slate-800 dark:text-white flex items-center gap-3">
                 <CheckSquare className="h-6 w-6 text-blue-500" />
                 Assigned Tasks
               </h2>
               <button
                 onClick={() => navigate("/employee/tasks")}
-                className="text-sm md:text-lg font-black text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2"
+                className="text-body md:text-heading-3 font-black text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2"
               >
                 View all <ArrowRight className="h-4 w-4" />
               </button>
@@ -314,8 +314,8 @@ function PersonalDashboard() {
             ) : recentTasks.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-slate-400">
                 <AlertCircle className="h-16 w-16 mb-4 opacity-40" />
-                <p className="text-xl font-bold">No tasks assigned yet</p>
-                <p className="text-sm mt-2">
+                <p className="text-heading-2 font-bold">No tasks assigned yet</p>
+                <p className="text-body mt-2">
                   Tasks assigned to you will appear here
                 </p>
               </div>
@@ -328,10 +328,10 @@ function PersonalDashboard() {
                     onClick={() => navigate("/employee/tasks")}
                   >
                     <div className="min-w-0">
-                      <p className="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-200 truncate">
+                      <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 truncate">
                         {task.title}
                       </p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-bold">
+                      <p className="text-body text-slate-500 dark:text-slate-400 mt-1 font-bold">
                         {task.deadline
                           ? `Due: ${new Date(task.deadline).toLocaleDateString()}`
                           : "No deadline"}
@@ -339,12 +339,12 @@ function PersonalDashboard() {
                     </div>
                     <div className="flex items-center gap-3 ml-6 shrink-0">
                       <span
-                        className={`text-[10px] md:text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest ${priorityColor[task.priority] || priorityColor.low}`}
+                        className={`text-[10px] md:text-label font-black px-3 py-1 rounded-full uppercase tracking-widest ${priorityColor[task.priority] || priorityColor.low}`}
                       >
                         {task.priority || "low"}
                       </span>
                       <span
-                        className={`text-[10px] md:text-xs font-black px-3 py-1 rounded-full capitalize tracking-widest ${statusColor[task.status] || statusColor.pending}`}
+                        className={`text-[10px] md:text-label font-black px-3 py-1 rounded-full capitalize tracking-widest ${statusColor[task.status] || statusColor.pending}`}
                       >
                         {task.status?.replace("_", " ") || "pending"}
                       </span>
@@ -358,7 +358,7 @@ function PersonalDashboard() {
           {/* Activity History */}
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-8 md:px-12 py-6 border-b-2 border-slate-100 dark:border-slate-700">
-              <h2 className="font-black text-xl md:text-2xl text-slate-800 dark:text-white flex items-center gap-3">
+              <h2 className="font-black text-heading-2 md:text-heading-1 text-slate-800 dark:text-white flex items-center gap-3">
                 <TrendingUp className="h-6 w-6 text-emerald-500" />
                 My Activity History
               </h2>
@@ -373,7 +373,7 @@ function PersonalDashboard() {
             ) : activities.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                 <Clock className="h-12 w-12 mb-4 opacity-30" />
-                <p className="text-lg font-bold">No recent activity</p>
+                <p className="text-heading-3 font-bold">No recent activity</p>
               </div>
             ) : (
               <div className="divide-y-2 divide-slate-100 dark:divide-slate-700/50">
@@ -386,14 +386,14 @@ function PersonalDashboard() {
                       <Clock className="h-6 w-6 text-slate-500" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-base md:text-lg font-bold text-slate-700 dark:text-slate-200 leading-tight">
+                      <p className="text-body md:text-heading-3 font-bold text-slate-700 dark:text-slate-200 leading-tight">
                         {act.action}
                       </p>
                       <div className="flex items-center gap-3 mt-1">
                         <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded">
                           {act.entity}
                         </span>
-                        <span className="text-xs font-bold text-slate-400">
+                        <span className="text-label font-bold text-slate-400">
                           {timeAgo(act.created_at)}
                         </span>
                       </div>
@@ -410,13 +410,13 @@ function PersonalDashboard() {
           {/* Notifications */}
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-8 py-6 border-b-2 border-slate-100 dark:border-slate-700">
-              <h2 className="font-black text-xl md:text-2xl text-slate-800 dark:text-white flex items-center gap-3">
+              <h2 className="font-black text-heading-2 md:text-heading-1 text-slate-800 dark:text-white flex items-center gap-3">
                 <Bell className="h-6 w-6 text-orange-500" />
                 Notifications
               </h2>
               <button
                 onClick={() => navigate("/employee/notifications")}
-                className="text-sm md:text-base font-black text-blue-600 dark:text-blue-400 hover:underline"
+                className="text-body md:text-body font-black text-blue-600 dark:text-blue-400 hover:underline"
               >
                 See all
               </button>
@@ -431,7 +431,7 @@ function PersonalDashboard() {
             ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-slate-400 text-center px-4">
                 <Bell className="h-12 w-12 mb-4 opacity-30" />
-                <p className="text-base font-bold">You're all caught up!</p>
+                <p className="text-body font-bold">You're all caught up!</p>
               </div>
             ) : (
               <div className="divide-y-2 divide-slate-100 dark:divide-slate-700/50">
@@ -440,10 +440,10 @@ function PersonalDashboard() {
                     key={n.id}
                     className={`px-8 py-5 hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors ${!n.is_read ? "bg-blue-50/30 dark:bg-blue-900/10 border-l-4 border-blue-500" : ""}`}
                   >
-                    <p className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <p className="text-body md:text-body font-bold text-slate-700 dark:text-slate-300 leading-relaxed">
                       {n.message}
                     </p>
-                    <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-wider">
+                    <p className="text-label font-bold text-slate-400 mt-2 uppercase tracking-wider">
                       {timeAgo(n.created_at)}
                     </p>
                   </div>
@@ -454,7 +454,7 @@ function PersonalDashboard() {
 
           {/* Quick Access */}
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm p-8 md:p-10">
-            <h2 className="font-black text-xl md:text-2xl text-slate-800 dark:text-white mb-6 flex items-center gap-3">
+            <h2 className="font-black text-heading-2 md:text-heading-1 text-slate-800 dark:text-white mb-6 flex items-center gap-3">
               <Zap className="h-6 w-6 text-yellow-500" />
               Quick Access
             </h2>
@@ -487,7 +487,7 @@ function PersonalDashboard() {
 
       {/* Error banner */}
       {error && (
-        <div className="p-6 mt-8 bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 rounded-3xl md:rounded-[3rem] text-red-600 dark:text-red-400 text-lg font-bold">
+        <div className="p-6 mt-8 bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 rounded-3xl md:rounded-[3rem] text-red-600 dark:text-red-400 text-heading-3 font-bold">
           ⚠️ {error}
         </div>
       )}
@@ -496,3 +496,4 @@ function PersonalDashboard() {
 }
 
 export default PersonalDashboard;
+

@@ -27,7 +27,7 @@ export default function CTA() {
               className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-12"
             >
               <Sparkles className="h-6 w-6 text-white fill-white/20" />
-              <span className="text-xl font-bold text-white tracking-wide">Ready to Scale?</span>
+              <span className="text-heading-2 font-bold text-white tracking-wide">Ready to Scale?</span>
             </motion.div>
 
             <motion.h2 
@@ -59,13 +59,13 @@ export default function CTA() {
             >
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center gap-4 rounded-2xl bg-white px-16 py-8 text-2xl font-black text-orange-600 hover:bg-orange-50 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 shadow-2xl"
+                className="inline-flex items-center justify-center gap-4 rounded-2xl bg-white px-16 py-8 text-heading-1 font-black text-orange-600 hover:bg-orange-50 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 shadow-2xl"
               >
                 Create Account <ArrowRight className="h-8 w-8" />
               </Link>
               <a
                 href="#pricing"
-                className="inline-flex items-center justify-center gap-4 rounded-2xl bg-orange-600/20 backdrop-blur-md border border-white/30 px-16 py-8 text-2xl font-black text-white hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
+                className="inline-flex items-center justify-center gap-4 rounded-2xl bg-orange-600/20 backdrop-blur-md border border-white/30 px-16 py-8 text-heading-1 font-black text-white hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
               >
                 View Plans
               </a>
@@ -75,7 +75,7 @@ export default function CTA() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 0.7 }}
               transition={{ delay: 1 }}
-              className="mt-12 text-white text-lg font-bold tracking-widest uppercase"
+              className="mt-12 text-white text-heading-3 font-bold tracking-widest uppercase"
             >
               No credit card required • 14-day free trial
             </motion.p>
@@ -85,4 +85,5 @@ export default function CTA() {
     </section>
   );
 }
+
 
