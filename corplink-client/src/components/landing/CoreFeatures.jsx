@@ -101,31 +101,31 @@ export default function CoreFeatures() {
     <section
       id="features"
       className="w-full bg-slate-950 relative overflow-hidden text-white"
-      style={{ padding: "10rem clamp(2rem, 6vw, 6vw)" }}
+      style={{ padding: "clamp(5rem, 15vw, 10rem) clamp(1rem, 5vw, 6vw)" }}
     >
       <div className="absolute inset-0 bg-linear-to-b from-orange-500/5 via-transparent to-transparent pointer-events-none"></div>
 
       <div className="relative z-10 w-full">
         <div
-          className="text-center mb-32 mx-auto"
+          className="text-center mb-16 md:mb-32 mx-auto"
           style={{ maxWidth: "1200px" }}
         >
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{ fontSize: "clamp(3.5rem, 6vw, 6.5rem)" }}
-            className="font-black tracking-tight text-white mb-10 leading-tight"
+            style={{ fontSize: "clamp(2rem, 6vw, 6.5rem)" }}
+            className="font-black tracking-tight text-white mb-6 md:mb-10 leading-[1.1] md:leading-tight"
           >
-            The Operating System <br /> for <span className="text-orange-500">Modern Industry.</span>
+            The Operating System <br className="hidden md:block" /> for <span className="text-orange-500">Modern Industry.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            style={{ fontSize: "clamp(1.5rem, 2.5vw, 2rem)" }}
-            className="leading-relaxed text-slate-400 max-w-4xl mx-auto font-medium"
+            style={{ fontSize: "clamp(1.1rem, 2.5vw, 2rem)" }}
+            className="leading-relaxed text-slate-400 max-w-4xl mx-auto font-medium px-4 md:px-0"
           >
             Built on a multi-tenant cloud architecture, CorpLink provides the security 
             and scale required by global enterprises.
@@ -137,7 +137,7 @@ export default function CoreFeatures() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 w-full"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16 w-full px-4 md:px-0"
         >
           {features.map((feature) => {
             const Icon = feature.icon;
@@ -146,15 +146,15 @@ export default function CoreFeatures() {
                 key={feature.name} 
                 variants={itemVariants}
                 whileHover={{ y: -10 }}
-                className="relative pl-28 group"
+                className="relative group flex flex-col items-center text-center md:items-start md:text-left md:pl-28"
               >
-                <dt className="text-heading-1 font-black leading-tight text-white mb-4">
-                  <div className={`absolute left-0 top-0 flex h-20 w-20 items-center justify-center rounded-[1.5rem] ${feature.color} shadow-2xl shadow-${feature.color.split('-')[1]}-500/30 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className="h-10 w-10 text-white" aria-hidden="true" />
+                <dt className="text-heading-2 md:text-heading-1 font-black leading-tight text-white mb-4 flex flex-col items-center md:items-start">
+                  <div className={`relative md:absolute md:left-0 md:top-0 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-2xl md:rounded-[1.5rem] ${feature.color} shadow-2xl shadow-${feature.color.split('-')[1]}-500/30 group-hover:scale-110 transition-transform duration-300 mb-5 md:mb-0`}>
+                    <Icon className="h-8 w-8 md:h-10 md:w-10 text-white" aria-hidden="true" />
                   </div>
                   {feature.name}
                 </dt>
-                <dd className="text-heading-2 leading-relaxed text-slate-400 font-medium">
+                <dd className="text-body md:text-heading-2 leading-relaxed text-slate-400 font-medium max-w-sm md:max-w-none">
                   {feature.description}
                 </dd>
               </motion.div>

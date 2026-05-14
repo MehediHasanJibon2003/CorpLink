@@ -17,24 +17,24 @@ export default function Navbar() {
     <nav
       className={`fixed inset-x-0 top-0 z-50 w-full transition-all duration-500 ${
         scrolled 
-          ? "py-4 bg-slate-950/80 backdrop-blur-2xl border-b border-white/10 shadow-2xl" 
-          : "py-10 bg-transparent"
+          ? "py-3 md:py-4 bg-slate-950/80 backdrop-blur-2xl border-b border-white/10 shadow-2xl" 
+          : "py-6 md:py-10 bg-transparent"
       }`}
-      style={{ paddingInline: "clamp(2rem, 6vw, 6vw)" }}
+      style={{ paddingInline: "clamp(1rem, 5vw, 6vw)" }}
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-1">
           <Link
             to="/"
-            className="flex items-center gap-5 hover:opacity-80 transition group"
+            className="flex items-center gap-3 md:gap-5 hover:opacity-80 transition group"
           >
             <motion.div 
               whileHover={{ rotate: 10, scale: 1.1 }}
-              className="w-16 h-16 rounded-2xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/40 text-heading-1"
+              className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/40 text-heading-3 md:text-heading-1"
             >
               C
             </motion.div>
-            <span className="text-heading-1 font-black tracking-tighter text-white">
+            <span className="text-heading-3 md:text-heading-1 font-black tracking-tighter text-white">
               CorpLink<span className="text-orange-500">.</span>
             </span>
           </Link>

@@ -29,23 +29,23 @@ export default function Security() {
     <section
       className="w-full bg-slate-950 overflow-hidden relative"
       id="security"
-      style={{ padding: "10rem clamp(2rem, 6vw, 6vw)" }}
+      style={{ padding: "clamp(5rem, 15vw, 10rem) clamp(1rem, 5vw, 6vw)" }}
     >
       <div className="absolute inset-0 bg-linear-to-t from-orange-500/5 to-transparent pointer-events-none"></div>
       
       <div className="w-full relative z-10">
         <div
-          className="text-center mb-32 mx-auto"
+          className="text-center mb-16 md:mb-32 mx-auto"
           style={{ maxWidth: "1200px" }}
         >
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{ fontSize: "clamp(3.5rem, 6vw, 6.5rem)" }}
-            className="font-black tracking-tight text-white leading-tight"
+            style={{ fontSize: "clamp(2rem, 6vw, 6.5rem)" }}
+            className="font-black tracking-tight text-white leading-[1.1] md:leading-tight"
           >
-            Bank-grade Security. <br /> <span className="text-orange-500">Zero Compromise.</span>
+            Bank-grade Security. <br className="hidden md:block" /> <span className="text-orange-500">Zero Compromise.</span>
           </motion.h2>
         </div>
         
@@ -60,15 +60,15 @@ export default function Security() {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -10 }}
-                className="bg-white/5 p-12 rounded-[2.5rem] border border-white/10 flex flex-col items-center text-center backdrop-blur-xl hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300"
+                className="bg-white/5 p-8 md:p-12 rounded-3xl md:rounded-[2.5rem] border border-white/10 flex flex-col items-center text-center backdrop-blur-xl hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300"
               >
-                <div className="p-5 bg-orange-500/20 rounded-3xl mb-8">
-                  <Icon className="h-14 w-14 text-orange-500" />
+                <div className="p-4 md:p-5 bg-orange-500/20 rounded-2xl md:rounded-3xl mb-6 md:mb-8">
+                  <Icon className="h-8 w-8 md:h-14 md:w-14 text-orange-500" />
                 </div>
-                <h3 className="font-black text-white mb-6 text-heading-1 tracking-tight">
+                <h3 className="font-black text-white mb-4 md:mb-6 text-heading-2 md:text-heading-1 tracking-tight">
                   {feat.title}
                 </h3>
-                <p className="text-heading-2 text-slate-400 leading-relaxed font-medium">
+                <p className="text-body md:text-heading-2 text-slate-400 leading-relaxed font-medium">
                   {feat.desc}
                 </p>
               </motion.div>
