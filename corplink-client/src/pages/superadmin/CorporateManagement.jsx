@@ -78,12 +78,12 @@ export default function CorporateManagement() {
           />
         </div>
         
-        <div className="flex gap-4 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-3 md:gap-4">
           {["all", "pending", "active", "rejected"].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`px-6 py-2.5 md:py-3 rounded-full text-[10px] md:text-label font-black uppercase tracking-widest transition-all border-2 shrink-0 ${
+              className={`px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-full text-badge md:text-label font-black uppercase tracking-widest transition-all border-2 shrink-0 ${
                 statusFilter === status 
                   ? "bg-violet-600 text-white border-violet-600 shadow-lg shadow-violet-600/30" 
                   : "bg-white dark:bg-white/5 text-slate-500 dark:text-violet-400 border-slate-100 dark:border-violet-500/15"
@@ -96,15 +96,17 @@ export default function CorporateManagement() {
       </div>
 
       {/* Responsive Table/Cards Container */}
-      <div className="rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px] lg:min-w-full">
+      <div className="rounded-3xl md:rounded-[2.5rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50 dark:bg-violet-500/5 border-b-2 border-slate-100 dark:border-violet-500/10">
-                <th className="px-6 md:px-10 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Corporate Identity</th>
-                <th className="px-6 md:px-10 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Subscription</th>
-                <th className="px-6 md:px-10 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Status</th>
-                <th className="px-6 md:px-10 py-6 md:py-8 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 text-right">Actions</th>
+                <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Corporate Identity</th>
+                <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Subscription</th>
+                <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400">Status</th>
+                <th className="px-10 py-8 text-badge font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
@@ -114,28 +116,28 @@ export default function CorporateManagement() {
                 <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No records found</td></tr>
               ) : filteredCompanies.map(co => (
                 <tr key={co.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
-                  <td className="px-6 md:px-10 py-6 md:py-8">
-                    <div className="flex items-center gap-4 md:gap-5">
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-3 md:text-heading-1 shadow-lg shrink-0">
+                  <td className="px-10 py-8">
+                    <div className="flex items-center gap-5">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-1 shadow-lg shrink-0">
                         {co.name.charAt(0)}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-body md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
-                        <div className="flex flex-wrap gap-2 md:gap-4 mt-1">
-                          <span className="flex items-center gap-1 text-[10px] md:text-label font-bold text-slate-500"><Mail className="h-3 w-3" /> {co.email}</span>
-                          {co.website && <span className="flex items-center gap-1 text-[10px] md:text-label font-bold text-slate-500"><Globe className="h-3 w-3" /> {co.website}</span>}
+                        <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
+                        <div className="flex gap-4 mt-1">
+                          <span className="flex items-center gap-1 text-label font-bold text-slate-500"><Mail className="h-3 w-3" /> {co.email}</span>
+                          {co.website && <span className="flex items-center gap-1 text-label font-bold text-slate-500"><Globe className="h-3 w-3" /> {co.website}</span>}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 md:px-10 py-6 md:py-8">
+                  <td className="px-10 py-8">
                     <div className="flex flex-col gap-1">
-                      <span className="text-label md:text-body font-black text-slate-700 dark:text-white uppercase tracking-tight">{co.plan || "Trial"} Plan</span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Cycle</span>
+                      <span className="text-body font-black text-slate-700 dark:text-white uppercase tracking-tight">{co.plan || "Trial"} Plan</span>
+                      <span className="text-badge font-bold text-slate-400 uppercase tracking-widest">Monthly Cycle</span>
                     </div>
                   </td>
-                  <td className="px-6 md:px-10 py-6 md:py-8">
-                    <span className={`px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border-2 ${
+                  <td className="px-10 py-8">
+                    <span className={`px-4 py-1.5 rounded-full text-badge font-black uppercase tracking-widest border-2 ${
                       co.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                       co.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100 animate-pulse' :
                       'bg-red-50 text-red-600 border-red-100'
@@ -143,20 +145,20 @@ export default function CorporateManagement() {
                       {co.status}
                     </span>
                   </td>
-                  <td className="px-6 md:px-10 py-6 md:py-8">
-                    <div className="flex items-center justify-end gap-2 md:gap-3">
+                  <td className="px-10 py-8 text-right">
+                    <div className="flex items-center justify-end gap-3">
                       {co.status === 'pending' && (
                         <>
                           <button 
                             onClick={() => handleUpdateStatus(co.id, 'active')}
                             disabled={actionLoading === co.id}
-                            className="p-2 md:p-3 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                            className="p-3 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
                           >
                             <CheckCircle2 className="h-5 w-5" />
                           </button>
                           <button 
                             onClick={() => { setSelectedCo(co); setIsModalOpen(true); }}
-                            className="p-2 md:p-3 rounded-xl bg-red-50 border-2 border-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                            className="p-3 rounded-xl bg-red-50 border-2 border-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm"
                           >
                             <XCircle className="h-5 w-5" />
                           </button>
@@ -165,7 +167,7 @@ export default function CorporateManagement() {
                       <div className="relative">
                         <button 
                           onClick={() => setActiveMenu(activeMenu === co.id ? null : co.id)}
-                          className={`p-2 md:p-3 rounded-xl border-2 transition-all ${
+                          className={`p-3 rounded-xl border-2 transition-all ${
                             activeMenu === co.id 
                               ? "bg-violet-600 border-violet-600 text-white" 
                               : "bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 text-slate-400 hover:text-violet-500"
@@ -221,6 +223,110 @@ export default function CorporateManagement() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y-2 divide-slate-100 dark:divide-violet-500/5">
+          {loading ? (
+            <div className="py-20 text-center font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Corporates...</div>
+          ) : filteredCompanies.length === 0 ? (
+            <div className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No records found</div>
+          ) : filteredCompanies.map(co => (
+            <div key={co.id} className="p-6 space-y-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-2 shadow-lg shrink-0">
+                    {co.name.charAt(0)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border-2 shrink-0 ${
+                        co.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                        co.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                        'bg-red-50 text-red-600 border-red-100'
+                      }`}>
+                        {co.status}
+                      </span>
+                      <p className="text-badge font-bold text-slate-500 truncate">{co.email}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <button 
+                    onClick={() => setActiveMenu(activeMenu === co.id ? null : co.id)}
+                    className={`p-2 rounded-xl border-2 transition-all ${
+                      activeMenu === co.id 
+                        ? "bg-violet-600 border-violet-600 text-white" 
+                        : "bg-slate-100 dark:bg-white/10 border-slate-200 dark:border-white/10 text-slate-400"
+                    }`}
+                  >
+                    <MoreHorizontal className="h-5 w-5" />
+                  </button>
+
+                  {activeMenu === co.id && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setActiveMenu(null)}></div>
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-[#1a0b3b] border-2 border-slate-100 dark:border-white/10 rounded-2xl shadow-2xl z-20 py-3 animate-in fade-in slide-in-from-top-5 duration-200">
+                        <button 
+                          onClick={() => { handleUpdateStatus(co.id, co.status === 'blocked' ? 'active' : 'blocked'); setActiveMenu(null); }}
+                          className="w-full px-6 py-3 text-left flex items-center gap-3"
+                        >
+                          {co.status === 'blocked' ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <AlertCircle className="h-4 w-4 text-amber-500" />}
+                          <span className="text-label font-bold text-slate-700 dark:text-slate-200">{co.status === 'blocked' ? 'Activate' : 'Block Access'}</span>
+                        </button>
+                        <div className="h-px bg-slate-100 dark:bg-white/5 my-2" />
+                        <button 
+                          onClick={() => { 
+                            showConfirm({
+                              title: "Terminate Record",
+                              message: `Delete ${co.name}?`,
+                              onConfirm: () => handleUpdateStatus(co.id, 'deleted')
+                            });
+                            setActiveMenu(null);
+                          }}
+                          className="w-full px-6 py-3 text-left flex items-center gap-3 text-red-600"
+                        >
+                          <XCircle className="h-4 w-4" />
+                          <span className="text-label font-bold">Terminate Record</span>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10">
+                <div>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Plan</p>
+                  <p className="text-label font-black text-slate-700 dark:text-white uppercase tracking-tight">{co.plan || "Trial"}</p>
+                </div>
+                <div>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Cycle</p>
+                  <p className="text-label font-black text-slate-700 dark:text-white uppercase tracking-tight">Monthly</p>
+                </div>
+              </div>
+
+              {co.status === 'pending' && (
+                <div className="flex items-center gap-3 pt-1">
+                  <button 
+                    onClick={() => handleUpdateStatus(co.id, 'active')}
+                    disabled={actionLoading === co.id}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border-2 border-emerald-100 dark:border-emerald-500/20 text-emerald-600 font-black uppercase text-badge tracking-widest"
+                  >
+                    <CheckCircle2 className="h-4 w-4" /> Approve
+                  </button>
+                  <button 
+                    onClick={() => { setSelectedCo(co); setIsModalOpen(true); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border-2 border-red-100 dark:border-red-500/20 text-red-600 font-black uppercase text-badge tracking-widest"
+                  >
+                    <XCircle className="h-4 w-4" /> Reject
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
