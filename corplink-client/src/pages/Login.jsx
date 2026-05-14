@@ -144,46 +144,46 @@ function Login() {
         <div className="absolute bottom-20 left-10 w-72 h-72 lg:w-96 lg:h-96 bg-orange-500/10 rounded-full blur-3xl" />
 
         <div className="relative z-10">
-          <Link to="/" className="flex items-center gap-5 w-fit">
-            <div className="w-16 h-16 rounded-3xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-1 shadow-xl shadow-orange-500/30 overflow-hidden">
+          <Link to="/" className="flex items-center gap-4 w-fit">
+            <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-3 shadow-xl shadow-orange-500/30 overflow-hidden">
               {branding.logo_url ? (
                 <img src={branding.logo_url} className="w-full h-full object-cover" alt="Logo" />
               ) : (
                 "C"
               )}
             </div>
-            <span className="text-heading-1 font-black text-white tracking-tight">
+            <span className="text-heading-3 font-black text-white tracking-tight uppercase">
               {branding.platform_name || "CorpLink"}
             </span>
           </Link>
         </div>
 
         <div className="relative z-10 mt-16 xl:mt-24 mb-auto">
-          <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-6 py-2.5 mb-10">
-            <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-white/90 text-heading-3 font-semibold tracking-wide">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 mb-6">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-white/90 text-label font-semibold tracking-wide uppercase">
               Enterprise Platform
             </span>
           </div>
-          <h1 className="text-[4.5rem] lg:text-[5.5rem] font-black text-white leading-[1.1] mb-8 tracking-tight">
+          <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-6 tracking-tight">
             One platform.<br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-orange-400">Every team.</span>
           </h1>
-          <p className="text-slate-300 text-heading-1 leading-relaxed mb-16 max-w-2xl">
+          <p className="text-slate-300 text-body leading-relaxed mb-12 max-w-lg">
             Manage your entire organization — departments, teams, tasks, and communication — from a single unified workspace.
           </p>
 
-          <div className="grid grid-cols-1 gap-10 md:gap-12">
+          <div className="grid grid-cols-1 gap-6 md:gap-8">
             {FEATURES.map((f, i) => {
               const Icon = f.icon;
               return (
-                <div key={i} className="flex items-center gap-8 group">
-                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-white/10 border-2 border-white/10 flex items-center justify-center shrink-0 group-hover:bg-blue-600/30 group-hover:scale-110 transition-all duration-300">
-                    <Icon className="h-10 w-10 md:h-12 md:w-12 text-blue-400" />
+                <div key={i} className="flex items-center gap-5 group">
+                  <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-blue-600/30 group-hover:scale-110 transition-all duration-300">
+                    <Icon className="h-6 w-6 text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-white font-black text-heading-1 md:text-heading-1 tracking-tight">{f.title}</p>
-                    <p className="text-slate-400 text-heading-3 md:text-heading-2 font-medium mt-1">{f.desc}</p>
+                    <p className="text-white font-bold text-heading-3 tracking-tight">{f.title}</p>
+                    <p className="text-slate-400 text-label font-medium mt-0.5">{f.desc}</p>
                   </div>
                 </div>
               );
@@ -217,9 +217,9 @@ function Login() {
         </div>
 
         <div className="w-full max-w-xl">
-          <div className="mb-12">
-            <h2 className="text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">Welcome back</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-heading-2">Sign in to your corporate workspace</p>
+          <div className="mb-10">
+            <h2 className="text-heading-1 lg:text-[2rem] font-bold text-slate-900 dark:text-white mb-2 tracking-tight">Welcome back</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-body">Sign in to your corporate workspace</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
