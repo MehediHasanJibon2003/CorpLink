@@ -373,27 +373,35 @@ function Feed() {
       const payload = { 
         ...form,
         title: finalTitle,
-        company_id: profile.company_id, 
+        company_id: profile?.company_id || null, 
         media_url: mediaUrl, 
         media_type: mediaType,
-        created_by: user.id 
+        created_by: user?.id 
       }
+
+      console.log("Submitting Post Payload:", payload)
       
+      let res;
       if (editingId) {
-        await supabase.from("announcements").update(payload).eq("id", editingId)
-        setMessage("Post updated!")
+        res = await supabase.from("announcements").update(payload).eq("id", editingId)
       } else {
-        await supabase.from("announcements").insert([payload])
-        setMessage("Post published!")
+        res = await supabase.from("announcements").insert([payload])
+      }
+
+      if (res.error) {
+        console.error("Supabase Insert Error:", res.error)
+        throw res.error
       }
       
       setForm({ title: "", content: "", visibility: "internal", post_type: "general" })
       setSelectedImage(null); setImagePreview(""); setEditingId(null)
+      setFilter("all") // Reset filter to 'all' to show the new post
       fetchPosts()
       setShowModal(false)
+      setMessage(editingId ? "Post updated!" : "Post published!")
     } catch (err) { 
-      console.error("Submit Error:", err)
-      setError(err.message) 
+      console.error("Submit Error Full Object:", err)
+      setError(err.message || "An unexpected error occurred") 
     }
     setLoading(false)
     setTimeout(() => setMessage(""), 3000)

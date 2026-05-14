@@ -90,7 +90,9 @@ function Activity() {
 
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
-      const matchesAction = (item.action || "").toLowerCase().includes(searchLower);
+      const matchesAction = (item.action || "")
+        .toLowerCase()
+        .includes(searchLower);
       const matchesUser = (item.user?.full_name || "")
         .toLowerCase()
         .includes(searchLower);
@@ -147,7 +149,9 @@ function Activity() {
         {/* Top Controls: Search & Filter */}
         <div className="p-10 md:p-12 border-b-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex flex-col xl:flex-row gap-8 items-center justify-between">
           <div className="relative w-full xl:w-[40rem]">
-            <span className="absolute left-6 top-6 text-heading-1 text-slate-400">🔍</span>
+            <span className="absolute left-6 top-6 text-heading-1 text-slate-400">
+              🔍
+            </span>
             <input
               type="text"
               placeholder="Filter by action, user or system event..."
@@ -192,8 +196,10 @@ function Activity() {
           </div>
         ) : loading ? (
           <div className="p-32 text-center">
-             <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-blue-600 mx-auto mb-8"></div>
-             <p className="text-heading-1 md:text-heading-1 text-slate-500 dark:text-slate-400 font-black tracking-tight">Decrypting secure audit logs...</p>
+            <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-blue-600 mx-auto mb-8"></div>
+            <p className="text-heading-1 md:text-heading-1 text-slate-500 dark:text-slate-400 font-black tracking-tight">
+              Decrypting secure audit logs...
+            </p>
           </div>
         ) : filteredActivities.length === 0 ? (
           <div className="p-32 text-center">
@@ -230,7 +236,12 @@ function Activity() {
                       </div>
                     </td>
                     <td className="p-8">
-                      <div className="font-black text-slate-800 dark:text-slate-100 tracking-tight">{new Date(log.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                      <div className="font-black text-slate-800 dark:text-slate-100 tracking-tight">
+                        {new Date(log.created_at).toLocaleDateString(
+                          undefined,
+                          { month: "short", day: "numeric", year: "numeric" },
+                        )}
+                      </div>
                       <div className="text-body md:text-body text-slate-400 font-bold uppercase mt-1">
                         {new Date(log.created_at).toLocaleTimeString()}
                       </div>
@@ -252,9 +263,9 @@ function Activity() {
                       {log.action}
                     </td>
                     <td className="p-8 text-right">
-                       <div className="inline-block transform scale-125 origin-right">
-                          {getSeverityBadge(log.severity)}
-                       </div>
+                      <div className="inline-block transform scale-125 origin-right">
+                        {getSeverityBadge(log.severity)}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -268,4 +279,3 @@ function Activity() {
 }
 
 export default Activity;
-
