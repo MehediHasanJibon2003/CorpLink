@@ -152,32 +152,32 @@ function ProjectChatPanel({ activeProject, profile }) {
   if (loading) return <div className="p-10 text-center text-slate-500 font-black uppercase tracking-widest animate-pulse">Syncing Project Workspace...</div>
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[2.5rem] shadow-sm border-2 border-slate-200 dark:border-slate-700 flex flex-col h-[600px] md:h-[750px] overflow-hidden transition-all">
-      <div className="p-6 md:p-10 border-b-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-        <h3 className="text-heading-1 md:text-heading-1 font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-4">
-          <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
+    <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-[2.5rem] shadow-sm border-2 border-slate-200 dark:border-slate-700 flex flex-col h-[500px] md:h-[750px] overflow-hidden transition-all">
+      <div className="p-4 md:p-10 border-b-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+        <h3 className="text-body md:text-heading-1 font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
           #{activeProject.name.toLowerCase().replace(/\s+/g, '-')}
         </h3>
-        <p className="text-body md:text-heading-3 text-slate-500 dark:text-slate-400 font-medium mt-1">Strategic project-level collaboration channel</p>
+        <p className="text-[10px] md:text-heading-3 text-slate-500 dark:text-slate-400 font-medium mt-0.5 md:mt-1 truncate">Strategic collaboration channel</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 md:space-y-8 custom-scrollbar bg-white dark:bg-slate-800/50">
+      <div className="flex-1 overflow-y-auto p-4 md:p-10 space-y-4 md:space-y-8 custom-scrollbar bg-white dark:bg-slate-800/50">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-slate-400 italic text-heading-3 md:text-heading-1 font-medium opacity-60">
-            <span className="text-heading-1 md:text-6xl mb-4">🚀</span>
-            Secure workspace active. Start broadcasting!
+          <div className="h-full flex flex-col items-center justify-center text-slate-400 italic text-[12px] md:text-heading-1 font-medium opacity-60">
+            <span className="text-3xl md:text-6xl mb-4">🚀</span>
+            Broadcast to start
           </div>
         ) : messages.map((msg) => {
           const isMe = String(msg.sender_id) === String(user?.id)
           return (
             <div key={msg.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-              <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[85%] md:max-w-[70%]`}>
-                <div className="flex items-baseline gap-3 mb-2 px-2">
-                  {!isMe && <span className="text-body md:text-body font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">{msg.sender?.full_name || "Member"}</span>}
-                  <span className="text-[10px] md:text-label text-slate-400 font-bold uppercase">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
-                  {isMe && <span className="text-body md:text-body font-black text-indigo-600 uppercase tracking-widest">You</span>}
+              <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[90%] md:max-w-[70%]`}>
+                <div className="flex items-baseline gap-2 mb-1 px-2">
+                  {!isMe && <span className="text-[10px] md:text-body font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">{msg.sender?.full_name?.split(' ')[0] || "Member"}</span>}
+                  <span className="text-[8px] md:text-label text-slate-400 font-bold uppercase">{new Date(msg.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}</span>
+                  {isMe && <span className="text-[10px] md:text-body font-black text-indigo-600 uppercase tracking-widest">You</span>}
                 </div>
-                <div className={`px-6 py-4 md:px-8 md:py-6 rounded-[2rem] text-body md:text-heading-1 shadow-sm font-medium leading-relaxed transition-all hover:shadow-md ${
+                <div className={`px-4 py-3 md:px-8 md:py-6 rounded-2xl md:rounded-[2rem] text-[12px] md:text-heading-1 shadow-sm font-medium leading-relaxed transition-all ${
                   isMe 
                     ? 'bg-indigo-600 text-white rounded-tr-none' 
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200 dark:border-slate-600'
@@ -191,17 +191,17 @@ function ProjectChatPanel({ activeProject, profile }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-6 md:p-10 border-t-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
-        <form onSubmit={handleSendMessage} className="flex gap-4 md:gap-6">
+      <div className="p-4 md:p-10 border-t-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
+        <form onSubmit={handleSendMessage} className="flex gap-3 md:gap-6">
           <input 
             type="text" 
             value={newMessage} 
             onChange={e => setNewMessage(e.target.value)}
-            placeholder="Broadcast to project team..."
-            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 rounded-[3rem] px-8 py-4 md:py-6 outline-none focus:border-indigo-500 text-body md:text-heading-1 font-bold transition-all shadow-inner"
+            placeholder="Type a message..."
+            className="flex-1 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 rounded-xl md:rounded-[3rem] px-4 md:px-8 py-3 md:py-6 outline-none focus:border-indigo-500 text-[12px] md:text-heading-1 font-bold transition-all shadow-inner"
           />
-          <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full w-16 h-16 md:w-24 md:h-24 flex flex-shrink-0 items-center justify-center transition shadow-lg hover:shadow-xl hover:-translate-y-1">
-            <span className="text-heading-1 md:text-5xl">➤</span>
+          <button type="submit" disabled={!newMessage.trim()} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl md:rounded-full w-12 h-12 md:w-24 md:h-24 flex flex-shrink-0 items-center justify-center transition shadow-lg active:scale-90">
+            <span className="text-xl md:text-5xl">➤</span>
           </button>
         </form>
       </div>

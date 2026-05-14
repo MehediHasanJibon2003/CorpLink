@@ -146,43 +146,43 @@ function Tasks() {
       title="Projects & Tasks"
       subtitle="Master board for workflows, approvals, and productivity."
     >
-      <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-3 md:p-5 mb-8 md:mb-12 flex justify-between items-center overflow-x-auto custom-scrollbar">
-        <div className="flex gap-2 md:gap-4 min-w-max">
+      <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-2 md:p-5 mb-6 md:mb-12 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex gap-2 md:gap-4 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scrollbar">
           <button
             onClick={() => setActiveTab("projects")}
-            className={`px-4 py-2 md:px-6 md:py-2.5 font-semibold text-body rounded-lg md:rounded-xl transition ${activeTab === "projects" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
+            className={`px-3 py-2 md:px-6 md:py-2.5 font-semibold text-[12px] md:text-body rounded-lg md:rounded-xl transition whitespace-nowrap ${activeTab === "projects" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
           >
-            📂 All Projects
+            📂 Projects
           </button>
           <button
             onClick={() => setActiveTab("kanban")}
-            className={`px-4 py-2 md:px-6 md:py-2.5 font-semibold text-body rounded-lg md:rounded-xl transition ${activeTab === "kanban" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
+            className={`px-3 py-2 md:px-6 md:py-2.5 font-semibold text-[12px] md:text-body rounded-lg md:rounded-xl transition whitespace-nowrap ${activeTab === "kanban" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
           >
             📋{" "}
             {activeProject
               ? `Board: ${activeProject.name}`
-              : "Global Task Board"}
+              : "Global Board"}
           </button>
           {activeProject && (
             <button
               onClick={() => setActiveTab("chat")}
-              className={`px-4 py-2 md:px-6 md:py-2.5 font-semibold text-body rounded-lg md:rounded-xl transition ${activeTab === "chat" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
+              className={`px-3 py-2 md:px-6 md:py-2.5 font-semibold text-[12px] md:text-body rounded-lg md:rounded-xl transition whitespace-nowrap ${activeTab === "chat" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
             >
-              💬 Project Chat
+              💬 Chat
             </button>
           )}
           <button
             onClick={() => setActiveTab("analytics")}
-            className={`px-4 py-2 md:px-6 md:py-2.5 font-semibold text-body rounded-lg md:rounded-xl transition ${activeTab === "analytics" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
+            className={`px-3 py-2 md:px-6 md:py-2.5 font-semibold text-[12px] md:text-body rounded-lg md:rounded-xl transition whitespace-nowrap ${activeTab === "analytics" ? "bg-blue-50 text-blue-700" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900/50"}`}
           >
-            📈 Performance Analytics
+            📈 Analytics
           </button>
         </div>
 
         {activeTab === "kanban" && (
           <button
             onClick={() => setShowCreateTask(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-button px-6 py-2.5 rounded-xl transition shrink-0 ml-4 shadow-lg shadow-blue-500/20 hover:-translate-y-0.5"
+            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-[12px] md:text-button px-6 py-2.5 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-95"
           >
             + New Task
           </button>

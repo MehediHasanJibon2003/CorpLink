@@ -145,31 +145,31 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
     <div className="space-y-8 md:space-y-12 animate-in fade-in duration-500">
       
       {/* Creation/Edit HUD */}
-      <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-white/5 p-8 md:p-12">
-        <div className="flex justify-between items-center mb-8">
-           <h3 className="text-heading-1 font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-3">
-             {editingId ? <Edit3 className="h-6 w-6 text-amber-500" /> : <Plus className="h-6 w-6 text-blue-500" />} 
-             {editingId ? "Update Project Parameters" : "Initialize Enterprise Project"}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-white/5 p-6 md:p-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+           <h3 className="text-heading-3 md:text-heading-1 font-black text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-3">
+             {editingId ? <Edit3 className="h-5 w-5 md:h-6 md:w-6 text-amber-500" /> : <Plus className="h-5 w-5 md:h-6 md:w-6 text-blue-500" />} 
+             <span className="truncate">{editingId ? "Update Parameters" : "Launch Project"}</span>
            </h3>
            {editingId && (
-             <button onClick={resetForm} className="text-slate-400 hover:text-red-500 flex items-center gap-2 font-black text-[10px] uppercase tracking-widest">
+             <button onClick={resetForm} className="text-slate-400 hover:text-red-500 flex items-center gap-2 font-black text-[10px] uppercase tracking-widest bg-slate-50 dark:bg-white/5 px-3 py-1.5 rounded-lg md:bg-transparent md:p-0">
                <X className="h-4 w-4" /> Cancel Edit
              </button>
            )}
         </div>
         
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Strategic Title" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all" />
-          <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Objective" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all" />
-          <select value={form.department_id} onChange={e => setForm({...form, department_id: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-4 py-4 text-[10px] font-black uppercase tracking-widest outline-none focus:border-blue-500">
+        <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-4 gap-4 md:gap-6">
+          <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Strategic Title" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all w-full" />
+          <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Objective" className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-body font-bold focus:border-blue-500 outline-none transition-all w-full" />
+          <select value={form.department_id} onChange={e => setForm({...form, department_id: e.target.value})} className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-4 py-4 text-[10px] font-black uppercase tracking-widest outline-none focus:border-blue-500 w-full">
             <option value="">Global Unit</option>
             {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
-          <button type="submit" disabled={loading} className={`${editingId ? 'bg-amber-500' : 'bg-blue-600'} text-white py-4 rounded-2xl font-black uppercase text-label tracking-widest shadow-xl transition-all hover:scale-[1.02]`}>
-            {loading ? "Processing..." : editingId ? "Update Project" : "Launch Project"}
+          <button type="submit" disabled={loading} className={`w-full ${editingId ? 'bg-amber-500' : 'bg-blue-600'} text-white py-4 rounded-2xl font-black uppercase text-[12px] md:text-label tracking-widest shadow-xl transition-all active:scale-95`}>
+            {loading ? "Processing..." : editingId ? "Save Changes" : "Deploy"}
           </button>
         </form>
-        {error && <p className="text-red-500 text-label font-bold mt-4 bg-red-50 p-3 rounded-xl">{error}</p>}
+        {error && <p className="text-red-500 text-[10px] font-bold mt-4 bg-red-50 p-3 rounded-xl">{error}</p>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
