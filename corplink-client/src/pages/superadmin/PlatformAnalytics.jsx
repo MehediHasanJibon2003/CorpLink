@@ -94,24 +94,25 @@ export default function PlatformAnalytics() {
       {/* Metrics Grid - Responsive */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-8 md:mb-12">
         {metrics.map(m => (
-          <div key={m.label} className="p-6 md:p-8 rounded-[2rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 relative overflow-hidden group">
+          <div key={m.label} className="p-6 md:p-8 rounded-3xl md:rounded-[2rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 relative overflow-hidden group">
             <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-white bg-gradient-to-br ${m.grad} mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
               <m.icon className="h-5 w-5 md:h-6 md:w-6" />
             </div>
-            <p className="text-[10px] md:text-label font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 mb-1">{m.label}</p>
-            <p className="text-heading-1 md:text-heading-1 font-black text-slate-900 dark:text-white">{loading ? "..." : m.value}</p>
+            <p className="text-badge md:text-label font-black uppercase tracking-widest text-slate-500 dark:text-violet-400 mb-1">{m.label}</p>
+            <p className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white">{loading ? "..." : m.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8">
-        <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
+        {/* Revenue Timeline */}
+        <div className="p-6 md:p-10 rounded-3xl md:rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
           <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><Wallet className="h-5 w-5 text-emerald-500" /> Revenue Timeline</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={revenueData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-                <XAxis dataKey="month" tick={{ fill: tickColor, fontSize: 10, fontWeight: 900 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" tick={{ fill: tickColor, fontSize: 9, fontWeight: 900 }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip {...tooltipStyle} />
                 <Area type="monotone" dataKey="amount" stroke="#10b981" fill="#10b98120" strokeWidth={4} />
@@ -120,13 +121,14 @@ export default function PlatformAnalytics() {
           </div>
         </div>
 
-        <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
+        {/* Platform Growth */}
+        <div className="p-6 md:p-10 rounded-3xl md:rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
           <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><TrendingUp className="h-5 w-5 text-violet-500" /> Platform Growth</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={growthData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-                <XAxis dataKey="month" tick={{ fill: tickColor, fontSize: 10, fontWeight: 900 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" tick={{ fill: tickColor, fontSize: 9, fontWeight: 900 }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip {...tooltipStyle} />
                 <Line type="monotone" dataKey="count" stroke="#a855f7" strokeWidth={5} dot={{ r: 6, fill: "#a855f7" }} />
@@ -137,13 +139,14 @@ export default function PlatformAnalytics() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-        <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
+        {/* Module Usage */}
+        <div className="p-6 md:p-10 rounded-3xl md:rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
           <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><LayoutDashboard className="h-5 w-5 text-blue-500" /> Module Popularity</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={moduleUsage} layout="vertical" margin={{ left: 20 }}>
+              <BarChart data={moduleUsage} layout="vertical" margin={{ left: -10, right: 20 }}>
                 <XAxis type="number" hide />
-                <YAxis dataKey="name" type="category" tick={{ fill: tickColor, fontSize: 10, fontWeight: 900 }} axisLine={false} tickLine={false} />
+                <YAxis dataKey="name" type="category" tick={{ fill: tickColor, fontSize: 8, fontWeight: 900 }} axisLine={false} tickLine={false} width={80} />
                 <Tooltip {...tooltipStyle} />
                 <Bar dataKey="count" radius={[0, 10, 10, 0]}>
                   {moduleUsage.map((entry, index) => <Cell key={index} fill={VIOLET_COLORS[index % VIOLET_COLORS.length]} />)}
@@ -153,16 +156,23 @@ export default function PlatformAnalytics() {
           </div>
         </div>
 
-        <div className="p-6 md:p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
+        {/* Subscription Distribution */}
+        <div className="p-6 md:p-10 rounded-3xl md:rounded-[2.5rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
           <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-8 flex items-center gap-3"><PieChartIcon className="h-5 w-5 text-pink-500" /> Subscriptions</h3>
           <div className="h-[250px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={planDist} innerRadius={60} md:innerRadius={80} outerRadius={80} md:outerRadius={110} paddingAngle={5} dataKey="value">
+                <Pie 
+                  data={planDist} 
+                  innerRadius={window.innerWidth < 768 ? 50 : 70} 
+                  outerRadius={window.innerWidth < 768 ? 70 : 100} 
+                  paddingAngle={5} 
+                  dataKey="value"
+                >
                   {planDist.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
                 </Pie>
                 <Tooltip {...tooltipStyle} />
-                <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: 900 }} />
+                <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: '9px', fontWeight: 900, paddingTop: '20px' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
