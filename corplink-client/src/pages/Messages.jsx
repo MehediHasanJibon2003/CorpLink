@@ -21,6 +21,7 @@ import {
   CheckCheck,
   Zap,
   Building,
+  ChevronLeft,
 } from "lucide-react";
 
 // ─── Constants ─────────────────────────────────────────────────────
@@ -34,6 +35,8 @@ function Messages({ isEmployeeView = false }) {
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+
+  const [showSidebar, setShowSidebar] = useState(true);
 
   // File Sharing State
   const [isUploading, setIsUploading] = useState(false);
@@ -303,6 +306,18 @@ function Messages({ isEmployeeView = false }) {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (activeChat) setShowSidebar(false);
+  }, [activeChat]);
+
   if (loading) {
     return (
       <div className="h-full flex flex-col items-center justify-center space-y-6">
@@ -322,40 +337,40 @@ function Messages({ isEmployeeView = false }) {
   );
 
   const messengerContent = (
-    <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-2xl border-2 border-slate-100 dark:border-white/5 overflow-hidden flex h-[800px] md:h-[900px] transition-all">
+    <div className={`bg-white dark:bg-slate-800 flex transition-all ${isMobile ? 'h-[calc(100vh-80px)] -mx-8 -mt-10' : 'h-[900px] rounded-[3rem] shadow-2xl border-2 border-slate-100 dark:border-white/5 overflow-hidden'}`}>
       {/* Sidebar */}
-      <div className="w-80 md:w-[32rem] border-r-2 border-slate-100 dark:border-white/5 flex flex-col bg-slate-50/50 dark:bg-slate-900/30">
-        <div className="p-8 border-b-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-body font-black uppercase tracking-[0.2em] text-slate-400">
+      <div className={`${showSidebar ? 'flex' : 'hidden'} lg:flex w-full lg:w-80 xl:w-[32rem] border-r-2 border-slate-100 dark:border-white/5 flex-col bg-slate-50/50 dark:bg-slate-900/30 transition-all`}>
+        <div className="p-4 md:p-8 border-b-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800">
+          <div className="flex items-center justify-between mb-4 md:mb-8">
+            <h3 className="text-[10px] md:text-body font-black uppercase tracking-[0.2em] text-slate-400">
               Communication Hub
             </h3>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+              <span className="text-[9px] md:text-[10px] font-black text-emerald-500 uppercase tracking-widest">
                 Online
               </span>
             </div>
           </div>
           <div className="relative">
-            <Search className="absolute left-6 top-5 h-6 w-6 text-slate-400" />
+            <Search className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 h-5 w-5 md:h-6 md:w-6 text-slate-400" />
             <input
               type="text"
-              placeholder="Search secure channels..."
+              placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-100 dark:bg-slate-900 border-2 border-transparent focus:border-blue-500 rounded-2xl pl-16 pr-6 py-5 text-heading-3 font-black outline-none transition-all"
+              className="w-full bg-slate-100 dark:bg-slate-900 border-2 border-transparent focus:border-blue-500 rounded-xl md:rounded-2xl pl-12 md:pl-16 pr-4 md:pr-6 py-3 md:py-5 text-[12px] md:text-heading-3 font-black outline-none transition-all"
             />
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-8">
+        <div className="flex-1 overflow-y-auto p-2 md:p-4 custom-scrollbar space-y-6 md:space-y-8">
           {/* Group Channels */}
           <div>
-            <h5 className="px-6 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 mb-5 flex items-center gap-2">
-              <Zap className="h-4 w-4 text-blue-500" /> Workflow Channels
+            <h5 className="px-4 md:px-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 mb-3 md:mb-5 flex items-center gap-2">
+              <Zap className="h-3 w-3 md:h-4 md:w-4 text-blue-500" /> Workflow
             </h5>
-            <div className="space-y-2">
+            <div className="space-y-1 md:space-y-2">
               {filteredGroups.map((group) => (
                 <button
                   key={group.id}
@@ -367,27 +382,27 @@ function Messages({ isEmployeeView = false }) {
                       sub: group.type,
                     })
                   }
-                  className={`w-full flex items-center gap-5 p-5 rounded-3xl transition-all ${activeChat?.id === group.id ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "hover:bg-white dark:hover:bg-white/5 text-slate-700 dark:text-slate-200"}`}
+                  className={`w-full flex items-center gap-3 md:gap-5 p-3 md:p-5 rounded-2xl md:rounded-3xl transition-all ${activeChat?.id === group.id ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "hover:bg-white dark:hover:bg-white/5 text-slate-700 dark:text-slate-200"}`}
                 >
                   <div
-                    className={`h-14 w-14 rounded-2xl flex items-center justify-center font-black ${activeChat?.id === group.id ? "bg-white/20" : "bg-slate-100 dark:bg-white/5"}`}
+                    className={`h-10 w-10 md:h-14 md:w-14 rounded-xl md:rounded-2xl flex items-center justify-center font-black ${activeChat?.id === group.id ? "bg-white/20" : "bg-slate-100 dark:bg-white/5"}`}
                   >
                     {group.type === "project" ? (
-                      <Folder className="h-6 w-6" />
+                      <Folder className="h-5 w-5 md:h-6 md:w-6" />
                     ) : group.type === "department" ? (
-                      <Building className="h-6 w-6" />
+                      <Building className="h-5 w-5 md:h-6 md:w-6" />
                     ) : (
-                      <Hash className="h-6 w-6" />
+                      <Hash className="h-5 w-5 md:h-6 md:w-6" />
                     )}
                   </div>
                   <div className="text-left flex-1 min-w-0">
-                    <p className="font-black text-heading-3 uppercase truncate">
+                    <p className="font-black text-[12px] md:text-heading-3 uppercase truncate">
                       {group.name}
                     </p>
                     <p
-                      className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${activeChat?.id === group.id ? "text-blue-100" : "text-slate-400"}`}
+                      className={`text-[8px] md:text-[10px] font-bold uppercase tracking-widest mt-0.5 ${activeChat?.id === group.id ? "text-blue-100" : "text-slate-400"}`}
                     >
-                      {group.type} channel
+                      {group.type}
                     </p>
                   </div>
                 </button>
@@ -397,10 +412,10 @@ function Messages({ isEmployeeView = false }) {
 
           {/* Direct Messages */}
           <div>
-            <h5 className="px-6 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 mb-5 flex items-center gap-2">
-              <User className="h-4 w-4 text-emerald-500" /> Direct Intelligence
+            <h5 className="px-4 md:px-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 mb-3 md:mb-5 flex items-center gap-2">
+              <User className="h-3 w-3 md:h-4 md:w-4 text-emerald-500" /> Direct
             </h5>
-            <div className="space-y-2">
+            <div className="space-y-1 md:space-y-2">
               {filteredContacts.map((contact) => (
                 <button
                   key={contact.email}
@@ -412,10 +427,10 @@ function Messages({ isEmployeeView = false }) {
                       isUnregisteredEmployee: contact.type === "employee" && !contact.user_id
                     })
                   }
-                  className={`w-full flex items-center gap-5 p-5 rounded-3xl transition-all ${activeChat?.id === contact.id ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "hover:bg-white dark:hover:bg-white/5 text-slate-700 dark:text-slate-200"}`}
+                  className={`w-full flex items-center gap-3 md:gap-5 p-3 md:p-5 rounded-2xl md:rounded-3xl transition-all ${activeChat?.id === contact.id ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "hover:bg-white dark:hover:bg-white/5 text-slate-700 dark:text-slate-200"}`}
                 >
                   <div
-                    className={`h-14 w-14 rounded-2xl flex items-center justify-center font-black text-heading-2 overflow-hidden ${activeChat?.id === contact.id ? "bg-white/20" : "bg-slate-100 dark:bg-white/5"}`}
+                    className={`h-10 w-10 md:h-14 md:w-14 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-[14px] md:text-heading-2 overflow-hidden ${activeChat?.id === contact.id ? "bg-white/20" : "bg-slate-100 dark:bg-white/5"}`}
                   >
                     {contact.photo ? (
                       <img
@@ -428,11 +443,11 @@ function Messages({ isEmployeeView = false }) {
                     )}
                   </div>
                   <div className="text-left flex-1 min-w-0">
-                    <p className="font-black text-heading-3 uppercase truncate">
+                    <p className="font-black text-[12px] md:text-heading-3 uppercase truncate">
                       {contact.full_name}
                     </p>
                     <p
-                      className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${activeChat?.id === contact.id ? "text-blue-100" : "text-slate-400"}`}
+                      className={`text-[8px] md:text-[10px] font-bold uppercase tracking-widest mt-0.5 ${activeChat?.id === contact.id ? "text-blue-100" : "text-slate-400"}`}
                     >
                       {contact.role}
                     </p>
@@ -445,58 +460,64 @@ function Messages({ isEmployeeView = false }) {
       </div>
 
       {/* Main Chat Canvas */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-slate-900/10 relative">
+      <div className={`${!showSidebar ? 'flex' : 'hidden'} lg:flex flex-1 flex-col bg-white dark:bg-slate-900/10 relative`}>
         {activeChat ? (
           <>
-            <div className="p-8 border-b-2 border-slate-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-slate-800">
-              <div className="flex items-center gap-6">
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-1 shadow-lg">
+            <div className="p-4 md:p-8 border-b-2 border-slate-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-slate-800">
+              <div className="flex items-center gap-3 md:gap-6">
+                <button 
+                  onClick={() => setShowSidebar(true)}
+                  className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-blue-500"
+                >
+                  <ChevronLeft className="h-6 w-6" /> 
+                </button>
+                <div className="h-10 w-10 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[16px] md:text-heading-1 shadow-lg shrink-0">
                   {activeChat.type === "group" ? (
                     activeChat.sub === "project" ? (
-                      <Folder className="h-8 w-8" />
+                      <Folder className="h-5 w-5 md:h-8 md:w-8" />
                     ) : (
-                      <Hash className="h-8 w-8" />
+                      <Hash className="h-5 w-5 md:h-8 md:w-8" />
                     )
                   ) : (
                     activeChat.name.charAt(0)
                   )}
                 </div>
-                <div>
-                  <h3 className="font-black text-heading-1 text-slate-900 dark:text-white uppercase tracking-tight">
+                <div className="min-w-0">
+                  <h3 className="font-black text-[16px] md:text-heading-1 text-slate-900 dark:text-white uppercase tracking-tight truncate">
                     {activeChat.name}
                   </h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Active Link Established
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    <p className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Active Link
                     </p>
                   </div>
                 </div>
               </div>
-              <button className="p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-400 transition-all">
-                <MoreVertical className="h-6 w-6" />
+              <button className="p-2 md:p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-400 transition-all">
+                <MoreVertical className="h-5 w-5 md:h-6 md:w-6" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-4 md:p-12 space-y-6 md:space-y-10 custom-scrollbar">
               {msgLoading ? (
                 <div className="flex flex-col justify-center items-center h-full gap-4">
-                  <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
-                  <p className="text-body font-black text-slate-400 uppercase tracking-widest">
-                    Retrieving Messages...
+                  <Loader2 className="h-8 w-8 md:h-12 md:w-12 animate-spin text-blue-500" />
+                  <p className="text-[12px] md:text-body font-black text-slate-400 uppercase tracking-widest">
+                    Retrieving...
                   </p>
                 </div>
               ) : messages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-8 opacity-40">
-                  <div className="w-32 h-32 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
-                    <MessageCircle className="h-16 w-16" />
+                <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-6 md:gap-8 opacity-40">
+                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                    <MessageCircle className="h-12 w-12 md:h-16 md:w-16" />
                   </div>
-                  <div className="text-center">
-                    <p className="text-heading-1 font-black uppercase tracking-widest">
-                      Secure Channel Initialized
+                  <div className="text-center px-4">
+                    <p className="text-[16px] md:text-heading-1 font-black uppercase tracking-widest">
+                      Secure Channel
                     </p>
-                    <p className="text-heading-3 font-bold mt-2">
-                      Start the conversation below
+                    <p className="text-[12px] md:text-heading-3 font-bold mt-1">
+                      Start the conversation
                     </p>
                   </div>
                 </div>
@@ -510,27 +531,27 @@ function Messages({ isEmployeeView = false }) {
                       className={`flex w-full ${isMine ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-4 duration-300`}
                     >
                       <div
-                        className={`max-w-[85%] md:max-w-[70%] flex flex-col ${isMine ? "items-end" : "items-start"}`}
+                        className={`max-w-[90%] md:max-w-[70%] flex flex-col ${isMine ? "items-end" : "items-start"}`}
                       >
-                        <div className="flex items-center gap-3 mb-2 px-2">
+                        <div className="flex items-center gap-2 md:gap-3 mb-1 px-2">
                           {!isMine && (
-                            <span className="text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-widest">
-                              {senderName}
+                            <span className="text-[9px] md:text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-widest">
+                              {senderName?.split(' ')[0]}
                             </span>
                           )}
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">
+                          <span className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase">
                             {new Date(msg.created_at).toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
                           </span>
                           {isMine && (
-                            <CheckCheck className="h-3 w-3 text-blue-500" />
+                            <CheckCheck className="h-2.5 w-2.5 text-blue-500" />
                           )}
                         </div>
 
                         <div
-                          className={`px-8 py-6 rounded-[2rem] shadow-sm transition-all hover:shadow-md ${
+                          className={`px-4 py-3 md:px-8 md:py-6 rounded-2xl md:rounded-[2rem] shadow-sm transition-all ${
                             isMine
                               ? "bg-blue-600 text-white rounded-tr-none shadow-blue-500/20"
                               : "bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-white/5 text-slate-800 dark:text-slate-100 rounded-tl-none"
@@ -538,40 +559,40 @@ function Messages({ isEmployeeView = false }) {
                         >
                           {msg.file_url && (
                             <div
-                              className={`mb-4 p-4 rounded-2xl flex items-center gap-4 border-2 ${isMine ? "bg-white/10 border-white/20" : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700"}`}
+                              className={`mb-3 p-3 rounded-xl flex items-center gap-3 border-2 ${isMine ? "bg-white/10 border-white/20" : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700"}`}
                             >
                               {msg.file_type?.startsWith("image/") ? (
                                 <div className="relative group/img">
                                   <img
                                     src={msg.file_url}
                                     alt={msg.file_name}
-                                    className="max-w-full rounded-xl cursor-pointer"
+                                    className="max-w-full rounded-lg cursor-pointer"
                                   />
                                   <a
                                     href={msg.file_url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all rounded-xl text-white font-black uppercase text-label"
+                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all rounded-lg text-white font-black uppercase text-[10px]"
                                   >
-                                    View Original
+                                    View
                                   </a>
                                 </div>
                               ) : (
                                 <>
-                                  <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-500">
-                                    <FileIcon className="h-6 w-6" />
+                                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center text-blue-500 shrink-0">
+                                    <FileIcon className="h-5 w-5" />
                                   </div>
                                   <div className="min-w-0">
-                                    <p className="font-black text-body truncate">
+                                    <p className="font-black text-[11px] truncate">
                                       {msg.file_name}
                                     </p>
                                     <a
                                       href={msg.file_url}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className={`text-[10px] font-bold uppercase tracking-widest hover:underline ${isMine ? "text-blue-100" : "text-blue-500"}`}
+                                      className={`text-[9px] font-bold uppercase tracking-widest hover:underline ${isMine ? "text-blue-100" : "text-blue-500"}`}
                                     >
-                                      Download Asset
+                                      Download
                                     </a>
                                   </div>
                                 </>
@@ -579,7 +600,7 @@ function Messages({ isEmployeeView = false }) {
                             </div>
                           )}
                           {msg.message_text && (
-                            <p className="text-heading-3 md:text-heading-1 font-medium leading-relaxed">
+                            <p className="text-[13px] md:text-heading-1 font-medium leading-relaxed">
                               {msg.message_text}
                             </p>
                           )}
@@ -593,35 +614,35 @@ function Messages({ isEmployeeView = false }) {
             </div>
 
             {/* Input Area */}
-            <div className="p-8 md:p-12 border-t-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800">
+            <div className="p-4 md:p-12 border-t-2 border-slate-100 dark:border-white/5 bg-white dark:bg-slate-800">
               {attachedFile && (
-                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border-2 border-blue-200 dark:border-blue-800 flex items-center justify-between animate-in slide-in-from-bottom-2">
-                  <div className="flex items-center gap-4">
+                <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-2 border-blue-200 dark:border-blue-800 flex items-center justify-between animate-in slide-in-from-bottom-2">
+                  <div className="flex items-center gap-3">
                     {attachedFile.type.startsWith("image/") ? (
-                      <ImageIcon className="h-6 w-6 text-blue-500" />
+                      <ImageIcon className="h-5 w-5 text-blue-500" />
                     ) : (
-                      <FileIcon className="h-6 w-6 text-blue-500" />
+                      <FileIcon className="h-5 w-5 text-blue-500" />
                     )}
-                    <span className="font-black text-blue-700 dark:text-blue-300 text-body">
+                    <span className="font-black text-blue-700 dark:text-blue-300 text-[11px] truncate max-w-[200px]">
                       {attachedFile.name}
                     </span>
                   </div>
                   <button
                     onClick={() => setAttachedFile(null)}
-                    className="p-2 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-full transition-all"
+                    className="p-1.5 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-full transition-all"
                   >
-                    <X className="h-5 w-5 text-blue-600" />
+                    <X className="h-4 w-4 text-blue-600" />
                   </button>
                 </div>
               )}
 
-              <form onSubmit={handleSend} className="flex gap-4 md:gap-6">
+              <form onSubmit={handleSend} className="flex gap-3 md:gap-6">
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:border-blue-500 hover:text-blue-600 transition-all bg-slate-50 dark:bg-slate-900"
+                  className="w-12 h-12 md:w-20 md:h-20 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:border-blue-500 hover:text-blue-600 transition-all bg-slate-50 dark:bg-slate-900 shrink-0"
                 >
-                  <Paperclip className="h-6 w-6 md:h-8 md:w-8" />
+                  <Paperclip className="h-5 w-5 md:h-8 md:w-8" />
                 </button>
                 <input
                   type="file"
@@ -634,8 +655,8 @@ function Messages({ isEmployeeView = false }) {
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type a secure message to this channel..."
-                  className="flex-1 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-[2.5rem] px-8 py-5 text-heading-3 md:text-heading-1 font-bold outline-none focus:border-blue-500 transition-all shadow-inner"
+                  placeholder="Type message..."
+                  className="flex-1 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl md:rounded-[2.5rem] px-4 md:px-8 py-3 md:py-5 text-[13px] md:text-heading-1 font-bold outline-none focus:border-blue-500 transition-all shadow-inner"
                 />
 
                 <button
@@ -643,28 +664,28 @@ function Messages({ isEmployeeView = false }) {
                   disabled={
                     isUploading || (!newMessage.trim() && !attachedFile)
                   }
-                  className="w-16 h-16 md:w-24 md:h-24 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-xl disabled:opacity-50 disabled:grayscale"
+                  className="w-12 h-12 md:w-24 md:h-24 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-90 shadow-xl disabled:opacity-50 shrink-0"
                 >
                   {isUploading ? (
-                    <Loader2 className="h-8 w-8 animate-spin" />
+                    <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin" />
                   ) : (
-                    <span className="text-heading-1 md:text-5xl ml-1">➤</span>
+                    <span className="text-[18px] md:text-5xl ml-0.5 md:ml-1">➤</span>
                   )}
                 </button>
               </form>
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-300 gap-10 opacity-30">
-            <div className="w-48 h-48 rounded-[3rem] bg-slate-100 dark:bg-white/5 flex items-center justify-center border-4 border-dashed border-slate-200 dark:border-slate-700">
-              <MessageCircle className="h-24 w-24" />
+          <div className="flex-1 flex flex-col items-center justify-center text-slate-300 gap-6 md:gap-10 opacity-30 px-6 text-center">
+            <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2rem] md:rounded-[3rem] bg-slate-100 dark:bg-white/5 flex items-center justify-center border-4 border-dashed border-slate-200 dark:border-slate-700">
+              <MessageCircle className="h-16 w-16 md:h-24 md:w-24" />
             </div>
             <div className="text-center">
-              <p className="text-heading-1 font-black uppercase tracking-[0.3em]">
-                Communication Array Offline
+              <p className="text-[16px] md:text-heading-1 font-black uppercase tracking-[0.3em]">
+                Select a channel
               </p>
-              <p className="text-heading-2 font-bold mt-4">
-                Select a channel from the left to synchronize
+              <p className="text-[12px] md:text-heading-2 font-bold mt-2">
+                Synchronization required
               </p>
             </div>
           </div>
@@ -677,8 +698,8 @@ function Messages({ isEmployeeView = false }) {
 
   return (
     <AppLayout
-      title="Corporate Messenger"
-      subtitle="Unified Real-time Communication"
+      title={isMobile && !showSidebar ? null : "Corporate Messenger"}
+      subtitle={isMobile && !showSidebar ? null : "Unified Real-time Communication"}
     >
       {messengerContent}
     </AppLayout>
