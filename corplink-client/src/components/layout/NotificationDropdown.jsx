@@ -23,7 +23,8 @@ export default function NotificationDropdown() {
     if (!profile?.id) return
     fetchNotifs()
 
-    console.log("Initializing Notification Channel for:", profile.id);
+    // Initializing Notification Channel
+
     const channel = supabase
       .channel(`notifs_realtime_${profile.id}`)
       .on("postgres_changes", 
@@ -38,11 +39,13 @@ export default function NotificationDropdown() {
         }
       )
       .subscribe((status) => {
-        if (status === 'SUBSCRIBED') console.log("Realtime: SUBSCRIBED");
+        // Subscribed
+
       });
 
     return () => { 
-      console.log("Cleaning up Notification Channel");
+      // Cleaning up Notification Channel
+
       supabase.removeChannel(channel);
     };
   }, [profile?.id]);

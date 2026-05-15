@@ -1,0 +1,449 @@
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
+import AppLayout from "../../components/layout/AppLayout";
+import { logAdminActivity } from "../../utils/logger";
+import {
+  Building2,
+  Users,
+  ClipboardList,
+  MessageSquare,
+  Plus,
+  Trash2,
+  ShieldCheck,
+  TrendingUp,
+  ChevronRight,
+} from "lucide-react";
+import RoleGate from "../../components/shared/RoleGate";
+import { useConfirm } from "../../context/ConfirmContext";
+
+import TeamsPanel from "../../components/corporate/departments/TeamsPanel";
+import MembersPanel from "../../components/corporate/departments/MembersPanel";
+import CommunicationPanel from "../../components/corporate/departments/CommunicationPanel";
+import DepartmentTasksPanel from "../../components/corporate/departments/DepartmentTasksPanel";
+
+function Departments() {
+  const { user, profile, loading: authLoading } = useAuth();
+  const { showConfirm } = useConfirm();
+  const [searchParams] = useSearchParams();
+
+  const [departments, setDepartments] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [newDeptName, setNewDeptName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Master-Detail State
+  const [activeDeptId, setActiveDeptId] = useState(null);
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1280);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1280);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) setActiveDeptId(id);
+  }, [searchParams]);
+
+  const fetchDepartments = async () => {
+    if (!profile?.company_id) return;
+    setError("");
+
+    const { data: deptsData, error: deptsError } = await supabase
+      .from("departments")
+      .select("*")
+      .eq("company_id", profile.company_id)
+      .order("created_at", { ascending: false });
+
+    if (deptsError) {
+      setError("Failed to load departments.");
+      return;
+    }
+
+    const { data: empsData } = await supabase
+      .from("employees")
+      .select("id, name")
+      .eq("company_id", profile.company_id);
+    if (empsData) setEmployees(empsData);
+
+    const mappedDepts = deptsData.map((d) => {
+      const head = empsData?.find((e) => e.id === d.head_id);
+      return { ...d, head: head ? { name: head.name } : null };
+    });
+
+    setDepartments(mappedDepts || []);
+    
+    // Only auto-select first department on desktop, let mobile users see the list first
+    if (mappedDepts && mappedDepts.length > 0 && !activeDeptId && window.innerWidth >= 1280) {
+      setActiveDeptId(mappedDepts[0].id);
+    }
+  };
+
+  useEffect(() => {
+    if (profile?.company_id) {
+      fetchDepartments();
+    }
+  }, [profile?.company_id]);
+
+  const handleCreateDepartment = async (e) => {
+    e.preventDefault();
+    if (!newDeptName.trim()) return;
+    setLoading(true);
+
+    try {
+      const { data: insertData, error: insertError } = await supabase
+        .from("departments")
+        .insert([
+          {
+            name: newDeptName.trim(),
+            company_id: profile.company_id,
+            created_by: user.id,
+          },
+        ])
+        .select();
+
+      if (insertError) throw insertError;
+
+      // --- AUTO CHAT GROUP CREATION ---
+      if (insertData && insertData.length > 0) {
+        await supabase.from("chat_groups").insert([
+          {
+            name: `${newDeptName.trim()} Channel`,
+            company_id: profile.company_id,
+            type: "department",
+            reference_id: insertData[0].id,
+          },
+        ]);
+      }
+      // --------------------------------
+
+      await logAdminActivity({
+        company_id: profile.company_id,
+        user_id: user.id,
+        action: `Created new Department: ${newDeptName.trim()}`,
+        entity: "department",
+      });
+
+      setNewDeptName("");
+      await fetchDepartments();
+      if (insertData && insertData.length > 0)
+        setActiveDeptId(insertData[0].id);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteDepartment = (id, name) => {
+    showConfirm({
+      title: "Delete Department",
+      message: `Are you sure you want to delete the ${name} department? This will affect team structure.`,
+      onConfirm: async () => {
+        const { error } = await supabase
+          .from("departments")
+          .delete()
+          .eq("id", id);
+        if (!error) {
+          await logAdminActivity({
+            company_id: profile.company_id,
+            user_id: user.id,
+            action: `Deleted Department: ${name}`,
+            entity: "department",
+            severity: "critical",
+          });
+          if (activeDeptId === id) setActiveDeptId(null);
+          fetchDepartments();
+        }
+      },
+    });
+  };
+
+  const handleAssignHead = async (deptId, empId) => {
+    await supabase
+      .from("departments")
+      .update({ head_id: empId || null })
+      .eq("id", deptId);
+    fetchDepartments();
+  };
+
+  if (authLoading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <p className="text-heading-3 font-black text-blue-600 animate-pulse">
+          Initializing Corporate Infrastructure...
+        </p>
+      </div>
+    );
+
+  const activeDept = departments.find((d) => d.id === activeDeptId);
+
+  const TABS = [
+    { id: "overview", label: isMobile ? "Info" : "Overview", icon: Building2 },
+    { id: "teams", label: "Teams", icon: Users },
+    { id: "members", label: isMobile ? "Staff" : "Employees", icon: ShieldCheck },
+    { id: "tasks", label: isMobile ? "Workflow" : "Workflow Tracking", icon: ClipboardList },
+    { id: "communication", label: isMobile ? "Chat" : "Comm Channel", icon: MessageSquare },
+  ];
+
+  return (
+    <AppLayout
+      title="Department Command Center"
+      subtitle="Organize organizational hierarchy, teams and workflows."
+    >
+      <div className="flex flex-col xl:flex-row gap-6 md:gap-12">
+        {/* Left Sidebar: Master List */}
+        <div className={`xl:w-96 flex flex-col gap-6 ${activeDeptId && !isMobile ? 'flex' : (activeDeptId ? 'hidden xl:flex' : 'flex')}`}>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-violet-500/10 p-6 md:p-8">
+            <h3 className="text-[12px] md:text-heading-3 font-black text-slate-800 dark:text-white uppercase tracking-widest mb-4 md:mb-6 flex items-center gap-2">
+              <Plus className="h-4 w-4 md:h-5 md:w-5 text-blue-500" /> New Unit
+            </h3>
+            <form onSubmit={handleCreateDepartment} className="space-y-3 md:space-y-4">
+              <input
+                type="text"
+                value={newDeptName}
+                onChange={(e) => setNewDeptName(e.target.value)}
+                placeholder="Dept Name"
+                className="w-full border-2 border-slate-100 dark:border-violet-500/10 rounded-xl md:rounded-2xl px-5 md:px-6 py-3.5 md:py-4 outline-none focus:border-blue-500 text-[13px] md:text-body font-bold bg-slate-50 dark:bg-slate-900/50"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 text-white py-3.5 md:py-4 rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-label tracking-widest shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all"
+              >
+                {loading ? "Creating..." : "Add Unit"}
+              </button>
+            </form>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-violet-500/10 overflow-hidden flex-1">
+            <div className="px-6 md:px-8 py-4 md:py-6 border-b-2 border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 flex justify-between items-center">
+              <h3 className="text-[10px] md:text-body font-black text-slate-500 uppercase tracking-widest">
+                Active Units
+              </h3>
+              <span className="bg-blue-100 text-blue-700 text-[9px] md:text-[10px] font-black px-2 md:px-3 py-1 rounded-full">
+                {departments.length}
+              </span>
+            </div>
+            <div className="divide-y-2 divide-slate-50 dark:divide-white/5 max-h-[400px] md:max-h-[600px] overflow-y-auto custom-scrollbar">
+              {departments.length === 0 ? (
+                <p className="p-8 md:p-10 text-slate-400 text-center text-[12px] md:text-body font-bold italic">
+                  No units established.
+                </p>
+              ) : (
+                departments.map((dept) => (
+                  <button
+                    key={dept.id}
+                    onClick={() => {
+                      setActiveDeptId(dept.id);
+                      setActiveTab("overview");
+                    }}
+                    className={`w-full text-left p-4 md:p-6 transition-all flex items-center justify-between group ${activeDeptId === dept.id ? "bg-blue-50/50 dark:bg-blue-600/10 border-l-4 border-blue-600" : "hover:bg-slate-50 dark:hover:bg-white/5 border-l-4 border-transparent"}`}
+                  >
+                    <div className="min-w-0">
+                      <p
+                        className={`text-[14px] md:text-heading-3 font-black tracking-tight truncate ${activeDeptId === dept.id ? "text-blue-600" : "text-slate-700 dark:text-slate-200"}`}
+                      >
+                        {dept.name}
+                      </p>
+                      <p className="text-[9px] md:text-[10px] text-slate-400 font-black uppercase mt-0.5 md:mt-1 tracking-widest truncate">
+                        Head: {dept.head?.name || "N/A"}
+                      </p>
+                    </div>
+                    <ChevronRight
+                      className={`h-4 w-4 md:h-5 md:w-5 transition-transform shrink-0 ${activeDeptId === dept.id ? "text-blue-600 translate-x-1" : "text-slate-300"}`}
+                    />
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Content */}
+        <div className={`flex-1 ${!activeDeptId && isMobile ? 'hidden' : 'block'}`}>
+          {!activeDept ? (
+            <div className="bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm border-2 border-slate-100 dark:border-violet-500/10 p-12 md:p-20 flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 md:w-24 md:h-24 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6 md:mb-8">
+                <Building2 className="h-8 w-8 md:h-12 md:w-12 text-slate-300" />
+              </div>
+              <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-800 dark:text-white uppercase tracking-tight">
+                Select a Department
+              </h3>
+              <p className="text-[12px] md:text-body text-slate-500 dark:text-slate-400 mt-4 font-medium max-w-sm">
+                Choose an organizational unit from the directory to manage its
+                teams and workflow.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-[3rem] shadow-sm border-2 border-slate-100 dark:border-violet-500/10 overflow-hidden flex flex-col min-h-[500px] md:min-h-[700px]">
+              {/* Dept Header */}
+              <div className="p-6 md:p-12 pb-0 border-b-2 border-slate-50 dark:border-white/5">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-4 md:gap-6">
+                  <div className="flex items-center gap-4 md:gap-6">
+                    <button 
+                      onClick={() => setActiveDeptId(null)}
+                      className="xl:hidden p-2 -ml-2 text-slate-400 hover:text-blue-500"
+                    >
+                      <ChevronRight className="h-6 w-6 rotate-180" />
+                    </button>
+                    <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl md:rounded-[2rem] flex items-center justify-center text-white shadow-lg shrink-0">
+                      <Building2 className="h-6 w-6 md:h-10 md:w-10" />
+                    </div>
+                    <div>
+                      <h2 className="text-[18px] md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px] md:max-w-none">
+                        {activeDept.name}
+                      </h2>
+                      <p className="text-slate-500 font-bold text-[11px] md:text-body mt-0.5 md:mt-1">
+                        Established{" "}
+                        {new Date(activeDept.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <RoleGate allowedRoles={["admin", "corporate_admin"]}>
+                    <button
+                      onClick={() =>
+                        handleDeleteDepartment(activeDept.id, activeDept.name)
+                      }
+                      className="p-2 md:p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all self-end md:self-start"
+                    >
+                      <Trash2 className="h-5 w-5 md:h-6 md:w-6" />
+                    </button>
+                  </RoleGate>
+                </div>
+
+                {/* Responsive Navigation: Dropdown for Mobile, Tabs for Desktop */}
+                <div className="mt-8 md:mt-12">
+                  {/* Mobile Dropdown */}
+                  <div className="xl:hidden">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">
+                      Strategic Operations Hub
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={activeTab}
+                        onChange={(e) => setActiveTab(e.target.value)}
+                        className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-violet-500/15 rounded-2xl px-6 py-4 text-body font-black uppercase tracking-widest appearance-none outline-none focus:border-blue-500 shadow-sm"
+                      >
+                        {TABS.map((tab) => (
+                          <option key={tab.id} value={tab.id}>
+                            {tab.label}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <ChevronRight className="h-5 w-5 text-blue-500 rotate-90" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Desktop Tabs */}
+                  <div className="hidden xl:flex gap-10 overflow-x-auto no-scrollbar pb-1 px-1">
+                    {TABS.map((tab) => {
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`pb-5 flex items-center gap-3 text-label font-black uppercase tracking-[0.2em] transition-all border-b-4 shrink-0 ${activeTab === tab.id ? "border-blue-600 text-blue-600" : "border-transparent text-slate-400 hover:text-slate-600"}`}
+                        >
+                          <Icon className="h-5 w-5" /> {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Content Area */}
+              <div className="p-8 md:p-12 bg-slate-50/30 dark:bg-white/5 flex-1">
+                {activeTab === "overview" && (
+                  <div className="space-y-8 animate-in fade-in duration-500">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm">
+                        <h4 className="text-body font-black text-slate-400 uppercase tracking-widest mb-4">
+                          Unit Leadership
+                        </h4>
+                        <div className="flex items-center gap-6 mb-6">
+                          <div className="w-14 h-14 bg-blue-50 dark:bg-blue-600/10 rounded-2xl flex items-center justify-center">
+                            <ShieldCheck className="h-7 w-7 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="text-heading-3 font-black text-slate-800 dark:text-white uppercase">
+                              {activeDept.head?.name || "No Head Assigned"}
+                            </p>
+                            <p className="text-label font-bold text-slate-500">
+                              Department Head
+                            </p>
+                          </div>
+                        </div>
+                        <RoleGate allowedRoles={["admin", "corporate_admin"]}>
+                          <select
+                            value={activeDept.head_id || ""}
+                            onChange={(e) =>
+                              handleAssignHead(activeDept.id, e.target.value)
+                            }
+                            className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest outline-none focus:border-blue-500"
+                          >
+                            <option value="">Reassign Leadership</option>
+                            {employees.map((emp) => (
+                              <option key={emp.id} value={emp.id}>
+                                {emp.name}
+                              </option>
+                            ))}
+                          </select>
+                        </RoleGate>
+                      </div>
+
+                      <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border-2 border-slate-100 dark:border-white/5 shadow-sm flex flex-col justify-between">
+                        <div>
+                          <h4 className="text-body font-black text-slate-400 uppercase tracking-widest mb-2">
+                            Unit Performance
+                          </h4>
+                          <p className="text-heading-1 font-black text-slate-900 dark:text-white tracking-tighter">
+                            Operational
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 text-emerald-500 font-black text-label uppercase mt-4">
+                          <TrendingUp className="h-4 w-4" /> Healthy Growth
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "teams" && (
+                  <TeamsPanel
+                    activeDept={activeDept}
+                    user={user}
+                    profile={profile}
+                  />
+                )}
+                {activeTab === "members" && (
+                  <MembersPanel activeDept={activeDept} />
+                )}
+                {activeTab === "tasks" && (
+                  <DepartmentTasksPanel activeDept={activeDept} />
+                )}
+                {activeTab === "communication" && (
+                  <CommunicationPanel
+                    activeDept={activeDept}
+                    profile={profile}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
+
+export default Departments;

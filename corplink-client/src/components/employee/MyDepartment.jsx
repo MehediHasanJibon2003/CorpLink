@@ -14,7 +14,7 @@ import {
   ArrowRight,
   Globe,
 } from "lucide-react";
-import CommunicationPanel from "../departments/CommunicationPanel";
+import CommunicationPanel from "../corporate/departments/CommunicationPanel";
 
 function MyDepartment() {
   const { user, profile } = useAuth();
