@@ -42,7 +42,7 @@ Modern enterprises often suffer from **fragmented communication** and **operatio
 
 | Landing Page | Admin Dashboard | Task Kanban |
 | :---: | :---: | :---: |
-| ![Landing](https://placehold.co/600x400?text=Premium+Landing+Page) | ![Dashboard](https://placehold.co/600x400?text=Corporate+Command+Center) | ![Kanban](https://placehold.co/600x400?text=Visual+Workflow+Tracking) |
+| ![Landing](./screenshots/landing.png) | ![Dashboard](./screenshots/dashboard.png) | ![Kanban](./screenshots/tasks.png) |
 
 ---
 
