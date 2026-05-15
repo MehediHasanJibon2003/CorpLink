@@ -38,7 +38,6 @@ Modern enterprises often suffer from **fragmented communication** and **operatio
 ---
 
 ## 📸 5. Screenshots / GIFs
-*(Add your screenshots here after hosting)*
 
 | Landing Page | Admin Dashboard | Task Kanban |
 | :---: | :---: | :---: |
@@ -94,8 +93,8 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_public_key
 | Role | Email | Password |
 | :--- | :--- | :--- |
 | **Super Admin** | `super@corplink.com` | `123456` |
-| **Corp Admin** | `admin@example.com` | `123456` |
-| **Employee** | `emp@example.com` | `123456` |
+| **Corp Admin** | `admin@example.com" | `123456` |
+| **Employee** | `emp@example.com" | `123456` |
 
 ---
 © 2026 CorpLink Enterprise Systems. All rights reserved.
