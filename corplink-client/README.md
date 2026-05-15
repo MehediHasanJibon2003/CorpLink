@@ -1,5 +1,7 @@
 # 🏢 CorpLink - Unified Enterprise Operations OS
 
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-black?logo=github)](https://github.com/MehediHasanJibon2003/CorpLink)
+
 **A high-performance, scalable Enterprise Management System (EMS) designed to unify organizational hierarchy, workforce collaboration, and real-time operational tracking.**
 
 ---
@@ -54,7 +56,7 @@ Modern enterprises often suffer from **fragmented communication** and **operatio
 ### **Installation**
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/corplink.git
+git clone https://github.com/MehediHasanJibon2003/CorpLink.git
 
 # Navigate to client directory
 cd corplink/corplink-client
