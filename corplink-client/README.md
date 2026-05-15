@@ -1,115 +1,100 @@
-# 🏢 CorpLink - Enterprise-Grade Operational OS
+# 🏢 CorpLink - Unified Enterprise Operations OS
 
-[![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-4-38B2AC?logo=tailwindcss)](https://tailwindcss.com/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?logo=supabase)](https://supabase.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
-**CorpLink** is a massive, high-performance Enterprise Management System (EMS) designed for modern corporations. It unifies workforce collaboration, organizational hierarchy, project tracking, and secure communication into a single, high-contrast premium workspace.
+**A high-performance, scalable Enterprise Management System (EMS) designed to unify organizational hierarchy, workforce collaboration, and real-time operational tracking.**
 
 ---
 
-## 🔗 Live Operations
-🚀 **Live Demo:** [View CorpLink Live]([LIVE_DEMO_URL])  
-*(Note: Replace `[LIVE_DEMO_URL]` with your actual deployed URL after hosting on Vercel/Netlify)*
+## 🚩 1. Problem Statement
+Modern enterprises often suffer from **fragmented communication** and **operational silos**. Companies use separate tools for task management, internal messaging, and organizational hierarchy. This leads to:
+- **Data fragmentation**: Information gets lost across multiple platforms.
+- **Security risks**: Managing permissions across different tools is prone to error.
+- **Inconsistent UX**: Employees waste time switching between different design systems and workflows.
+
+## 💡 2. Solution Overview
+**CorpLink** provides a **Unified Operating System** for the enterprise. It consolidates everything—from high-level departmental structuring to low-level task kanbans and real-time chat—into one cohesive, high-security environment. By centralizing operations, CorpLink reduces overhead and increases organizational transparency.
 
 ---
 
-## ✨ Core Modules & Features
-
-### 🔐 Multi-Tier Security & Auth
-- **Role-Based Access Control (RBAC)**: Distinct permissions for Super Admins, Corporate Admins, HR, and Employees.
-- **Phased Guarding**: Specialized route protection (`ProtectedRoute`, `RoleGate`) ensures data isolation.
-- **Audit Logs**: Real-time tracking of administrative actions and login attempts.
-
-### 🏢 Corporate Architecture
-- **Unit Management**: Create and manage Departments, Teams, and specialized workforce units.
-- **Hierarchy Mapping**: Direct lead assignment and employee-to-team mapping.
-- **Enterprise Settings**: Global branding, logo management, and platform-wide configuration.
-
-### 📋 Workflow & Project Management
-- **Kanban Boards**: Industry-standard task tracking with drag-and-drop intuition.
-- **Deep Linking**: Direct navigation to specific tasks or projects via URL search params.
-- **Task Attachments**: Integrated file storage and media preview for all project tasks.
-
-### 💬 Unified Communication
-- **Departmental Channels**: Automated real-time chat groups for every department created.
-- **Project Collaboration**: Dedicated discussion hubs for specific project teams.
-- **Real-time Notifications**: Instant system alerts for task assignments and organizational updates.
+## 🛠️ 3. Tech Stack
+- **Frontend**: React 19 (Concurrent Mode), Vite 8, Tailwind CSS 4.
+- **State Management**: React Context API (Auth, Theme, Notification).
+- **Backend**: Supabase (PostgreSQL, Realtime WebSockets, Storage Buckets).
+- **Design**: Framer Motion (Animations), Lucide React (Icons).
+- **Deployment**: Vercel.
 
 ---
 
-## 🛠️ Technical Architecture
-
-### **Frontend Infrastructure**
-- **React 19**: Utilizing the latest concurrent rendering features.
-- **Vite 8**: Lightning-fast build tool with optimized bundling.
-- **Tailwind CSS 4**: Modern, high-contrast design system.
-- **Framer Motion**: Smooth, premium micro-animations and transitions.
-- **Recharts**: Data-driven insights for organizational performance.
-
-### **Backend & Storage**
-- **PostgreSQL**: Robust relational data structure.
-- **Realtime (WebSockets)**: Live sync for chat and notifications.
-- **Supabase Auth**: Secure JWT-based session management.
-- **Edge Storage**: Optimized bucket management for task attachments.
+## ✨ 4. Key Features
+| Module | Capability |
+| :--- | :--- |
+| **🛡️ Multi-Tier Auth** | Role-Based Access Control (RBAC) for Super Admin, Corp Admin, HR, and Employee. |
+| **🏢 Hierarchy Engine** | Dynamic creation of Departments, Teams, and specialized Workforce Units. |
+| **📋 Workflow Kanban** | Industry-standard task tracking with deep-linking and attachment support. |
+| **💬 Real-time Comms** | Auto-generated encrypted chat channels for every department and project. |
+| **📈 Operational Intel** | Live performance analytics and system-wide activity logging (Audit Trails). |
 
 ---
 
-## 📂 Project Structure
+## 📸 5. Screenshots / GIFs
+*(Add your screenshots here after hosting)*
 
-```text
-E:\CorpLink\
-├── corplink-client/         # React Application (Frontend)
-│   ├── src/
-│   │   ├── components/      # Atomic UI, Shared Layouts, Role-specific widgets
-│   │   ├── context/         # Auth, Theme, and Confirmation state providers
-│   │   ├── lib/             # API clients & configuration (Supabase)
-│   │   ├── pages/           # Organised by Role (Auth, Corporate, Employee, SuperAdmin)
-│   │   ├── services/        # Business logic abstraction (Analytics, Usage)
-│   │   └── utils/           # Global loggers, Permission helpers, Formatters
-│   └── public/              # Static branding assets
-└── database/                # Version-controlled Database Schema
-    ├── schema/              # Core Table definitions & RLS Policies
-    └── migrations/          # Incremental database updates & fix scripts
-```
+| Landing Page | Admin Dashboard | Task Kanban |
+| :---: | :---: | :---: |
+| ![Landing](https://placehold.co/600x400?text=Premium+Landing+Page) | ![Dashboard](https://placehold.co/600x400?text=Corporate+Command+Center) | ![Kanban](https://placehold.co/600x400?text=Visual+Workflow+Tracking) |
 
 ---
 
-## 🚀 Deployment Guide
+## ⚙️ 6. Setup Instructions
 
-### **Step 1: Environment Configuration**
-Create a `.env` file in the root of `corplink-client/`:
-```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-```
+### **Prerequisites**
+- Node.js (v18+)
+- npm or yarn
+- Supabase Account
 
-### **Step 2: Local Installation**
+### **Installation**
 ```bash
-cd corplink-client
+# Clone the repository
+git clone https://github.com/yourusername/corplink.git
+
+# Navigate to client directory
+cd corplink/corplink-client
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
-### **Step 3: Production Build**
-```bash
-npm run build
-```
+---
 
-### **Step 4: Hosting (Vercel/Netlify)**
-1. Connect your GitHub repository to Vercel/Netlify.
-2. Set the **Build Command** to `npm run build`.
-3. Set the **Output Directory** to `dist`.
-4. Add your **Environment Variables** (VITE_SUPABASE_URL, etc.) in the dashboard settings.
+## 🔑 7. Environment Variables
+Create a `.env` file in the `corplink-client/` root folder and add the following:
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_public_key
+```
 
 ---
 
-## 🤝 Contact & Support
-Developed for Enterprise Excellence.  
-**Platform Owner:** [Your Name/Company]  
-**Documentation Version:** 1.0.0 (Stable)
+## 🏗️ 8. API / Architecture
+### **System Design thinking**
+- **Multi-Tenancy**: The database is structured to handle multiple corporations within a single instance using `company_id` isolation.
+- **Security**: Row-Level Security (RLS) ensures users only see data related to their company and role.
+- **Real-time**: Leverages PostgreSQL Listen/Notify for instant messaging and notifications without constant polling.
+
+---
+
+## 🔗 9. Live Demo & Credentials
+🚀 **Live URL:** [View CorpLink Live]([LIVE_DEMO_URL])  
+
+🔐 **Safe Test Credentials:**  
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Super Admin** | `super@corplink.com` | `123456` |
+| **Corp Admin** | `admin@example.com` | `123456` |
+| **Employee** | `emp@example.com` | `123456` |
 
 ---
 © 2026 CorpLink Enterprise Systems. All rights reserved.
+Developed for organizational excellence and high-impact efficiency.
