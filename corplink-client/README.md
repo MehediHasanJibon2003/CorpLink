@@ -86,7 +86,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_public_key
 ---
 
 ## 🔗 9. Live Demo & Credentials
-🚀 **Live URL:** [View CorpLink Live]([LIVE_DEMO_URL])  
+🚀 **Live URL:** [View CorpLink Live](https://corp-link.vercel.app/)  
 
 🔐 **Safe Test Credentials:**  
 | Role | Email | Password |
