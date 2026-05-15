@@ -38,7 +38,6 @@ Modern enterprises often suffer from **fragmented communication** and **operatio
 ---
 
 ## 📸 5. Screenshots / GIFs
-*(Add your screenshots here after hosting)*
 
 | Landing Page | Admin Dashboard | Task Kanban |
 | :---: | :---: | :---: |
