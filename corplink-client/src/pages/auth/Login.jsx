@@ -65,18 +65,19 @@ function Login() {
     }
 
     try {
-      const { error: signInError, data } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error: signInError, data } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
       // --- SECURITY LOGGING START ---
       const cleanEmail = email.trim().toLowerCase();
       await supabase.from("login_attempts").insert([
         {
           email: cleanEmail,
-          status: signInError ? "failed" : "success"
-        }
+          status: signInError ? "failed" : "success",
+        },
       ]);
       // --- SECURITY LOGGING END ---
 
@@ -100,7 +101,9 @@ function Login() {
 
         if (userProfile?.is_blocked) {
           await supabase.auth.signOut();
-          setError("This account is currently blocked. Please contact a Super Admin.");
+          setError(
+            "This account is currently blocked. Please contact a Super Admin.",
+          );
           setLoading(false);
           return;
         }
@@ -147,7 +150,11 @@ function Login() {
           <Link to="/" className="flex items-center gap-4 w-fit">
             <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-3 shadow-xl shadow-orange-500/30 overflow-hidden">
               {branding.logo_url ? (
-                <img src={branding.logo_url} className="w-full h-full object-cover" alt="Logo" />
+                <img
+                  src={branding.logo_url}
+                  className="w-full h-full object-cover"
+                  alt="Logo"
+                />
               ) : (
                 "C"
               )}
@@ -166,11 +173,15 @@ function Login() {
             </span>
           </div>
           <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-6 tracking-tight">
-            One platform.<br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-orange-400">Every team.</span>
+            One platform.
+            <br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-orange-400">
+              Every team.
+            </span>
           </h1>
           <p className="text-slate-300 text-body leading-relaxed mb-12 max-w-lg">
-            Manage your entire organization — departments, teams, tasks, and communication — from a single unified workspace.
+            Manage your entire organization — departments, teams, tasks, and
+            communication — from a single unified workspace.
           </p>
 
           <div className="grid grid-cols-1 gap-6 md:gap-8">
@@ -182,8 +193,12 @@ function Login() {
                     <Icon className="h-6 w-6 text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-white font-bold text-heading-3 tracking-tight">{f.title}</p>
-                    <p className="text-slate-400 text-label font-medium mt-0.5">{f.desc}</p>
+                    <p className="text-white font-bold text-heading-3 tracking-tight">
+                      {f.title}
+                    </p>
+                    <p className="text-slate-400 text-label font-medium mt-0.5">
+                      {f.desc}
+                    </p>
                   </div>
                 </div>
               );
@@ -208,7 +223,14 @@ function Login() {
         <div className="lg:hidden mb-8">
           <Link to="/" className="flex items-center gap-3 justify-center">
             <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center font-black text-white text-heading-3 shadow-lg overflow-hidden">
-              {branding.logo_url ? <img src={branding.logo_url} className="w-full h-full object-cover" /> : "C"}
+              {branding.logo_url ? (
+                <img
+                  src={branding.logo_url}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                "C"
+              )}
             </div>
             <span className="text-heading-1 font-black text-slate-900 dark:text-white">
               {branding.platform_name || "CorpLink"}
@@ -218,13 +240,19 @@ function Login() {
 
         <div className="w-full max-w-xl">
           <div className="mb-10">
-            <h2 className="text-heading-1 lg:text-[2rem] font-bold text-slate-900 dark:text-white mb-2 tracking-tight">Welcome back</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-body">Sign in to your corporate workspace</p>
+            <h2 className="text-heading-1 lg:text-[2rem] font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
+              Welcome back
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-body">
+              Sign in to your corporate workspace
+            </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-3">
-              <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">Email Address</label>
+              <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">
+                Email Address
+              </label>
               <div className="relative">
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400" />
                 <input
@@ -240,8 +268,16 @@ function Login() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">Password</label>
-                <Link to="/forgot-password" title="Coming soon" className="text-body font-bold text-blue-600">Forgot Password?</Link>
+                <label className="block text-heading-3 font-bold text-slate-700 dark:text-slate-300">
+                  Password
+                </label>
+                <Link
+                  to="/forgot-password"
+                  title="Coming soon"
+                  className="text-body font-bold text-blue-600"
+                >
+                  Forgot Password?
+                </Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400" />
@@ -253,7 +289,11 @@ function Login() {
                   onChange={handleChange}
                   className="w-full pl-14 pr-16 py-5 border-[3px] border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl outline-none focus:border-blue-500 transition-all text-heading-2 font-bold"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400"
+                >
                   {showPassword ? <EyeOff /> : <Eye />}
                 </button>
               </div>
@@ -287,4 +327,3 @@ function Login() {
 }
 
 export default Login;
-
