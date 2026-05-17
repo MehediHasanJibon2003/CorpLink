@@ -124,6 +124,18 @@ function Register() {
           return;
         }
 
+        // Also insert corporate admin into employees table so they appear in rosters
+        await supabase.from("employees").insert([
+          {
+            user_id: user.id,
+            company_id: companyData.id,
+            name: fullName.trim(),
+            email: email.trim().toLowerCase(),
+            role: "corporate_admin",
+            designation: "Corporate Admin",
+          },
+        ]);
+
         setMessage("Company workspace created! Redirecting to login...");
         setTimeout(() => navigate("/login"), 1800);
       } else {
@@ -252,9 +264,9 @@ function Register() {
         // STEP 6: Mark employee as onboarded and link their Auth ID
         await supabase
           .from("employees")
-          .update({ 
+          .update({
             onboarded: true,
-            user_id: authUser.id 
+            user_id: authUser.id,
           })
           .eq("id", empData.id);
 
@@ -624,4 +636,3 @@ function Register() {
 }
 
 export default Register;
-

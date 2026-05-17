@@ -50,7 +50,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
       supabase.from("tasks").select("*").eq("id", task.id).single(),
       supabase.from("task_comments").select("*, profiles(full_name, role)").eq("task_id", task.id).order("created_at", { ascending: true }),
       supabase.from("task_attachments").select("*, profiles(full_name)").eq("task_id", task.id).order("created_at", { ascending: false }),
-      supabase.from("employees").select("id, name").eq("company_id", profile.company_id),
+      supabase.from("employees").select("id, user_id, name").eq("company_id", profile.company_id),
       supabase.from("projects").select("id, name").eq("company_id", profile.company_id)
     ])
 
@@ -279,7 +279,7 @@ function TaskDetailModal({ task, onClose, profile, onUpdate, initialTab = "comme
                   <p className="text-slate-400 font-black text-[9px] md:text-[10px] uppercase tracking-widest mb-1.5 md:mb-3">Agent</p>
                   <div className="flex items-center gap-2 md:gap-3">
                      <UserIcon className="h-3.5 w-3.5 md:h-4 md:w-4 text-indigo-500" />
-                     <span className="font-black text-slate-800 dark:text-white text-[12px] md:text-heading-3 uppercase tracking-tight truncate">{employees.find(e => e.id === currentTask.assigned_to)?.name || "Unassigned"}</span>
+                     <span className="font-black text-slate-800 dark:text-white text-[12px] md:text-heading-3 uppercase tracking-tight truncate">{employees.find(e => e.id === currentTask.assigned_to || (e.user_id && e.user_id === currentTask.assigned_to))?.name || "Unassigned"}</span>
                   </div>
                </div>
             </div>

@@ -46,6 +46,7 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [projectDetails, setProjectDetails] = useState(null);
+  const [companyEmployees, setCompanyEmployees] = useState([]);
 
   const fetchProjectMeta = async () => {
     if (!activeProject?.id || !profile?.company_id) {
@@ -66,20 +67,22 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
         .select("employee_id, role_in_project")
         .eq("project_id", activeProject.id),
       supabase
-        .from("profiles")
-        .select("id, full_name, email, role")
+        .from("employees")
+        .select("id, user_id, name, email, role, designation")
         .eq("company_id", profile.company_id),
     ]);
+
+    if (empsRes.data) setCompanyEmployees(empsRes.data);
 
     const pMembers = membersRes.data || [];
     const leadObj = pMembers.find((m) => m.role_in_project === "lead");
     const memberObjs = pMembers.filter((m) => m.role_in_project === "member");
 
     const leadEmp = leadObj
-      ? empsRes.data?.find((e) => e.id === leadObj.employee_id)
+      ? empsRes.data?.find((e) => e.id === leadObj.employee_id || (e.user_id && e.user_id === leadObj.employee_id))
       : null;
     const memberEmps = memberObjs
-      .map((m) => empsRes.data?.find((e) => e.id === m.employee_id))
+      .map((m) => empsRes.data?.find((e) => e.id === m.employee_id || (e.user_id && e.user_id === m.employee_id)))
       .filter(Boolean);
 
     setProjectDetails({
@@ -210,20 +213,20 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
           <div className="pt-6 md:pt-8 border-t-2 border-slate-50 dark:border-white/5">
             <h3 className="text-[10px] md:text-label font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
               <Users className="w-4 h-4 text-purple-500" /> Operational Team
-              Roster ({1 + (projectDetails.members?.length || 0)} Total)
+              Roster ({(projectDetails.lead ? 1 : 0) + (projectDetails.members?.length || 0)} Total)
             </h3>
             <div className="flex flex-wrap gap-4">
               {projectDetails.lead ? (
                 <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-200/60 dark:border-amber-800/50 px-4 py-2.5 md:px-5 md:py-3 rounded-2xl shadow-sm hover:scale-[1.02] transition-transform">
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-[12px] md:text-body shadow-md shrink-0">
-                    {projectDetails.lead.full_name?.charAt(0)}
+                    {(projectDetails.lead.name || projectDetails.lead.full_name || "L").charAt(0)}
                   </div>
                   <div>
                     <p className="text-[12px] md:text-body font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                      {projectDetails.lead.full_name}
+                      {projectDetails.lead.name || projectDetails.lead.full_name}
                     </p>
                     <span className="text-[8px] md:text-[9px] font-black text-amber-600 uppercase tracking-widest">
-                      ⭐ Project Lead
+                      ⭐ Project Lead ({projectDetails.lead.designation || "Lead"})
                     </span>
                   </div>
                 </div>
@@ -240,14 +243,14 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
                     className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 px-4 py-2.5 md:px-5 md:py-3 rounded-2xl hover:border-blue-500/30 transition-all shadow-sm hover:scale-[1.02]"
                   >
                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-[12px] md:text-body shadow-md shrink-0">
-                      {member.full_name?.charAt(0)}
+                      {(member.name || member.full_name || "M").charAt(0)}
                     </div>
                     <div>
                       <p className="text-[12px] md:text-body font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                        {member.full_name}
+                        {member.name || member.full_name}
                       </p>
                       <span className="text-[8px] md:text-[9px] font-black text-blue-500 uppercase tracking-widest">
-                        {member.role?.replace("_", " ") || "Member"}
+                        {member.designation || member.role?.replace("_", " ") || "Member"}
                       </span>
                     </div>
                   </div>
@@ -324,7 +327,7 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
                       <div className="flex flex-wrap gap-4 mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-50 dark:border-white/5">
                         <div className="flex items-center gap-2 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
                           <User className="h-3 w-3 md:h-3.5 md:w-3.5 text-blue-500" />{" "}
-                          {task.employees?.name?.split(" ")[0] || "No Agent"}
+                          {companyEmployees.find(e => e.id === task.assigned_to || (e.user_id && e.user_id === task.assigned_to))?.name?.split(" ")[0] || task.employees?.name?.split(" ")[0] || "No Agent"}
                         </div>
                         <div className="flex items-center gap-2 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
                           <Clock className="h-3 w-3 md:h-3.5 md:w-3.5 text-amber-500" />{" "}

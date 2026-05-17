@@ -117,37 +117,55 @@ function ProjectChatPanel({ activeProject, profile }) {
   }, [messages])
 
   const handleSendMessage = async (e) => {
-    e.preventDefault()
-    const msg = newMessage.trim()
-    if (!msg || !user) return
+    e.preventDefault();
+    const msg = newMessage.trim();
+    if (!msg || !user) return;
 
-    let gid = groupId
+    let gid = groupId;
     if (!gid && activeProject) {
       const { data } = await supabase
         .from("chat_groups")
         .select("id")
         .eq("reference_id", activeProject.id)
-        .maybeSingle()
+        .maybeSingle();
       if (data) {
-        gid = data.id
-        setGroupId(gid)
+        gid = data.id;
+        setGroupId(gid);
       }
     }
 
-    if (!gid) return
+    if (!gid) return;
 
-    const { error } = await supabase.from("internal_messages").insert([{
-      group_id: gid,
-      sender_id: user.id,
-      message_text: msg
-    }])
+    const { data: newMsgData, error } = await supabase
+      .from("internal_messages")
+      .insert([
+        {
+          group_id: gid,
+          sender_id: user.id,
+          message_text: msg,
+        },
+      ])
+      .select("*, profiles(full_name, role)")
+      .maybeSingle();
 
     if (!error) {
-      setNewMessage("")
+      setNewMessage("");
+      if (newMsgData) {
+        const mapped = {
+          ...newMsgData,
+          sender: newMsgData.profiles
+            ? { full_name: newMsgData.profiles.full_name, role: newMsgData.profiles.role }
+            : { full_name: profile?.full_name || profile?.name || "You", role: profile?.role },
+        };
+        setMessages((prev) => {
+          if (prev.find((m) => m.id === mapped.id)) return prev;
+          return [...prev, mapped];
+        });
+      }
     } else {
-      alert("Delivery Failed: " + error.message)
+      alert("Delivery Failed: " + error.message);
     }
-  }
+  };
 
   if (loading) return <div className="p-10 text-center text-slate-500 font-black uppercase tracking-widest animate-pulse">Syncing Project Workspace...</div>
 
