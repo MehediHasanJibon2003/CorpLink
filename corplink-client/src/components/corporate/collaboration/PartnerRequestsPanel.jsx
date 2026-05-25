@@ -35,7 +35,10 @@ function PartnerRequestsPanel() {
         .or(`receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id}`)
         .order("created_at", { ascending: false })
 
-      if (recError) console.error("Incoming Protocol Fetch Error:", recError)
+      if (recError) {
+        console.error("Incoming Protocol Fetch Error:", recError)
+        setError("Supabase Error (Incoming): " + recError.message)
+      }
 
       // 3. Sent requests (I am the sender)
       const { data: sentData, error: sentError } = await supabase
@@ -47,13 +50,16 @@ function PartnerRequestsPanel() {
         .eq("sender_id", user.id)
         .order("created_at", { ascending: false })
 
-      if (sentError) console.error("Transmitted Protocol Fetch Error:", sentError)
+      if (sentError) {
+        console.error("Transmitted Protocol Fetch Error:", sentError)
+        setError("Supabase Error (Outgoing): " + sentError.message)
+      }
 
       setReceived(recData || [])
       setSent(sentData || [])
     } catch (err) {
       console.error("Fetch requests error:", err)
-      setError("Strategic Data Retrieval Failed.")
+      setError("Data Retrieval Failed: " + err.message)
     } finally {
       setLoading(false)
     }
