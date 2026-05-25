@@ -24,20 +24,25 @@ function MessagesPanel() {
       const { data: collabData } = await supabase
         .from("collaboration_requests")
         .select(`
-          id, type, sender_id, receiver_id, corporate_id,
+          id, type, sender_id, receiver_id, company_id, corporate_id,
           sender:profiles!sender_id (id, full_name, role),
           receiver:profiles!receiver_id (id, full_name, role),
+          sender_corp:companies!company_id (id, name),
           partner_corp:companies!corporate_id (id, name)
         `)
         .eq("status", "accepted")
-        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id}`)
+        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id},company_id.eq.${profile.company_id}`)
 
       const partnerList = collabData?.map(c => {
         if (c.type === 'internal') {
           const person = c.sender_id === user.id ? c.receiver : c.sender
           return { id: person.id, name: person.full_name, role: person.role, type: 'internal' }
         } else {
-          return { id: c.partner_corp.id, name: c.partner_corp.name, role: 'Strategic Partner', type: 'external' }
+          // If I am the sender, my company is company_id. The partner is corporate_id.
+          // If I am the receiver, my company is corporate_id. The partner is company_id.
+          const isSender = c.company_id === profile.company_id
+          const partnerCompany = isSender ? c.partner_corp : c.sender_corp
+          return { id: partnerCompany?.id, name: partnerCompany?.name || "Unknown Company", role: 'Strategic Partner', type: 'external' }
         }
       }) || []
       
