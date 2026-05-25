@@ -113,7 +113,7 @@ function Login() {
           return;
         }
 
-        const ADMIN_ROLES = ["admin", "corporate_admin", "hr"];
+        const ADMIN_ROLES = ["admin", "corporate_admin", "hr", "manager", "dept_head", "team_lead"];
         if (ADMIN_ROLES.includes(userProfile?.role)) {
           navigate("/dashboard");
         } else {
