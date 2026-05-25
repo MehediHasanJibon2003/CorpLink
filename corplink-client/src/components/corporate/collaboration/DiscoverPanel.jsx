@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from "react"
 import { supabase } from "../../../lib/supabase"
 import { useAuth } from "../../../context/AuthContext"
-import { Building2, Users, Handshake, ShieldCheck, Zap, Search, Send, UserCheck } from "lucide-react"
+import { createNotification } from "../../../utils/notificationUtils"
+import { Building2, Users, Handshake, ShieldCheck, Zap, Search, Send, UserCheck, X } from "lucide-react"
 
 function DiscoverPanel() {
   const { user, profile } = useAuth()
@@ -14,6 +15,10 @@ function DiscoverPanel() {
   const [searchQuery, setSearchQuery] = useState("")
   const [error, setError]             = useState("")
   const [message, setMessage]         = useState("")
+  
+  // Custom Collaboration Modal State
+  const [selectedTarget, setSelectedTarget] = useState(null) // { id, name }
+  const [customMessage, setCustomMessage] = useState("")
 
   const fetchData = useCallback(async () => {
     if (!profile?.company_id) return
@@ -24,7 +29,7 @@ function DiscoverPanel() {
       if (mode === "external") {
         // Fetch Other Companies
         const { data: cos } = await supabase
-          .from("corporates")
+          .from("companies")
           .select("id, name")
           .neq("id", profile.company_id)
           .order("name")
@@ -65,23 +70,52 @@ function DiscoverPanel() {
     fetchData()
   }, [fetchData])
 
-  const handleConnect = async (targetId, targetName) => {
+  const handleOpenModal = (targetId, targetName) => {
+    setSelectedTarget({ id: targetId, name: targetName })
+    setCustomMessage(`${profile.full_name} from ${profile.company_name || "our enterprise"} invites you to a strategic alliance.`)
+  }
+
+  const handleConfirmConnect = async (e) => {
+    e.preventDefault()
+    if (!selectedTarget) return
+
     setError("")
     setMessage("")
-    setSending(targetId)
+    setSending(selectedTarget.id)
+    const targetId = selectedTarget.id
+    const targetName = selectedTarget.name
+    const msgToSend = customMessage.trim() || `${profile.full_name} requested collaboration.`
+    setSelectedTarget(null)
 
     const payload = {
       sender_id: user.id,
       company_id: profile.company_id,
       type: mode,
-      message: `${profile.full_name} from ${profile.companies?.name || "the team"} requested collaboration.`,
+      message: msgToSend,
       status: "pending"
     }
 
+    let targetUserId = null
+    let targetCompanyId = targetId
+
     if (mode === "external") {
       payload.corporate_id = targetId
+      // Find corporate admin of target company to act as receiver for RLS
+      const { data: admins } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("company_id", targetId)
+        .in("role", ["corporate_admin", "admin"])
+        .limit(1)
+
+      if (admins && admins.length > 0) {
+        payload.receiver_id = admins[0].id
+        targetUserId = admins[0].id
+      }
     } else {
       payload.receiver_id = targetId
+      targetUserId = targetId
+      targetCompanyId = profile.company_id
     }
 
     const { error } = await supabase.from("collaboration_requests").insert([payload])
@@ -89,11 +123,38 @@ function DiscoverPanel() {
     if (error) {
       setError(error.message)
     } else {
-      setMessage(`Collaboration request transmitted to ${targetName}!`)
+      setMessage(`Collaboration protocol transmitted to ${targetName}!`)
+      if (targetUserId) {
+        createNotification(
+          targetUserId,
+          targetCompanyId,
+          "collaboration",
+          `Strategic Collaboration Request: "${msgToSend.substring(0, 50)}..."`
+        )
+      }
       setTimeout(() => setMessage(""), 3000)
       fetchData()
     }
     setSending(null)
+  }
+
+  const handleCancelRequest = async (targetId) => {
+    setError("")
+    setMessage("")
+    const req = requests.find(r => 
+      (mode === "external" ? r.corporate_id === targetId : r.receiver_id === targetId) &&
+      r.sender_id === user.id && r.status === "pending"
+    )
+    if (!req) return
+
+    const { error } = await supabase.from("collaboration_requests").delete().eq("id", req.id)
+    if (error) {
+      setError(error.message)
+    } else {
+      setMessage("Collaboration request successfully withdrawn.")
+      setTimeout(() => setMessage(""), 3000)
+      fetchData()
+    }
   }
 
   const getStatus = (targetId) => {
@@ -185,7 +246,7 @@ function DiscoverPanel() {
                        </div>
                        {status !== "none" && (
                          <span className={`px-3 py-1 md:px-4 md:py-2 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest ${status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                            {status === 'accepted' ? 'Active' : 'Pending'}
+                            {status === 'accepted' ? 'Active' : status}
                          </span>
                        )}
                     </div>
@@ -196,7 +257,7 @@ function DiscoverPanel() {
                   <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t-2 border-slate-50 dark:border-slate-700/50">
                     {status === "none" ? (
                       <button
-                        onClick={() => handleConnect(item.id, name)}
+                        onClick={() => handleOpenModal(item.id, name)}
                         disabled={sending === item.id}
                         className="w-full flex items-center justify-center gap-3 md:gap-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-4 md:py-6 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-label hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all active:scale-95 shadow-lg"
                       >
@@ -208,9 +269,19 @@ function DiscoverPanel() {
                         <UserCheck className="h-5 w-5 md:h-6 md:w-6" />
                         <span className="font-black uppercase tracking-widest text-[10px] md:text-label text-center">Active</span>
                       </div>
-                    ) : (
-                      <div className="flex items-center justify-center py-4 md:py-6 bg-amber-50 dark:bg-amber-950/20 text-amber-600 rounded-xl md:rounded-2xl border-2 border-amber-100 dark:border-amber-900/50">
+                    ) : status === "pending" ? (
+                      <div className="flex items-center justify-between gap-2 py-3.5 px-5 bg-amber-50 dark:bg-amber-950/20 text-amber-600 rounded-xl md:rounded-2xl border-2 border-amber-100 dark:border-amber-900/50">
                         <span className="font-black uppercase tracking-widest text-[10px] md:text-label">Awaiting Approval</span>
+                        <button
+                          onClick={() => handleCancelRequest(item.id)}
+                          className="px-3 py-1.5 md:px-4 md:py-2 bg-amber-200 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 hover:bg-red-600 hover:text-white transition-all text-[8px] md:text-[10px] font-black uppercase rounded-lg tracking-widest active:scale-95"
+                        >
+                          Withdraw
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center py-4 md:py-6 bg-slate-100 dark:bg-slate-900 text-slate-500 rounded-xl md:rounded-2xl">
+                        <span className="font-black uppercase tracking-widest text-[10px] md:text-label">{status}</span>
                       </div>
                     )}
                   </div>
@@ -220,6 +291,55 @@ function DiscoverPanel() {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {/* Custom Collaboration Message Modal */}
+      {selectedTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => setSelectedTarget(null)} />
+          <div className="relative bg-white dark:bg-slate-800 w-full max-w-lg rounded-[2.5rem] p-8 md:p-12 border-2 border-slate-100 dark:border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Initiate Protocol</h3>
+              <button onClick={() => setSelectedTarget(null)} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition-colors">
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <p className="text-slate-500 dark:text-slate-400 font-bold mb-6 text-body">
+              Customizing dispatch to <span className="text-blue-600 dark:text-blue-400 uppercase font-black">{selectedTarget.name}</span>.
+            </p>
+
+            <form onSubmit={handleConfirmConnect} className="space-y-6">
+              <div className="space-y-3">
+                <label className="text-[10px] md:text-label font-black text-slate-400 uppercase tracking-widest">Custom Dispatch Message</label>
+                <textarea
+                  value={customMessage}
+                  onChange={(e) => setCustomMessage(e.target.value)}
+                  rows={4}
+                  placeholder="Detail your strategic objectives and collaboration proposal..."
+                  className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl p-5 text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all font-medium text-body resize-none"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTarget(null)}
+                  className="flex-1 py-4 rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 font-black uppercase tracking-widest text-label hover:bg-slate-200 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!customMessage.trim()}
+                  className="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-label shadow-xl shadow-blue-500/20 active:scale-95 transition-all disabled:opacity-50"
+                >
+                  Confirm & Transmit
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react"
 import { supabase } from "../../../lib/supabase"
 import { useAuth } from "../../../context/AuthContext"
+import { createNotification } from "../../../utils/notificationUtils"
 import { Inbox, Send, UserCheck, ShieldAlert, Clock, CheckCircle2, XCircle } from "lucide-react"
 
 function PartnerRequestsPanel() {
@@ -8,6 +9,7 @@ function PartnerRequestsPanel() {
 
   const [received, setReceived] = useState([])
   const [sent, setSent] = useState([])
+  const [companyMap, setCompanyMap] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [message, setMessage] = useState("")
@@ -17,27 +19,35 @@ function PartnerRequestsPanel() {
     setLoading(true)
 
     try {
-      // Received requests (I am the receiver or my company is the target)
-      const { data: recData } = await supabase
+      // 1. Fetch Company Lookup Map
+      const { data: cos } = await supabase.from("companies").select("id, name")
+      const map = {}
+      cos?.forEach(c => { map[c.id] = c.name })
+      setCompanyMap(map)
+
+      // 2. Received requests (I am the receiver or my company is the target)
+      const { data: recData, error: recError } = await supabase
         .from("collaboration_requests")
         .select(`
           *,
-          sender:profiles!sender_id (full_name, role),
-          partner_corp:corporates!corporate_id (name)
+          sender:profiles!sender_id (full_name, role)
         `)
         .or(`receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id}`)
         .order("created_at", { ascending: false })
 
-      // Sent requests (I am the sender)
-      const { data: sentData } = await supabase
+      if (recError) console.error("Incoming Protocol Fetch Error:", recError)
+
+      // 3. Sent requests (I am the sender)
+      const { data: sentData, error: sentError } = await supabase
         .from("collaboration_requests")
         .select(`
           *,
-          receiver:profiles!receiver_id (full_name, role),
-          partner_corp:corporates!corporate_id (name)
+          receiver:profiles!receiver_id (full_name, role)
         `)
         .eq("sender_id", user.id)
         .order("created_at", { ascending: false })
+
+      if (sentError) console.error("Transmitted Protocol Fetch Error:", sentError)
 
       setReceived(recData || [])
       setSent(sentData || [])
@@ -47,7 +57,7 @@ function PartnerRequestsPanel() {
     } finally {
       setLoading(false)
     }
-  }, [user.id, profile.company_id])
+  }, [user.id, profile?.company_id])
 
   useEffect(() => {
     fetchRequests()
@@ -57,17 +67,44 @@ function PartnerRequestsPanel() {
     setError("")
     setMessage("")
 
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from("collaboration_requests")
       .update({ status: newStatus })
       .eq("id", requestId)
+      .select()
 
     if (error) {
       setError(error.message)
       return
     }
 
+    if (!data || data.length === 0) {
+      setError("Authorization blocked by Database Security Policy (RLS). Please check your Supabase SQL policies.")
+      return
+    }
+
     setMessage(`Protocol ${newStatus === 'accepted' ? 'Authorized' : 'Terminated'}.`)
+    if (newStatus === 'accepted' && data[0].sender_id) {
+      createNotification(
+        data[0].sender_id,
+        data[0].company_id,
+        "collaboration",
+        `Strategic collaboration request authorized by ${profile.companies?.name || profile.company_name || "the partner company"}!`
+      )
+    }
+    setTimeout(() => setMessage(""), 3000)
+    fetchRequests()
+  }
+
+  const handleWithdrawRequest = async (requestId) => {
+    setError("")
+    setMessage("")
+    const { error } = await supabase.from("collaboration_requests").delete().eq("id", requestId)
+    if (error) {
+      setError(error.message)
+      return
+    }
+    setMessage("Collaboration request successfully withdrawn.")
     setTimeout(() => setMessage(""), 3000)
     fetchRequests()
   }
@@ -76,6 +113,7 @@ function PartnerRequestsPanel() {
     pending: { label: "Pending", class: "bg-amber-100 text-amber-700", icon: Clock },
     accepted: { label: "Accepted", class: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 },
     rejected: { label: "Rejected", class: "bg-red-100 text-red-700", icon: XCircle },
+    cancelled: { label: "Cancelled", class: "bg-slate-100 text-slate-700", icon: XCircle },
   }
 
   const RequestCard = ({ req, isSent }) => {
@@ -90,8 +128,8 @@ function PartnerRequestsPanel() {
       displayName = person?.full_name || "Colleague"
       displayRole = person?.role || "Team Member"
     } else {
-      displayName = req.partner_corp?.name || "Partner Corp"
-      displayRole = "Strategic Entity"
+      displayName = isSent ? (companyMap[req.corporate_id] || "Target Enterprise") : (companyMap[req.company_id] || "Originating Enterprise")
+      displayRole = isSent ? "Target Strategic Entity" : "Originating Strategic Entity"
     }
 
     return (
@@ -113,7 +151,7 @@ function PartnerRequestsPanel() {
         </div>
 
         <div className="bg-slate-50 dark:bg-slate-900/50 p-5 md:p-8 rounded-2xl md:rounded-3xl text-[13px] md:text-heading-3 text-slate-700 dark:text-slate-300 font-medium italic border-2 border-transparent group-hover:border-slate-200 dark:group-hover:border-slate-700 transition-all">
-          "{req.message}"
+          {`"${req.message}"`}
         </div>
 
         <div className="mt-6 md:mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -136,6 +174,17 @@ function PartnerRequestsPanel() {
                 >
                   Terminate
                 </button>
+             </div>
+           )}
+
+           {isSent && req.status === 'pending' && (
+             <div className="w-full sm:w-auto">
+               <button 
+                 onClick={() => handleWithdrawRequest(req.id)}
+                 className="w-full sm:w-auto px-4 md:px-6 py-2.5 md:py-3 bg-amber-500/20 hover:bg-red-600 text-amber-600 hover:text-white rounded-lg md:rounded-xl font-black uppercase tracking-widest text-[8px] md:text-[10px] transition-all active:scale-95 border-2 border-amber-500/30 hover:border-red-600"
+               >
+                 Withdraw Request
+               </button>
              </div>
            )}
         </div>

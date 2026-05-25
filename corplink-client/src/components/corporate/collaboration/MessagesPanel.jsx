@@ -11,6 +11,7 @@ function MessagesPanel() {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
   const [loading, setLoading] = useState(true)
+  const [showMobileChat, setShowMobileChat] = useState(false)
   
   const bottomRef = useRef(null)
 
@@ -87,6 +88,12 @@ function MessagesPanel() {
     fetchMessages()
   }, [fetchMessages])
 
+  useEffect(() => {
+    if (activePartner && window.innerWidth < 1280) {
+      setShowMobileChat(true)
+    }
+  }, [activePartner])
+
   const handleSend = async (e) => {
     e.preventDefault()
     if (!newMessage.trim() || !activePartner) return
@@ -111,25 +118,6 @@ function MessagesPanel() {
     }
   }
 
-  if (loading) return <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Establishing Secure Uplink...</div>
-
-  if (partners.length === 0) {
-    return (
-      <div className="py-40 text-center bg-white dark:bg-slate-800 rounded-[4rem] border-4 border-dashed border-slate-100 dark:border-slate-800">
-        <MessageSquare className="h-32 w-32 mx-auto text-slate-100 dark:text-slate-800 mb-10" />
-        <h3 className="text-heading-1 font-black text-slate-400 uppercase tracking-widest">No Active Channels Detected</h3>
-        <p className="text-body font-bold text-slate-400 mt-4">Initiate collaboration protocols in the Discovery Hub.</p>
-      </div>
-    )
-  }
-
-  const [showMobileChat, setShowMobileChat] = useState(false);
-
-  useEffect(() => {
-    if (activePartner && window.innerWidth < 1280) {
-      setShowMobileChat(true);
-    }
-  }, [activePartner]);
 
   if (loading) return <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Establishing Secure Uplink...</div>
 

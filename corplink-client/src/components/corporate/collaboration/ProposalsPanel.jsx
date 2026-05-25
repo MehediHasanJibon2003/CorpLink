@@ -110,7 +110,7 @@ function ProposalsPanel() {
       setTimeout(() => setMessage(""), 3000)
       fetchData()
     }
-    setSaving(true)
+    setSaving(false)
   }
 
   const handleUpdateStatus = async (proposalId, newStatus) => {
