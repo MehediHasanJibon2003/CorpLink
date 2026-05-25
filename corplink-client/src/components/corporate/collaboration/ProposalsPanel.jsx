@@ -42,7 +42,7 @@ function ProposalsPanel() {
           id, type, sender_id, receiver_id, corporate_id,
           sender:profiles!sender_id (id, full_name),
           receiver:profiles!receiver_id (id, full_name),
-          partner_corp:corporates!corporate_id (id, name)
+          partner_corp:companies!corporate_id (id, name)
         `,
         )
         .eq("status", "accepted")
@@ -72,8 +72,8 @@ function ProposalsPanel() {
         .select(
           `
           *,
-          tc:corporates!to_company (id, name),
-          fc:corporates!from_company (id, name),
+          tc:companies!to_company (id, name),
+          fc:companies!from_company (id, name),
           tp:profiles!to_profile_id (id, full_name),
           fp:profiles!from_profile_id (id, full_name)
         `,

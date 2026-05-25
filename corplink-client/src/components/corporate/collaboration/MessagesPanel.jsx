@@ -27,7 +27,7 @@ function MessagesPanel() {
           id, type, sender_id, receiver_id, corporate_id,
           sender:profiles!sender_id (id, full_name, role),
           receiver:profiles!receiver_id (id, full_name, role),
-          partner_corp:corporates!corporate_id (id, name)
+          partner_corp:companies!corporate_id (id, name)
         `)
         .eq("status", "accepted")
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id},corporate_id.eq.${profile.company_id}`)
