@@ -86,7 +86,39 @@ function MessagesPanel() {
 
   useEffect(() => {
     fetchMessages()
-  }, [fetchMessages])
+
+    if (!activePartner) return
+
+    const tableName = activePartner.type === 'external' ? "partner_messages" : "internal_messages"
+    
+    const messageSubscription = supabase
+      .channel(`realtime_${tableName}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: tableName }, (payload) => {
+        const newMsg = payload.new
+        
+        let isRelevant = false
+        if (activePartner.type === 'external') {
+          isRelevant = (newMsg.from_company === profile?.company_id && newMsg.to_company === activePartner.id) ||
+                       (newMsg.from_company === activePartner.id && newMsg.to_company === profile?.company_id)
+        } else {
+          isRelevant = (newMsg.sender_id === user.id && newMsg.receiver_id === activePartner.id) ||
+                       (newMsg.sender_id === activePartner.id && newMsg.receiver_id === user.id)
+        }
+
+        if (isRelevant) {
+          setMessages(prev => {
+            if (prev.some(m => m.id === newMsg.id)) return prev
+            return [...prev, newMsg]
+          })
+          setTimeout(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }) }, 100)
+        }
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(messageSubscription)
+    }
+  }, [fetchMessages, activePartner, user.id, profile?.company_id])
 
   useEffect(() => {
     if (activePartner && window.innerWidth < 1280) {
