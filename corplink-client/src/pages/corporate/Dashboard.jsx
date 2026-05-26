@@ -44,8 +44,16 @@ function Dashboard() {
 
     const { data: employees } = await supabase
       .from("employees")
-      .select("*")
+      .select("email")
       .eq("company_id", cid);
+
+    const uniqueEmails = new Set();
+    (employees || []).forEach((emp) => {
+      if (emp.email) {
+        uniqueEmails.add(emp.email.toLowerCase().trim());
+      }
+    });
+    const uniqueEmployeeCount = uniqueEmails.size;
     const { data: departments } = await supabase
       .from("departments")
       .select("*")
@@ -77,7 +85,7 @@ function Dashboard() {
       tasks?.filter((t) => t.status === "rejected").length || 0;
 
     setStats({
-      employees: employees?.length || 0,
+      employees: uniqueEmployeeCount,
       departments: departments?.length || 0,
       projects: projects?.length || 0,
       tasks: tasks?.length || 0,
