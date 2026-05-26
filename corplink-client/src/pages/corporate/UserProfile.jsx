@@ -11,9 +11,17 @@ export default function UserProfile() {
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || null)
   const fileInputRef = useRef(null)
 
+  // Edit profile modal state
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editForm, setEditForm] = useState({ full_name: '' })
+  const [editSaving, setEditSaving] = useState(false)
+  const [editError, setEditError] = useState('')
+  const [displayName, setDisplayName] = useState(profile?.full_name || '')
+
   useEffect(() => {
     if (profile?.avatar_url) setAvatarUrl(profile.avatar_url)
-  }, [profile?.avatar_url])
+    if (profile?.full_name) setDisplayName(profile.full_name)
+  }, [profile?.avatar_url, profile?.full_name])
 
   const fetchLogs = async () => {
     const { data } = await supabase
@@ -32,7 +40,42 @@ export default function UserProfile() {
   }, [user])
 
   const handleEditProfile = () => {
-    alert("Profile editing functionality coming soon!")
+    setEditForm({ full_name: displayName })
+    setEditError('')
+    setShowEditModal(true)
+  }
+
+  const handleEditSave = async (e) => {
+    e.preventDefault()
+    if (!editForm.full_name.trim()) {
+      setEditError('Name cannot be empty.')
+      return
+    }
+    setEditSaving(true)
+    setEditError('')
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ full_name: editForm.full_name.trim() })
+        .eq('id', user.id)
+
+      if (error) throw error
+
+      setDisplayName(editForm.full_name.trim())
+      setShowEditModal(false)
+
+      await supabase.from('activity_logs').insert([{
+        user_id: user.id,
+        company_id: profile.company_id,
+        action: 'Updated Profile Name',
+        entity: 'profile'
+      }])
+      fetchLogs()
+    } catch (err) {
+      setEditError(err.message || 'Failed to save changes.')
+    } finally {
+      setEditSaving(false)
+    }
   }
 
   const handleAvatarClick = () => {
@@ -139,7 +182,7 @@ export default function UserProfile() {
               )}
             </div>
 
-            <h3 className="text-[20px] md:text-heading-2 font-black text-slate-900 dark:text-white tracking-tight">{profile?.full_name}</h3>
+            <h3 className="text-[20px] md:text-heading-2 font-black text-slate-900 dark:text-white tracking-tight">{displayName}</h3>
             <p className="text-[12px] md:text-body text-slate-500 dark:text-slate-400 mt-1 font-bold">{profile?.email}</p>
             
             <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -272,6 +315,52 @@ export default function UserProfile() {
           </div>
         </div>
       </div>
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowEditModal(false)} />
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl shadow-2xl border-2 border-slate-200 dark:border-slate-700 w-full max-w-md p-8 md:p-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <h3 className="text-[18px] md:text-heading-2 font-black text-slate-900 dark:text-white tracking-tight mb-6 flex items-center gap-3">
+              <Edit3 className="h-5 w-5 text-blue-500" /> Edit Profile
+            </h3>
+            <form onSubmit={handleEditSave} className="space-y-5">
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  value={editForm.full_name}
+                  onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-5 py-3 text-[14px] font-bold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all"
+                  placeholder="Your full name"
+                  disabled={editSaving}
+                  autoFocus
+                />
+              </div>
+              {editError && (
+                <p className="text-[11px] font-bold text-red-500 bg-red-50 dark:bg-red-500/10 px-4 py-2 rounded-lg">{editError}</p>
+              )}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="flex-1 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSaving}
+                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 rounded-xl text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+                >
+                  {editSaving ? (
+                    <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Saving...</>
+                  ) : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </AppLayout>
   )
 }
