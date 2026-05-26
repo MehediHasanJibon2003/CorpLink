@@ -266,10 +266,14 @@ export default function Topbar({ onMenuClick }) {
           </div>
           <div className="relative">
             <div
-              className="w-9 h-9 md:w-14 md:h-14 rounded-xl md:rounded-2xl font-black text-white text-body md:text-heading-1 flex items-center justify-center shadow-xl border-2 border-white/10"
-              style={{ background: "var(--primary-color)" }}
+              className="w-9 h-9 md:w-14 md:h-14 rounded-xl md:rounded-2xl font-black text-white text-body md:text-heading-1 flex items-center justify-center shadow-xl border-2 border-white/10 overflow-hidden"
+              style={{ background: profile?.avatar_url ? "transparent" : "var(--primary-color)" }}
             >
-              {(profile?.full_name || "U").charAt(0).toUpperCase()}
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                (profile?.full_name || "U").charAt(0).toUpperCase()
+              )}
             </div>
           </div>
         </div>

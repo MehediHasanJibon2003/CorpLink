@@ -25,8 +25,8 @@ function MessagesPanel() {
         .from("collaboration_requests")
         .select(`
           id, type, sender_id, receiver_id, company_id, corporate_id,
-          sender:profiles!sender_id (id, full_name, role),
-          receiver:profiles!receiver_id (id, full_name, role),
+          sender:profiles!sender_id (id, full_name, role, avatar_url),
+          receiver:profiles!receiver_id (id, full_name, role, avatar_url),
           sender_corp:companies!company_id (id, name),
           partner_corp:companies!corporate_id (id, name)
         `)
@@ -36,7 +36,7 @@ function MessagesPanel() {
       const partnerList = collabData?.map(c => {
         if (c.type === 'internal') {
           const person = c.sender_id === user.id ? c.receiver : c.sender
-          return { id: person.id, name: person.full_name, role: person.role, type: 'internal' }
+          return { id: person.id, name: person.full_name, role: person.role, type: 'internal', avatar_url: person.avatar_url }
         } else {
           // If I am the sender, my company is company_id. The partner is corporate_id.
           // If I am the receiver, my company is corporate_id. The partner is company_id.
@@ -187,10 +187,14 @@ function MessagesPanel() {
                   : "bg-white dark:bg-slate-800 border-transparent hover:border-slate-200 dark:hover:border-slate-700"
               }`}
             >
-              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-[18px] md:text-heading-1 shadow-md shrink-0 ${
+              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-[18px] md:text-heading-1 shadow-md shrink-0 overflow-hidden ${
                 activePartner?.id === partner.id ? "bg-white text-blue-600" : "bg-slate-100 dark:bg-slate-900 text-slate-400"
               }`}>
-                {partner.name.charAt(0)}
+                {partner.avatar_url ? (
+                  <img src={partner.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  partner.name.charAt(0)
+                )}
               </div>
               <div className="truncate">
                 <p className={`font-black text-[15px] md:text-heading-2 tracking-tight truncate uppercase ${activePartner?.id === partner.id ? "text-white" : "text-slate-900 dark:text-white"}`}>
@@ -216,8 +220,12 @@ function MessagesPanel() {
             >
               <ArrowRight className="h-5 w-5 rotate-180" />
             </button>
-            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-indigo-600 font-black text-white flex items-center justify-center text-[18px] md:text-heading-1 shadow-xl border-2 md:border-4 border-white dark:border-slate-700 shrink-0">
-              {activePartner?.name.charAt(0)}
+            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-indigo-600 font-black text-white flex items-center justify-center text-[18px] md:text-heading-1 shadow-xl border-2 md:border-4 border-white dark:border-slate-700 shrink-0 overflow-hidden">
+              {activePartner?.avatar_url ? (
+                <img src={activePartner.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                activePartner?.name.charAt(0)
+              )}
             </div>
             <div>
               <h3 className="text-[16px] md:text-heading-1 font-black text-slate-900 dark:text-white leading-none uppercase truncate max-w-[150px] md:max-w-none">{activePartner?.name}</h3>

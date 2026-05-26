@@ -69,6 +69,14 @@ export default function UserProfile() {
 
       if (updateError) throw updateError
 
+      // Sync avatar to employees table so it appears in the Directory
+      if (profile?.email) {
+        await supabase
+          .from('employees')
+          .update({ avatar_url: newAvatarUrl })
+          .eq('email', profile.email)
+      }
+
       setAvatarUrl(newAvatarUrl)
       
       await supabase.from('activity_logs').insert([

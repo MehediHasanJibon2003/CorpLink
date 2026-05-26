@@ -487,9 +487,13 @@ function Employees() {
                     <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-6">
                       <div className="flex gap-4 md:gap-6">
                         <div
-                          className={`w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-[2rem] flex items-center justify-center font-black text-[18px] md:text-heading-1 text-white shadow-lg shrink-0 ${emp.onboarded ? "bg-gradient-to-br from-blue-600 to-indigo-600" : "bg-slate-200 text-slate-400"}`}
+                          className={`w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-[2rem] flex items-center justify-center font-black text-[18px] md:text-heading-1 text-white shadow-lg shrink-0 overflow-hidden ${emp.onboarded ? "bg-gradient-to-br from-blue-600 to-indigo-600" : "bg-slate-200 text-slate-400"}`}
                         >
-                          {emp.name.charAt(0).toUpperCase()}
+                          {emp.avatar_url ? (
+                            <img src={emp.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                          ) : (
+                            emp.name.charAt(0).toUpperCase()
+                          )}
                         </div>
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2 mb-1">
