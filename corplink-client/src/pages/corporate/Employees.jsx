@@ -167,6 +167,19 @@ function Employees() {
         ]);
         setMessage("Employee updated successfully");
       } else {
+        const { data: existingEmp, error: checkErr } = await supabase
+          .from("employees")
+          .select("id")
+          .eq("company_id", profile.company_id)
+          .eq("email", form.email.trim())
+          .maybeSingle();
+
+        if (checkErr) throw checkErr;
+
+        if (existingEmp) {
+          throw new Error("An employee with this email already exists.");
+        }
+
         const { error } = await supabase.from("employees").insert([
           {
             ...form,
