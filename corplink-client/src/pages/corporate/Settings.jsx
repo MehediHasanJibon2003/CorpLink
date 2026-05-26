@@ -201,12 +201,12 @@ export default function Settings() {
           </div>
 
           <div className="mt-8 xl:mt-32">
-             <div className="p-6 md:p-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2rem] md:rounded-[2.5rem] text-white shadow-2xl shadow-blue-500/20 relative overflow-hidden group">
-                <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-                <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest opacity-60">License Tier</p>
-                <p className="text-xl md:text-2xl font-black mt-1">Enterprise Plus</p>
-                <div className="mt-4 md:mt-6 flex items-center gap-3 text-[8px] md:text-[9px] font-black uppercase tracking-widest bg-white/10 w-fit px-4 py-2 rounded-full">
-                   <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Valid: DEC 2026
+             <div className="p-4 md:p-5 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl md:rounded-[1.5rem] text-white shadow-2xl shadow-blue-500/20 relative overflow-hidden group">
+                <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700"></div>
+                <p className="text-[7px] md:text-[8px] font-black uppercase tracking-widest opacity-60">License Tier</p>
+                <p className="text-sm md:text-base font-black mt-0.5">Enterprise Plus</p>
+                <div className="mt-2 flex items-center gap-2 text-[7px] md:text-[8px] font-black uppercase tracking-widest bg-white/10 w-fit px-3 py-1.5 rounded-full">
+                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Valid: DEC 2026
                 </div>
              </div>
           </div>
@@ -237,28 +237,28 @@ export default function Settings() {
               <div className="space-y-8 md:space-y-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
                   <div className="md:col-span-2 space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Corporate Identity</label>
-                    <input type="text" value={orgForm.name} onChange={e => setOrgForm({...orgForm, name: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-5 md:px-8 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
+                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Company Name (Corporate Identity)</label>
+                    <input type="text" value={orgForm.name} onChange={e => setOrgForm({...orgForm, name: e.target.value})} placeholder="e.g. CorpLink Solutions Ltd." className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-5 md:px-8 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
                   </div>
                   <div className="space-y-2 md:space-y-3">
                     <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Industry Sector</label>
                     <div className="relative">
                       <Briefcase className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                      <input type="text" value={orgForm.industry} onChange={e => setOrgForm({...orgForm, industry: e.target.value})} placeholder="e.g. Technology" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
+                      <input type="text" value={orgForm.industry} onChange={e => setOrgForm({...orgForm, industry: e.target.value})} placeholder="e.g. Technology, Healthcare, Finance" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
                     </div>
                   </div>
                   <div className="space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Digital Portal</label>
+                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Website URL (Digital Portal)</label>
                     <div className="relative">
                       <LinkIcon className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                      <input type="text" value={orgForm.website} onChange={e => setOrgForm({...orgForm, website: e.target.value})} placeholder="www.company.com" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
+                      <input type="url" value={orgForm.website} onChange={e => setOrgForm({...orgForm, website: e.target.value})} placeholder="https://www.company.com" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
                     </div>
                   </div>
                   <div className="md:col-span-2 space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Operational HQ</label>
+                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Location (Operational HQ)</label>
                     <div className="relative">
                       <MapPin className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                      <input type="text" value={orgForm.location} onChange={e => setOrgForm({...orgForm, location: e.target.value})} placeholder="City, Country" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
+                      <input type="text" value={orgForm.location} onChange={e => setOrgForm({...orgForm, location: e.target.value})} placeholder="e.g. New York, USA" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
                     </div>
                   </div>
                 </div>
