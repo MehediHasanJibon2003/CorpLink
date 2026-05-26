@@ -72,14 +72,20 @@ function Employees() {
       return;
     }
 
-    // Fetch Task Stats for all employees in this company
-    const { data: tasks } = await supabase
-      .from("tasks")
-      .select("id, assigned_to, status")
-      .eq("company_id", profile.company_id);
+    const empIds = (emps || []).map(e => e.id);
+    let tasks = [];
+    
+    if (empIds.length > 0) {
+      const { data } = await supabase
+        .from("tasks")
+        .select("id, assigned_to, status")
+        .eq("company_id", profile.company_id)
+        .in("assigned_to", empIds);
+      tasks = data || [];
+    }
 
     const stats = {};
-    tasks?.forEach((t) => {
+    tasks.forEach((t) => {
       if (!t.assigned_to) return;
       if (!stats[t.assigned_to])
         stats[t.assigned_to] = { total: 0, completed: 0, inProgress: 0 };
