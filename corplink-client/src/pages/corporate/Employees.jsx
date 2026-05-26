@@ -85,16 +85,43 @@ function Employees() {
     });
 
     const empIds = uniqueEmps.map(e => e.id);
+    const empEmails = uniqueEmps.map(e => e.email).filter(Boolean);
+
     let tasks = [];
+    let profileAvatarMap = {};
     
-    if (empIds.length > 0) {
-      const { data } = await supabase
-        .from("tasks")
-        .select("id, assigned_to, status")
-        .eq("company_id", profile.company_id)
-        .in("assigned_to", empIds);
-      tasks = data || [];
-    }
+    await Promise.all([
+      // Fetch tasks
+      empIds.length > 0
+        ? supabase
+            .from("tasks")
+            .select("id, assigned_to, status")
+            .eq("company_id", profile.company_id)
+            .in("assigned_to", empIds)
+            .then(({ data }) => { tasks = data || []; })
+        : Promise.resolve(),
+
+      // Fetch avatar_url from profiles by email
+      empEmails.length > 0
+        ? supabase
+            .from("profiles")
+            .select("email, avatar_url")
+            .in("email", empEmails)
+            .then(({ data }) => {
+              (data || []).forEach(p => {
+                if (p.email && p.avatar_url) {
+                  profileAvatarMap[p.email.toLowerCase().trim()] = p.avatar_url;
+                }
+              });
+            })
+        : Promise.resolve(),
+    ]);
+
+    // Merge avatar from profiles into employees (profile avatar takes priority)
+    const empsWithAvatars = uniqueEmps.map(emp => ({
+      ...emp,
+      avatar_url: emp.avatar_url || profileAvatarMap[emp.email?.toLowerCase().trim()] || null,
+    }));
 
     const stats = {};
     tasks.forEach((t) => {
@@ -107,7 +134,7 @@ function Employees() {
     });
 
     setTaskStats(stats);
-    setEmployees(uniqueEmps);
+    setEmployees(empsWithAvatars);
   };
 
   const fetchDepartments = async () => {
