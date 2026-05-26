@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
 import AppLayout from "../../components/layout/AppLayout"
@@ -7,6 +7,13 @@ import { Camera, Edit3, Shield, Monitor, Key, Lock, Activity } from "lucide-reac
 export default function UserProfile() {
   const { user, profile } = useAuth()
   const [logs, setLogs] = useState([])
+  const [uploading, setUploading] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || null)
+  const fileInputRef = useRef(null)
+
+  useEffect(() => {
+    if (profile?.avatar_url) setAvatarUrl(profile.avatar_url)
+  }, [profile?.avatar_url])
 
   const fetchLogs = async () => {
     const { data } = await supabase
@@ -28,6 +35,59 @@ export default function UserProfile() {
     alert("Profile editing functionality coming soon!")
   }
 
+  const handleAvatarClick = () => {
+    if (!uploading) fileInputRef.current?.click()
+  }
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      setUploading(true)
+
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${user.id}-${Math.random()}.${fileExt}`
+      const filePath = `${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      const { data: publicUrlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      const newAvatarUrl = publicUrlData.publicUrl
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: newAvatarUrl })
+        .eq('id', user.id)
+
+      if (updateError) throw updateError
+
+      setAvatarUrl(newAvatarUrl)
+      
+      await supabase.from('activity_logs').insert([
+        {
+          user_id: user.id,
+          company_id: profile.company_id,
+          action: 'Updated Profile Picture',
+          entity: 'profile'
+        }
+      ])
+      
+      fetchLogs()
+    } catch (error) {
+      alert("Error uploading avatar: " + error.message)
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleChangePassword = () => {
     alert("Password change functionality coming soon!")
   }
@@ -41,16 +101,34 @@ export default function UserProfile() {
           <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl md:rounded-[2.5rem] shadow-sm p-6 md:p-10 flex flex-col items-center text-center transition-all hover:shadow-md">
             
             {/* Avatar with Camera Overlay */}
-            <div className="relative group cursor-pointer mb-6" onClick={handleEditProfile}>
-              <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-slate-800 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-4xl md:text-5xl font-black shadow-inner border-4 border-white dark:border-slate-700 transition-transform group-hover:scale-105">
-                {profile?.full_name?.charAt(0) || "U"}
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleFileUpload} 
+              disabled={uploading}
+            />
+            <div className={`relative group cursor-pointer mb-6 ${uploading ? 'opacity-75 pointer-events-none' : ''}`} onClick={handleAvatarClick}>
+              <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-slate-800 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-4xl md:text-5xl font-black shadow-inner border-4 border-white dark:border-slate-700 transition-transform group-hover:scale-105 overflow-hidden">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  profile?.full_name?.charAt(0) || "U"
+                )}
               </div>
               <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Camera className="text-white h-8 w-8" />
+                {uploading ? (
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Camera className="text-white h-8 w-8" />
+                )}
               </div>
-              <div className="absolute bottom-0 right-0 bg-white dark:bg-slate-700 p-2 rounded-full shadow-lg border border-slate-100 dark:border-slate-600">
-                <Edit3 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-              </div>
+              {!uploading && (
+                <div className="absolute bottom-0 right-0 bg-white dark:bg-slate-700 p-2 rounded-full shadow-lg border border-slate-100 dark:border-slate-600">
+                  <Edit3 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                </div>
+              )}
             </div>
 
             <h3 className="text-[20px] md:text-heading-2 font-black text-slate-900 dark:text-white tracking-tight">{profile?.full_name}</h3>
