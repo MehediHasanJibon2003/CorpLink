@@ -290,7 +290,7 @@ function Employees() {
             </code>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(profile.company_id);
+                navigator.clipboard.writeText(profile.company_id.slice(0, 8));
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
               }}
