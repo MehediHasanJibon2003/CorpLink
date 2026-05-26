@@ -555,7 +555,7 @@ function Employees() {
                     <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t-2 border-slate-50 dark:border-white/5 flex items-center justify-between">
                       <div className="flex items-center gap-2 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         <Calendar className="h-3 w-3 md:h-3.5 md:w-3.5" /> 
-                        <span className="hidden xs:inline">Joined</span> {new Date(emp.joining_date).toLocaleDateString()}
+                        <span className="hidden xs:inline">Joined</span> {emp.joining_date ? new Date(emp.joining_date).toLocaleDateString() : "N/A"}
                       </div>
                       <div className="flex gap-2">
                         <button
