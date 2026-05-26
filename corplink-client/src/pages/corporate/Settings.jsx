@@ -10,7 +10,7 @@ import {
 
 export default function Settings() {
   const { user, profile, setProfile } = useAuth();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState("org");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -23,6 +23,20 @@ export default function Settings() {
     location: "",
     primary_color: "#2563eb"
   });
+
+  // Notifications State
+  const [notifications, setNotifications] = useState({
+    email_tasks: true,
+    email_updates: false,
+    push_messages: true,
+    push_mentions: true,
+  });
+
+  // Security State
+  const [passwordForm, setPasswordForm] = useState({ newPassword: "", confirmPassword: "" });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
   useEffect(() => {
     if (profile) {
@@ -71,8 +85,42 @@ export default function Settings() {
     setLoading(false);
   };
 
+  const handleToggleNotification = (key) => {
+    setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
+    // In a real app, you would save this to the database or local storage here.
+    setMessage("Preferences updated");
+    setTimeout(() => setMessage(""), 2000);
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordError("Password must be at least 6 characters.");
+      return;
+    }
+
+    setPasswordLoading(true);
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    const { error } = await supabase.auth.updateUser({
+      password: passwordForm.newPassword
+    });
+
+    if (error) {
+      setPasswordError(error.message);
+    } else {
+      setPasswordSuccess("Password updated successfully.");
+      setPasswordForm({ newPassword: "", confirmPassword: "" });
+    }
+    setPasswordLoading(false);
+  };
+
   const tabs = [
-    { id: "profile", label: "My Profile", icon: User },
     { id: "org", label: "Organization", icon: Shield },
     { id: "appearance", label: "Branding", icon: Palette },
     { id: "notifications", label: "Alerts", icon: Bell },
@@ -172,41 +220,6 @@ export default function Settings() {
             </div>
           )}
 
-          {activeTab === 'profile' && (
-            <div className="max-w-4xl animate-in fade-in slide-in-from-right-6 duration-700">
-              <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
-                 <div className="h-12 w-12 md:h-14 md:w-14 bg-blue-600 rounded-xl md:rounded-2xl flex items-center justify-center text-white shrink-0">
-                    <User className="h-6 w-6 md:h-7 md:w-7" />
-                 </div>
-                 <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Identity <span className="text-blue-600">Profile</span></h3>
-              </div>
-              
-              <div className="space-y-10 md:space-y-16">
-                <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-12">
-                   <div className="h-32 w-32 md:h-44 md:w-44 rounded-full sm:rounded-[3rem] bg-slate-900 text-white flex items-center justify-center text-5xl md:text-7xl font-black shadow-2xl border-4 border-white dark:border-slate-700 shrink-0">
-                     {profile?.full_name?.charAt(0)}
-                   </div>
-                   <button className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black uppercase tracking-widest text-[9px] md:text-[10px] text-slate-500 hover:text-blue-600 hover:border-blue-500/20 transition-all">Upload New Image</button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                  <div className="md:col-span-2 space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Display Name</label>
-                    <input type="text" value={userForm.full_name} onChange={e => setUserForm({full_name: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-5 md:px-8 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
-                  </div>
-                  <div className="md:col-span-2 space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Secure Email Address</label>
-                    <input type="text" value={user?.email} disabled className="w-full bg-slate-100 dark:bg-slate-900/50 border-2 border-transparent rounded-2xl px-6 py-5 md:px-8 md:py-6 text-lg md:text-xl font-bold opacity-50 cursor-not-allowed" />
-                  </div>
-                </div>
-
-                <button onClick={handleUserSave} disabled={loading} className="w-full md:w-auto px-10 md:px-16 py-5 md:py-6 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all">
-                  {loading ? <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin mx-auto" /> : "Save Changes"}
-                </button>
-              </div>
-            </div>
-          )}
-
           {activeTab === 'org' && (
             <div className="max-w-4xl animate-in fade-in slide-in-from-right-6 duration-700">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 mb-10 md:mb-16">
@@ -294,13 +307,142 @@ export default function Settings() {
             </div>
           )}
 
-          {(activeTab === 'notifications' || activeTab === 'security') && (
-            <div className="h-full flex flex-col items-center justify-center text-center py-20 md:py-32 animate-in zoom-in-95 duration-700">
-               <div className="w-24 h-24 md:w-32 md:h-32 bg-slate-50 dark:bg-white/5 rounded-3xl md:rounded-[3rem] flex items-center justify-center mb-8 md:mb-10 shadow-inner">
-                  {activeTab === 'notifications' ? <Bell className="h-10 w-10 md:h-12 md:w-12 text-slate-300" /> : <Lock className="h-10 w-10 md:h-12 md:w-12 text-slate-300" />}
+          {activeTab === 'notifications' && (
+            <div className="max-w-4xl animate-in fade-in slide-in-from-right-6 duration-700">
+               <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
+                  <div className="h-12 w-12 md:h-14 md:w-14 bg-blue-600 rounded-xl md:rounded-2xl flex items-center justify-center text-white shrink-0">
+                     <Bell className="h-6 w-6 md:h-7 md:w-7" />
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Alert <span className="text-blue-600">Preferences</span></h3>
                </div>
-               <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-3 md:mb-4">Strategic <span className="text-blue-600">Review</span></h3>
-               <p className="text-[9px] md:text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] max-w-sm mx-auto leading-loose">This high-security operational sector is currently undergoing a structural audit by the engineering team.</p>
+
+               <div className="space-y-10">
+                 {/* Email Notifications */}
+                 <div className="bg-slate-50 dark:bg-white/5 rounded-[2rem] p-8 md:p-10 border-2 border-slate-100 dark:border-white/5">
+                   <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Email Alerts</h4>
+                   <div className="space-y-6">
+                     <div className="flex items-center justify-between gap-4">
+                       <div>
+                         <p className="text-[14px] font-bold text-slate-800 dark:text-slate-200">Task Assignments</p>
+                         <p className="text-[10px] text-slate-400 font-medium mt-1">Get notified when a task is assigned to you.</p>
+                       </div>
+                       <button 
+                         onClick={() => handleToggleNotification('email_tasks')}
+                         className={`w-12 h-6 md:w-14 md:h-7 rounded-full relative transition-colors duration-300 ${notifications.email_tasks ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-700'}`}
+                       >
+                         <span className={`absolute top-1 left-1 bg-white w-4 h-4 md:w-5 md:h-5 rounded-full transition-transform duration-300 ${notifications.email_tasks ? 'translate-x-6' : 'translate-x-0'}`} />
+                       </button>
+                     </div>
+                     <div className="h-px bg-slate-200 dark:bg-slate-700/50 w-full" />
+                     <div className="flex items-center justify-between gap-4">
+                       <div>
+                         <p className="text-[14px] font-bold text-slate-800 dark:text-slate-200">System Updates</p>
+                         <p className="text-[10px] text-slate-400 font-medium mt-1">Receive weekly summaries and major system updates.</p>
+                       </div>
+                       <button 
+                         onClick={() => handleToggleNotification('email_updates')}
+                         className={`w-12 h-6 md:w-14 md:h-7 rounded-full relative transition-colors duration-300 ${notifications.email_updates ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-700'}`}
+                       >
+                         <span className={`absolute top-1 left-1 bg-white w-4 h-4 md:w-5 md:h-5 rounded-full transition-transform duration-300 ${notifications.email_updates ? 'translate-x-6' : 'translate-x-0'}`} />
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+
+                 {/* Push Notifications */}
+                 <div className="bg-slate-50 dark:bg-white/5 rounded-[2rem] p-8 md:p-10 border-2 border-slate-100 dark:border-white/5">
+                   <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Platform Notifications</h4>
+                   <div className="space-y-6">
+                     <div className="flex items-center justify-between gap-4">
+                       <div>
+                         <p className="text-[14px] font-bold text-slate-800 dark:text-slate-200">Direct Messages</p>
+                         <p className="text-[10px] text-slate-400 font-medium mt-1">In-app alerts for new direct messages.</p>
+                       </div>
+                       <button 
+                         onClick={() => handleToggleNotification('push_messages')}
+                         className={`w-12 h-6 md:w-14 md:h-7 rounded-full relative transition-colors duration-300 ${notifications.push_messages ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-700'}`}
+                       >
+                         <span className={`absolute top-1 left-1 bg-white w-4 h-4 md:w-5 md:h-5 rounded-full transition-transform duration-300 ${notifications.push_messages ? 'translate-x-6' : 'translate-x-0'}`} />
+                       </button>
+                     </div>
+                     <div className="h-px bg-slate-200 dark:bg-slate-700/50 w-full" />
+                     <div className="flex items-center justify-between gap-4">
+                       <div>
+                         <p className="text-[14px] font-bold text-slate-800 dark:text-slate-200">Mentions & Tags</p>
+                         <p className="text-[10px] text-slate-400 font-medium mt-1">Alerts when you are mentioned in comments or feeds.</p>
+                       </div>
+                       <button 
+                         onClick={() => handleToggleNotification('push_mentions')}
+                         className={`w-12 h-6 md:w-14 md:h-7 rounded-full relative transition-colors duration-300 ${notifications.push_mentions ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-700'}`}
+                       >
+                         <span className={`absolute top-1 left-1 bg-white w-4 h-4 md:w-5 md:h-5 rounded-full transition-transform duration-300 ${notifications.push_mentions ? 'translate-x-6' : 'translate-x-0'}`} />
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+            </div>
+          )}
+
+          {activeTab === 'security' && (
+            <div className="max-w-4xl animate-in fade-in slide-in-from-right-6 duration-700">
+               <div className="flex items-center gap-4 md:gap-6 mb-10 md:mb-16">
+                  <div className="h-12 w-12 md:h-14 md:w-14 bg-blue-600 rounded-xl md:rounded-2xl flex items-center justify-center text-white shrink-0">
+                     <Lock className="h-6 w-6 md:h-7 md:w-7" />
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Security <span className="text-blue-600">Protocols</span></h3>
+               </div>
+
+               <div className="space-y-12">
+                 {/* Password Reset */}
+                 <div className="bg-white dark:bg-slate-800 rounded-[2rem] p-8 md:p-10 border-2 border-slate-100 dark:border-white/5 shadow-sm">
+                   <h4 className="text-[14px] font-black uppercase tracking-[0.2em] text-slate-800 dark:text-white mb-6">Change Password</h4>
+                   <form onSubmit={handlePasswordChange} className="space-y-6 max-w-xl">
+                     <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">New Password</label>
+                       <input 
+                         type="password" 
+                         value={passwordForm.newPassword} 
+                         onChange={e => setPasswordForm({...passwordForm, newPassword: e.target.value})} 
+                         className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-blue-500 transition-all" 
+                         placeholder="Min. 6 characters"
+                       />
+                     </div>
+                     <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Confirm Password</label>
+                       <input 
+                         type="password" 
+                         value={passwordForm.confirmPassword} 
+                         onChange={e => setPasswordForm({...passwordForm, confirmPassword: e.target.value})} 
+                         className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-blue-500 transition-all" 
+                         placeholder="Re-enter password"
+                       />
+                     </div>
+                     
+                     {passwordError && <p className="text-red-500 text-[11px] font-bold bg-red-50 dark:bg-red-500/10 px-4 py-2 rounded-lg">{passwordError}</p>}
+                     {passwordSuccess && <p className="text-emerald-500 text-[11px] font-bold bg-emerald-50 dark:bg-emerald-500/10 px-4 py-2 rounded-lg">{passwordSuccess}</p>}
+
+                     <button type="submit" disabled={passwordLoading} className="px-8 py-4 bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-500/20 active:scale-95 transition-all flex items-center justify-center min-w-[160px]">
+                       {passwordLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
+                     </button>
+                   </form>
+                 </div>
+
+                 {/* Active Sessions */}
+                 <div className="bg-slate-50 dark:bg-white/5 rounded-[2rem] p-8 md:p-10 border-2 border-slate-100 dark:border-white/5">
+                    <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Active Sessions</h4>
+                    <div className="flex items-center justify-between p-4 md:p-6 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl border-2 border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                      <div>
+                        <p className="text-[14px] font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                          Current Session
+                        </p>
+                        <p className="text-[10px] text-slate-400 font-medium mt-1 uppercase tracking-widest">Windows • Chrome • IP: 192.168.x.x</p>
+                      </div>
+                      <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 text-[9px] font-black uppercase tracking-widest rounded-lg">Active Now</span>
+                    </div>
+                 </div>
+               </div>
             </div>
           )}
         </div>
