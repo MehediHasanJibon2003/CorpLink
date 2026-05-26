@@ -315,6 +315,7 @@ function Employees() {
                 type="text"
                 placeholder="Full Name"
                 value={form.name}
+                disabled={loading}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl md:rounded-2xl px-5 md:px-6 py-3.5 md:py-4 text-[13px] md:text-body font-bold focus:border-blue-500 outline-none transition-all"
               />
@@ -322,6 +323,7 @@ function Employees() {
                 type="email"
                 placeholder="Email Address"
                 value={form.email}
+                disabled={loading}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl md:rounded-2xl px-5 md:px-6 py-3.5 md:py-4 text-[13px] md:text-body font-bold focus:border-blue-500 outline-none transition-all"
               />
@@ -329,6 +331,7 @@ function Employees() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <select
                   value={form.department_id}
+                  disabled={loading}
                   onChange={(e) =>
                     setForm({ ...form, department_id: e.target.value })
                   }
@@ -343,6 +346,7 @@ function Employees() {
                 </select>
                 <select
                   value={form.role}
+                  disabled={loading}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                   className="bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl md:rounded-2xl px-4 py-3.5 md:py-4 text-[11px] md:text-label font-black uppercase"
                 >
@@ -357,6 +361,7 @@ function Employees() {
                 type="text"
                 placeholder="Designation"
                 value={form.designation}
+                disabled={loading}
                 onChange={(e) =>
                   setForm({ ...form, designation: e.target.value })
                 }
@@ -370,6 +375,7 @@ function Employees() {
                 <input
                   type="date"
                   value={form.joining_date}
+                  disabled={loading}
                   onChange={(e) =>
                     setForm({ ...form, joining_date: e.target.value })
                   }
