@@ -13,15 +13,27 @@ export default function UserProfile() {
 
   // Edit profile modal state
   const [showEditModal, setShowEditModal] = useState(false)
-  const [editForm, setEditForm] = useState({ full_name: '' })
+  const [editForm, setEditForm] = useState({ full_name: '', phone: '', date_of_birth: '', current_address: '', permanent_address: '' })
   const [editSaving, setEditSaving] = useState(false)
   const [editError, setEditError] = useState('')
   const [displayName, setDisplayName] = useState(profile?.full_name || '')
+  const [profileData, setProfileData] = useState({
+    phone: profile?.phone || '',
+    date_of_birth: profile?.date_of_birth || '',
+    current_address: profile?.current_address || '',
+    permanent_address: profile?.permanent_address || '',
+  })
 
   useEffect(() => {
     if (profile?.avatar_url) setAvatarUrl(profile.avatar_url)
     if (profile?.full_name) setDisplayName(profile.full_name)
-  }, [profile?.avatar_url, profile?.full_name])
+    setProfileData({
+      phone: profile?.phone || '',
+      date_of_birth: profile?.date_of_birth || '',
+      current_address: profile?.current_address || '',
+      permanent_address: profile?.permanent_address || '',
+    })
+  }, [profile?.avatar_url, profile?.full_name, profile?.phone, profile?.date_of_birth, profile?.current_address, profile?.permanent_address])
 
   const fetchLogs = async () => {
     const { data } = await supabase
@@ -40,7 +52,13 @@ export default function UserProfile() {
   }, [user])
 
   const handleEditProfile = () => {
-    setEditForm({ full_name: displayName })
+    setEditForm({
+      full_name: displayName,
+      phone: profileData.phone,
+      date_of_birth: profileData.date_of_birth,
+      current_address: profileData.current_address,
+      permanent_address: profileData.permanent_address,
+    })
     setEditError('')
     setShowEditModal(true)
   }
@@ -56,12 +74,24 @@ export default function UserProfile() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ full_name: editForm.full_name.trim() })
+        .update({
+          full_name: editForm.full_name.trim(),
+          phone: editForm.phone.trim() || null,
+          date_of_birth: editForm.date_of_birth || null,
+          current_address: editForm.current_address.trim() || null,
+          permanent_address: editForm.permanent_address.trim() || null,
+        })
         .eq('id', user.id)
 
       if (error) throw error
 
       setDisplayName(editForm.full_name.trim())
+      setProfileData({
+        phone: editForm.phone.trim(),
+        date_of_birth: editForm.date_of_birth,
+        current_address: editForm.current_address.trim(),
+        permanent_address: editForm.permanent_address.trim(),
+      })
       setShowEditModal(false)
 
       await supabase.from('activity_logs').insert([{
@@ -221,6 +251,30 @@ export default function UserProfile() {
                 <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Member Since</p>
                 <p className="text-[14px] md:text-body font-bold text-slate-700 dark:text-slate-300">{new Date(profile?.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}</p>
               </div>
+              {profileData.phone && (
+                <div>
+                  <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Phone</p>
+                  <p className="text-[14px] md:text-body font-bold text-slate-700 dark:text-slate-300">{profileData.phone}</p>
+                </div>
+              )}
+              {profileData.date_of_birth && (
+                <div>
+                  <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Date of Birth</p>
+                  <p className="text-[14px] md:text-body font-bold text-slate-700 dark:text-slate-300">{new Date(profileData.date_of_birth).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
+              )}
+              {profileData.current_address && (
+                <div>
+                  <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Current Address</p>
+                  <p className="text-[13px] md:text-body font-bold text-slate-700 dark:text-slate-300 leading-relaxed">{profileData.current_address}</p>
+                </div>
+              )}
+              {profileData.permanent_address && (
+                <div>
+                  <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Permanent Address</p>
+                  <p className="text-[13px] md:text-body font-bold text-slate-700 dark:text-slate-300 leading-relaxed">{profileData.permanent_address}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -323,7 +377,7 @@ export default function UserProfile() {
             <h3 className="text-[18px] md:text-heading-2 font-black text-slate-900 dark:text-white tracking-tight mb-6 flex items-center gap-3">
               <Edit3 className="h-5 w-5 text-blue-500" /> Edit Profile
             </h3>
-            <form onSubmit={handleEditSave} className="space-y-5">
+            <form onSubmit={handleEditSave} className="space-y-4 max-h-[70vh] overflow-y-auto pr-1 custom-scrollbar">
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Full Name</label>
                 <input
@@ -334,6 +388,49 @@ export default function UserProfile() {
                   placeholder="Your full name"
                   disabled={editSaving}
                   autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Phone Number</label>
+                <input
+                  type="tel"
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-5 py-3 text-[14px] font-bold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all"
+                  placeholder="+880 1XXX-XXXXXX"
+                  disabled={editSaving}
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Date of Birth</label>
+                <input
+                  type="date"
+                  value={editForm.date_of_birth}
+                  onChange={(e) => setEditForm({ ...editForm, date_of_birth: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-5 py-3 text-[14px] font-bold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all"
+                  disabled={editSaving}
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Current Address</label>
+                <textarea
+                  value={editForm.current_address}
+                  onChange={(e) => setEditForm({ ...editForm, current_address: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-5 py-3 text-[14px] font-bold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all resize-none"
+                  placeholder="Flat, Road, Area, City"
+                  rows={2}
+                  disabled={editSaving}
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Permanent Address</label>
+                <textarea
+                  value={editForm.permanent_address}
+                  onChange={(e) => setEditForm({ ...editForm, permanent_address: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-5 py-3 text-[14px] font-bold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all resize-none"
+                  placeholder="Village/Town, District"
+                  rows={2}
+                  disabled={editSaving}
                 />
               </div>
               {editError && (
