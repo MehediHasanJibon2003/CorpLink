@@ -30,7 +30,7 @@ export default function Teams() {
     const { data: teamData } = await supabase
       .from("teams")
       .select(
-        "*, departments(name), team_lead:profiles!teams_team_lead_id_fkey(name)",
+        "*, departments(name), team_lead:profiles!teams_team_lead_id_fkey(full_name)",
       )
       .eq("company_id", profile.company_id);
 
@@ -43,7 +43,7 @@ export default function Teams() {
     // Fetch potential Team Leads (Profiles)
     const { data: empData } = await supabase
       .from("profiles")
-      .select("id, name, email")
+      .select("id, full_name, email")
       .eq("company_id", profile.company_id);
 
     setTeams(teamData || []);
@@ -130,7 +130,7 @@ export default function Teams() {
                 <option value="">Team Leader</option>
                 {employees.map((e) => (
                   <option key={e.id} value={e.id}>
-                    {e.name}
+                    {e.full_name}
                   </option>
                 ))}
               </select>
@@ -179,7 +179,7 @@ export default function Teams() {
                         </p>
                         <p className="text-[10px] md:text-label font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                           Lead: {team.team_lead?.name || "Unassigned"}
+                           Lead: {team.team_lead?.full_name || "Unassigned"}
                         </p>
                       </div>
                     </div>

@@ -72,14 +72,14 @@ function Employees() {
       return;
     }
 
-    // Deduplicate employees by email (keep newest)
+    // Deduplicate employees by email (keep newest), fallback to id if no email
     const uniqueEmps = [];
     const seenEmails = new Set();
     
     (emps || []).forEach(emp => {
-      const email = emp.email?.toLowerCase().trim();
-      if (!seenEmails.has(email)) {
-        seenEmails.add(email);
+      const key = emp.email ? emp.email.toLowerCase().trim() : `id-${emp.id}`;
+      if (!seenEmails.has(key)) {
+        seenEmails.add(key);
         uniqueEmps.push(emp);
       }
     });
