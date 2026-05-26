@@ -491,7 +491,7 @@ function Employees() {
                               )}
                             </h4>
                             <span
-                              className={`px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[8px] md:text-[9px] font-black uppercase tracking-widest ${
+                              className={`px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[8px] md:text-[9px] font-black capitalize tracking-widest ${
                                 emp.role === "manager"
                                   ? "bg-purple-100 text-purple-600"
                                   : emp.role === "dept_head"
