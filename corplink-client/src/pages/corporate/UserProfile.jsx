@@ -33,8 +33,8 @@ export default function UserProfile() {
           <h3 className="text-[20px] md:text-heading-2 font-black text-slate-900 dark:text-white tracking-tight">{profile?.full_name}</h3>
           <p className="text-[12px] md:text-body text-slate-500 dark:text-slate-400 mt-1 font-bold">{profile?.email}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <span className="px-4 py-1.5 bg-blue-600 text-white rounded-full text-[10px] md:text-badge font-black uppercase tracking-widest shadow-sm">
-              {profile?.role || "Employee"}
+            <span className="px-4 py-1.5 bg-blue-600 text-white rounded-full text-[10px] md:text-badge font-black capitalize tracking-widest shadow-sm">
+              {profile?.role ? profile.role.replace(/_/g, ' ') : "Employee"}
             </span>
             <span className="px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full text-[10px] md:text-badge font-black uppercase tracking-widest border border-slate-200 dark:border-slate-600">
               Active
