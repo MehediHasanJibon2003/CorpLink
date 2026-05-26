@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import AppLayout from "../../components/layout/AppLayout";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
@@ -22,10 +22,15 @@ export default function Settings() {
     industry: "",
     location: "",
     description: "",
-    primary_color: "#2563eb"
+    primary_color: "#2563eb",
+    logo_url: null
   });
   
   const [showOrgModal, setShowOrgModal] = useState(false);
+  
+  // Branding State
+  const logoInputRef = useRef(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   // Notifications State
   const [notifications, setNotifications] = useState({
@@ -63,7 +68,8 @@ export default function Settings() {
         industry: data.industry || "",
         location: data.location || "",
         description: data.description || "",
-        primary_color: data.primary_color || "#2563eb"
+        primary_color: data.primary_color || "#2563eb",
+        logo_url: data.logo_url || null
       });
     }
   };
@@ -89,6 +95,54 @@ export default function Settings() {
       setTimeout(() => setMessage(""), 3000);
     }
     setLoading(false);
+  };
+
+  const handleLogoUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingLogo(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `company-${profile.company_id}-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const newLogoUrl = publicUrlData.publicUrl;
+
+      const { error: updateError } = await supabase
+        .from('companies')
+        .update({ logo_url: newLogoUrl })
+        .eq('id', profile.company_id);
+
+      if (updateError) throw updateError;
+
+      setOrgForm(prev => ({ ...prev, logo_url: newLogoUrl }));
+      setProfile(prev => ({
+        ...prev,
+        companies: {
+          ...prev.companies,
+          logo_url: newLogoUrl
+        }
+      }));
+      
+      setMessage("Company logo updated successfully");
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      setMessage("Failed to upload logo: " + err.message);
+      setTimeout(() => setMessage(""), 3000);
+    } finally {
+      setUploadingLogo(false);
+    }
   };
 
   const handleToggleNotification = (key) => {
@@ -241,9 +295,9 @@ export default function Settings() {
               </div>
 
               <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 md:p-12 border-2 border-slate-100 dark:border-white/5 shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-bl-full blur-3xl"></div>
+                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-bl-full blur-3xl pointer-events-none"></div>
                 
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-10">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-10 relative z-10">
                    <div>
                      <h4 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">{orgForm.name || "Set Company Name"}</h4>
                      <p className="text-[12px] font-bold text-slate-500 mt-3 flex items-center gap-2"><MapPin className="h-4 w-4" /> {orgForm.location || "Location not specified"}</p>
@@ -287,11 +341,24 @@ export default function Settings() {
                </div>
 
                <div className="space-y-10 md:space-y-16">
-                  <div className="p-8 md:p-12 bg-slate-50 dark:bg-white/5 rounded-[2rem] md:rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10 flex flex-col items-center justify-center text-center group cursor-pointer hover:border-blue-500/20 transition-all">
-                     <div className="w-24 h-24 md:w-32 md:h-32 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl mb-6 md:mb-8 group-hover:scale-110 transition-transform">
-                        <Plus className="h-10 w-10 md:h-12 md:w-12 text-slate-300 group-hover:text-blue-500 transition-colors" />
+                  <input type="file" accept="image/*" className="hidden" ref={logoInputRef} onChange={handleLogoUpload} disabled={uploadingLogo} />
+                  <div 
+                    onClick={() => !uploadingLogo && logoInputRef.current?.click()}
+                    className={`p-8 md:p-12 bg-slate-50 dark:bg-white/5 rounded-[2rem] md:rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10 flex flex-col items-center justify-center text-center group cursor-pointer hover:border-blue-500/20 transition-all ${uploadingLogo ? 'opacity-70 pointer-events-none' : ''}`}
+                  >
+                     <div className="w-24 h-24 md:w-32 md:h-32 bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl mb-6 md:mb-8 group-hover:scale-110 transition-transform overflow-hidden relative">
+                        {orgForm.logo_url ? (
+                          <img src={orgForm.logo_url} alt="Company Logo" className="w-full h-full object-contain p-2" />
+                        ) : (
+                          <Plus className="h-10 w-10 md:h-12 md:w-12 text-slate-300 group-hover:text-blue-500 transition-colors" />
+                        )}
+                        {uploadingLogo && (
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-2xl md:rounded-3xl">
+                            <Loader2 className="h-8 w-8 text-white animate-spin" />
+                          </div>
+                        )}
                      </div>
-                     <p className="text-xl md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Upload Master Logo</p>
+                     <p className="text-xl md:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{orgForm.logo_url ? "Update Master Logo" : "Upload Master Logo"}</p>
                      <p className="text-[9px] md:text-[10px] text-slate-400 font-black mt-3 md:mt-4 uppercase tracking-[0.2em]">High fidelity SVG or PNG (512x512)</p>
                   </div>
 

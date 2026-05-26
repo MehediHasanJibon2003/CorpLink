@@ -118,9 +118,13 @@ export default function CorporateManagement() {
                 <tr key={co.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
                   <td className="px-10 py-8">
                     <div className="flex items-center gap-5">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-1 shadow-lg shrink-0">
-                        {co.name.charAt(0)}
-                      </div>
+                      {co.logo_url ? (
+                        <img src={co.logo_url} alt={co.name} className="w-16 h-16 rounded-2xl object-contain border-2 border-slate-100 dark:border-white/10 shrink-0 shadow-lg p-1 bg-white" />
+                      ) : (
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-1 shadow-lg shrink-0">
+                          {co.name.charAt(0)}
+                        </div>
+                      )}
                       <div className="min-w-0">
                         <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
                         <div className="flex gap-4 mt-1">
@@ -235,9 +239,13 @@ export default function CorporateManagement() {
             <div key={co.id} className="p-6 space-y-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-2 shadow-lg shrink-0">
-                    {co.name.charAt(0)}
-                  </div>
+                  {co.logo_url ? (
+                    <img src={co.logo_url} alt={co.name} className="w-14 h-14 rounded-2xl object-contain border-2 border-slate-100 dark:border-white/10 shrink-0 shadow-lg p-1 bg-white" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-heading-2 shadow-lg shrink-0">
+                      {co.name.charAt(0)}
+                    </div>
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
                     <div className="flex items-center gap-2 mt-1">

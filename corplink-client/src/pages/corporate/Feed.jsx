@@ -75,9 +75,13 @@ const PostCard = memo(
         {/* Header */}
         <div className="p-4 md:p-10 flex items-start justify-between border-b-2 border-slate-50 dark:border-slate-900/50 bg-slate-50/30 dark:bg-slate-900/20">
           <div className="flex items-center gap-3 md:gap-5 min-w-0">
-            <div className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-3 md:text-heading-1 shadow-lg border-2 border-white dark:border-slate-700 shrink-0">
-              {post.companies?.name?.charAt(0)?.toUpperCase() || "C"}
-            </div>
+            {post.companies?.logo_url ? (
+              <img src={post.companies.logo_url} alt="Logo" className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-lg p-1 bg-white" />
+            ) : (
+              <div className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-3 md:text-heading-1 shadow-lg border-2 border-white dark:border-slate-700 shrink-0">
+                {post.companies?.name?.charAt(0)?.toUpperCase() || "C"}
+              </div>
+            )}
             <div className="min-w-0">
               <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
                 <h3 className="font-black text-[14px] md:text-heading-1 text-slate-900 dark:text-white uppercase tracking-tight leading-tight truncate">
@@ -284,7 +288,7 @@ function Feed() {
   const fetchPosts = async () => {
     let query = supabase
       .from("announcements")
-      .select("*, companies(name)")
+      .select("*, companies(name, logo_url)")
       .order("created_at", { ascending: false });
     if (profile?.role !== "super_admin" && profile?.company_id) {
       query = query.or(
@@ -492,9 +496,13 @@ function Feed() {
       <div className="sticky top-0 z-[60] bg-white/95 dark:bg-[#0d0622]/95 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 px-4 md:px-8 py-2 -mx-4 md:-mx-8 lg:-mx-12 flex items-center justify-between shadow-sm mb-6 md:mb-10">
         {/* Left: Search/Logo */}
         <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-          <div className="h-9 w-9 md:h-11 md:w-11 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-md">
-            <span className="font-black text-lg md:text-xl italic">C</span>
-          </div>
+          {profile?.companies?.logo_url ? (
+            <img src={profile.companies.logo_url} className="h-9 w-9 md:h-11 md:w-11 rounded-full object-contain shrink-0 shadow-md p-1 bg-white border border-slate-200" alt="C" />
+          ) : (
+            <div className="h-9 w-9 md:h-11 md:w-11 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-md">
+              <span className="font-black text-lg md:text-xl italic">C</span>
+            </div>
+          )}
           <div className="relative max-w-[280px] hidden sm:block flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input 

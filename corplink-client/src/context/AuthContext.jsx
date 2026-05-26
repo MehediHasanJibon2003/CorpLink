@@ -25,12 +25,12 @@ export function AuthProvider({ children }) {
     if (data && data.company_id) {
       const { data: companyData } = await supabase
         .from("companies")
-        .select("name")
+        .select("name, logo_url")
         .eq("id", data.company_id)
         .single();
 
       if (companyData) {
-        data.companies = { name: companyData.name };
+        data.companies = { name: companyData.name, logo_url: companyData.logo_url };
       }
 
       // Fetch employee ID for this user so we can query tasks assigned to them
@@ -136,7 +136,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, logout }}>
+    <AuthContext.Provider value={{ user, profile, setProfile, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
