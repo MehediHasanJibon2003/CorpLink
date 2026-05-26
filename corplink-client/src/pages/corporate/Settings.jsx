@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import {
   User, Bell, Lock, Palette, Globe, Shield, Loader2, 
   CheckCircle2, Building2, Link as LinkIcon, MapPin, 
-  Briefcase, Plus, RefreshCw, ChevronDown
+  Briefcase, Plus, RefreshCw, ChevronDown, Edit3
 } from "lucide-react";
 
 export default function Settings() {
@@ -21,8 +21,11 @@ export default function Settings() {
     website: "",
     industry: "",
     location: "",
+    description: "",
     primary_color: "#2563eb"
   });
+  
+  const [showOrgModal, setShowOrgModal] = useState(false);
 
   // Notifications State
   const [notifications, setNotifications] = useState({
@@ -59,6 +62,7 @@ export default function Settings() {
         website: data.website || "",
         industry: data.industry || "",
         location: data.location || "",
+        description: data.description || "",
         primary_color: data.primary_color || "#2563eb"
       });
     }
@@ -75,11 +79,13 @@ export default function Settings() {
     setLoading(false);
   };
 
-  const handleOrgSave = async () => {
+  const handleOrgSave = async (e) => {
+    if (e) e.preventDefault();
     setLoading(true);
     const { error } = await supabase.from("companies").update(orgForm).eq("id", profile.company_id);
     if (!error) {
-      setMessage("Organization parameters updated successfully");
+      setMessage("Organization details updated successfully");
+      setShowOrgModal(false);
       setTimeout(() => setMessage(""), 3000);
     }
     setLoading(false);
@@ -234,38 +240,39 @@ export default function Settings() {
                  </button>
               </div>
 
-              <div className="space-y-8 md:space-y-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                  <div className="md:col-span-2 space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Company Name (Corporate Identity)</label>
-                    <input type="text" value={orgForm.name} onChange={e => setOrgForm({...orgForm, name: e.target.value})} placeholder="e.g. CorpLink Solutions Ltd." className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-5 md:px-8 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
-                  </div>
-                  <div className="space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Industry Sector</label>
-                    <div className="relative">
-                      <Briefcase className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                      <input type="text" value={orgForm.industry} onChange={e => setOrgForm({...orgForm, industry: e.target.value})} placeholder="e.g. Technology, Healthcare, Finance" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
-                    </div>
-                  </div>
-                  <div className="space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Website URL (Digital Portal)</label>
-                    <div className="relative">
-                      <LinkIcon className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                      <input type="url" value={orgForm.website} onChange={e => setOrgForm({...orgForm, website: e.target.value})} placeholder="https://www.company.com" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
-                    </div>
-                  </div>
-                  <div className="md:col-span-2 space-y-2 md:space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Location (Operational HQ)</label>
-                    <div className="relative">
-                      <MapPin className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                      <input type="text" value={orgForm.location} onChange={e => setOrgForm({...orgForm, location: e.target.value})} placeholder="e.g. New York, USA" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl pl-14 md:pl-16 pr-6 md:pr-8 py-5 md:py-6 text-lg md:text-xl font-bold outline-none focus:border-blue-500 transition-all" />
-                    </div>
-                  </div>
+              <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 md:p-12 border-2 border-slate-100 dark:border-white/5 shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-bl-full blur-3xl"></div>
+                
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-10">
+                   <div>
+                     <h4 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">{orgForm.name || "Set Company Name"}</h4>
+                     <p className="text-[12px] font-bold text-slate-500 mt-3 flex items-center gap-2"><MapPin className="h-4 w-4" /> {orgForm.location || "Location not specified"}</p>
+                   </div>
+                   <button onClick={() => setShowOrgModal(true)} className="w-full sm:w-auto px-6 py-3.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-500/10 dark:hover:bg-blue-500/20 text-blue-600 rounded-xl font-black uppercase tracking-widest text-[10px] transition-colors flex items-center justify-center gap-2">
+                     <Edit3 className="h-4 w-4" /> Edit Details
+                   </button>
                 </div>
-
-                <button onClick={handleOrgSave} disabled={loading} className="w-full md:w-auto px-10 md:px-16 py-5 md:py-6 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all">
-                  {loading ? <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin mx-auto" /> : "Deploy Configuration"}
-                </button>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mt-10">
+                   <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Industry Sector</p>
+                     <p className="text-[15px] font-bold text-slate-800 dark:text-slate-200 flex items-center gap-3"><Briefcase className="h-5 w-5 text-blue-500" /> {orgForm.industry || "Not specified"}</p>
+                   </div>
+                   <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Website</p>
+                     {orgForm.website ? (
+                       <a href={orgForm.website} target="_blank" rel="noreferrer" className="text-[15px] font-bold text-blue-600 flex items-center gap-3 hover:underline"><LinkIcon className="h-5 w-5 text-blue-500" /> {orgForm.website}</a>
+                     ) : (
+                       <p className="text-[15px] font-bold text-slate-800 dark:text-slate-200 flex items-center gap-3"><LinkIcon className="h-5 w-5 text-slate-400" /> Not specified</p>
+                     )}
+                   </div>
+                   <div className="md:col-span-2">
+                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-2">Company Description</p>
+                     <div className="bg-slate-50 dark:bg-slate-900/50 p-6 md:p-8 rounded-3xl border border-slate-100 dark:border-white/5">
+                       <p className="text-[14px] md:text-[15px] font-medium text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">{orgForm.description || "No description has been provided for this organization yet."}</p>
+                     </div>
+                   </div>
+                </div>
               </div>
             </div>
           )}
@@ -447,6 +454,51 @@ export default function Settings() {
           )}
         </div>
       </div>
+
+      {/* Edit Organization Modal */}
+      {showOrgModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowOrgModal(false)} />
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl shadow-2xl border-2 border-slate-200 dark:border-slate-700 w-full max-w-2xl p-6 md:p-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <h3 className="text-[18px] md:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-8 flex items-center gap-3">
+              <Building2 className="h-6 w-6 text-blue-500" /> Edit Enterprise Info
+            </h3>
+            <form onSubmit={handleOrgSave} className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+               <div className="space-y-2">
+                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Company Name</label>
+                 <input type="text" value={orgForm.name} onChange={e => setOrgForm({...orgForm, name: e.target.value})} placeholder="e.g. CorpLink Solutions Ltd." className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-blue-500 transition-all" required />
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Industry Sector</label>
+                   <input type="text" value={orgForm.industry} onChange={e => setOrgForm({...orgForm, industry: e.target.value})} placeholder="e.g. Technology" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-blue-500 transition-all" />
+                 </div>
+                 <div className="space-y-2">
+                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Website URL</label>
+                   <input type="url" value={orgForm.website} onChange={e => setOrgForm({...orgForm, website: e.target.value})} placeholder="https://www.company.com" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-blue-500 transition-all" />
+                 </div>
+               </div>
+               <div className="space-y-2">
+                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Location (HQ)</label>
+                 <input type="text" value={orgForm.location} onChange={e => setOrgForm({...orgForm, location: e.target.value})} placeholder="e.g. New York, USA" className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-blue-500 transition-all" />
+               </div>
+               <div className="space-y-2">
+                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Company Description</label>
+                 <textarea value={orgForm.description} onChange={e => setOrgForm({...orgForm, description: e.target.value})} placeholder="Briefly describe what your company does..." rows={4} className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-blue-500 transition-all resize-none custom-scrollbar" />
+               </div>
+
+               <div className="flex gap-4 pt-4">
+                 <button type="button" onClick={() => setShowOrgModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 transition-colors">
+                   Cancel
+                 </button>
+                 <button type="submit" disabled={loading} className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
+                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Changes'}
+                 </button>
+               </div>
+            </form>
+          </div>
+        </div>
+      )}
     </AppLayout>
   );
 }
