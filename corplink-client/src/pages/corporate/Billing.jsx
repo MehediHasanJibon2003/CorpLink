@@ -62,14 +62,25 @@ export default function Billing() {
   const handlePayNow = async (invoice) => {
     setPayingId(invoice.id);
     try {
-      // STEP 2: Replace this with actual Edge Function call
-      // const { data } = await supabase.functions.invoke('create-checkout-session', {
-      //   body: { invoice_id: invoice.id, company_id: profile.company_id }
-      // });
-      // window.location.href = data.url;
-
-      // Temporary placeholder until Edge Function is ready
-      alert("Payment gateway coming soon! (Step 2 will connect Stripe here)");
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: {
+          amount: invoice.amount, // amount in cents (ensure invoice.amount exists)
+          currency: invoice.currency || "usd",
+          productName: `Invoice ${invoice.id}`,
+          invoice_id: invoice.id,
+          company_id: profile?.company_id,
+        },
+      });
+      if (error) {
+        console.error("Edge function error:", error);
+        alert("Failed to create checkout session");
+        return;
+      }
+      // Redirect user to Stripe Checkout page
+      window.location.href = data.url;
+    } catch (e) {
+      console.error(e);
+      alert("Unexpected error while creating checkout session");
     } finally {
       setPayingId(null);
     }
@@ -200,9 +211,31 @@ export default function Billing() {
                 </p>
               </div>
             </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 hidden md:block">
-              Most Recent First
-            </span>
+            <div className="flex items-center gap-4 hidden md:flex">
+              {/* Temporary Button for Testing - Moved here so it's always visible */}
+              <button
+                onClick={async () => {
+                  if (!profile?.company_id) return;
+                  const { error } = await supabase.from('invoices').insert({
+                    company_id: profile.company_id,
+                    amount: 1000,
+                    status: 'pending',
+                    invoice_number: 'DEMO-' + Math.floor(Math.random() * 10000)
+                  });
+                  if (error) {
+                    alert("Error creating demo invoice: " + error.message);
+                  } else {
+                    fetchBillingData(); // Reload invoices
+                  }
+                }}
+                className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-black uppercase text-[10px] tracking-widest transition-all shadow-lg shadow-violet-500/20 active:scale-95"
+              >
+                + Demo Invoice
+              </button>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Most Recent First
+              </span>
+            </div>
           </div>
 
           {invoices.length === 0 ? (
