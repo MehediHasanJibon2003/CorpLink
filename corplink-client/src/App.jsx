@@ -18,6 +18,7 @@ import UserProfile from "./pages/corporate/UserProfile"
 import Messages from "./pages/corporate/Messages"
 import Analytics from "./pages/corporate/Analytics"
 import Settings from "./pages/corporate/Settings"
+import Billing from "./pages/corporate/Billing"
 import Unauthorized from "./pages/auth/Unauthorized"
 import PendingApproval from "./pages/auth/PendingApproval"
 import ProtectedRoute from "./components/shared/ProtectedRoute"
@@ -71,6 +72,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/billing"
+              element={
+                <ProtectedRoute>
+                  <Billing />
                 </ProtectedRoute>
               }
             />

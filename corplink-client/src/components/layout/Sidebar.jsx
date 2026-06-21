@@ -13,6 +13,7 @@ import {
   BarChart3,
   Settings as SettingsIcon,
   Shield,
+  CreditCard,
 } from "lucide-react";
 
 const menuGroups = [
@@ -103,6 +104,12 @@ const menuGroups = [
         name: "Settings",
         path: "/settings",
         icon: SettingsIcon,
+        roles: ["admin", "corporate_admin"],
+      },
+      {
+        name: "Billing",
+        path: "/billing",
+        icon: CreditCard,
         roles: ["admin", "corporate_admin"],
       },
       {
