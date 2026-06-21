@@ -2,54 +2,63 @@ import { Check, ArrowRight, Zap, Building, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
+
 export default function Pricing() {
-  const tiers = [
+  const [tiers, setTiers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // UI Themes to maintain the exact design
+  const UI_THEMES = [
     {
-      name: "Standard",
-      price: "0",
-      description: "Ideal for small teams and startups looking for basic structure.",
-      features: [
-        "Up to 20 Employees",
-        "Basic Task Management",
-        "Internal Messaging",
-        "Shared Corporate Feed",
-        "Role-Based Access",
-      ],
       icon: Zap,
       color: "from-blue-500 to-blue-700",
+      popular: false,
+      defaultDescription: "Ideal for small teams and startups looking for basic structure.",
     },
     {
-      name: "Enterprise",
-      price: "199",
-      description: "Advanced controls and analytics for growing organizations.",
-      features: [
-        "Unlimited Employees",
-        "Advanced Analytics",
-        "Department Management",
-        "Priority Support",
-        "Custom Workflows",
-        "Security Auditing",
-      ],
       icon: Building,
       color: "from-orange-500 to-orange-700",
       popular: true,
+      defaultDescription: "Advanced controls and analytics for growing organizations.",
     },
     {
-      name: "Global Scale",
-      price: "999",
-      description: "Custom solutions for multi-national corporations.",
-      features: [
-        "Multi-Tenant Isolation",
-        "External Partner Hub",
-        "Neural Performance AI",
-        "24/7 Dedicated Support",
-        "On-Premise Deployment",
-        "SLA Guarantee",
-      ],
       icon: Crown,
       color: "from-purple-500 to-purple-700",
+      popular: false,
+      defaultDescription: "Custom solutions for multi-national corporations.",
     },
   ];
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      const { data, error } = await supabase
+        .from("subscription_plans")
+        .select("*")
+        .order("price", { ascending: true });
+
+      if (!error && data) {
+        const mergedTiers = data.map((plan, idx) => {
+          const theme = UI_THEMES[idx % UI_THEMES.length];
+          return {
+            id: plan.id,
+            name: plan.name,
+            price: plan.price,
+            description: plan.description || theme.defaultDescription,
+            features: plan.features || [],
+            icon: theme.icon,
+            color: theme.color,
+            popular: theme.popular,
+          };
+        });
+        setTiers(mergedTiers);
+      }
+      setLoading(false);
+    };
+
+    fetchPlans();
+  }, []);
 
   return (
     <section
@@ -82,7 +91,16 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full min-h-[400px]">
+          {loading ? (
+            <div className="col-span-1 md:col-span-3 flex items-center justify-center">
+              <div className="w-12 h-12 border-4 border-white/10 border-t-orange-500 rounded-full animate-spin"></div>
+            </div>
+          ) : tiers.length === 0 ? (
+            <div className="col-span-1 md:col-span-3 flex items-center justify-center text-white text-xl font-bold">
+              No plans available at the moment.
+            </div>
+          ) : null}
           {tiers.map((tier, idx) => {
             const Icon = tier.icon;
             return (
@@ -125,7 +143,7 @@ export default function Pricing() {
                   ))}
                 </div>
                 <Link
-                  to="/register"
+                  to={`/register?plan=${tier.id}`}
                   className={`w-full py-4 md:py-6 rounded-xl md:rounded-2xl text-heading-3 md:text-heading-1 font-black text-center transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 md:gap-3 ${
                     tier.popular 
                       ? "bg-orange-500 text-white shadow-2xl shadow-orange-500/40 hover:bg-orange-400" 
