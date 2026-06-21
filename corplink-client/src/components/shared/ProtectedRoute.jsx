@@ -1,10 +1,11 @@
-import { Navigate } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 
 function ProtectedRoute({ children }) {
   const { user, loading, profile } = useAuth()
+  const location = useLocation()
   const [companyStatus, setCompanyStatus] = useState(null)
   const [checkingStatus, setCheckingStatus] = useState(true)
 
@@ -55,7 +56,13 @@ function ProtectedRoute({ children }) {
 
   // Check corporate approval status
   if (profile.role !== "super_admin") {
-    if (companyStatus === "pending" || companyStatus === "rejected") {
+    if (companyStatus === "pending") {
+      if (profile.role === "corporate_admin" && location.pathname !== "/billing") {
+        return <Navigate to="/billing" replace />
+      } else if (profile.role !== "corporate_admin") {
+        return <Navigate to="/pending-approval" replace />
+      }
+    } else if (companyStatus === "rejected") {
       return <Navigate to="/pending-approval" replace />
     }
   }

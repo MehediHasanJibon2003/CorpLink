@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import {
   Mail,
@@ -30,6 +30,10 @@ const JOIN_FEATURES = [
 
 function Register() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const planId = searchParams.get("plan");
+  
   const [mode, setMode] = useState("create");
   const [formData, setFormData] = useState({
     companyName: "",
@@ -135,6 +139,41 @@ function Register() {
             designation: "Corporate Admin",
           },
         ]);
+
+        // Automated Subscription and Invoice Generation
+        if (planId) {
+          // 1. Fetch Plan Details
+          const { data: planData } = await supabase
+            .from("subscription_plans")
+            .select("price, billing_cycle")
+            .eq("id", planId)
+            .single();
+
+          if (planData) {
+            // 2. Create Pending Subscription
+            const { data: subData } = await supabase
+              .from("subscriptions")
+              .insert([{
+                company_id: companyData.id,
+                plan_id: planId,
+                status: "pending",
+                start_date: new Date().toISOString(),
+              }])
+              .select()
+              .single();
+
+            // 3. Create Pending Invoice
+            await supabase.from("invoices").insert([{
+              company_id: companyData.id,
+              subscription_id: subData?.id,
+              plan_id: planId,
+              amount: planData.price,
+              status: "pending",
+              invoice_number: `INV-${Math.floor(100000 + Math.random() * 900000)}`,
+              due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            }]);
+          }
+        }
 
         setMessage("Company workspace created! Redirecting to login...");
         setTimeout(() => navigate("/login"), 1800);
