@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -18,6 +19,7 @@ import CommunicationPanel from "../corporate/departments/CommunicationPanel";
 
 function MyDepartment() {
   const { user, profile } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [dept, setDept] = useState(null);
   const [team, setTeam] = useState(null);
@@ -178,7 +180,12 @@ function MyDepartment() {
                    </div>
                 </div>
 
-                <button className="w-full mt-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-3">
+                <button 
+                  onClick={() => {
+                    if (lead?.email) navigate(`/messages`); // Would pass user ID in real app
+                  }}
+                  className="w-full mt-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-3"
+                >
                    Contact Lead
                    <ArrowRight className="h-5 w-5" />
                 </button>

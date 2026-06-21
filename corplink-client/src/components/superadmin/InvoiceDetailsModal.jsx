@@ -1,11 +1,14 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { supabase } from "../../lib/supabase";
 import { 
   X, Download, Mail, Printer, FileText, 
-  CheckCircle2, AlertCircle, Building2, Globe
+  CheckCircle2, AlertCircle, Building2, Globe, Loader2
 } from "lucide-react";
 
 export default function InvoiceDetailsModal({ invoice, onClose }) {
   const printRef = useRef();
+  const [emailing, setEmailing] = useState(false);
+  const [emailSuccess, setEmailSuccess] = useState(false);
 
   const handlePrint = () => {
     const printContent = printRef.current.innerHTML;
@@ -14,6 +17,25 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
     window.print();
     document.body.innerHTML = originalContent;
     window.location.reload(); // To restore React state
+  };
+
+  const handleEmailInvoice = async () => {
+    setEmailing(true);
+    try {
+      await supabase.from('notifications').insert([{
+        company_id: invoice.company_id,
+        title: 'Invoice Ready',
+        message: `Invoice #${invoice.invoice_number} is ready.`,
+        type: 'billing',
+        is_read: false
+      }]);
+      setEmailSuccess(true);
+      setTimeout(() => setEmailSuccess(false), 3000);
+    } catch (err) {
+      console.error("Failed to email invoice:", err);
+    } finally {
+      setEmailing(false);
+    }
   };
 
   if (!invoice) return null;
@@ -38,11 +60,12 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
               <Download className="h-4 w-4" /> Download PDF
             </button>
             <button 
-              className="p-3 rounded-xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 text-slate-400 hover:text-violet-600 transition"
+              className={`p-3 rounded-xl border-2 transition flex items-center justify-center min-w-[48px] ${emailSuccess ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-500/20 text-emerald-500' : 'bg-white dark:bg-white/5 border-slate-100 dark:border-white/5 text-slate-400 hover:text-violet-600'}`}
               title="Email to Corporate"
-              onClick={() => alert("Emailing invoice to " + invoice.companies?.name)}
+              onClick={handleEmailInvoice}
+              disabled={emailing}
             >
-              <Mail className="h-5 w-5" />
+              {emailing ? <Loader2 className="h-5 w-5 animate-spin" /> : emailSuccess ? <CheckCircle2 className="h-5 w-5" /> : <Mail className="h-5 w-5" />}
             </button>
             <button onClick={onClose} className="p-3 rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition text-slate-400">
               <X className="h-6 w-6" />

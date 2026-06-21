@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../context/AuthContext"
 import AppLayout from "../../components/layout/AppLayout"
-import { Camera, Edit3, Shield, Monitor, Key, Lock, Activity } from "lucide-react"
+import { Camera, Edit3, Shield, Monitor, Key, Lock, Activity, Loader2, Eye, EyeOff, X, CheckCircle } from "lucide-react"
 
 export default function UserProfile() {
   const { user, profile } = useAuth()
@@ -23,6 +23,15 @@ export default function UserProfile() {
     current_address: profile?.current_address || '',
     permanent_address: profile?.permanent_address || '',
   })
+
+  // Change Password modal state
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' })
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSuccess, setPasswordSuccess] = useState('')
+  const [showNewPwd, setShowNewPwd] = useState(false)
+  const [showConfirmPwd, setShowConfirmPwd] = useState(false)
 
   useEffect(() => {
     if (profile?.avatar_url) setAvatarUrl(profile.avatar_url)
@@ -169,9 +178,52 @@ export default function UserProfile() {
     }
   }
 
+  // ── Change Password ──────────────────────────────────────────────
   const handleChangePassword = () => {
-    alert("Password change functionality coming soon!")
+    setPasswordForm({ newPassword: '', confirmPassword: '' })
+    setPasswordError('')
+    setPasswordSuccess('')
+    setShowPasswordModal(true)
   }
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault()
+    const { newPassword, confirmPassword } = passwordForm
+
+    if (newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters.')
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Passwords do not match.')
+      return
+    }
+
+    setPasswordLoading(true)
+    setPasswordError('')
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword })
+      if (error) throw error
+
+      setPasswordSuccess('Password updated successfully!')
+      await supabase.from('activity_logs').insert([{
+        user_id: user.id,
+        company_id: profile.company_id,
+        action: 'Changed Password',
+        entity: 'auth'
+      }])
+      fetchLogs()
+      setTimeout(() => {
+        setShowPasswordModal(false)
+        setPasswordSuccess('')
+      }, 2000)
+    } catch (err) {
+      setPasswordError(err.message || 'Failed to update password.')
+    } finally {
+      setPasswordLoading(false)
+    }
+  }
+  // ────────────────────────────────────────────────────────────────
 
   return (
     <AppLayout title="My Profile" subtitle="Manage your personal details and security settings">
@@ -296,10 +348,10 @@ export default function UserProfile() {
                   </div>
                   <div>
                     <h4 className="text-[14px] font-black text-slate-800 dark:text-slate-100">Password</h4>
-                    <p className="text-[10px] md:text-[11px] font-bold text-slate-500">Last changed 3 months ago</p>
+                    <p className="text-[10px] md:text-[11px] font-bold text-slate-500">Update your account password</p>
                   </div>
                 </div>
-                <button onClick={handleChangePassword} className="w-full py-2.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 transition-colors">
+                <button onClick={handleChangePassword} className="w-full py-2.5 bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-slate-200 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 transition-all">
                   Change Password
                 </button>
               </div>
@@ -369,7 +421,8 @@ export default function UserProfile() {
           </div>
         </div>
       </div>
-      {/* Edit Profile Modal */}
+
+      {/* ── Edit Profile Modal ── */}
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowEditModal(false)} />
@@ -455,6 +508,125 @@ export default function UserProfile() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Change Password Modal ── */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !passwordLoading && setShowPasswordModal(false)} />
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl shadow-2xl border-2 border-slate-200 dark:border-slate-700 w-full max-w-md p-8 md:p-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-[18px] md:text-heading-2 font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                <Key className="h-5 w-5 text-blue-500" /> Change Password
+              </h3>
+              {!passwordLoading && (
+                <button onClick={() => setShowPasswordModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                  <X className="h-5 w-5 text-slate-500" />
+                </button>
+              )}
+            </div>
+
+            {/* Success state */}
+            {passwordSuccess ? (
+              <div className="flex flex-col items-center gap-4 py-8">
+                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-8 w-8 text-emerald-500" />
+                </div>
+                <p className="text-[15px] font-black text-slate-800 dark:text-white">{passwordSuccess}</p>
+                <p className="text-[12px] text-slate-500 font-bold">Closing automatically…</p>
+              </div>
+            ) : (
+              <form onSubmit={handlePasswordSubmit} className="space-y-5">
+                {/* New Password */}
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">New Password</label>
+                  <div className="relative">
+                    <input
+                      type={showNewPwd ? "text" : "password"}
+                      value={passwordForm.newPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                      className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-5 py-3 pr-12 text-[14px] font-bold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all"
+                      placeholder="Min. 8 characters"
+                      disabled={passwordLoading}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPwd(!showNewPwd)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    >
+                      {showNewPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {/* Strength indicator */}
+                  {passwordForm.newPassword && (
+                    <div className="mt-2 flex gap-1">
+                      {[...Array(4)].map((_, i) => {
+                        const len = passwordForm.newPassword.length
+                        const filled = i < (len < 8 ? 1 : len < 12 ? 2 : len < 16 ? 3 : 4)
+                        const colors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-emerald-400']
+                        return <div key={i} className={`h-1 flex-1 rounded-full transition-all ${filled ? colors[Math.min(Math.floor((passwordForm.newPassword.length - 1) / 4), 3)] : 'bg-slate-200 dark:bg-slate-700'}`} />
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Confirm Password</label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPwd ? "text" : "password"}
+                      value={passwordForm.confirmPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                      className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-5 py-3 pr-12 text-[14px] font-bold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all"
+                      placeholder="Re-enter new password"
+                      disabled={passwordLoading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPwd(!showConfirmPwd)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    >
+                      {showConfirmPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {/* Match indicator */}
+                  {passwordForm.confirmPassword && (
+                    <p className={`mt-1.5 text-[11px] font-bold ${passwordForm.newPassword === passwordForm.confirmPassword ? 'text-emerald-500' : 'text-red-500'}`}>
+                      {passwordForm.newPassword === passwordForm.confirmPassword ? '✓ Passwords match' : '✗ Passwords do not match'}
+                    </p>
+                  )}
+                </div>
+
+                {passwordError && (
+                  <p className="text-[11px] font-bold text-red-500 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 px-4 py-2.5 rounded-lg">{passwordError}</p>
+                )}
+
+                <div className="flex gap-3 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordModal(false)}
+                    disabled={passwordLoading}
+                    className="flex-1 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 disabled:opacity-50 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={passwordLoading}
+                    className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 rounded-xl text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+                  >
+                    {passwordLoading ? (
+                      <><Loader2 className="h-4 w-4 animate-spin" /> Updating…</>
+                    ) : 'Update Password'}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

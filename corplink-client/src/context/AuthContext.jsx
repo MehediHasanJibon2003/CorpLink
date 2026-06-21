@@ -25,12 +25,16 @@ export function AuthProvider({ children }) {
     if (data && data.company_id) {
       const { data: companyData } = await supabase
         .from("companies")
-        .select("name, logo_url")
+        .select("name, logo_url, primary_color")
         .eq("id", data.company_id)
         .single();
 
       if (companyData) {
-        data.companies = { name: companyData.name, logo_url: companyData.logo_url };
+        data.companies = { 
+          name: companyData.name, 
+          logo_url: companyData.logo_url,
+          primary_color: companyData.primary_color 
+        };
       }
 
       // Fetch employee ID for this user so we can query tasks assigned to them

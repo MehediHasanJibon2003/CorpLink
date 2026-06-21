@@ -28,6 +28,11 @@ export default function Settings() {
   
   const [showOrgModal, setShowOrgModal] = useState(false);
   
+  // Transfer Ownership State
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferEmail, setTransferEmail] = useState("");
+  const [transferLoading, setTransferLoading] = useState(false);
+
   // Branding State
   const logoInputRef = useRef(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -92,9 +97,41 @@ export default function Settings() {
     if (!error) {
       setMessage("Organization details updated successfully");
       setShowOrgModal(false);
+      setProfile(prev => ({
+        ...prev,
+        companies: {
+          ...prev.companies,
+          name: orgForm.name,
+          primary_color: orgForm.primary_color
+        }
+      }));
       setTimeout(() => setMessage(""), 3000);
     }
     setLoading(false);
+  };
+
+  const handleTransferOwnership = async (e) => {
+    e.preventDefault();
+    if (!transferEmail) return;
+    setTransferLoading(true);
+    try {
+      await supabase.from('notifications').insert([{
+        company_id: profile.company_id,
+        title: 'Ownership Transfer Request',
+        message: `An ownership transfer request has been sent to ${transferEmail}.`,
+        type: 'system',
+        is_read: false
+      }]);
+      setMessage(`Transfer request sent to ${transferEmail}`);
+      setShowTransferModal(false);
+      setTransferEmail('');
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      setMessage("Transfer failed: " + err.message);
+      setTimeout(() => setMessage(""), 3000);
+    } finally {
+      setTransferLoading(false);
+    }
   };
 
   const handleLogoUpload = async (event) => {
@@ -289,7 +326,7 @@ export default function Settings() {
                     </div>
                     <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Enterprise <span className="text-blue-600">Base</span></h3>
                  </div>
-                 <button className="flex items-center justify-center gap-3 px-6 md:px-8 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black uppercase tracking-widest text-[8px] md:text-[9px] text-slate-400 hover:text-blue-600 hover:border-blue-500/20 transition-all w-full md:w-auto">
+                 <button onClick={() => setShowTransferModal(true)} className="flex items-center justify-center gap-3 px-6 md:px-8 py-4 bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black uppercase tracking-widest text-[8px] md:text-[9px] text-slate-400 hover:text-blue-600 hover:border-blue-500/20 transition-all w-full md:w-auto">
                    <RefreshCw className="h-3 w-3 md:h-4 w-4" /> Transfer Ownership
                  </button>
               </div>
@@ -364,15 +401,31 @@ export default function Settings() {
 
                   <div className="space-y-6 md:space-y-8">
                      <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-2 block">Enterprise Color Palette</label>
-                     <div className="flex flex-wrap gap-4 md:gap-6">
+                     <div className="flex flex-wrap gap-4 md:gap-6 items-center">
                         {['#2563eb', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#0f172a'].map(color => (
                           <button 
-                            key={color} onClick={() => setOrgForm({...orgForm, primary_color: color})}
-                            className={`h-16 w-16 md:h-20 md:w-20 rounded-xl md:rounded-[1.5rem] shadow-xl transition-all ${orgForm.primary_color === color ? 'ring-4 ring-blue-500 ring-offset-4 scale-110' : 'hover:scale-105 active:scale-95'}`}
+                            key={color} 
+                            onClick={() => setOrgForm({...orgForm, primary_color: color})}
+                            className={`h-12 w-12 md:h-16 md:w-16 rounded-full shadow-lg transition-all ${orgForm.primary_color === color ? 'ring-4 ring-slate-900 dark:ring-white ring-offset-4 dark:ring-offset-slate-900 scale-110' : 'hover:scale-110 active:scale-95'}`}
                             style={{ backgroundColor: color }}
                           />
                         ))}
-                        <input type="color" value={orgForm.primary_color} onChange={e => setOrgForm({...orgForm, primary_color: e.target.value})} className="h-16 w-16 md:h-20 md:w-20 rounded-xl md:rounded-[1.5rem] cursor-pointer bg-white dark:bg-slate-800 p-2 md:p-3 border-2 border-slate-100 dark:border-white/5 shadow-xl" />
+                        
+                        <div className="flex items-center gap-3 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-white/10 p-2 md:p-3 rounded-2xl md:rounded-[1.5rem] shadow-sm">
+                           <input 
+                             type="color" 
+                             value={orgForm.primary_color} 
+                             onChange={e => setOrgForm({...orgForm, primary_color: e.target.value})} 
+                             className="h-10 w-10 md:h-12 md:w-12 rounded-xl cursor-pointer bg-transparent border-0 p-0" 
+                           />
+                           <input 
+                             type="text" 
+                             value={orgForm.primary_color}
+                             onChange={e => setOrgForm({...orgForm, primary_color: e.target.value})}
+                             placeholder="#HEX or RGB"
+                             className="w-24 md:w-32 bg-transparent border-none outline-none text-[12px] md:text-[14px] font-bold text-slate-700 dark:text-slate-300 uppercase"
+                           />
+                        </div>
                      </div>
                   </div>
 
@@ -560,6 +613,43 @@ export default function Settings() {
                  </button>
                  <button type="submit" disabled={loading} className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Changes'}
+                 </button>
+               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Transfer Ownership Modal */}
+      {showTransferModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowTransferModal(false)} />
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl shadow-2xl border-2 border-slate-200 dark:border-slate-700 w-full max-w-lg p-6 md:p-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <h3 className="text-[18px] md:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-4 flex items-center gap-3">
+              <RefreshCw className="h-6 w-6 text-red-500" /> Transfer Ownership
+            </h3>
+            <p className="text-[12px] md:text-[13px] font-bold text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+              Transferring ownership will give another user full control over the enterprise account. This action cannot be undone.
+            </p>
+            <form onSubmit={handleTransferOwnership} className="space-y-6">
+               <div className="space-y-2">
+                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">New Owner Email</label>
+                 <input 
+                   type="email" 
+                   value={transferEmail} 
+                   onChange={e => setTransferEmail(e.target.value)} 
+                   placeholder="e.g. colleague@company.com" 
+                   className="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 text-md font-bold outline-none focus:border-red-500 transition-all" 
+                   required 
+                 />
+               </div>
+
+               <div className="flex gap-4 pt-4">
+                 <button type="button" onClick={() => setShowTransferModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 transition-colors">
+                   Cancel
+                 </button>
+                 <button type="submit" disabled={transferLoading || !transferEmail} className="flex-1 py-4 bg-red-600 hover:bg-red-700 disabled:opacity-60 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2">
+                   {transferLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Transfer'}
                  </button>
                </div>
             </form>

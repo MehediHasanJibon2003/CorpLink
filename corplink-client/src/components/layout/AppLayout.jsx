@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
 function AppLayout({ children, title, subtitle }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
+  const { profile } = useAuth();
+
+  useEffect(() => {
+    if (profile?.companies?.primary_color) {
+      document.documentElement.style.setProperty('--primary-color', profile.companies.primary_color);
+    }
+  }, [profile?.companies?.primary_color]);
 
   useEffect(() => {
     setIsSidebarOpen(false);

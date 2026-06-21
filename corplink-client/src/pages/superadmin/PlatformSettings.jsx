@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
 import { 
   ToggleLeft, ToggleRight, Building2, ShieldCheck, 
-  Palette, Save, Upload, AlertCircle, RefreshCw, ChevronDown 
+  Palette, Save, Upload, AlertCircle, RefreshCw, ChevronDown, Loader2, CheckCircle 
 } from "lucide-react"
 
 const DEFAULT_MODULES = [
@@ -36,12 +36,23 @@ export default function PlatformSettings() {
     primary_color: "#8b5cf6",
     logo_url: null
   })
+  const [savingRules, setSavingRules] = useState(false)
+  const [rulesSuccess, setRulesSuccess] = useState('')
+  const [savingBranding, setSavingBranding] = useState(false)
+  const [brandingSuccess, setBrandingSuccess] = useState('')
 
   useEffect(() => {
     const loadInit = async () => {
       const { data: comps } = await supabase.from("companies").select("id, name").eq("status", "active").order("name")
       setCompanies(comps || [])
       if (comps?.length) setSelectedCo(comps[0])
+      
+      // Load Branding
+      const { data: brandData } = await supabase.from("platform_config").select("config").eq("id", "branding").maybeSingle()
+      if (brandData?.config) {
+        setBranding(brandData.config)
+      }
+      
       setLoading(false)
     }
     loadInit()
@@ -65,6 +76,43 @@ export default function PlatformSettings() {
     setModuleSettings(prev => ({ ...prev, [moduleKey]: newVal }))
     await supabase.from("platform_settings").upsert({ corporate_id: selectedCo.id, module_name: moduleKey, is_active: newVal }, { onConflict: "corporate_id,module_name" })
     setSaving(null)
+  }
+
+  const handleSaveRules = async () => {
+    setSavingRules(true)
+    setRulesSuccess('')
+    try {
+      await supabase.from('system_configurations').upsert(
+        Object.entries(systemRules).map(([key, value]) => ({ key, value: String(value) })),
+        { onConflict: 'key' }
+      )
+      setRulesSuccess('System rules saved successfully!')
+      setTimeout(() => setRulesSuccess(''), 3000)
+    } catch (err) {
+      alert('Failed to save: ' + err.message)
+    } finally {
+      setSavingRules(false)
+    }
+  }
+
+  const handleSaveBranding = async () => {
+    setSavingBranding(true)
+    setBrandingSuccess('')
+    try {
+      await supabase.from('platform_config').upsert(
+        { id: 'branding', config: branding }
+      )
+      
+      // Also update localStorage so it's instant on reload
+      localStorage.setItem("corplink-branding", JSON.stringify(branding))
+      
+      setBrandingSuccess('Branding updated successfully! Reloading...')
+      setTimeout(() => window.location.reload(), 1500)
+    } catch (err) {
+      alert('Failed to save: ' + err.message)
+    } finally {
+      setSavingBranding(false)
+    }
   }
 
   return (
@@ -201,7 +249,14 @@ export default function PlatformSettings() {
                     <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{systemRules.maintenance_mode ? "Platform Locked" : "Platform Active"}</p>
                   </div>
                 </div>
-                <button className="w-full bg-violet-600 py-4 rounded-xl text-white font-black uppercase text-[10px] tracking-[0.2em] shadow-xl hover:scale-[1.02] transition-all">Save Config</button>
+                {rulesSuccess && (
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-[11px] font-black">
+                    <CheckCircle className="h-4 w-4" />{rulesSuccess}
+                  </div>
+                )}
+                <button onClick={handleSaveRules} disabled={savingRules} className="w-full bg-violet-600 py-4 rounded-xl text-white font-black uppercase text-[10px] tracking-[0.2em] shadow-xl hover:scale-[1.02] disabled:opacity-60 transition-all flex items-center justify-center gap-2">
+                  {savingRules ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : <><Save className="h-4 w-4" /> Save Config</>}
+                </button>
               </div>
             </div>
           </div>
@@ -246,8 +301,18 @@ export default function PlatformSettings() {
                     </div>
                   </div>
                 </div>
-                <button className="w-full bg-emerald-600 py-4 rounded-xl text-white font-black uppercase text-[10px] tracking-[0.2em] shadow-xl hover:scale-[1.02] transition-all">Update Assets</button>
               </div>
+            </div>
+            
+            <div className="mt-10 border-t-2 border-slate-100 dark:border-white/5 pt-8">
+              {brandingSuccess && (
+                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-[11px] font-black mb-4">
+                  <CheckCircle className="h-4 w-4" />{brandingSuccess}
+                </div>
+              )}
+              <button onClick={handleSaveBranding} disabled={savingBranding} className="w-full bg-emerald-600 py-4 rounded-xl text-white font-black uppercase text-[10px] tracking-[0.2em] shadow-xl hover:scale-[1.02] disabled:opacity-60 transition-all flex items-center justify-center gap-2">
+                {savingBranding ? <><Loader2 className="h-4 w-4 animate-spin" /> Saving…</> : <><Save className="h-4 w-4" /> Save Brand Configuration</>}
+              </button>
             </div>
           </div>
         )}

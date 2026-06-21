@@ -5,6 +5,7 @@ import { ConfirmProvider } from "./context/ConfirmContext"
 import Landing from "./pages/auth/Landing"
 import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
+import ForgotPassword from "./pages/auth/ForgotPassword"
 import Dashboard from "./pages/corporate/Dashboard"
 import Departments from "./pages/corporate/Departments"
 import Employees from "./pages/corporate/Employees"
@@ -47,6 +48,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             <Route
               path="/dashboard"

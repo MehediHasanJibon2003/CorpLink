@@ -40,6 +40,7 @@ export default function SubscriptionBilling() {
   const [isGatewayModalOpen, setIsGatewayModalOpen] = useState(false)
   const [selectedGateway, setSelectedGateway] = useState(null)
   const [invoiceFilter, setInvoiceFilter] = useState("all")
+  const [sendingReminder, setSendingReminder] = useState({})
 
   const fetchData = async () => {
     setLoading(true)
@@ -100,6 +101,23 @@ export default function SubscriptionBilling() {
   const openPlanModal = (plan = null) => {
     setSelectedPlan(plan)
     setIsPlanModalOpen(true)
+  }
+
+  const handleSendReminder = async (billingAlert) => {
+    setSendingReminder(prev => ({ ...prev, [billingAlert.id]: true }))
+    try {
+      await supabase.from('notifications').insert([{
+        company_id: billingAlert.company_id,
+        title: 'Billing Reminder',
+        message: billingAlert.message || `Your subscription requires attention.`,
+        type: 'billing',
+        is_read: false
+      }])
+    } catch (err) {
+      console.error('Reminder send failed:', err.message)
+    } finally {
+      setSendingReminder(prev => ({ ...prev, [billingAlert.id]: false }))
+    }
   }
 
   useEffect(() => { fetchData() }, [])
@@ -429,12 +447,17 @@ export default function SubscriptionBilling() {
                        </div>
                     </div>
                     <div className="flex items-center gap-3 w-full lg:w-auto">
-                       <button 
-                         onClick={() => window.alert("Reminder sent")}
-                         className="flex-1 lg:flex-none px-6 py-3 rounded-xl bg-slate-900 dark:bg-violet-600 text-white font-black uppercase text-[9px] tracking-widest flex items-center justify-center gap-2"
-                       >
-                         <Send className="h-3.5 w-3.5" /> Send
-                       </button>
+                        <button 
+                          onClick={() => handleSendReminder(billingAlert)}
+                          disabled={sendingReminder[billingAlert.id]}
+                          className="flex-1 lg:flex-none px-6 py-3 rounded-xl bg-slate-900 dark:bg-violet-600 text-white font-black uppercase text-[9px] tracking-widest flex items-center justify-center gap-2 disabled:opacity-60 transition-all"
+                        >
+                          {sendingReminder[billingAlert.id] ? (
+                            <><div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />Sending…</>
+                          ) : (
+                            <><Send className="h-3.5 w-3.5" /> Send</>
+                          )}
+                        </button>
                        <button 
                          onClick={async () => {
                            await supabase.from("billing_alerts").delete().eq("id", billingAlert.id);
