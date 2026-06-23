@@ -123,7 +123,10 @@ function Dashboard() {
       {/* Premium Welcome Header */}
       <div className="mb-10 md:mb-16 animate-in fade-in slide-in-from-top-4 duration-700">
         <h1 className="text-3xl md:text-6xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none">
-          Welcome, <span className="text-blue-600">{profile?.full_name?.split(' ')[0] || "Admin"}</span>
+          Welcome,{" "}
+          <span className="text-blue-600">
+            {profile?.full_name?.split(" ")[0] || "Admin"}
+          </span>
         </h1>
         <p className="text-[10px] md:text-label font-black uppercase tracking-[0.3em] text-slate-400 mt-4 flex items-center gap-3">
           <span className="w-10 h-px bg-slate-200 dark:bg-white/10"></span>
@@ -132,14 +135,23 @@ function Dashboard() {
       </div>
       {/* Quick Actions Row */}
       <div className="flex gap-4 md:gap-6 mb-8 md:mb-12 overflow-x-auto pb-4 custom-scrollbar">
-        <button className="flex items-center gap-2 md:gap-3 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition shadow-lg shadow-blue-500/20 hover:-translate-y-0.5">
+        <button
+          onClick={() => navigate("/tasks")}
+          className="flex items-center gap-2 md:gap-3 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition shadow-lg shadow-blue-500/20 hover:-translate-y-0.5"
+        >
           <Plus className="h-5 w-5 md:h-6 md:w-6" /> Add Task
         </button>
-        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition hover:-translate-y-0.5">
+        <button
+          onClick={() => navigate("/employees")}
+          className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition hover:-translate-y-0.5"
+        >
           <Users className="h-5 w-5 md:h-6 md:w-6 text-slate-400" /> Invite
           Employee
         </button>
-        <button className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition hover:-translate-y-0.5">
+        <button
+          onClick={() => navigate("/departments")}
+          className="flex items-center gap-2 md:gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border md:border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold md:font-bold text-body md:text-heading-3 shrink-0 transition hover:-translate-y-0.5"
+        >
           <Building2 className="h-5 w-5 md:h-6 md:w-6 text-slate-400" /> New
           Department
         </button>
