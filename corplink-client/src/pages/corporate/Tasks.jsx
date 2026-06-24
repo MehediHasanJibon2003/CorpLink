@@ -207,6 +207,7 @@ function Tasks() {
               setInitialTab(tab);
             }}
             triggerRefetch={triggerRefetch}
+            onCreateTask={() => setShowCreateTask(true)}
           />
         </div>
       )}

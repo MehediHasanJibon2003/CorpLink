@@ -99,10 +99,10 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
         );
 
         const leadEmp = leadObj
-          ? empsRes.data?.find((e) => e.id === leadObj.employee_id)
+          ? empsRes.data?.find((e) => e.id === leadObj.employee_id || e.user_id === leadObj.employee_id)
           : null;
         const memberEmps = memberObjs
-          .map((m) => empsRes.data?.find((e) => e.id === m.employee_id))
+          .map((m) => empsRes.data?.find((e) => e.id === m.employee_id || e.user_id === m.employee_id))
           .filter(Boolean);
 
         // Normalize to display name field used in UI
@@ -224,6 +224,7 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
       }
 
       // Re-insert Lead and Team Members
+      // Store employees.id in project_members.employee_id for consistency
       if (targetProjectId) {
         const memberInserts = [];
         if (form.team_lead_id) {

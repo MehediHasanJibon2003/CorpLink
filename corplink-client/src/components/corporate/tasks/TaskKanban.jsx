@@ -42,7 +42,7 @@ const COLUMNS = [
   },
 ];
 
-function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
+function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch, onCreateTask }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [projectDetails, setProjectDetails] = useState(null);
@@ -365,7 +365,10 @@ function TaskKanban({ activeProject, profile, onTaskClick, triggerRefetch }) {
                 )}
 
                 {col.id === "pending" && (
-                  <button className="w-full py-6 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-[2rem] text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all flex flex-col items-center gap-2 group active:scale-95">
+                  <button
+                    onClick={() => onCreateTask?.()}
+                    className="w-full py-6 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-[2rem] text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all flex flex-col items-center gap-2 group active:scale-95"
+                  >
                     <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-all">
                       <Plus className="h-6 w-6" />
                     </div>
