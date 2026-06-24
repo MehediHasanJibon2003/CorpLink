@@ -120,7 +120,7 @@ function Employees() {
     // Merge avatar from profiles into employees (profile avatar takes priority)
     const empsWithAvatars = uniqueEmps.map(emp => ({
       ...emp,
-      avatar_url: emp.avatar_url || profileAvatarMap[emp.email?.toLowerCase().trim()] || null,
+      avatar_url: emp.profile_photo || emp.avatar_url || profileAvatarMap[emp.email?.toLowerCase().trim()] || null,
     }));
 
     const stats = {};
@@ -324,12 +324,12 @@ function Employees() {
             Invite Code
           </p>
           <div className="flex items-center justify-between mt-2">
-            <code className="text-[16px] md:text-heading-2 font-black text-white">
-              {profile?.company_id?.slice(0, 8)}...
+            <code className="text-[12px] md:text-[14px] font-black text-white truncate max-w-[70%]" title={profile?.company_id}>
+              {profile?.company_id}
             </code>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(profile.company_id.slice(0, 8));
+                navigator.clipboard.writeText(profile.company_id);
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
               }}

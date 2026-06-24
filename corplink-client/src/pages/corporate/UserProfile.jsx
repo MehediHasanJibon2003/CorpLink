@@ -155,7 +155,7 @@ export default function UserProfile() {
       if (profile?.email) {
         await supabase
           .from('employees')
-          .update({ avatar_url: newAvatarUrl })
+          .update({ profile_photo: newAvatarUrl })
           .eq('email', profile.email)
       }
 
@@ -289,7 +289,7 @@ export default function UserProfile() {
                 <div>
                   <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Invite Code</p>
                   <code className="text-[12px] md:text-[13px] font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-900/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 inline-block">
-                    {profile.company_id.slice(0, 8)}
+                    {profile.company_id}
                   </code>
                 </div>
               )}

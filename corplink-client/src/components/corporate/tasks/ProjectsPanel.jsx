@@ -60,10 +60,10 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
         .select("project_id, status")
         .eq("company_id", profile.company_id),
       supabase
-        .from("profiles")
-        .select("id, full_name, email, role")
+        .from("employees")
+        .select("id, user_id, name, designation, department_id")
         .eq("company_id", profile.company_id)
-        .order("full_name"),
+        .order("name"),
     ]);
 
     if (!deptRes.error && deptRes.data) setDepartments(deptRes.data);
@@ -104,6 +104,10 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
         const memberEmps = memberObjs
           .map((m) => empsRes.data?.find((e) => e.id === m.employee_id))
           .filter(Boolean);
+
+        // Normalize to display name field used in UI
+        if (leadEmp) leadEmp.full_name = leadEmp.name;
+        memberEmps.forEach((m) => { if (m) m.full_name = m.name; });
 
         return {
           ...p,
@@ -359,9 +363,12 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
                 className="w-full bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-white/5 rounded-2xl px-4 py-4 text-[12px] font-bold outline-none focus:border-blue-500 text-slate-800 dark:text-white"
               >
                 <option value="">-- Unassigned Leader --</option>
-                {employees.map((e) => (
+                {(form.department_id
+                  ? employees.filter((e) => e.department_id === form.department_id)
+                  : employees
+                ).map((e) => (
                   <option key={e.id} value={e.id}>
-                    {e.full_name} ({e.role.replace("_", " ")})
+                    {e.name}{e.designation ? ` — ${e.designation}` : ""}
                   </option>
                 ))}
               </select>
@@ -370,6 +377,9 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
             <div className="relative">
               <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1.5">
                 Assign Team Members ({form.team_member_ids.length} selected)
+                {form.department_id && (
+                  <span className="ml-2 text-blue-500 normal-case font-medium">— filtered by dept</span>
+                )}
               </label>
               <button
                 type="button"
@@ -381,7 +391,7 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
                     ? "Select Team Members..."
                     : form.team_member_ids
                         .map(
-                          (id) => employees.find((e) => e.id === id)?.full_name,
+                          (id) => employees.find((e) => e.id === id)?.name,
                         )
                         .filter(Boolean)
                         .join(", ")}
@@ -391,69 +401,81 @@ function ProjectsPanel({ profile, user, onSelectProject }) {
                 />
               </button>
 
-              {showMemberSelect && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-2xl z-50 max-h-60 overflow-y-auto custom-scrollbar space-y-2.5 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-2 mb-2">
-                    <span className="text-[10px] font-black uppercase text-slate-400">
-                      Available Personnel
-                    </span>
-                    <div className="flex gap-4">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setForm({
-                            ...form,
-                            team_member_ids: employees.map((e) => e.id),
-                          })
-                        }
-                        className="text-[10px] text-blue-600 dark:text-blue-400 font-bold hover:underline"
-                      >
-                        Select All
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setForm({ ...form, team_member_ids: [] })
-                        }
-                        className="text-[10px] text-slate-400 hover:text-red-500 font-bold hover:underline"
-                      >
-                        Clear
-                      </button>
-                    </div>
-                  </div>
-                  {employees.map((e) => {
-                    const isSelected = form.team_member_ids.includes(e.id);
-                    return (
-                      <div
-                        key={e.id}
-                        onClick={() => {
-                          const newIds = isSelected
-                            ? form.team_member_ids.filter((id) => id !== e.id)
-                            : [...form.team_member_ids, e.id];
-                          setForm({ ...form, team_member_ids: newIds });
-                        }}
-                        className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${isSelected ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"}`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-4 h-4 rounded border flex items-center justify-center ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "border-slate-300 dark:border-slate-600"}`}
-                          >
-                            {isSelected && (
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                            )}
-                          </div>
-                          <span className="text-[13px] font-medium">
-                            {e.full_name}
-                          </span>
-                        </div>
-                        <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-900">
-                          {e.role.replace("_", " ")}
-                        </span>
+              {showMemberSelect && (() => {
+                const filteredEmps = form.department_id
+                  ? employees.filter((e) => e.department_id === form.department_id)
+                  : employees;
+                return (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-2xl z-50 max-h-60 overflow-y-auto custom-scrollbar space-y-2.5 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-2 mb-2">
+                      <span className="text-[10px] font-black uppercase text-slate-400">
+                        {form.department_id ? "Dept Personnel" : "All Personnel"}
+                      </span>
+                      <div className="flex gap-4">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setForm({
+                              ...form,
+                              team_member_ids: filteredEmps.map((e) => e.id),
+                            })
+                          }
+                          className="text-[10px] text-blue-600 dark:text-blue-400 font-bold hover:underline"
+                        >
+                          Select All
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setForm({ ...form, team_member_ids: [] })
+                          }
+                          className="text-[10px] text-slate-400 hover:text-red-500 font-bold hover:underline"
+                        >
+                          Clear
+                        </button>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                    </div>
+                    {filteredEmps.length === 0 && (
+                      <p className="text-[11px] text-slate-400 text-center py-4">
+                        No employees found in this department.
+                      </p>
+                    )}
+                    {filteredEmps.map((e) => {
+                      const isSelected = form.team_member_ids.includes(e.id);
+                      return (
+                        <div
+                          key={e.id}
+                          onClick={() => {
+                            const newIds = isSelected
+                              ? form.team_member_ids.filter((id) => id !== e.id)
+                              : [...form.team_member_ids, e.id];
+                            setForm({ ...form, team_member_ids: newIds });
+                          }}
+                          className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${isSelected ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"}`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-4 h-4 rounded border flex items-center justify-center ${isSelected ? "bg-blue-600 border-blue-600 text-white" : "border-slate-300 dark:border-slate-600"}`}
+                            >
+                              {isSelected && (
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                              )}
+                            </div>
+                            <div>
+                              <span className="text-[13px] font-medium block">
+                                {e.name}
+                              </span>
+                              {e.designation && (
+                                <span className="text-[10px] text-slate-400">{e.designation}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
