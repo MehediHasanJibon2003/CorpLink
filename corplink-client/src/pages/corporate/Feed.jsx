@@ -1,18 +1,68 @@
-import { useEffect, useState, useRef, memo } from "react"
-import { supabase } from "../../lib/supabase"
-import { useAuth } from "../../context/AuthContext"
-import AppLayout from "../../components/layout/AppLayout"
-import { logAdminActivity } from "../../utils/logger"
-import { Eye, Heart, MessageSquare, Share2, Globe, Lock, Megaphone, Calendar, Tag, MoreVertical, Trash2, Edit3, Send, X, Paperclip, Search, Play, ShoppingBag, Gamepad2, Menu, Bell, CheckSquare, Briefcase } from "lucide-react"
-import { useConfirm } from "../../context/ConfirmContext"
+import { useEffect, useState, useRef, memo } from "react";
+import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
+import AppLayout from "../../components/layout/AppLayout";
+import { logAdminActivity } from "../../utils/logger";
+import {
+  Eye,
+  Heart,
+  MessageSquare,
+  Share2,
+  Globe,
+  Lock,
+  Megaphone,
+  Calendar,
+  Tag,
+  MoreVertical,
+  Trash2,
+  Edit3,
+  Send,
+  X,
+  Paperclip,
+  Search,
+  Play,
+  ShoppingBag,
+  Gamepad2,
+  Menu,
+  Bell,
+  CheckSquare,
+  Briefcase,
+} from "lucide-react";
+import { useConfirm } from "../../context/ConfirmContext";
 
 const POST_TYPES = [
-  { value: "general", label: "General Update", color: "bg-slate-50 text-slate-700 border-slate-200", icon: <Globe className="h-4 w-4" /> },
-  { value: "announcement", label: "Announcement", color: "bg-blue-50 text-blue-700 border-blue-200", icon: <Megaphone className="h-4 w-4" /> },
-  { value: "promotion", label: "Product Promotion", color: "bg-purple-50 text-purple-700 border-purple-200", icon: <Tag className="h-4 w-4" /> },
-  { value: "event", label: "Event / Campaign", color: "bg-orange-50 text-orange-700 border-orange-200", icon: <Calendar className="h-4 w-4" /> },
-  { value: "internal", label: "Internal Alert", color: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700", icon: <Lock className="h-4 w-4" /> }
-]
+  {
+    value: "general",
+    label: "General Update",
+    color: "bg-slate-50 text-slate-700 border-slate-200",
+    icon: <Globe className="h-4 w-4" />,
+  },
+  {
+    value: "announcement",
+    label: "Announcement",
+    color: "bg-blue-50 text-blue-700 border-blue-200",
+    icon: <Megaphone className="h-4 w-4" />,
+  },
+  {
+    value: "promotion",
+    label: "Product Promotion",
+    color: "bg-purple-50 text-purple-700 border-purple-200",
+    icon: <Tag className="h-4 w-4" />,
+  },
+  {
+    value: "event",
+    label: "Event / Campaign",
+    color: "bg-orange-50 text-orange-700 border-orange-200",
+    icon: <Calendar className="h-4 w-4" />,
+  },
+  {
+    value: "internal",
+    label: "Internal Alert",
+    color:
+      "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700",
+    icon: <Lock className="h-4 w-4" />,
+  },
+];
 
 // Separate Component for individual Post to handle IntersectionObserver (Auto View Counter)
 const PostCard = memo(
@@ -76,7 +126,11 @@ const PostCard = memo(
         <div className="p-4 md:p-10 flex items-start justify-between border-b-2 border-slate-50 dark:border-slate-900/50 bg-slate-50/30 dark:bg-slate-900/20">
           <div className="flex items-center gap-3 md:gap-5 min-w-0">
             {post.companies?.logo_url ? (
-              <img src={post.companies.logo_url} alt="Logo" className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-lg p-1 bg-white" />
+              <img
+                src={post.companies.logo_url}
+                alt="Logo"
+                className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-lg p-1 bg-white"
+              />
             ) : (
               <div className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-3 md:text-heading-1 shadow-lg border-2 border-white dark:border-slate-700 shrink-0">
                 {post.companies?.name?.charAt(0)?.toUpperCase() || "C"}
@@ -137,7 +191,7 @@ const PostCard = memo(
 
         {/* Content */}
         <div className="p-6 md:p-16 md:px-16">
-          {post.title && post.post_type !== 'general' && (
+          {post.title && post.post_type !== "general" && (
             <h4 className="text-[20px] md:text-5xl font-black text-slate-900 dark:text-white mb-4 md:mb-6 tracking-tight leading-tight">
               {post.title}
             </h4>
@@ -176,11 +230,13 @@ const PostCard = memo(
               {post.likesCount}
             </span>
             <span className="flex items-center gap-1.5 md:gap-2">
-              <MessageSquare className="h-3.5 w-3.5 md:h-4 md:w-4" /> {post.commentsCount}
+              <MessageSquare className="h-3.5 w-3.5 md:h-4 md:w-4" />{" "}
+              {post.commentsCount}
             </span>
           </div>
           <div className="flex items-center gap-1.5 md:gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-slate-50 dark:bg-white/5 rounded-lg md:rounded-xl border border-slate-100 dark:border-white/5 text-slate-500">
-            <Eye className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-500" /> {post.views_count || 0}
+            <Eye className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-500" />{" "}
+            {post.views_count || 0}
           </div>
         </div>
 
@@ -273,13 +329,18 @@ function Feed() {
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [form, setForm] = useState({ title: "", content: "", visibility: "internal", post_type: "general" })
-  const [selectedImage, setSelectedImage] = useState(null)
-  const [imagePreview, setImagePreview] = useState("")
-  const [editingId, setEditingId] = useState(null)
-  const [showModal, setShowModal] = useState(false)
-  const [expandedComments, setExpandedComments] = useState([])
-  const [commentInputs, setCommentInputs] = useState({})
+  const [form, setForm] = useState({
+    title: "",
+    content: "",
+    visibility: "internal",
+    post_type: "general",
+  });
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [expandedComments, setExpandedComments] = useState([]);
+  const [commentInputs, setCommentInputs] = useState({});
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -296,9 +357,11 @@ function Feed() {
       );
     }
     const { data: announcementsData } = await query;
+
     const { data: likesData } = await supabase
       .from("announcement_likes")
       .select("*");
+
     const { data: commentsData } = await supabase
       .from("announcement_comments")
       .select("*")
@@ -353,58 +416,72 @@ function Feed() {
   };
 
   const handleSubmit = async (e) => {
-    if (e) e.preventDefault()
-    if (!form.content.trim()) return
-    setLoading(true)
-    setError("")
-    
+    if (e) e.preventDefault();
+    if (!form.content.trim()) return;
+    setLoading(true);
+    setError("");
+
     try {
-      const finalTitle = form.title.trim() || (form.content.trim().slice(0, 40) + "...")
-      let mediaUrl = imagePreview
-      let mediaType = selectedImage 
-        ? (selectedImage.type?.startsWith("video") ? "video" : "image")
-        : (editingId ? posts.find(p => p.id === editingId)?.media_type : "image")
-      
+      const finalTitle =
+        form.title.trim() || form.content.trim().slice(0, 40) + "...";
+      let mediaUrl = imagePreview;
+      let mediaType = selectedImage
+        ? selectedImage.type?.startsWith("video")
+          ? "video"
+          : "image"
+        : editingId
+          ? posts.find((p) => p.id === editingId)?.media_type
+          : "image";
+
       if (selectedImage) {
-        mediaUrl = await uploadMedia(selectedImage)
+        mediaUrl = await uploadMedia(selectedImage);
       }
 
-      const payload = { 
+      const payload = {
         ...form,
         title: finalTitle,
-        company_id: profile?.company_id || null, 
-        media_url: mediaUrl, 
+        media_url: mediaUrl,
         media_type: mediaType,
-        created_by: user?.id 
-      }
+        created_by: user?.id,
+      };
 
-      console.log("Submitting Post Payload:", payload)
-      
+      console.log("Submitting Post Payload:", payload);
+
       let res;
       if (editingId) {
-        res = await supabase.from("announcements").update(payload).eq("id", editingId)
+        res = await supabase
+          .from("announcements")
+          .update(payload)
+          .eq("id", editingId);
       } else {
-        res = await supabase.from("announcements").insert([payload])
+        res = await supabase.from("announcements").insert([payload]);
       }
 
       if (res.error) {
-        console.error("Supabase Insert Error:", res.error)
-        throw res.error
+        console.error("Supabase Insert Error:", res.error);
+        throw res.error;
       }
-      
-      setForm({ title: "", content: "", visibility: "internal", post_type: "general" })
-      setSelectedImage(null); setImagePreview(""); setEditingId(null)
-      setFilter("all") // Reset filter to 'all' to show the new post
-      fetchPosts()
-      setShowModal(false)
-      setMessage(editingId ? "Post updated!" : "Post published!")
-    } catch (err) { 
-      console.error("Submit Error Full Object:", err)
-      setError(err.message || "An unexpected error occurred") 
+
+      setForm({
+        title: "",
+        content: "",
+        visibility: "internal",
+        post_type: "general",
+      });
+      setSelectedImage(null);
+      setImagePreview("");
+      setEditingId(null);
+      setFilter("all"); // Reset filter to 'all' to show the new post
+      fetchPosts();
+      setShowModal(false);
+      setMessage(editingId ? "Post updated!" : "Post published!");
+    } catch (err) {
+      console.error("Submit Error Full Object:", err);
+      setError(err.message || "An unexpected error occurred");
     }
-    setLoading(false)
-    setTimeout(() => setMessage(""), 3000)
-  }
+    setLoading(false);
+    setTimeout(() => setMessage(""), 3000);
+  };
 
   const handleToggleLike = async (post) => {
     setPosts((prev) =>
@@ -424,15 +501,12 @@ function Feed() {
         .delete()
         .match({ announcement_id: post.id, user_id: user.id });
     } else {
-      await supabase
-        .from("announcement_likes")
-        .insert([
-          {
-            announcement_id: post.id,
-            company_id: profile.company_id,
-            user_id: user.id,
-          },
-        ]);
+      await supabase.from("announcement_likes").insert([
+        {
+          announcement_id: post.id,
+          user_id: user.id,
+        },
+      ]);
     }
   };
 
@@ -458,16 +532,13 @@ function Feed() {
       ),
     );
     setCommentInputs((prev) => ({ ...prev, [post.id]: "" }));
-    await supabase
-      .from("announcement_comments")
-      .insert([
-        {
-          announcement_id: post.id,
-          company_id: profile.company_id,
-          user_id: user.id,
-          comment_text: text,
-        },
-      ]);
+    await supabase.from("announcement_comments").insert([
+      {
+        announcement_id: post.id,
+        user_id: user.id,
+        comment_text: text,
+      },
+    ]);
     fetchPosts();
   };
 
@@ -475,18 +546,22 @@ function Feed() {
     // 1. Category Filtering Logic
     let matchesCategory = true;
     if (filter === "internal") {
-      matchesCategory = post.visibility === "internal" && post.company_id === profile?.company_id;
+      matchesCategory =
+        post.visibility === "internal" &&
+        post.company_id === profile?.company_id;
     } else if (filter === "public") {
       matchesCategory = post.visibility === "public";
     } else if (filter === "campaigns") {
-      matchesCategory = post.post_type === "promotion" || post.post_type === "event";
+      matchesCategory =
+        post.post_type === "promotion" || post.post_type === "event";
     }
 
     // 2. Search Query Logic
-    const matchesSearch = 
+    const matchesSearch =
       post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (post.title && post.title.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+      (post.title &&
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
     return matchesCategory && matchesSearch;
   });
 
@@ -497,7 +572,11 @@ function Feed() {
         {/* Left: Search/Logo */}
         <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
           {profile?.companies?.logo_url ? (
-            <img src={profile.companies.logo_url} className="h-9 w-9 md:h-11 md:w-11 rounded-full object-contain shrink-0 shadow-md p-1 bg-white border border-slate-200" alt="C" />
+            <img
+              src={profile.companies.logo_url}
+              className="h-9 w-9 md:h-11 md:w-11 rounded-full object-contain shrink-0 shadow-md p-1 bg-white border border-slate-200"
+              alt="C"
+            />
           ) : (
             <div className="h-9 w-9 md:h-11 md:w-11 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-md">
               <span className="font-black text-lg md:text-xl italic">C</span>
@@ -505,9 +584,9 @@ function Feed() {
           )}
           <div className="relative max-w-[280px] hidden sm:block flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
+            <input
+              type="text"
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-100 dark:bg-white/5 border-none rounded-full pl-10 pr-4 py-2 text-[13px] md:text-sm outline-none focus:ring-2 ring-blue-500/20 transition-all font-medium text-slate-900 dark:text-white"
@@ -517,53 +596,61 @@ function Feed() {
 
         {/* Center: Tabs */}
         <div className="flex items-center gap-0.5 md:gap-4 flex-[2] justify-center h-full max-w-xl">
-           <button 
-             onClick={() => setFilter("all")}
-             className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "all" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-           >
-              <Globe className="h-5 w-5 md:h-6 md:w-6" />
-           </button>
-           <button 
-             onClick={() => setFilter("internal")}
-             className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "internal" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-           >
-              <Lock className="h-5 w-5 md:h-6 md:w-6" />
-           </button>
-           <button 
-             onClick={() => setFilter("public")}
-             className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "public" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-           >
-              <Briefcase className="h-5 w-5 md:h-6 md:w-6" />
-           </button>
-           <button 
-             onClick={() => setFilter("campaigns")}
-             className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "campaigns" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-           >
-              <Megaphone className="h-5 w-5 md:h-6 md:w-6" />
-           </button>
+          <button
+            onClick={() => setFilter("all")}
+            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "all" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
+          >
+            <Globe className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+          <button
+            onClick={() => setFilter("internal")}
+            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "internal" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
+          >
+            <Lock className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+          <button
+            onClick={() => setFilter("public")}
+            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "public" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
+          >
+            <Briefcase className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+          <button
+            onClick={() => setFilter("campaigns")}
+            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "campaigns" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
+          >
+            <Megaphone className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
         </div>
 
         {/* Right: Actions */}
         <div className="flex items-center gap-1.5 md:gap-3 flex-1 justify-end min-w-0">
-           <button className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-all shrink-0">
-              <Bell className="h-4 w-4 md:h-5 md:w-5" />
-           </button>
-           <div className="h-8 w-8 md:h-11 md:w-11 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[10px] md:text-xs shadow-md cursor-pointer hover:scale-105 transition-transform border-2 border-white dark:border-slate-800 shrink-0">
-              {profile?.full_name?.charAt(0)?.toUpperCase()}
-           </div>
+          <button className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-all shrink-0">
+            <Bell className="h-4 w-4 md:h-5 md:w-5" />
+          </button>
+          <div className="h-8 w-8 md:h-11 md:w-11 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[10px] md:text-xs shadow-md cursor-pointer hover:scale-105 transition-transform border-2 border-white dark:border-slate-800 shrink-0">
+            {profile?.full_name?.charAt(0)?.toUpperCase()}
+          </div>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto space-y-6 md:space-y-10 pb-32 mt-0 md:-mt-6 px-4 md:px-8">
-
         {/* META-STYLE POST CREATOR TRIGGER */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-[2rem] shadow-sm border-2 border-slate-100 dark:border-white/5 p-4 md:p-6">
           <div className="flex items-center gap-3 md:gap-4">
             <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[14px] md:text-heading-2 shadow-md shrink-0">
               {profile?.full_name?.charAt(0)?.toUpperCase()}
             </div>
-            <button 
-              onClick={() => { setEditingId(null); setForm({ title: "", content: "", visibility: "internal", post_type: "general" }); setShowModal(true); }}
+            <button
+              onClick={() => {
+                setEditingId(null);
+                setForm({
+                  title: "",
+                  content: "",
+                  visibility: "internal",
+                  post_type: "general",
+                });
+                setShowModal(true);
+              }}
               className="flex-1 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 text-left px-4 md:px-6 py-2.5 md:py-3.5 rounded-full text-[13px] md:text-heading-3 font-medium transition-all"
             >
               What's on your mind?
@@ -596,10 +683,15 @@ function Feed() {
                   alert("Link copied!");
                 }
               }}
-              onEdit={(p) => { 
-                setEditingId(p.id); 
-                setForm({ title: p.title, content: p.content, visibility: p.visibility, post_type: p.post_type }); 
-                setImagePreview(p.media_url); 
+              onEdit={(p) => {
+                setEditingId(p.id);
+                setForm({
+                  title: p.title,
+                  content: p.content,
+                  visibility: p.visibility,
+                  post_type: p.post_type,
+                });
+                setImagePreview(p.media_url);
                 setShowModal(true);
               }}
               onDelete={(id) => {
@@ -630,20 +722,32 @@ function Feed() {
           <div className="bg-white dark:bg-slate-900 w-full h-full md:h-auto md:max-w-xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-white/5 shrink-0">
-              <button 
-                onClick={() => { setShowModal(false); setEditingId(null); setSelectedImage(null); setImagePreview(""); }}
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingId(null);
+                  setSelectedImage(null);
+                  setImagePreview("");
+                }}
                 className="md:hidden text-slate-500 font-bold"
               >
                 Cancel
               </button>
-              <h3 className="text-body md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">Create Post</h3>
-              <button 
-                onClick={() => { setShowModal(false); setEditingId(null); setSelectedImage(null); setImagePreview(""); }}
+              <h3 className="text-body md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                Create Post
+              </h3>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingId(null);
+                  setSelectedImage(null);
+                  setImagePreview("");
+                }}
                 className="hidden md:flex w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 items-center justify-center text-slate-500 hover:bg-slate-200 dark:hover:bg-white/10 transition-all"
               >
                 <X className="h-6 w-6" />
               </button>
-              <button 
+              <button
                 onClick={handleSubmit}
                 disabled={loading || !form.content.trim()}
                 className="md:hidden text-blue-600 font-black uppercase text-[12px] disabled:opacity-50"
@@ -660,46 +764,79 @@ function Feed() {
                   {profile?.full_name?.charAt(0)?.toUpperCase()}
                 </div>
                 <div>
-                  <h4 className="font-black text-[14px] md:text-heading-3 text-slate-900 dark:text-white uppercase tracking-tight leading-tight">{profile?.full_name}</h4>
+                  <h4 className="font-black text-[14px] md:text-heading-3 text-slate-900 dark:text-white uppercase tracking-tight leading-tight">
+                    {profile?.full_name}
+                  </h4>
                   <div className="flex flex-wrap gap-2 mt-1.5">
-                     <select value={form.visibility} onChange={e => setForm({...form, visibility: e.target.value})} className="bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-md text-[8px] md:text-[9px] font-black uppercase tracking-widest outline-none cursor-pointer">
-                        <option value="internal">🔒 Internal</option>
-                        <option value="public">🌍 Public</option>
-                     </select>
-                     <select value={form.post_type} onChange={e => setForm({...form, post_type: e.target.value})} className="bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-md text-[8px] md:text-[9px] font-black uppercase tracking-widest outline-none cursor-pointer">
-                        {POST_TYPES.map(pt => <option key={pt.value} value={pt.value}>{pt.label}</option>)}
-                     </select>
+                    <select
+                      value={form.visibility}
+                      onChange={(e) =>
+                        setForm({ ...form, visibility: e.target.value })
+                      }
+                      className="bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-md text-[8px] md:text-[9px] font-black uppercase tracking-widest outline-none cursor-pointer"
+                    >
+                      <option value="internal">🔒 Internal</option>
+                      <option value="public">🌍 Public</option>
+                    </select>
+                    <select
+                      value={form.post_type}
+                      onChange={(e) =>
+                        setForm({ ...form, post_type: e.target.value })
+                      }
+                      className="bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-md text-[8px] md:text-[9px] font-black uppercase tracking-widest outline-none cursor-pointer"
+                    >
+                      {POST_TYPES.map((pt) => (
+                        <option key={pt.value} value={pt.value}>
+                          {pt.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <input
-                  type="text" 
-                  placeholder="Headline (optional)" 
-                  value={form.title} 
-                  onChange={e => setForm({...form, title: e.target.value})}
+                  type="text"
+                  placeholder="Headline (optional)"
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="w-full bg-transparent border-none px-0 py-2 outline-none font-black text-[18px] md:text-heading-1 text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-700"
                 />
-                
+
                 <textarea
                   placeholder={`What's on your mind?`}
-                  value={form.content} 
-                  onChange={e => setForm({...form, content: e.target.value})} 
+                  value={form.content}
+                  onChange={(e) =>
+                    setForm({ ...form, content: e.target.value })
+                  }
                   rows={isMobile ? "10" : "5"}
                   className="w-full bg-transparent border-none px-0 py-2 outline-none font-medium text-[15px] md:text-heading-3 text-slate-700 dark:text-slate-200 resize-none"
                 />
 
                 {(imagePreview || selectedImage) && (
                   <div className="relative rounded-2xl overflow-hidden border-2 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-black/40 group max-h-[300px]">
-                    {selectedImage?.type?.startsWith("video") || (editingId && posts.find(p => p.id === editingId)?.media_type === 'video') ? (
-                      <video src={imagePreview} className="w-full h-full object-contain" controls />
+                    {selectedImage?.type?.startsWith("video") ||
+                    (editingId &&
+                      posts.find((p) => p.id === editingId)?.media_type ===
+                        "video") ? (
+                      <video
+                        src={imagePreview}
+                        className="w-full h-full object-contain"
+                        controls
+                      />
                     ) : (
-                      <img src={imagePreview} className="w-full h-full object-contain" />
+                      <img
+                        src={imagePreview}
+                        className="w-full h-full object-contain"
+                      />
                     )}
-                    <button 
-                      type="button" 
-                      onClick={() => {setImagePreview(""); setSelectedImage(null)}} 
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImagePreview("");
+                        setSelectedImage(null);
+                      }}
                       className="absolute top-3 right-3 bg-white dark:bg-slate-900 shadow-xl text-slate-900 dark:text-white p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors z-10"
                     >
                       <X className="h-4 w-4" />
@@ -708,35 +845,54 @@ function Feed() {
                 )}
 
                 <div className="mt-4 p-4 rounded-2xl border-2 border-slate-100 dark:border-white/5 flex items-center justify-between">
-                  <span className="text-[9px] md:text-label font-black uppercase tracking-widest text-slate-500">Add to post</span>
+                  <span className="text-[9px] md:text-label font-black uppercase tracking-widest text-slate-500">
+                    Add to post
+                  </span>
                   <div className="flex items-center gap-1 md:gap-2">
-                     <label className="p-2 md:p-3 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer group">
-                        <Paperclip className="h-5 w-5 md:h-6 md:w-6 text-emerald-500" />
-                        <input type="file" accept="image/*,video/*" onChange={handleImageChange} className="hidden" />
-                     </label>
-                     <button type="button" className="p-2 md:p-3 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
-                        <Tag className="h-5 w-5 md:h-6 md:w-6 text-blue-500" />
-                     </button>
-                     <button type="button" className="p-2 md:p-3 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
-                        <Calendar className="h-5 w-5 md:h-6 md:w-6 text-orange-500" />
-                     </button>
+                    <label className="p-2 md:p-3 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer group">
+                      <Paperclip className="h-5 w-5 md:h-6 md:w-6 text-emerald-500" />
+                      <input
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      className="p-2 md:p-3 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                    >
+                      <Tag className="h-5 w-5 md:h-6 md:w-6 text-blue-500" />
+                    </button>
+                    <button
+                      type="button"
+                      className="p-2 md:p-3 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                    >
+                      <Calendar className="h-5 w-5 md:h-6 md:w-6 text-orange-500" />
+                    </button>
                   </div>
                 </div>
 
-                <button 
-                  type="submit" 
-                  disabled={loading || !form.content.trim()} 
+                <button
+                  type="submit"
+                  disabled={loading || !form.content.trim()}
                   className={`hidden md:block w-full mt-4 py-4 rounded-xl font-black uppercase text-label tracking-[0.2em] transition-all ${
                     form.content.trim() && !loading
-                      ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20 active:scale-[0.98]" 
+                      ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20 active:scale-[0.98]"
                       : "bg-slate-100 dark:bg-white/5 text-slate-400 cursor-not-allowed"
                   }`}
                 >
-                  {loading ? "Publishing..." : editingId ? "Update Post" : "Post"}
+                  {loading
+                    ? "Publishing..."
+                    : editingId
+                      ? "Update Post"
+                      : "Post"}
                 </button>
               </form>
               {(error || message) && (
-                <div className={`mt-4 p-3 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest border-2 ${error ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>
+                <div
+                  className={`mt-4 p-3 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest border-2 ${error ? "bg-red-50 text-red-600 border-red-100" : "bg-emerald-50 text-emerald-600 border-emerald-100"}`}
+                >
                   {error || message}
                 </div>
               )}
