@@ -65,14 +65,24 @@ function ProjectChatPanel({ activeProject, profile }) {
     const fetchCurrentMessages = async () => {
       const { data, error } = await supabase
         .from("internal_messages")
-        .select("*, profiles(full_name, role)")
+        .select("id, group_id, sender_id, message_text, created_at")
         .eq("group_id", groupId)
         .order("created_at", { ascending: true })
 
       if (!error && data) {
+        // Resolve sender names from profiles
+        const senderIds = [...new Set(data.map(m => m.sender_id).filter(Boolean))]
+        let senderMap = {}
+        if (senderIds.length > 0) {
+          const { data: profilesData } = await supabase
+            .from("profiles")
+            .select("id, full_name, role")
+            .in("id", senderIds)
+          profilesData?.forEach(p => { senderMap[p.id] = p })
+        }
         const mapped = data.map(msg => ({
           ...msg,
-          sender: msg.profiles ? { full_name: msg.profiles.full_name, role: msg.profiles.role } : null
+          sender: senderMap[msg.sender_id] || null
         }))
         setMessages(mapped)
       }
@@ -89,22 +99,22 @@ function ProjectChatPanel({ activeProject, profile }) {
         table: 'internal_messages',
         filter: `group_id=eq.${groupId}`
       }, async (payload) => {
-        const { data } = await supabase
-          .from("internal_messages")
-          .select("*, profiles(full_name, role)")
-          .eq("id", payload.new.id)
-          .single()
-        
-        if (data) {
-          const mapped = { 
-            ...data, 
-            sender: data.profiles ? { full_name: data.profiles.full_name, role: data.profiles.role } : null 
-          }
-          setMessages(prev => {
-            if (prev.find(m => m.id === mapped.id)) return prev
-            return [...prev, mapped]
-          })
+        const newMsg = payload.new
+        // Resolve sender name
+        let sender = null
+        if (newMsg.sender_id) {
+          const { data: pData } = await supabase
+            .from("profiles")
+            .select("id, full_name, role")
+            .eq("id", newMsg.sender_id)
+            .maybeSingle()
+          sender = pData || null
         }
+        const mapped = { ...newMsg, sender }
+        setMessages(prev => {
+          if (prev.find(m => m.id === mapped.id)) return prev
+          return [...prev, mapped]
+        })
       }).subscribe()
 
     return () => {
@@ -145,7 +155,7 @@ function ProjectChatPanel({ activeProject, profile }) {
           message_text: msg,
         },
       ])
-      .select("*, profiles(full_name, role)")
+      .select("id, group_id, sender_id, message_text, created_at")
       .maybeSingle();
 
     if (!error) {
@@ -153,9 +163,7 @@ function ProjectChatPanel({ activeProject, profile }) {
       if (newMsgData) {
         const mapped = {
           ...newMsgData,
-          sender: newMsgData.profiles
-            ? { full_name: newMsgData.profiles.full_name, role: newMsgData.profiles.role }
-            : { full_name: profile?.full_name || profile?.name || "You", role: profile?.role },
+          sender: { full_name: profile?.full_name || profile?.name || "You", role: profile?.role },
         };
         setMessages((prev) => {
           if (prev.find((m) => m.id === mapped.id)) return prev;
