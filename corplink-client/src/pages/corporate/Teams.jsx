@@ -51,23 +51,28 @@ export default function Teams() {
     setEmployees(empData || []);
   };
 
+  const [error, setError] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.department_id) return;
-
+    if (!form.name.trim()) return;
+    setError("");
     setLoading(true);
-    const { error } = await supabase.from("teams").insert([
+
+    const { error: insertError } = await supabase.from("teams").insert([
       {
         name: form.name.trim(),
-        department_id: form.department_id,
+        department_id: form.department_id || null,
         team_lead_id: form.team_lead_id || null,
         company_id: profile.company_id,
       },
     ]);
 
-    if (!error) {
+    if (!insertError) {
       setForm({ name: "", department_id: "", team_lead_id: "" });
       fetchData();
+    } else {
+      setError(insertError.message);
     }
     setLoading(false);
   };
@@ -142,6 +147,11 @@ export default function Teams() {
                 {loading ? "Syncing..." : "Add Team Asset"}
               </button>
             </form>
+            {error && (
+              <p className="mt-4 text-red-500 text-[11px] font-bold bg-red-50 dark:bg-red-950/30 px-4 py-3 rounded-xl border border-red-200 dark:border-red-800">
+                ⚠️ {error}
+              </p>
+            )}
           </div>
         </RoleGate>
 
