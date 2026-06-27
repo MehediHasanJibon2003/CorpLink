@@ -125,21 +125,21 @@ const PostCard = memo(
         {/* Header */}
         <div className="p-4 md:p-10 flex items-start justify-between border-b-2 border-slate-50 dark:border-slate-900/50 bg-slate-50/30 dark:bg-slate-900/20">
           <div className="flex items-center gap-3 md:gap-5 min-w-0">
-            {post.companies?.logo_url ? (
+            {post.corporates?.logo_url ? (
               <img
-                src={post.companies.logo_url}
+                src={post.corporates.logo_url}
                 alt="Logo"
                 className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-lg p-1 bg-white"
               />
             ) : (
               <div className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-3 md:text-heading-1 shadow-lg border-2 border-white dark:border-slate-700 shrink-0">
-                {post.companies?.name?.charAt(0)?.toUpperCase() || "C"}
+                {post.corporates?.name?.charAt(0)?.toUpperCase() || "C"}
               </div>
             )}
             <div className="min-w-0">
               <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
                 <h3 className="font-black text-[14px] md:text-heading-1 text-slate-900 dark:text-white uppercase tracking-tight leading-tight truncate">
-                  {post.companies?.name || "Corporate Entity"}
+                  {post.corporates?.name || "Corporate Entity"}
                 </h3>
                 <span
                   className={`inline-flex px-2 py-0.5 md:px-4 md:py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest md:tracking-[0.2em] border items-center gap-1 md:gap-2 w-fit ${typeConfig.color}`}
@@ -203,13 +203,20 @@ const PostCard = memo(
 
         {/* Media */}
         {post.media_url && (
-          <div className="w-full bg-black flex items-center justify-center">
+          <div className="w-full bg-black flex items-center justify-center relative">
             {post.media_type === "video" ? (
               <video
                 src={post.media_url}
                 controls
                 className="w-full max-h-[500px] md:max-h-[700px] outline-none"
               />
+            ) : post.media_type === "document" ? (
+              <div className="w-full bg-slate-100 dark:bg-slate-700 p-8 flex flex-col items-center justify-center gap-4">
+                <Paperclip className="h-12 w-12 text-slate-400" />
+                <a href={post.media_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline font-bold">
+                  View Attached Document
+                </a>
+              </div>
             ) : (
               <img
                 src={post.media_url}
@@ -307,7 +314,7 @@ const PostCard = memo(
                           </span>
                         </div>
                         <p className="text-[13px] md:text-heading-3 text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
-                          {comment.comment_text}
+                          {comment.content}
                         </p>
                       </div>
                     </div>
@@ -349,37 +356,37 @@ function Feed() {
   const fetchPosts = async () => {
     let query = supabase
       .from("announcements")
-      .select("*, companies(name, logo_url)")
+      .select("*, corporates(name, logo_url)")
       .order("created_at", { ascending: false });
     if (profile?.role !== "super_admin" && profile?.company_id) {
       query = query.or(
-        `visibility.eq.public,and(visibility.eq.internal,company_id.eq.${profile.company_id})`,
+        `visibility.eq.public,visibility.eq.inter-corporate,and(visibility.eq.internal,company_id.eq.${profile.company_id})`,
       );
     }
     const { data: announcementsData } = await query;
 
     const { data: likesData } = await supabase
-      .from("announcement_likes")
+      .from("post_reactions")
       .select("*");
 
     const { data: commentsData } = await supabase
-      .from("announcement_comments")
+      .from("post_comments")
       .select("*")
       .order("created_at", { ascending: true });
 
     const mergedPosts = (announcementsData || []).map((post) => {
       const postLikes = (likesData || []).filter(
-        (l) => l.announcement_id === post.id,
+        (l) => l.post_id === post.id,
       );
       const postComments = (commentsData || []).filter(
-        (c) => c.announcement_id === post.id,
+        (c) => c.post_id === post.id,
       );
       return {
         ...post,
         likesCount: postLikes.length,
         commentsCount: postComments.length,
         comments: postComments,
-        likedByMe: postLikes.some((l) => l.user_id === user?.id),
+        likedByMe: postLikes.some((l) => l.employee_id === user?.id),
       };
     });
     setPosts(mergedPosts);
@@ -428,6 +435,8 @@ function Feed() {
       let mediaType = selectedImage
         ? selectedImage.type?.startsWith("video")
           ? "video"
+          : selectedImage.type?.includes("pdf") || selectedImage.name?.match(/\.(doc|docx|pdf|txt)$/i)
+          ? "document"
           : "image"
         : editingId
           ? posts.find((p) => p.id === editingId)?.media_type
@@ -438,11 +447,14 @@ function Feed() {
       }
 
       const payload = {
-        ...form,
         title: finalTitle,
+        content: form.content,
+        visibility: form.visibility,
+        post_type: form.post_type,
         media_url: mediaUrl,
         media_type: mediaType,
         created_by: user?.id,
+        company_id: profile?.company_id,
       };
 
       console.log("Submitting Post Payload:", payload);
@@ -497,14 +509,15 @@ function Feed() {
     );
     if (post.likedByMe) {
       await supabase
-        .from("announcement_likes")
+        .from("post_reactions")
         .delete()
-        .match({ announcement_id: post.id, user_id: user.id });
+        .match({ post_id: post.id, employee_id: user.id });
     } else {
-      await supabase.from("announcement_likes").insert([
+      await supabase.from("post_reactions").insert([
         {
-          announcement_id: post.id,
-          user_id: user.id,
+          post_id: post.id,
+          employee_id: user.id,
+          type: 'like'
         },
       ]);
     }
@@ -523,7 +536,7 @@ function Feed() {
                 ...p.comments,
                 {
                   id: "temp",
-                  comment_text: text,
+                  content: text,
                   created_at: new Date().toISOString(),
                 },
               ],
@@ -532,11 +545,11 @@ function Feed() {
       ),
     );
     setCommentInputs((prev) => ({ ...prev, [post.id]: "" }));
-    await supabase.from("announcement_comments").insert([
+    await supabase.from("post_comments").insert([
       {
-        announcement_id: post.id,
-        user_id: user.id,
-        comment_text: text,
+        post_id: post.id,
+        employee_id: user.id,
+        content: text,
       },
     ]);
     fetchPosts();
@@ -571,9 +584,9 @@ function Feed() {
       <div className="sticky top-0 z-[60] bg-white/95 dark:bg-[#0d0622]/95 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 px-4 md:px-8 py-2 -mx-4 md:-mx-8 lg:-mx-12 flex items-center justify-between shadow-sm mb-6 md:mb-10">
         {/* Left: Search/Logo */}
         <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-          {profile?.companies?.logo_url ? (
+          {profile?.corporates?.logo_url ? (
             <img
-              src={profile.companies.logo_url}
+              src={profile.corporates.logo_url}
               className="h-9 w-9 md:h-11 md:w-11 rounded-full object-contain shrink-0 shadow-md p-1 bg-white border border-slate-200"
               alt="C"
             />
@@ -776,6 +789,7 @@ function Feed() {
                       className="bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-md text-[8px] md:text-[9px] font-black uppercase tracking-widest outline-none cursor-pointer"
                     >
                       <option value="internal">🔒 Internal</option>
+                      <option value="inter-corporate">🏢 Inter-Corporate</option>
                       <option value="public">🌍 Public</option>
                     </select>
                     <select
@@ -810,25 +824,33 @@ function Feed() {
                   onChange={(e) =>
                     setForm({ ...form, content: e.target.value })
                   }
-                  rows={isMobile ? "10" : "5"}
+                  rows="5"
                   className="w-full bg-transparent border-none px-0 py-2 outline-none font-medium text-[15px] md:text-heading-3 text-slate-700 dark:text-slate-200 resize-none"
                 />
 
                 {(imagePreview || selectedImage) && (
-                  <div className="relative rounded-2xl overflow-hidden border-2 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-black/40 group max-h-[300px]">
+                  <div className="relative rounded-2xl overflow-hidden border-2 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-black/40 group max-h-[300px] min-h-[100px] flex items-center justify-center">
                     {selectedImage?.type?.startsWith("video") ||
                     (editingId &&
                       posts.find((p) => p.id === editingId)?.media_type ===
                         "video") ? (
                       <video
                         src={imagePreview}
-                        className="w-full h-full object-contain"
+                        className="w-full max-h-[300px] object-contain"
                         controls
                       />
+                    ) : selectedImage?.name?.match(/\.(doc|docx|pdf|txt)$/i) || 
+                        (editingId && posts.find(p => p.id === editingId)?.media_type === "document") ? (
+                      <div className="flex flex-col items-center justify-center gap-2 p-6">
+                        <Paperclip className="h-10 w-10 text-slate-400" />
+                        <span className="text-sm font-bold text-slate-600 dark:text-slate-300">
+                          {selectedImage?.name || "Document attached"}
+                        </span>
+                      </div>
                     ) : (
                       <img
                         src={imagePreview}
-                        className="w-full h-full object-contain"
+                        className="w-full max-h-[300px] object-contain"
                       />
                     )}
                     <button
@@ -853,7 +875,7 @@ function Feed() {
                       <Paperclip className="h-5 w-5 md:h-6 md:w-6 text-emerald-500" />
                       <input
                         type="file"
-                        accept="image/*,video/*"
+                        accept="image/*,video/*,.doc,.docx,.pdf,.txt"
                         onChange={handleImageChange}
                         className="hidden"
                       />

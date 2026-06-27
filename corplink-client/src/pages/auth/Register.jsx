@@ -100,8 +100,8 @@ function Register() {
           return;
         }
 
-        const { data: companyData, error: companyError } = await supabase
-          .from("companies")
+        const { data: corporateData, error: companyError } = await supabase
+          .from("corporates")
           .insert([{ name: companyName.trim(), created_by: user.id }])
           .select()
           .single();
@@ -115,7 +115,7 @@ function Register() {
         const { error: profileError } = await supabase.from("profiles").insert([
           {
             id: user.id,
-            company_id: companyData.id,
+            company_id: corporateData.id,
             full_name: fullName.trim(),
             email: email.trim().toLowerCase(),
             role: "corporate_admin",
@@ -132,7 +132,7 @@ function Register() {
         await supabase.from("employees").insert([
           {
             user_id: user.id,
-            company_id: companyData.id,
+            company_id: corporateData.id,
             name: fullName.trim(),
             email: email.trim().toLowerCase(),
             role: "corporate_admin",
@@ -154,7 +154,7 @@ function Register() {
             const { data: subData } = await supabase
               .from("subscriptions")
               .insert([{
-                company_id: companyData.id,
+                company_id: corporateData.id,
                 plan_id: planId,
                 status: "pending",
                 start_date: new Date().toISOString(),
@@ -164,7 +164,7 @@ function Register() {
 
             // 3. Create Pending Invoice
             await supabase.from("invoices").insert([{
-              company_id: companyData.id,
+              company_id: corporateData.id,
               subscription_id: subData?.id,
               plan_id: planId,
               amount: planData.price,
@@ -229,7 +229,7 @@ function Register() {
 
         // STEP 2: Now as authenticated user, verify the Company Code
         const { data: cData, error: cErr } = await supabase
-          .from("companies")
+          .from("corporates")
           .select("id, name, status")
           .eq("id", trimmedCompanyId)
           .maybeSingle();

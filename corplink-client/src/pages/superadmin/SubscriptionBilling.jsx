@@ -44,10 +44,10 @@ export default function SubscriptionBilling() {
 
   const fetchData = async () => {
     setLoading(true)
-    const { data: sData } = await supabase.from("subscriptions").select("*, companies(name)").order("created_at", { ascending: false })
+    const { data: sData } = await supabase.from("subscriptions").select("*, corporates(name)").order("created_at", { ascending: false })
     const { data: pData } = await supabase.from("subscription_plans").select("*").order("price", { ascending: true })
-    const { data: iData } = await supabase.from("invoices").select("*, companies(name), subscription_plans(name)").order("created_at", { ascending: false })
-    const { data: aData } = await supabase.from("billing_alerts").select("*, companies(name)").order("created_at", { ascending: false })
+    const { data: iData } = await supabase.from("invoices").select("*, corporates(name), subscription_plans(name)").order("created_at", { ascending: false })
+    const { data: aData } = await supabase.from("billing_alerts").select("*, corporates(name)").order("created_at", { ascending: false })
     const { data: gData } = await supabase.from("payment_gateways").select("*").order("name", { ascending: true })
     
     setSubs(sData || [])
@@ -173,7 +173,7 @@ export default function SubscriptionBilling() {
                   ) : subs.map(sub => (
                     <tr key={sub.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
                       <td className="px-10 py-8">
-                        <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight">{sub.companies?.name || 'Unknown'}</p>
+                        <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight">{sub.corporates?.name || 'Unknown'}</p>
                         <p className="text-badge font-bold text-slate-500 truncate">ID: {sub.company_id.substring(0, 8)}...</p>
                       </td>
                       <td className="px-10 py-8 font-black uppercase text-label text-violet-600 dark:text-violet-400">{sub.plan}</td>
@@ -207,7 +207,7 @@ export default function SubscriptionBilling() {
                 <div key={sub.id} className="p-6 space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{sub.companies?.name || 'Unknown'}</p>
+                      <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{sub.corporates?.name || 'Unknown'}</p>
                       <p className="text-badge font-bold text-slate-500 mt-0.5">{sub.plan} Plan</p>
                     </div>
                     <button 
@@ -326,7 +326,7 @@ export default function SubscriptionBilling() {
                           </div>
                         </td>
                         <td className="px-10 py-8">
-                          <p className="font-black text-slate-900 dark:text-white uppercase text-label truncate max-w-[150px]">{inv.companies?.name}</p>
+                          <p className="font-black text-slate-900 dark:text-white uppercase text-label truncate max-w-[150px]">{inv.corporates?.name}</p>
                           <p className="text-badge font-bold text-slate-500">{inv.subscription_plans?.name} Plan</p>
                         </td>
                         <td className="px-10 py-8 font-black text-violet-600 text-heading-3">${inv.amount}</td>
@@ -371,7 +371,7 @@ export default function SubscriptionBilling() {
                         <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center text-violet-600 shrink-0"><FileText className="h-5 w-5" /></div>
                         <div>
                           <p className="font-black text-slate-900 dark:text-white uppercase text-badge">{inv.invoice_number}</p>
-                          <p className="text-[10px] font-bold text-slate-500 uppercase">{inv.companies?.name}</p>
+                          <p className="text-[10px] font-bold text-slate-500 uppercase">{inv.corporates?.name}</p>
                         </div>
                       </div>
                       <p className="text-heading-3 font-black text-violet-600">${inv.amount}</p>
@@ -442,7 +442,7 @@ export default function SubscriptionBilling() {
                            billingAlert.type === 'expired' ? <AlertCircle className="h-5 w-5 md:h-6 md:w-6" /> : <Zap className="h-5 w-5 md:h-6 md:w-6" />}
                        </div>
                        <div>
-                          <h4 className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{billingAlert.companies?.name}</h4>
+                          <h4 className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{billingAlert.corporates?.name}</h4>
                           <p className="text-badge font-bold text-slate-500 uppercase tracking-widest mt-1 line-clamp-1">{billingAlert.message}</p>
                        </div>
                     </div>

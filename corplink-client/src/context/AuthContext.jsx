@@ -23,17 +23,17 @@ export function AuthProvider({ children }) {
 
     // Fetch company name to display in the UI
     if (data && data.company_id) {
-      const { data: companyData } = await supabase
-        .from("companies")
+      const { data: corporateData } = await supabase
+        .from("corporates")
         .select("name, logo_url, primary_color")
         .eq("id", data.company_id)
-        .single();
+        .maybeSingle();
 
-      if (companyData) {
-        data.companies = { 
-          name: companyData.name, 
-          logo_url: companyData.logo_url,
-          primary_color: companyData.primary_color 
+      if (corporateData) {
+        data.corporates = { 
+          name: corporateData.name, 
+          logo_url: corporateData.logo_url,
+          primary_color: corporateData.primary_color 
         };
       }
 

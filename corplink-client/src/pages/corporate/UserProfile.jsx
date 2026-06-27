@@ -283,7 +283,7 @@ export default function UserProfile() {
             <div className="w-full mt-8 md:mt-10 pt-8 border-t-2 border-slate-100 dark:border-slate-700 text-left space-y-6">
               <div>
                 <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Organization</p>
-                <p className="text-[14px] md:text-heading-3 font-black text-slate-800 dark:text-slate-100">{profile?.companies?.name || "CorpLink Enterprise"}</p>
+                <p className="text-[14px] md:text-heading-3 font-black text-slate-800 dark:text-slate-100">{profile?.corporates?.name || "CorpLink Enterprise"}</p>
               </div>
               {profile?.company_id && (
                 <div>

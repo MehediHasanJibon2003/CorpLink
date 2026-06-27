@@ -43,7 +43,7 @@ export default function PlatformSettings() {
 
   useEffect(() => {
     const loadInit = async () => {
-      const { data: comps } = await supabase.from("companies").select("id, name").eq("status", "active").order("name")
+      const { data: comps } = await supabase.from("corporates").select("id, name").eq("status", "active").order("name")
       setCompanies(comps || [])
       if (comps?.length) setSelectedCo(comps[0])
       

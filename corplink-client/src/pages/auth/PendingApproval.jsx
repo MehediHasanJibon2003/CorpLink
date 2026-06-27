@@ -5,7 +5,7 @@ import { ShieldAlert, Hourglass, ArrowRight, LogOut } from "lucide-react";
 export default function PendingApproval() {
   const { profile, logout } = useAuth();
 
-  const isRejected = profile?.companies?.status === "rejected";
+  const isRejected = profile?.corporates?.status === "rejected";
 
   return (
     <div className="h-screen w-screen flex flex-col bg-slate-50 dark:bg-[#05030f] relative overflow-hidden">
@@ -59,8 +59,8 @@ export default function PendingApproval() {
 
           <div className="bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-4 mb-8 text-left">
             <p className="text-label font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Workspace Details</p>
-            <p className="text-body font-semibold text-slate-900 dark:text-white">{profile?.companies?.name || "Unknown Corporate"}</p>
-            <p className="text-label text-slate-500 mt-1">Status: <span className={isRejected ? "text-red-500 font-bold" : "text-amber-500 font-bold"}>{profile?.companies?.status?.toUpperCase()}</span></p>
+            <p className="text-body font-semibold text-slate-900 dark:text-white">{profile?.corporates?.name || "Unknown Corporate"}</p>
+            <p className="text-label text-slate-500 mt-1">Status: <span className={isRejected ? "text-red-500 font-bold" : "text-amber-500 font-bold"}>{profile?.corporates?.status?.toUpperCase()}</span></p>
           </div>
 
           {!isRejected && (

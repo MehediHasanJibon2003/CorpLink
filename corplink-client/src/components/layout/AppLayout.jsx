@@ -10,10 +10,10 @@ function AppLayout({ children, title, subtitle }) {
   const { profile } = useAuth();
 
   useEffect(() => {
-    if (profile?.companies?.primary_color) {
-      document.documentElement.style.setProperty('--primary-color', profile.companies.primary_color);
+    if (profile?.corporates?.primary_color) {
+      document.documentElement.style.setProperty('--primary-color', profile.corporates.primary_color);
     }
-  }, [profile?.companies?.primary_color]);
+  }, [profile?.corporates?.primary_color]);
 
   useEffect(() => {
     setIsSidebarOpen(false);

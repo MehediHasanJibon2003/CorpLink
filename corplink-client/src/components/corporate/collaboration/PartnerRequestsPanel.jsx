@@ -20,7 +20,7 @@ function PartnerRequestsPanel() {
 
     try {
       // 1. Fetch Company Lookup Map
-      const { data: cos } = await supabase.from("companies").select("id, name")
+      const { data: cos } = await supabase.from("corporates").select("id, name")
       const map = {}
       cos?.forEach(c => { map[c.id] = c.name })
       setCompanyMap(map)
@@ -95,7 +95,7 @@ function PartnerRequestsPanel() {
         data[0].sender_id,
         data[0].company_id,
         "collaboration",
-        `Strategic collaboration request authorized by ${profile.companies?.name || profile.company_name || "the partner company"}!`
+        `Strategic collaboration request authorized by ${profile.corporates?.name || profile.company_name || "the partner company"}!`
       )
     }
     setTimeout(() => setMessage(""), 3000)

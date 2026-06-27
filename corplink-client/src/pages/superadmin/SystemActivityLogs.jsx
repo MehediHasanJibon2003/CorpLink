@@ -25,12 +25,12 @@ export default function SystemActivityLogs() {
   const [isSevDropdownOpen, setIsSevDropdownOpen] = useState(false)
 
   useEffect(() => {
-    supabase.from("companies").select("id, name").order("name").then(({ data }) => setCompanies(data || []))
+    supabase.from("corporates").select("id, name").order("name").then(({ data }) => setCompanies(data || []))
   }, [])
 
   const fetchLogs = useCallback(async () => {
     setLoading(true)
-    let q = supabase.from("activity_logs").select("*, profiles(full_name), companies(name)", { count: "exact" }).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
+    let q = supabase.from("activity_logs").select("*, profiles(full_name), corporates(name)", { count: "exact" }).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
     if (severity !== "all") q = q.eq("severity", severity)
     if (companyId !== "all") q = q.eq("company_id", companyId)
     if (search) q = q.ilike("action", `%${search}%`)
@@ -146,7 +146,7 @@ export default function SystemActivityLogs() {
                   <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
                     <td className="px-10 py-8">
                       <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase truncate max-w-[150px]">{log.profiles?.full_name || "System"}</p>
-                      <p className="text-badge font-bold text-slate-400 truncate max-w-[150px]">{log.companies?.name || "Global"}</p>
+                      <p className="text-badge font-bold text-slate-400 truncate max-w-[150px]">{log.corporates?.name || "Global"}</p>
                     </td>
                     <td className="px-10 py-8 text-badge font-black uppercase text-slate-500 tracking-widest">{log.entity || "—"}</td>
                     <td className="px-10 py-8 font-black text-slate-900 dark:text-white uppercase tracking-tight text-body truncate max-w-[200px]">{log.action}</td>
@@ -187,7 +187,7 @@ export default function SystemActivityLogs() {
                   <div className="flex justify-between items-end pt-2">
                     <div>
                       <p className="text-badge font-black text-slate-900 dark:text-white uppercase">{log.profiles?.full_name || "System"}</p>
-                      <p className="text-[9px] font-bold text-slate-500 uppercase">{log.companies?.name || "Global"}</p>
+                      <p className="text-[9px] font-bold text-slate-500 uppercase">{log.corporates?.name || "Global"}</p>
                     </div>
                     <p className="text-[9px] font-black text-slate-400 uppercase">
                       {new Date(log.created_at).toLocaleString(undefined, { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}

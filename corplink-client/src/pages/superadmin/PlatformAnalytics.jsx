@@ -19,13 +19,13 @@ export default function PlatformAnalytics() {
   const [growthData, setGrowthData] = useState([])
   const [revenueData, setRevenueData] = useState([])
   const [moduleUsage, setModuleUsage] = useState([])
-  const [totals, setTotals] = useState({ companies: 0, users: 0, revenue: 0, pendingRev: 0 })
+  const [totals, setTotals] = useState({ corporates: 0, users: 0, revenue: 0, pendingRev: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const load = async () => {
       const [{ data: comps }, { data: profiles }, { data: revLogs }, { data: usageLogs }] = await Promise.all([
-        supabase.from("companies").select("status, plan, created_at"),
+        supabase.from("corporates").select("status, plan, created_at"),
         supabase.from("profiles").select("id").neq("role", "super_admin"),
         supabase.from("revenue_logs").select("*").order("payment_date", { ascending: true }),
         supabase.from("module_usage_logs").select("module_name, corporate_id")
@@ -66,7 +66,7 @@ export default function PlatformAnalytics() {
       setRevenueData(Object.entries(revMap).map(([month, amount]) => ({ month, amount })))
       const usageMap = {}; us.forEach(u => { usageMap[u.module_name] = (usageMap[u.module_name] || 0) + 1 })
       setModuleUsage(Object.entries(usageMap).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count))
-      setTotals({ companies: cs.length, users: profiles?.length || 0, revenue: totalRev, pendingRev: pendingRev })
+      setTotals({ corporates: cs.length, users: profiles?.length || 0, revenue: totalRev, pendingRev: pendingRev })
       setLoading(false)
     }
     load()
@@ -85,7 +85,7 @@ export default function PlatformAnalytics() {
   const metrics = [
     { label: "Revenue", value: `$${totals.revenue.toLocaleString()}`, icon: DollarSign, color: "#10b981", grad: "from-emerald-500 to-emerald-600" },
     { label: "Pending", value: `$${totals.pendingRev.toLocaleString()}`, icon: Clock, color: "#f59e0b", grad: "from-amber-500 to-amber-600" },
-    { label: "Corporates", value: totals.companies, icon: Server, color: "#8b5cf6", grad: "from-violet-500 to-violet-600" },
+    { label: "Corporates", value: totals.corporates, icon: Server, color: "#8b5cf6", grad: "from-violet-500 to-violet-600" },
     { label: "Users", value: totals.users, icon: Users, color: "#ec4899", grad: "from-pink-500 to-pink-600" },
   ]
 

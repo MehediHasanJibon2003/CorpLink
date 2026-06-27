@@ -19,7 +19,7 @@ export default function CorporateManagement() {
   const fetchCompanies = async () => {
     setLoading(true)
     const { data, error } = await supabase
-      .from("companies")
+      .from("corporates")
       .select("*")
       .order("created_at", { ascending: false })
     
@@ -34,12 +34,12 @@ export default function CorporateManagement() {
     
     try {
       if (status === 'deleted') {
-        const { error } = await supabase.from("companies").delete().eq("id", id)
+        const { error } = await supabase.from("corporates").delete().eq("id", id)
         if (error) throw error
       } else {
         const updateData = { status }
         if (reason) updateData.rejection_reason = reason
-        const { error } = await supabase.from("companies").update(updateData).eq("id", id)
+        const { error } = await supabase.from("corporates").update(updateData).eq("id", id)
         if (error) throw error
       }
 

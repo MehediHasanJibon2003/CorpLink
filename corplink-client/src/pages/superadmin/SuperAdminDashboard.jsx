@@ -5,13 +5,13 @@ import { Users, Building2, CreditCard, ShieldAlert, ArrowUpRight, Activity, Zap 
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts"
 
 const MOCK_GROWTH_DATA = [
-  { month: "Jan", companies: 12, users: 400 },
-  { month: "Feb", companies: 18, users: 650 },
-  { month: "Mar", companies: 15, users: 800 },
-  { month: "Apr", companies: 25, users: 1200 },
-  { month: "May", companies: 32, users: 1800 },
-  { month: "Jun", companies: 28, users: 2100 },
-  { month: "Jul", companies: 45, users: 2800 },
+  { month: "Jan", corporates: 12, users: 400 },
+  { month: "Feb", corporates: 18, users: 650 },
+  { month: "Mar", corporates: 15, users: 800 },
+  { month: "Apr", corporates: 25, users: 1200 },
+  { month: "May", corporates: 32, users: 1800 },
+  { month: "Jun", corporates: 28, users: 2100 },
+  { month: "Jul", corporates: 45, users: 2800 },
 ]
 
 export default function SuperAdminDashboard() {
@@ -36,13 +36,13 @@ export default function SuperAdminDashboard() {
     try {
       const [users, companies, pending, threats] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("companies").select("id", { count: "exact", head: true }),
-        supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("corporates").select("id", { count: "exact", head: true }),
+        supabase.from("corporates").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("threat_alerts").select("id", { count: "exact", head: true }).eq("resolved", false)
       ])
 
-      const { data: companiesData } = await supabase.from("companies").select("id, name, status, plan").limit(200)
-      const activeComps = (companiesData || []).filter(c => c.status === "active")
+      const { data: corporatesData } = await supabase.from("corporates").select("id, name, status, plan").limit(200)
+      const activeComps = (corporatesData || []).filter(c => c.status === "active")
 
       const subs = { Basic: 0, Standard: 0, Enterprise: 0 }
       activeComps.forEach(c => { if (subs[c.plan] !== undefined) subs[c.plan]++ })
@@ -58,7 +58,7 @@ export default function SuperAdminDashboard() {
         return { ...corp, employees: count || 0 }
       }))
 
-      const { data: pendingData } = await supabase.from("companies").select("id, name, plan").eq("status", "pending").limit(5)
+      const { data: pendingData } = await supabase.from("corporates").select("id, name, plan").eq("status", "pending").limit(5)
 
       setPendingList(pendingData || [])
       setTopCompanies(companiesWithCounts.sort((a, b) => b.employees - a.employees).slice(0, 4))

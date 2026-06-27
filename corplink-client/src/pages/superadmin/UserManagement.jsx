@@ -21,8 +21,8 @@ export default function UserManagement() {
 
   const fetchData = async () => {
     setLoading(true)
-    const { data: profiles, error } = await supabase.from("profiles").select("*, companies(name)").order("created_at", { ascending: false })
-    const { data: comps } = await supabase.from("companies").select("id, name")
+    const { data: profiles, error } = await supabase.from("profiles").select("*, corporates(name)").order("created_at", { ascending: false })
+    const { data: comps } = await supabase.from("corporates").select("id, name")
     if (!error) setUsers(profiles)
     if (comps) setCompanies(comps)
     setLoading(false)
@@ -180,7 +180,7 @@ export default function UserManagement() {
                   <td className="px-10 py-8">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-2 text-label font-black text-slate-700 dark:text-white uppercase tracking-widest">
-                        <Building2 className="h-4 w-4 text-violet-500 shrink-0" /> {user.companies?.name || "Global Admin"}
+                        <Building2 className="h-4 w-4 text-violet-500 shrink-0" /> {user.corporates?.name || "Global Admin"}
                       </div>
                       <div className="flex items-center gap-2">
                         <Shield className="h-4 w-4 text-pink-500 shrink-0" />
@@ -245,7 +245,7 @@ export default function UserManagement() {
                 <div className="grid grid-cols-2 gap-4 py-4 border-y border-slate-100 dark:border-white/5">
                    <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Corporate</p>
-                      <p className="text-[10px] font-black text-slate-700 dark:text-white uppercase truncate">{user.companies?.name || "Global Admin"}</p>
+                      <p className="text-[10px] font-black text-slate-700 dark:text-white uppercase truncate">{user.corporates?.name || "Global Admin"}</p>
                    </div>
                    <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Identity Role</p>

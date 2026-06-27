@@ -34,8 +34,8 @@ export default function Billing() {
       // Fetch active subscription for this company
       const { data: subData } = await supabase
         .from("subscriptions")
-        .select("*, subscription_plans(*)")
-        .eq("company_id", profile.company_id)
+        .select("*")
+        .eq("corporate_id", profile.company_id)
         .eq("status", "active")
         .maybeSingle();
 
@@ -44,9 +44,10 @@ export default function Billing() {
 
       // Fetch invoices for this company
       const { data: invData } = await supabase
-        .from("invoices")
-        .select("*, subscription_plans(name)")
+        .from("activity_logs")
+        .select("*")
         .eq("company_id", profile.company_id)
+        .eq("action", "Invoice Payment")
         .order("created_at", { ascending: false })
         .limit(20);
 

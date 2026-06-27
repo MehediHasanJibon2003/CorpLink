@@ -100,12 +100,12 @@ function EmployeeLayout({ children }) {
         <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-800 dark:border-slate-800/50">
           <Link to="/employee/dashboard" className="flex items-center gap-3 md:gap-4 overflow-hidden">
             <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-body md:text-heading-2 shrink-0" style={{ background: "var(--primary-color)" }}>
-              {profile?.companies?.name?.charAt(0) || "C"}
+              {profile?.corporates?.name?.charAt(0) || "C"}
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-heading-3 md:text-heading-1 font-black uppercase tracking-[0.2em] text-white leading-none">CorpLink</span>
               <span className="text-[10px] md:text-label font-black uppercase tracking-[0.1em] text-orange-400 truncate mt-2 bg-orange-500/10 px-2 py-0.5 rounded-md self-start">
-                {profile?.companies?.name || "Workspace"}
+                {profile?.corporates?.name || "Workspace"}
               </span>
             </div>
           </Link>
@@ -117,7 +117,7 @@ function EmployeeLayout({ children }) {
             <div className="min-w-0">
               <p className="text-body md:text-body font-black text-blue-300 truncate uppercase tracking-widest">{profile?.full_name}</p>
               <p className="text-[10px] md:text-label text-slate-500 font-black uppercase tracking-wider mt-0.5">{profile?.role}</p>
-              <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] mt-0.5">{profile?.companies?.name}</p>
+              <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] mt-0.5">{profile?.corporates?.name}</p>
             </div>
           </div>
         </div>
@@ -170,7 +170,7 @@ function EmployeeLayout({ children }) {
               <div className="hidden md:block text-right">
                 <p className="text-body md:text-heading-3 font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">{profile?.full_name}</p>
                 <p className="text-[10px] md:text-label text-slate-500 font-black tracking-widest uppercase">{profile?.role}</p>
-                <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] mt-0.5">{profile?.companies?.name}</p>
+                <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] mt-0.5">{profile?.corporates?.name}</p>
               </div>
               <div className="h-10 w-10 md:h-14 md:w-14 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center font-black text-white text-heading-3 md:text-heading-1 shadow-sm" style={{ background: "var(--primary-color)" }}>
                 {(profile?.full_name || "E").charAt(0).toUpperCase()}

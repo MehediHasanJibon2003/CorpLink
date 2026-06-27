@@ -29,7 +29,7 @@ function DiscoverPanel() {
       if (mode === "external") {
         // Fetch Other Companies
         const { data: cos } = await supabase
-          .from("companies")
+          .from("corporates")
           .select("id, name")
           .neq("id", profile.company_id)
           .order("name")
