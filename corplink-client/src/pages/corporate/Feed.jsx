@@ -27,6 +27,7 @@ import {
   Bell,
   CheckSquare,
   Briefcase,
+  Target,
 } from "lucide-react";
 import { useConfirm } from "../../context/ConfirmContext";
 
@@ -51,9 +52,15 @@ const POST_TYPES = [
   },
   {
     value: "event",
-    label: "Event / Campaign",
+    label: "Event",
     color: "bg-orange-50 text-orange-700 border-orange-200",
     icon: <Calendar className="h-4 w-4" />,
+  },
+  {
+    value: "campaign",
+    label: "Campaign",
+    color: "bg-rose-50 text-rose-700 border-rose-200",
+    icon: <Target className="h-4 w-4" />,
   },
   {
     value: "internal",
@@ -594,15 +601,14 @@ function Feed() {
   const filteredPosts = posts.filter((post) => {
     // 1. Category Filtering Logic
     let matchesCategory = true;
-    if (filter === "internal") {
-      matchesCategory =
-        post.visibility === "internal" &&
-        post.company_id === profile?.company_id;
-    } else if (filter === "public") {
-      matchesCategory = post.visibility === "public";
+    if (filter === "announcements") {
+      matchesCategory = post.post_type === "announcement";
     } else if (filter === "campaigns") {
-      matchesCategory =
-        post.post_type === "promotion" || post.post_type === "event";
+      matchesCategory = post.post_type === "campaign";
+    } else if (filter === "events") {
+      matchesCategory = post.post_type === "event";
+    } else if (filter === "promotions") {
+      matchesCategory = post.post_type === "promotion";
     }
 
     // 2. Search Query Logic
@@ -644,31 +650,27 @@ function Feed() {
         </div>
 
         {/* Center: Tabs */}
-        <div className="flex items-center gap-0.5 md:gap-4 flex-[2] justify-center h-full max-w-xl">
-          <button
-            onClick={() => setFilter("all")}
-            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "all" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-          >
-            <Globe className="h-5 w-5 md:h-6 md:w-6" />
-          </button>
-          <button
-            onClick={() => setFilter("internal")}
-            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "internal" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-          >
-            <Lock className="h-5 w-5 md:h-6 md:w-6" />
-          </button>
-          <button
-            onClick={() => setFilter("public")}
-            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "public" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-          >
-            <Briefcase className="h-5 w-5 md:h-6 md:w-6" />
-          </button>
-          <button
-            onClick={() => setFilter("campaigns")}
-            className={`flex-1 h-10 md:h-12 flex items-center justify-center rounded-xl transition-all ${filter === "campaigns" ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"}`}
-          >
-            <Megaphone className="h-5 w-5 md:h-6 md:w-6" />
-          </button>
+        <div className="flex items-center gap-1 md:gap-2 flex-[2] justify-start md:justify-center h-full max-w-2xl overflow-x-auto custom-scrollbar px-2 py-1">
+          {[
+            { id: "all", label: "All", icon: Globe },
+            { id: "announcements", label: "Announcements", icon: Megaphone },
+            { id: "campaigns", label: "Campaigns", icon: Target },
+            { id: "events", label: "Events", icon: Calendar },
+            { id: "promotions", label: "Promotions", icon: Tag },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setFilter(tab.id)}
+              className={`flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 h-9 md:h-11 rounded-xl transition-all shrink-0 font-bold text-[12px] md:text-[13px] ${
+                filter === tab.id
+                  ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5"
+                  : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"
+              }`}
+            >
+              <tab.icon className="h-4 w-4 md:h-4 md:w-4" />
+              <span>{tab.label}</span>
+            </button>
+          ))}
         </div>
 
         {/* Right: Actions */}
