@@ -64,6 +64,19 @@ const POST_TYPES = [
   },
 ];
 
+const timeAgo = (dateString) => {
+  const date = new Date(dateString);
+  const diffInSeconds = Math.floor((new Date() - date) / 1000);
+  if (diffInSeconds < 60) return "Just now";
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) return `${diffInDays}d ago`;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+};
+
 // Separate Component for individual Post to handle IntersectionObserver (Auto View Counter)
 const PostCard = memo(
   ({
@@ -82,6 +95,7 @@ const PostCard = memo(
   }) => {
     const cardRef = useRef(null);
     const hasViewed = useRef(false);
+    const [showMenu, setShowMenu] = useState(false);
 
     useEffect(() => {
       const observer = new IntersectionObserver(
@@ -123,68 +137,90 @@ const PostCard = memo(
         className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-sm border-2 border-slate-100 dark:border-white/5 overflow-hidden transition-all hover:shadow-2xl hover:border-blue-500/20 group animate-in fade-in slide-in-from-bottom-8 duration-500"
       >
         {/* Header */}
-        <div className="p-4 md:p-10 flex items-start justify-between border-b-2 border-slate-50 dark:border-slate-900/50 bg-slate-50/30 dark:bg-slate-900/20">
-          <div className="flex items-center gap-3 md:gap-5 min-w-0">
+        <div className="p-4 md:p-8 flex items-start justify-between border-b-2 border-slate-50 dark:border-slate-900/50 bg-slate-50/30 dark:bg-slate-900/20 relative">
+          <div className="flex items-start gap-3 md:gap-4 min-w-0">
             {post.corporates?.logo_url ? (
               <img
                 src={post.corporates.logo_url}
                 alt="Logo"
-                className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-lg p-1 bg-white"
+                className="h-10 w-10 md:h-14 md:w-14 rounded-lg md:rounded-xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-sm p-1 bg-white mt-1"
               />
             ) : (
-              <div className="h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-heading-3 md:text-heading-1 shadow-lg border-2 border-white dark:border-slate-700 shrink-0">
+              <div className="h-10 w-10 md:h-14 md:w-14 rounded-lg md:rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-lg md:text-xl shadow-sm border-2 border-white dark:border-slate-700 shrink-0 mt-1">
                 {post.corporates?.name?.charAt(0)?.toUpperCase() || "C"}
               </div>
             )}
-            <div className="min-w-0">
-              <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
-                <h3 className="font-black text-[14px] md:text-heading-1 text-slate-900 dark:text-white uppercase tracking-tight leading-tight truncate">
-                  {post.corporates?.name || "Corporate Entity"}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
+                <h3 className="font-bold text-[14px] md:text-[16px] text-slate-900 dark:text-white truncate">
+                  {post.profiles?.full_name || "Unknown Member"}
                 </h3>
-                <span
-                  className={`inline-flex px-2 py-0.5 md:px-4 md:py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest md:tracking-[0.2em] border items-center gap-1 md:gap-2 w-fit ${typeConfig.color}`}
-                >
-                  {typeConfig.icon} {typeConfig.label}
+                <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+                <span className="text-[11px] md:text-[13px] text-slate-500 truncate">
+                  {post.profiles?.role || "Corporate Member"}
+                </span>
+                <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+                <span className="text-[11px] md:text-[13px] font-semibold text-slate-700 dark:text-slate-300 truncate">
+                  {post.corporates?.name || "Corporate Entity"}
                 </span>
               </div>
-              <div className="flex items-center gap-2 md:gap-3 mt-1 md:mt-2 font-black text-[8px] md:text-[10px] uppercase tracking-widest text-slate-400">
-                <span className="truncate">
-                  {new Date(post.created_at).toLocaleDateString(undefined, {
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+              
+              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                <span className="text-[10px] md:text-[11px] font-bold text-slate-400">
+                  {timeAgo(post.created_at)}
                 </span>
-                <span className="text-slate-200 dark:text-slate-700">|</span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
                 <span
-                  className={`flex items-center gap-1 md:gap-1.5 ${post.visibility === "public" ? "text-emerald-500" : "text-blue-500"}`}
+                  className={`flex items-center gap-1 ${post.visibility === "public" ? "text-emerald-500" : "text-blue-500"} text-[10px] md:text-[11px] font-bold uppercase tracking-widest`}
                 >
                   {post.visibility === "public" ? (
-                    <Globe className="h-2.5 w-2.5 md:h-3 md:w-3" />
+                    <Globe className="h-3 w-3" />
                   ) : (
-                    <Lock className="h-2.5 w-2.5 md:h-3 md:w-3" />
+                    <Lock className="h-3 w-3" />
                   )}
                   {post.visibility === "public" ? "Public" : "Internal"}
+                </span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
+                <span
+                  className={`inline-flex px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-md text-[9px] md:text-[10px] font-bold uppercase tracking-wider border items-center gap-1 w-fit ${typeConfig.color}`}
+                >
+                  {typeConfig.icon} {typeConfig.label}
                 </span>
               </div>
             </div>
           </div>
 
           {isAuthor && (
-            <div className="flex gap-1 md:gap-2 shrink-0">
+            <div className="relative shrink-0 ml-2">
               <button
-                onClick={() => onEdit(post)}
-                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-blue-500 transition-all"
+                onClick={() => setShowMenu(!showMenu)}
+                className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 transition-all"
               >
-                <Edit3 className="h-4 w-4 md:h-5 md:w-5" />
+                <MoreVertical className="h-5 w-5" />
               </button>
-              <button
-                onClick={() => onDelete(post.id)}
-                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 transition-all"
-              >
-                <Trash2 className="h-4 w-4 md:h-5 md:w-5" />
-              </button>
+              
+              {showMenu && (
+                <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 py-1 z-10 animate-in fade-in zoom-in-95 duration-200">
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      onEdit(post);
+                    }}
+                    className="w-full px-4 py-2 text-left text-[13px] font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2"
+                  >
+                    <Edit3 className="h-4 w-4" /> Edit Post
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      onDelete(post.id);
+                    }}
+                    className="w-full px-4 py-2 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                  >
+                    <Trash2 className="h-4 w-4" /> Delete
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -356,7 +392,7 @@ function Feed() {
   const fetchPosts = async () => {
     let query = supabase
       .from("announcements")
-      .select("*, corporates(name, logo_url)")
+      .select("*, corporates(name, logo_url), profiles:created_by(full_name, role)")
       .order("created_at", { ascending: false });
     if (profile?.role !== "super_admin" && profile?.company_id) {
       query = query.or(
