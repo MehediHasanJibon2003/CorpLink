@@ -146,15 +146,15 @@ const PostCard = memo(
         {/* Header */}
         <div className="p-4 md:p-8 flex items-start justify-between border-b-2 border-slate-50 dark:border-slate-900/50 bg-slate-50/30 dark:bg-slate-900/20 relative">
           <div className="flex items-start gap-3 md:gap-4 min-w-0">
-            {post.corporates?.logo_url ? (
+            {post.companies?.logo_url ? (
               <img
-                src={post.corporates.logo_url}
+                src={post.companies.logo_url}
                 alt="Logo"
                 className="h-10 w-10 md:h-14 md:w-14 rounded-lg md:rounded-xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-sm p-1 bg-white mt-1"
               />
             ) : (
               <div className="h-10 w-10 md:h-14 md:w-14 rounded-lg md:rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-lg md:text-xl shadow-sm border-2 border-white dark:border-slate-700 shrink-0 mt-1">
-                {post.corporates?.name?.charAt(0)?.toUpperCase() || "C"}
+                {post.companies?.name?.charAt(0)?.toUpperCase() || "C"}
               </div>
             )}
             <div className="min-w-0 flex-1">
@@ -168,7 +168,7 @@ const PostCard = memo(
                 </span>
                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
                 <span className="text-[11px] md:text-[13px] font-semibold text-slate-700 dark:text-slate-300 truncate">
-                  {post.corporates?.name || "Corporate Entity"}
+                  {post.companies?.name || "Corporate Entity"}
                 </span>
               </div>
               
@@ -399,7 +399,7 @@ function Feed() {
   const fetchPosts = async () => {
     let query = supabase
       .from("announcements")
-      .select("*, corporates(name, logo_url), profiles:created_by(full_name, role)")
+      .select("*, companies(name, logo_url), profiles:created_by(full_name, role)")
       .order("created_at", { ascending: false });
     if (profile?.role !== "super_admin" && profile?.company_id) {
       query = query.or(
@@ -626,9 +626,9 @@ function Feed() {
       <div className="sticky top-0 z-[60] bg-white/95 dark:bg-[#0d0622]/95 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 px-4 md:px-8 py-2 -mx-4 md:-mx-8 lg:-mx-12 flex items-center justify-between shadow-sm mb-6 md:mb-10">
         {/* Left: Search/Logo */}
         <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-          {profile?.corporates?.logo_url ? (
+          {profile?.companies?.logo_url ? (
             <img
-              src={profile.corporates.logo_url}
+              src={profile.companies.logo_url}
               className="h-9 w-9 md:h-11 md:w-11 rounded-full object-contain shrink-0 shadow-md p-1 bg-white border border-slate-200"
               alt="C"
             />

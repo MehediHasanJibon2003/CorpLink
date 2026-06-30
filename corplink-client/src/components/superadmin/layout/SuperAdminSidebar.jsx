@@ -8,7 +8,7 @@ import {
 
 const NAV_ITEMS = [
   { name: "Overview",          path: "/super-admin",               icon: LayoutDashboard, exact: true, colorStart: "#8b5cf6", colorEnd: "#6366f1" },
-  { name: "Corporates",        path: "/super-admin/corporates",    icon: Building2,       colorStart: "#3b82f6", colorEnd: "#06b6d4" },
+  { name: "Companies",        path: "/super-admin/companies",    icon: Building2,       colorStart: "#3b82f6", colorEnd: "#06b6d4" },
   { name: "Subscriptions",     path: "/super-admin/subscriptions", icon: CreditCard,      colorStart: "#10b981", colorEnd: "#14b8a6" },
   { name: "Platform Settings", path: "/super-admin/settings",      icon: Settings,        colorStart: "#f59e0b", colorEnd: "#f97316" },
   { name: "Activity Logs",     path: "/super-admin/logs",          icon: Activity,        colorStart: "#f43f5e", colorEnd: "#ec4899" },

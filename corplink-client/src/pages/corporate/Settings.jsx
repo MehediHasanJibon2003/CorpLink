@@ -61,7 +61,7 @@ export default function Settings() {
   const fetchOrgDetails = async () => {
     if (!profile?.company_id) return;
     const { data } = await supabase
-      .from("corporates")
+      .from("companies")
       .select("*")
       .eq("id", profile.company_id)
       .single();
@@ -93,14 +93,14 @@ export default function Settings() {
   const handleOrgSave = async (e) => {
     if (e) e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.from("corporates").update(orgForm).eq("id", profile.company_id);
+    const { error } = await supabase.from("companies").update(orgForm).eq("id", profile.company_id);
     if (!error) {
       setMessage("Organization details updated successfully");
       setShowOrgModal(false);
       setProfile(prev => ({
         ...prev,
-        corporates: {
-          ...prev.corporates,
+        companies: {
+          ...prev.companies,
           name: orgForm.name,
           primary_color: orgForm.primary_color
         }
@@ -166,8 +166,8 @@ export default function Settings() {
       setOrgForm(prev => ({ ...prev, logo_url: newLogoUrl }));
       setProfile(prev => ({
         ...prev,
-        corporates: {
-          ...prev.corporates,
+        companies: {
+          ...prev.companies,
           logo_url: newLogoUrl
         }
       }));

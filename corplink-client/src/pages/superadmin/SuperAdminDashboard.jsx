@@ -5,13 +5,13 @@ import { Users, Building2, CreditCard, ShieldAlert, ArrowUpRight, Activity, Zap 
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts"
 
 const MOCK_GROWTH_DATA = [
-  { month: "Jan", corporates: 12, users: 400 },
-  { month: "Feb", corporates: 18, users: 650 },
-  { month: "Mar", corporates: 15, users: 800 },
-  { month: "Apr", corporates: 25, users: 1200 },
-  { month: "May", corporates: 32, users: 1800 },
-  { month: "Jun", corporates: 28, users: 2100 },
-  { month: "Jul", corporates: 45, users: 2800 },
+  { month: "Jan", companies: 12, users: 400 },
+  { month: "Feb", companies: 18, users: 650 },
+  { month: "Mar", companies: 15, users: 800 },
+  { month: "Apr", companies: 25, users: 1200 },
+  { month: "May", companies: 32, users: 1800 },
+  { month: "Jun", companies: 28, users: 2100 },
+  { month: "Jul", companies: 45, users: 2800 },
 ]
 
 export default function SuperAdminDashboard() {
@@ -36,13 +36,13 @@ export default function SuperAdminDashboard() {
     try {
       const [users, companies, pending, threats] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("corporates").select("id", { count: "exact", head: true }),
-        supabase.from("corporates").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("companies").select("id", { count: "exact", head: true }),
+        supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("threat_alerts").select("id", { count: "exact", head: true }).eq("resolved", false)
       ])
 
-      const { data: corporatesData } = await supabase.from("corporates").select("id, name, status, plan").limit(200)
-      const activeComps = (corporatesData || []).filter(c => c.status === "active")
+      const { data: companiesData } = await supabase.from("companies").select("id, name, status, plan").limit(200)
+      const activeComps = (companiesData || []).filter(c => c.status === "active")
 
       const subs = { Basic: 0, Standard: 0, Enterprise: 0 }
       activeComps.forEach(c => { if (subs[c.plan] !== undefined) subs[c.plan]++ })
@@ -58,7 +58,7 @@ export default function SuperAdminDashboard() {
         return { ...corp, employees: count || 0 }
       }))
 
-      const { data: pendingData } = await supabase.from("corporates").select("id, name, plan").eq("status", "pending").limit(5)
+      const { data: pendingData } = await supabase.from("companies").select("id, name, plan").eq("status", "pending").limit(5)
 
       setPendingList(pendingData || [])
       setTopCompanies(companiesWithCounts.sort((a, b) => b.employees - a.employees).slice(0, 4))
@@ -85,7 +85,7 @@ export default function SuperAdminDashboard() {
 
   const statCards = [
     { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-    { label: "Total Corporates", value: stats.totalCompanies, icon: Building2, color: "text-violet-500", bg: "bg-violet-500/10", border: "border-violet-500/20" },
+    { label: "Total Companies", value: stats.totalCompanies, icon: Building2, color: "text-violet-500", bg: "bg-violet-500/10", border: "border-violet-500/20" },
     { label: "Security Threats", value: stats.activeThreats, icon: ShieldAlert, color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/30", path: "/super-admin/threats" },
     { label: "Active Subs", value: stats.activeSubscriptions, icon: CreditCard, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
     { label: "Pending Approvals", value: stats.pendingApprovals, icon: Zap, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" },
@@ -190,7 +190,7 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
 
-      {/* Row 1: Activity & Corporates - Side-by-side on desktop, stacked on mobile */}
+      {/* Row 1: Activity & Companies - Side-by-side on desktop, stacked on mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 mb-8 md:mb-12">
         <div className="p-6 md:p-10 rounded-3xl md:rounded-[3rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[380px] md:h-[512px] flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-6 md:mb-8">
@@ -223,7 +223,7 @@ export default function SuperAdminDashboard() {
         <div className="p-6 md:p-10 rounded-3xl md:rounded-[3rem] bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 h-[380px] md:h-[512px] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-3 mb-6 md:mb-8">
             <Building2 className="h-5 w-5 md:h-6 w-6 text-orange-500" />
-            <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">Top Corporates</h3>
+            <h3 className="text-heading-3 md:text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">Top Companies</h3>
           </div>
           <div className="space-y-4 md:space-y-6 flex-1 overflow-y-auto pr-1">
             {topCompanies.length === 0 ? (
@@ -248,7 +248,7 @@ export default function SuperAdminDashboard() {
           </div>
           <div className="relative group/btn mt-4 md:mt-6">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl blur opacity-20 group-hover/btn:opacity-100 transition duration-1000 animate-pulse"></div>
-            <button onClick={() => window.location.href = '/super-admin/corporates'} className="relative w-full py-3 md:py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-badge md:text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">View Directory</button>
+            <button onClick={() => window.location.href = '/super-admin/companies'} className="relative w-full py-3 md:py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-badge md:text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">View Directory</button>
           </div>
         </div>
       </div>
@@ -272,14 +272,14 @@ export default function SuperAdminDashboard() {
                     <h4 className="text-badge md:text-label font-black uppercase text-slate-900 dark:text-white truncate">{item.name}</h4>
                     <p className="text-[9px] md:text-[10px] text-slate-500 uppercase font-black tracking-widest">{item.plan}</p>
                   </div>
-                  <button onClick={() => window.location.href = '/super-admin/corporates'} className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0"><ArrowUpRight className="h-4 w-4" /></button>
+                  <button onClick={() => window.location.href = '/super-admin/companies'} className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0"><ArrowUpRight className="h-4 w-4" /></button>
                 </div>
               ))
             )}
           </div>
           <div className="relative group/btn mt-4 md:mt-6">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-xl blur opacity-20 group-hover/btn:opacity-100 transition duration-1000 animate-pulse"></div>
-            <button onClick={() => window.location.href = '/super-admin/corporates'} className="relative w-full py-3 md:py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-badge md:text-[10px] font-black uppercase tracking-widest text-amber-500">Manage All</button>
+            <button onClick={() => window.location.href = '/super-admin/companies'} className="relative w-full py-3 md:py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl text-badge md:text-[10px] font-black uppercase tracking-widest text-amber-500">Manage All</button>
           </div>
         </div>
 

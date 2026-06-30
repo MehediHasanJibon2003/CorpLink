@@ -208,7 +208,7 @@ function App() {
               element={<SuperAdminRoute><SuperAdminDashboard /></SuperAdminRoute>}
             />
             <Route
-              path="/super-admin/corporates"
+              path="/super-admin/companies"
               element={<SuperAdminRoute><CorporateManagement /></SuperAdminRoute>}
             />
             <Route

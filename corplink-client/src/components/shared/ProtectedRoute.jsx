@@ -13,7 +13,7 @@ function ProtectedRoute({ children }) {
     async function checkStatus() {
       if (profile && profile.role !== "super_admin" && profile.company_id) {
         const { data, error } = await supabase
-          .from("corporates")
+          .from("companies")
           .select("status")
           .eq("id", profile.company_id)
           .maybeSingle()
@@ -59,15 +59,12 @@ function ProtectedRoute({ children }) {
   if (profile.role !== "super_admin") {
     if (companyStatus === "pending") {
       if (profile.role === "corporate_admin" && location.pathname !== "/billing") {
-        console.warn("Company is pending, but bypassing billing lock for testing");
-        // return <Navigate to="/billing" replace />
-      } else if (profile.role !== "corporate_admin") {
-        console.warn("Company is pending, but bypassing pending-approval lock for testing");
-        // return <Navigate to="/pending-approval" replace />
+        return <Navigate to="/billing" replace />
+      } else if (profile.role !== "corporate_admin" && location.pathname !== "/pending-approval") {
+        return <Navigate to="/pending-approval" replace />
       }
-    } else if (companyStatus === "rejected") {
-      console.warn("Company is rejected, but bypassing pending-approval lock for testing");
-      // return <Navigate to="/pending-approval" replace />
+    } else if (companyStatus === "rejected" && location.pathname !== "/pending-approval") {
+      return <Navigate to="/pending-approval" replace />
     }
   }
 

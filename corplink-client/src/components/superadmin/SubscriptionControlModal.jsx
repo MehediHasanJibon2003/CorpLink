@@ -85,7 +85,7 @@ export default function SubscriptionControlModal({ subscription, onClose, onSucc
                 Control Subscription
               </h2>
               <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">
-                Editing: {subscription?.corporates?.name}
+                Editing: {subscription?.companies?.name}
               </p>
             </div>
           </div>

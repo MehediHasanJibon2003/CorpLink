@@ -13,7 +13,11 @@ import {
   Zap,
   Calendar,
   DollarSign,
+  Building,
+  Crown,
+  Check,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Billing() {
   const { profile } = useAuth();
@@ -22,6 +26,28 @@ export default function Billing() {
   const [plan, setPlan] = useState(null);
   const [invoices, setInvoices] = useState([]);
   const [payingId, setPayingId] = useState(null);
+  const [availablePlans, setAvailablePlans] = useState([]);
+
+  const UI_THEMES = [
+    {
+      icon: Zap,
+      color: "from-blue-500 to-blue-700",
+      popular: false,
+      defaultDescription: "Ideal for small teams and startups looking for basic structure.",
+    },
+    {
+      icon: Building,
+      color: "from-orange-500 to-orange-700",
+      popular: true,
+      defaultDescription: "Advanced controls and analytics for growing organizations.",
+    },
+    {
+      icon: Crown,
+      color: "from-purple-500 to-purple-700",
+      popular: false,
+      defaultDescription: "Custom solutions for multi-national corporations.",
+    },
+  ];
 
   useEffect(() => {
     if (!profile?.company_id) return;
@@ -52,6 +78,30 @@ export default function Billing() {
         .limit(20);
 
       setInvoices(invData || []);
+
+      // Fetch subscription plans
+      const { data: plansData } = await supabase
+        .from("subscription_plans")
+        .select("*")
+        .eq("is_active", true)
+        .order("price", { ascending: true });
+
+      if (plansData) {
+        const mergedTiers = plansData.map((p, idx) => {
+          const theme = UI_THEMES[idx % UI_THEMES.length];
+          return {
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            description: p.description || theme.defaultDescription,
+            features: p.features || [],
+            icon: theme.icon,
+            color: theme.color,
+            popular: theme.popular,
+          };
+        });
+        setAvailablePlans(mergedTiers);
+      }
     } catch (err) {
       console.error("Billing fetch error:", err);
     } finally {
@@ -196,7 +246,90 @@ export default function Billing() {
           </div>
         </div>
 
-        {/* Invoices */}
+        {/* Pricing Plans */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-heading-2 font-black text-slate-900 dark:text-white uppercase tracking-tight">
+              Available Plans
+            </h3>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              Upgrade anytime
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full pt-8">
+            {availablePlans.length === 0 ? (
+              <div className="col-span-1 md:col-span-3 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+              </div>
+            ) : (
+              availablePlans.map((tier, idx) => {
+                const Icon = tier.icon;
+                const isActive = plan?.name?.toLowerCase() === tier.name.toLowerCase();
+
+                return (
+                  <motion.div
+                    key={tier.name}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.2 }}
+                    className={`relative bg-white dark:bg-white/5 border p-8 md:p-12 rounded-3xl md:rounded-[3rem] shadow-xl dark:backdrop-blur-2xl flex flex-col hover:border-slate-300 dark:hover:border-white/20 transition-all duration-500 ${tier.popular
+                        ? "border-orange-500/50 ring-2 ring-orange-500 shadow-orange-500/10"
+                        : isActive
+                          ? "border-emerald-500/50 ring-2 ring-emerald-500 shadow-emerald-500/10"
+                          : "border-slate-200 dark:border-white/10"
+                      }`}
+                  >
+                    {isActive ? (
+                      <div className="absolute -top-5 md:-top-6 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-6 md:px-8 py-1.5 md:py-2 rounded-full text-label md:text-heading-3 font-black uppercase tracking-widest whitespace-nowrap shadow-lg">
+                        Current Plan
+                      </div>
+                    ) : tier.popular && (
+                      <div className="absolute -top-5 md:-top-6 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-6 md:px-8 py-1.5 md:py-2 rounded-full text-label md:text-heading-3 font-black uppercase tracking-widest whitespace-nowrap shadow-lg">
+                        Most Popular
+                      </div>
+                    )}
+                    <div className={`p-4 md:p-5 rounded-2xl md:rounded-3xl bg-gradient-to-br ${tier.color} w-fit mb-8 md:mb-10 shadow-xl`}>
+                      <Icon className="h-8 w-8 md:h-10 md:w-10 text-white" />
+                    </div>
+                    <h3 className="text-heading-2 md:text-heading-1 font-black text-slate-900 dark:text-white mb-3 md:mb-4 tracking-tight">
+                      {tier.name}
+                    </h3>
+                    <div className="flex items-baseline gap-2 mb-4 md:mb-6 text-slate-900 dark:text-white">
+                      <span className="text-4xl md:text-5xl font-black">${tier.price}</span>
+                      <span className="text-body md:text-heading-2 text-slate-500 dark:text-slate-400 font-bold">/month</span>
+                    </div>
+                    <p className="text-body md:text-heading-2 text-slate-600 dark:text-slate-400 mb-8 md:mb-10 font-medium leading-relaxed">
+                      {tier.description}
+                    </p>
+                    <div className="space-y-4 md:space-y-6 mb-10 md:mb-12 flex-1">
+                      {tier.features.map((feature) => (
+                        <div key={feature} className="flex items-center gap-3 md:gap-4 text-slate-700 dark:text-slate-300 font-bold text-label md:text-heading-3">
+                          <div className="p-1 rounded-full bg-emerald-500/20 shrink-0">
+                            <Check className="h-4 w-4 md:h-5 md:w-5 text-emerald-500" />
+                          </div>
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      disabled={isActive}
+                      onClick={() => alert(`${tier.name} Plan selection functionality can be connected to Stripe Checkout.`)}
+                      className={`w-full py-4 md:py-6 rounded-xl md:rounded-2xl text-heading-3 md:text-heading-1 font-black text-center transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 ${isActive
+                          ? "bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10 dark:text-emerald-400 cursor-not-allowed border border-emerald-500/20"
+                          : tier.popular
+                            ? "bg-orange-500 text-white shadow-xl shadow-orange-500/40 hover:bg-orange-400 hover:-translate-y-1 active:scale-95"
+                            : "bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 border border-slate-200 dark:border-white/10 hover:-translate-y-1 active:scale-95"
+                        }`}
+                    >
+                      {isActive ? "Active Plan" : `Upgrade to ${tier.name}`}
+                    </button>
+                  </motion.div>
+                );
+              })
+            )}
+          </div>
+        </div>        {/* Invoices */}
         <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] md:rounded-[3rem] border-2 border-slate-100 dark:border-white/5 shadow-xl overflow-hidden">
           <div className="px-8 md:px-12 py-7 md:py-8 border-b-2 border-slate-50 dark:border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -259,18 +392,16 @@ export default function Billing() {
                 >
                   <div className="flex items-center gap-5">
                     <div
-                      className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
-                        inv.status === "paid"
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${inv.status === "paid"
                           ? "bg-emerald-50 dark:bg-emerald-500/10"
                           : "bg-amber-50 dark:bg-amber-500/10"
-                      }`}
+                        }`}
                     >
                       <CreditCard
-                        className={`h-5 w-5 ${
-                          inv.status === "paid"
+                        className={`h-5 w-5 ${inv.status === "paid"
                             ? "text-emerald-500"
                             : "text-amber-500"
-                        }`}
+                          }`}
                       />
                     </div>
                     <div>

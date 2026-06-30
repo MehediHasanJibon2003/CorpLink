@@ -43,7 +43,7 @@ export default function PlatformSettings() {
 
   useEffect(() => {
     const loadInit = async () => {
-      const { data: comps } = await supabase.from("corporates").select("id, name").eq("status", "active").order("name")
+      const { data: comps } = await supabase.from("companies").select("id, name").eq("status", "active").order("name")
       setCompanies(comps || [])
       if (comps?.length) setSelectedCo(comps[0])
       
@@ -148,7 +148,7 @@ export default function PlatformSettings() {
             {/* Company Selector */}
             <div className="rounded-3xl p-6 md:p-8 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15">
               <div className="flex items-center justify-between mb-4 md:mb-6">
-                <h3 className="text-badge font-black text-slate-500 uppercase tracking-widest">Corporates</h3>
+                <h3 className="text-badge font-black text-slate-500 uppercase tracking-widest">Companies</h3>
                 {/* Mobile Toggle Arrow */}
                 <button 
                   onClick={() => setIsCoListOpen(!isCoListOpen)}

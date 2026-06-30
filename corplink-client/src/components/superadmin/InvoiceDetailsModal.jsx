@@ -113,8 +113,8 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
                <div className="space-y-4">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Bill To:</p>
                   <div className="space-y-1">
-                    <h3 className="text-heading-2 font-black uppercase text-slate-900">{invoice.corporates?.name}</h3>
-                    <p className="text-body font-bold text-slate-500">{invoice.corporates?.industry || "Enterprise Corporate"}</p>
+                    <h3 className="text-heading-2 font-black uppercase text-slate-900">{invoice.companies?.name}</h3>
+                    <p className="text-body font-bold text-slate-500">{invoice.companies?.industry || "Enterprise Corporate"}</p>
                     <p className="text-label font-medium text-slate-400">Client ID: {invoice.company_id.substring(0, 12)}</p>
                   </div>
                </div>

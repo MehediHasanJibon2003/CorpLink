@@ -36,6 +36,7 @@ export default function Pricing() {
       const { data, error } = await supabase
         .from("subscription_plans")
         .select("*")
+        .eq("is_active", true)
         .order("price", { ascending: true });
 
       if (!error && data) {

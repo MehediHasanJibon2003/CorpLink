@@ -19,7 +19,7 @@ export default function CorporateManagement() {
   const fetchCompanies = async () => {
     setLoading(true)
     const { data, error } = await supabase
-      .from("corporates")
+      .from("companies")
       .select("*")
       .order("created_at", { ascending: false })
     
@@ -34,12 +34,12 @@ export default function CorporateManagement() {
     
     try {
       if (status === 'deleted') {
-        const { error } = await supabase.from("corporates").delete().eq("id", id)
+        const { error } = await supabase.from("companies").delete().eq("id", id)
         if (error) throw error
       } else {
         const updateData = { status }
         if (reason) updateData.rejection_reason = reason
-        const { error } = await supabase.from("corporates").update(updateData).eq("id", id)
+        const { error } = await supabase.from("companies").update(updateData).eq("id", id)
         if (error) throw error
       }
 
@@ -111,7 +111,7 @@ export default function CorporateManagement() {
             </thead>
             <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
               {loading ? (
-                <tr><td colSpan={4} className="py-20 text-center font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Corporates...</td></tr>
+                <tr><td colSpan={4} className="py-20 text-center font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Companies...</td></tr>
               ) : filteredCompanies.length === 0 ? (
                 <tr><td colSpan={4} className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No records found</td></tr>
               ) : filteredCompanies.map(co => (
@@ -232,7 +232,7 @@ export default function CorporateManagement() {
         {/* Mobile Card View */}
         <div className="md:hidden divide-y-2 divide-slate-100 dark:divide-violet-500/5">
           {loading ? (
-            <div className="py-20 text-center font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Corporates...</div>
+            <div className="py-20 text-center font-black text-slate-400 uppercase tracking-widest animate-pulse">Scanning Companies...</div>
           ) : filteredCompanies.length === 0 ? (
             <div className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-label">No records found</div>
           ) : filteredCompanies.map(co => (

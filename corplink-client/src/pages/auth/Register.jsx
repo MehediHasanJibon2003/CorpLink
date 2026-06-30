@@ -33,7 +33,7 @@ function Register() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const planId = searchParams.get("plan");
-  
+
   const [mode, setMode] = useState("create");
   const [formData, setFormData] = useState({
     companyName: "",
@@ -100,11 +100,11 @@ function Register() {
           return;
         }
 
-        const { data: corporateData, error: companyError } = await supabase
-          .from("corporates")
-          .insert([{ name: companyName.trim(), created_by: user.id }])
-          .select()
-          .single();
+        const newCompanyId = crypto.randomUUID();
+
+        const { error: companyError } = await supabase
+          .from("companies")
+          .insert([{ id: newCompanyId, name: companyName.trim() }]);
 
         if (companyError) {
           setError("Failed to create company: " + companyError.message);
@@ -112,10 +112,10 @@ function Register() {
           return;
         }
 
-        const { error: profileError } = await supabase.from("profiles").insert([
+        const { error: profileError } = await supabase.from("profiles").upsert([
           {
             id: user.id,
-            company_id: corporateData.id,
+            company_id: newCompanyId,
             full_name: fullName.trim(),
             email: email.trim().toLowerCase(),
             role: "corporate_admin",
@@ -132,7 +132,7 @@ function Register() {
         await supabase.from("employees").insert([
           {
             user_id: user.id,
-            company_id: corporateData.id,
+            company_id: newCompanyId,
             name: fullName.trim(),
             email: email.trim().toLowerCase(),
             role: "corporate_admin",
@@ -154,17 +154,18 @@ function Register() {
             const { data: subData } = await supabase
               .from("subscriptions")
               .insert([{
-                company_id: corporateData.id,
-                plan_id: planId,
-                status: "pending",
+                corporate_id: newCompanyId,
+                plan: planId, // Assuming planId is 'basic', 'standard', etc.
+                status: "active",
                 start_date: new Date().toISOString(),
+                expiry_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
               }])
               .select()
               .single();
 
             // 3. Create Pending Invoice
             await supabase.from("invoices").insert([{
-              company_id: corporateData.id,
+              company_id: newCompanyId,
               subscription_id: subData?.id,
               plan_id: planId,
               amount: planData.price,
@@ -229,7 +230,7 @@ function Register() {
 
         // STEP 2: Now as authenticated user, verify the Company Code
         const { data: cData, error: cErr } = await supabase
-          .from("corporates")
+          .from("companies")
           .select("id, name, status")
           .eq("id", trimmedCompanyId)
           .maybeSingle();
@@ -441,11 +442,10 @@ function Register() {
                 setError("");
                 setMessage("");
               }}
-              className={`flex-1 flex items-center justify-center gap-3 py-3 text-heading-3 font-bold rounded-xl transition-all ${
-                mode === "create"
-                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
-              }`}
+              className={`flex-1 flex items-center justify-center gap-3 py-3 text-heading-3 font-bold rounded-xl transition-all ${mode === "create"
+                ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
+                }`}
             >
               <Building2 className="h-5 w-5" />
               Create Workspace
@@ -457,11 +457,10 @@ function Register() {
                 setError("");
                 setMessage("");
               }}
-              className={`flex-1 flex items-center justify-center gap-3 py-3 text-heading-3 font-bold rounded-xl transition-all ${
-                mode === "join"
-                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
-              }`}
+              className={`flex-1 flex items-center justify-center gap-3 py-3 text-heading-3 font-bold rounded-xl transition-all ${mode === "join"
+                ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
+                }`}
             >
               <Hash className="h-5 w-5" />
               Join via Invite

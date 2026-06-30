@@ -41,13 +41,14 @@ export default function SubscriptionBilling() {
   const [selectedGateway, setSelectedGateway] = useState(null)
   const [invoiceFilter, setInvoiceFilter] = useState("all")
   const [sendingReminder, setSendingReminder] = useState({})
+  const [showHiddenPlans, setShowHiddenPlans] = useState(false)
 
   const fetchData = async () => {
     setLoading(true)
-    const { data: sData } = await supabase.from("subscriptions").select("*, corporates(name)").order("created_at", { ascending: false })
+    const { data: sData } = await supabase.from("subscriptions").select("*, companies(name)").order("created_at", { ascending: false })
     const { data: pData } = await supabase.from("subscription_plans").select("*").order("price", { ascending: true })
-    const { data: iData } = await supabase.from("invoices").select("*, corporates(name), subscription_plans(name)").order("created_at", { ascending: false })
-    const { data: aData } = await supabase.from("billing_alerts").select("*, corporates(name)").order("created_at", { ascending: false })
+    const { data: iData } = await supabase.from("invoices").select("*, companies(name), subscription_plans(name)").order("created_at", { ascending: false })
+    const { data: aData } = await supabase.from("billing_alerts").select("*, companies(name)").order("created_at", { ascending: false })
     const { data: gData } = await supabase.from("payment_gateways").select("*").order("name", { ascending: true })
     
     setSubs(sData || [])
@@ -88,10 +89,10 @@ export default function SubscriptionBilling() {
 
   const handleDeletePlan = (id) => {
     showConfirm({
-      title: "Delete Plan",
-      message: "Are you sure you want to delete this plan? This may affect existing subscriptions.",
+      title: "Hide Plan",
+      message: "Are you sure you want to hide this plan? It will no longer be available for new subscriptions.",
       onConfirm: async () => {
-        const { error } = await supabase.from("subscription_plans").delete().eq("id", id)
+        const { error } = await supabase.from("subscription_plans").update({ is_active: false }).eq("id", id)
         if (error) alert(error.message)
         else fetchData()
       }
@@ -173,7 +174,7 @@ export default function SubscriptionBilling() {
                   ) : subs.map(sub => (
                     <tr key={sub.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
                       <td className="px-10 py-8">
-                        <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight">{sub.corporates?.name || 'Unknown'}</p>
+                        <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight">{sub.companies?.name || 'Unknown'}</p>
                         <p className="text-badge font-bold text-slate-500 truncate">ID: {sub.company_id.substring(0, 8)}...</p>
                       </td>
                       <td className="px-10 py-8 font-black uppercase text-label text-violet-600 dark:text-violet-400">{sub.plan}</td>
@@ -207,7 +208,7 @@ export default function SubscriptionBilling() {
                 <div key={sub.id} className="p-6 space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{sub.corporates?.name || 'Unknown'}</p>
+                      <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{sub.companies?.name || 'Unknown'}</p>
                       <p className="text-badge font-bold text-slate-500 mt-0.5">{sub.plan} Plan</p>
                     </div>
                     <button 
@@ -233,11 +234,23 @@ export default function SubscriptionBilling() {
 
         {/* TAB 2: PLANS */}
         {activeTab === "plans" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {plans.map(plan => (
-              <div 
-                key={plan.id} 
-                className="rounded-3xl md:rounded-[3rem] p-6 md:p-10 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 relative overflow-hidden group text-center flex flex-col items-center transition-all"
+          <div className="space-y-6">
+            <div className="flex justify-end mb-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Show Hidden Plans</span>
+                <div 
+                  className={`w-10 h-5 rounded-full relative transition-all ${showHiddenPlans ? 'bg-violet-600' : 'bg-slate-200 dark:bg-white/10'}`}
+                  onClick={() => setShowHiddenPlans(!showHiddenPlans)}
+                >
+                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${showHiddenPlans ? 'right-0.5' : 'left-0.5'}`} />
+                </div>
+              </label>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {plans.filter(p => showHiddenPlans ? true : p.is_active).map(plan => (
+                <div 
+                  key={plan.id} 
+                  className={`rounded-3xl md:rounded-[3rem] p-6 md:p-10 bg-white dark:bg-white/5 border-2 relative overflow-hidden group text-center flex flex-col items-center transition-all ${!plan.is_active ? 'opacity-60 grayscale' : 'border-slate-100 dark:border-violet-500/15'}`}
                 style={{ 
                   borderColor: plan.color ? `${plan.color}30` : undefined,
                   background: plan.color ? `linear-gradient(135deg, ${plan.color}08 0%, transparent 100%)` : undefined
@@ -278,6 +291,7 @@ export default function SubscriptionBilling() {
               <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400"><Plus className="h-6 w-6 md:h-8 md:w-8" /></div>
               <span className="font-black uppercase tracking-widest text-badge md:text-body">Add Plan</span>
             </button>
+            </div>
           </div>
         )}
 
@@ -326,7 +340,7 @@ export default function SubscriptionBilling() {
                           </div>
                         </td>
                         <td className="px-10 py-8">
-                          <p className="font-black text-slate-900 dark:text-white uppercase text-label truncate max-w-[150px]">{inv.corporates?.name}</p>
+                          <p className="font-black text-slate-900 dark:text-white uppercase text-label truncate max-w-[150px]">{inv.companies?.name}</p>
                           <p className="text-badge font-bold text-slate-500">{inv.subscription_plans?.name} Plan</p>
                         </td>
                         <td className="px-10 py-8 font-black text-violet-600 text-heading-3">${inv.amount}</td>
@@ -371,7 +385,7 @@ export default function SubscriptionBilling() {
                         <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center text-violet-600 shrink-0"><FileText className="h-5 w-5" /></div>
                         <div>
                           <p className="font-black text-slate-900 dark:text-white uppercase text-badge">{inv.invoice_number}</p>
-                          <p className="text-[10px] font-bold text-slate-500 uppercase">{inv.corporates?.name}</p>
+                          <p className="text-[10px] font-bold text-slate-500 uppercase">{inv.companies?.name}</p>
                         </div>
                       </div>
                       <p className="text-heading-3 font-black text-violet-600">${inv.amount}</p>
@@ -442,7 +456,7 @@ export default function SubscriptionBilling() {
                            billingAlert.type === 'expired' ? <AlertCircle className="h-5 w-5 md:h-6 md:w-6" /> : <Zap className="h-5 w-5 md:h-6 md:w-6" />}
                        </div>
                        <div>
-                          <h4 className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{billingAlert.corporates?.name}</h4>
+                          <h4 className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{billingAlert.companies?.name}</h4>
                           <p className="text-badge font-bold text-slate-500 uppercase tracking-widest mt-1 line-clamp-1">{billingAlert.message}</p>
                        </div>
                     </div>

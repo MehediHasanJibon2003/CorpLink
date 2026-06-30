@@ -30,7 +30,7 @@ function EmployeeRoute({ children }) {
     async function checkStatus() {
       if (profile && profile.company_id) {
         const { data, error } = await supabase
-          .from("corporates")
+          .from("companies")
           .select("status")
           .eq("id", profile.company_id)
           .single()

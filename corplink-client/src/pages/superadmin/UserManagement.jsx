@@ -21,8 +21,8 @@ export default function UserManagement() {
 
   const fetchData = async () => {
     setLoading(true)
-    const { data: profiles, error } = await supabase.from("profiles").select("*, corporates(name)").order("created_at", { ascending: false })
-    const { data: comps } = await supabase.from("corporates").select("id, name")
+    const { data: profiles, error } = await supabase.from("profiles").select("*, companies(name)").order("created_at", { ascending: false })
+    const { data: comps } = await supabase.from("companies").select("id, name")
     if (!error) setUsers(profiles)
     if (comps) setCompanies(comps)
     setLoading(false)
@@ -112,13 +112,13 @@ export default function UserManagement() {
             onClick={() => setOpenDropdown(openDropdown === 'company' ? null : 'company')}
             className="w-full flex items-center justify-between gap-2 px-6 py-4 md:py-5 rounded-xl md:rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-violet-500/10 text-badge font-black uppercase tracking-widest text-slate-700 dark:text-violet-200"
           >
-            <span className="truncate">{companyFilter === 'all' ? 'All Corporates' : companies.find(c => c.id === companyFilter)?.name}</span>
+            <span className="truncate">{companyFilter === 'all' ? 'All Companies' : companies.find(c => c.id === companyFilter)?.name}</span>
             <ChevronDown className={`h-4 w-4 shrink-0 transition-transform ${openDropdown === 'company' ? 'rotate-180' : ''}`} />
           </button>
           {openDropdown === 'company' && (
             <div className="absolute top-full left-0 right-0 mt-2 z-50 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-violet-500/20 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
               <div className="max-h-[250px] overflow-y-auto no-scrollbar">
-                <button onClick={() => { setCompanyFilter('all'); setOpenDropdown(null); }} className="w-full text-left px-6 py-4 hover:bg-slate-50 dark:hover:bg-white/5 text-badge font-black uppercase tracking-widest text-slate-600 dark:text-violet-300">All Corporates</button>
+                <button onClick={() => { setCompanyFilter('all'); setOpenDropdown(null); }} className="w-full text-left px-6 py-4 hover:bg-slate-50 dark:hover:bg-white/5 text-badge font-black uppercase tracking-widest text-slate-600 dark:text-violet-300">All Companies</button>
                 {companies.map(c => (
                   <button key={c.id} onClick={() => { setCompanyFilter(c.id); setOpenDropdown(null); }} className="w-full text-left px-6 py-4 hover:bg-slate-50 dark:hover:bg-white/5 text-badge font-black uppercase tracking-widest text-slate-600 dark:text-violet-300 truncate">{c.name}</button>
                 ))}
@@ -180,7 +180,7 @@ export default function UserManagement() {
                   <td className="px-10 py-8">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-2 text-label font-black text-slate-700 dark:text-white uppercase tracking-widest">
-                        <Building2 className="h-4 w-4 text-violet-500 shrink-0" /> {user.corporates?.name || "Global Admin"}
+                        <Building2 className="h-4 w-4 text-violet-500 shrink-0" /> {user.companies?.name || "Global Admin"}
                       </div>
                       <div className="flex items-center gap-2">
                         <Shield className="h-4 w-4 text-pink-500 shrink-0" />
@@ -245,7 +245,7 @@ export default function UserManagement() {
                 <div className="grid grid-cols-2 gap-4 py-4 border-y border-slate-100 dark:border-white/5">
                    <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Corporate</p>
-                      <p className="text-[10px] font-black text-slate-700 dark:text-white uppercase truncate">{user.corporates?.name || "Global Admin"}</p>
+                      <p className="text-[10px] font-black text-slate-700 dark:text-white uppercase truncate">{user.companies?.name || "Global Admin"}</p>
                    </div>
                    <div>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Identity Role</p>
