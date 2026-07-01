@@ -96,22 +96,24 @@ function EmployeeLayout({ children }) {
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 md:hidden" onClick={() => setIsSidebarOpen(false)} />
       )}
 
-      <aside className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative`}>
-        <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-800 dark:border-slate-800/50">
+      <aside className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] bg-slate-50 dark:bg-slate-900 border-r-2 border-slate-200 dark:border-slate-800 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative`}>
+        <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-200 dark:border-slate-800/50">
           <Link to="/employee/dashboard" className="flex items-center gap-3 md:gap-4 overflow-hidden">
             <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-body md:text-heading-2 shrink-0" style={{ background: "var(--primary-color)" }}>
               {profile?.companies?.name?.charAt(0) || "C"}
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-heading-3 md:text-heading-1 font-black uppercase tracking-[0.2em] text-white leading-none">CorpLink</span>
+              <span className="text-heading-3 md:text-[20px] font-black uppercase tracking-[0.1em] text-slate-900 dark:text-white leading-none truncate" title={profile?.companies?.name}>
+                {profile?.companies?.name || "CorpLink"}
+              </span>
               <span className="text-[10px] md:text-label font-black uppercase tracking-[0.1em] text-orange-400 truncate mt-2 bg-orange-500/10 px-2 py-0.5 rounded-md self-start">
-                {profile?.companies?.name || "Workspace"}
+                Workspace
               </span>
             </div>
           </Link>
         </div>
 
-        <div className="px-4 md:px-6 py-6 md:py-8 border-b-2 border-slate-800">
+        <div className="px-4 md:px-6 py-6 md:py-8 border-b-2 border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3 md:gap-4 bg-blue-600/10 rounded-2xl md:rounded-3xl p-4 md:p-5 border-2 border-blue-500/20">
             <Briefcase className="h-5 w-5 md:h-6 md:w-6 text-blue-400 shrink-0" />
             <div className="min-w-0">
@@ -134,14 +136,18 @@ function EmployeeLayout({ children }) {
               <div key={section.group} className="mb-6 md:mb-8">
                 <h3 className="px-4 md:px-6 text-label md:text-body font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 md:mb-5">{section.group}</h3>
                 <nav className="space-y-2 md:space-y-3">
-                  {visibleItems.map((item) => {
+                  {visibleItems.map((item, itemIndex) => {
                     const isActive = location.pathname === item.path;
                     const Icon = item.icon;
                     return (
-                      <button key={item.path} onClick={() => navigate(item.path)} className={`w-full flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-body md:text-body font-black uppercase tracking-widest transition-all duration-200 ${isActive ? "text-white shadow-lg shadow-blue-900/20" : "text-slate-400 hover:text-white hover:bg-slate-800 dark:hover:bg-slate-900"}`} style={isActive ? { background: "var(--primary-color)" } : {}}>
-                        <Icon className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-500"}`} />
-                        <span>{item.name}</span>
-                      </button>
+                      <Link
+                        key={itemIndex}
+                        to={item.path}
+                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-body md:text-body font-black uppercase tracking-widest transition-all duration-200 group ${isActive ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800"}`}
+                      >
+                        <Icon className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"}`} />
+                        {item.name}
+                      </Link>
                     );
                   })}
                 </nav>

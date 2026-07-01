@@ -139,13 +139,13 @@ function Sidebar({ isOpen, setIsOpen }) {
 
       {/* Sidebar sidebar itself */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen
+        className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] bg-slate-50 dark:bg-slate-900 border-r-2 border-slate-200 dark:border-slate-800 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0 md:relative
       `}
       >
         {/* Brand Header */}
-        <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-800 dark:border-slate-800/50">
+        <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-200 dark:border-slate-800/50">
           <Link to="/dashboard" className="flex items-center gap-3 md:gap-4 overflow-hidden">
             {profile?.companies?.logo_url ? (
               <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl shrink-0 overflow-hidden shadow-lg md:shadow-xl bg-white border border-slate-800">
@@ -157,9 +157,11 @@ function Sidebar({ isOpen, setIsOpen }) {
               </div>
             )}
             <div className="flex flex-col min-w-0">
-              <span className="text-heading-3 md:text-heading-1 font-black uppercase tracking-[0.2em] text-white leading-none">CorpLink</span>
+              <span className="text-heading-3 md:text-[20px] font-black uppercase tracking-[0.1em] text-slate-900 dark:text-white leading-none truncate" title={profile?.companies?.name}>
+                {profile?.companies?.name || "CorpLink"}
+              </span>
               <span className="text-[10px] md:text-label font-black uppercase tracking-[0.1em] text-blue-400 truncate mt-2 bg-blue-500/10 px-2 py-0.5 rounded-md self-start">
-                {profile?.companies?.name || "Workspace"}
+                Workspace
               </span>
             </div>
           </Link>
@@ -192,14 +194,14 @@ function Sidebar({ isOpen, setIsOpen }) {
                       <Link
                         key={itemIndex}
                         to={item.path}
-                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-body md:text-body font-black uppercase tracking-widest transition-all duration-200 ${
+                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-body md:text-body font-black uppercase tracking-widest transition-all duration-200 group ${
                           isActive
                             ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                            : "text-slate-400 hover:text-white hover:bg-slate-800 dark:hover:bg-slate-900"
+                            : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800"
                         }`}
                       >
                         <Icon
-                          className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-500 dark:text-slate-600 group-hover:text-slate-300"}`}
+                          className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"}`}
                         />
                         {item.name}
                       </Link>
@@ -211,18 +213,18 @@ function Sidebar({ isOpen, setIsOpen }) {
           })}
         </div>
 
-        <div className="p-4 md:p-6 border-t-2 border-slate-800 bg-slate-900 sticky bottom-0">
-          <div className="bg-slate-800/50 rounded-3xl md:rounded-[2.5rem] p-5 md:p-6 border-2 border-slate-700/50">
+        <div className="p-4 md:p-6 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 sticky bottom-0">
+          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-3xl md:rounded-[2.5rem] p-5 md:p-6 border-2 border-slate-200 dark:border-slate-700/50">
             <div className="flex items-center gap-3 md:gap-4 mb-1.5 md:mb-2">
               <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] md:shadow-[0_0_12px_rgba(16,185,129,0.8)]"></div>
-              <p className="text-label md:text-body font-black uppercase tracking-widest text-slate-200">
+              <p className="text-label md:text-body font-black uppercase tracking-widest text-slate-800 dark:text-slate-200">
                 System Online
               </p>
             </div>
-            <p className="text-[10px] md:text-label text-slate-400 font-bold uppercase tracking-wider">
+            <p className="text-[10px] md:text-label text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
               All services operational
             </p>
-            <p className="text-[10px] md:text-[11px] text-blue-400 font-black uppercase tracking-widest mt-3 pt-3 border-t border-slate-700/50">
+            <p className="text-[10px] md:text-[11px] text-blue-500 dark:text-blue-400 font-black uppercase tracking-widest mt-3 pt-3 border-t border-slate-200 dark:border-slate-700/50">
               Powered by CorpLink
             </p>
           </div>

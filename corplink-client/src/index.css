@@ -5,6 +5,10 @@
 
 @theme {
   /* Map dynamic primary color to tailwind's scales */
+  --color-blue-400: var(--primary-color);
+  --color-blue-500: var(--primary-color);
+  --color-blue-600: var(--primary-color);
+  --color-blue-700: var(--primary-color);
   --color-violet-500: var(--primary-color);
   --color-violet-600: var(--primary-color);
   --color-violet-700: var(--primary-color);
