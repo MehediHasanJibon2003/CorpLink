@@ -171,7 +171,7 @@ const PostCard = memo(
                   {post.companies?.name || "Corporate Entity"}
                 </span>
               </div>
-              
+
               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                 <span className="text-[10px] md:text-[11px] font-bold text-slate-400">
                   {timeAgo(post.created_at)}
@@ -205,7 +205,7 @@ const PostCard = memo(
               >
                 <MoreVertical className="h-5 w-5" />
               </button>
-              
+
               {showMenu && (
                 <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 py-1 z-10 animate-in fade-in zoom-in-95 duration-200">
                   <button
@@ -479,8 +479,8 @@ function Feed() {
         ? selectedImage.type?.startsWith("video")
           ? "video"
           : selectedImage.type?.includes("pdf") || selectedImage.name?.match(/\.(doc|docx|pdf|txt)$/i)
-          ? "document"
-          : "image"
+            ? "document"
+            : "image"
         : editingId
           ? posts.find((p) => p.id === editingId)?.media_type
           : "image";
@@ -543,10 +543,10 @@ function Feed() {
       prev.map((p) =>
         p.id === post.id
           ? {
-              ...p,
-              likedByMe: !p.likedByMe,
-              likesCount: p.likedByMe ? p.likesCount - 1 : p.likesCount + 1,
-            }
+            ...p,
+            likedByMe: !p.likedByMe,
+            likesCount: p.likedByMe ? p.likesCount - 1 : p.likesCount + 1,
+          }
           : p,
       ),
     );
@@ -573,17 +573,17 @@ function Feed() {
       prev.map((p) =>
         p.id === post.id
           ? {
-              ...p,
-              commentsCount: p.commentsCount + 1,
-              comments: [
-                ...p.comments,
-                {
-                  id: "temp",
-                  content: text,
-                  created_at: new Date().toISOString(),
-                },
-              ],
-            }
+            ...p,
+            commentsCount: p.commentsCount + 1,
+            comments: [
+              ...p.comments,
+              {
+                id: "temp",
+                content: text,
+                created_at: new Date().toISOString(),
+              },
+            ],
+          }
           : p,
       ),
     );
@@ -661,11 +661,10 @@ function Feed() {
             <button
               key={tab.id}
               onClick={() => setFilter(tab.id)}
-              className={`flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 h-9 md:h-11 rounded-xl transition-all shrink-0 font-bold text-[12px] md:text-[13px] ${
-                filter === tab.id
+              className={`flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 h-9 md:h-11 rounded-xl transition-all shrink-0 font-bold text-[12px] md:text-[13px] ${filter === tab.id
                   ? "text-blue-600 border-b-[3px] md:border-b-[4px] border-blue-600 bg-blue-50/30 dark:bg-blue-500/5"
                   : "text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5"
-              }`}
+                }`}
             >
               <tab.icon className="h-4 w-4 md:h-4 md:w-4" />
               <span>{tab.label}</span>
@@ -678,9 +677,17 @@ function Feed() {
           <button className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-all shrink-0">
             <Bell className="h-4 w-4 md:h-5 md:w-5" />
           </button>
-          <div className="h-8 w-8 md:h-11 md:w-11 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[10px] md:text-xs shadow-md cursor-pointer hover:scale-105 transition-transform border-2 border-white dark:border-slate-800 shrink-0">
-            {profile?.full_name?.charAt(0)?.toUpperCase()}
-          </div>
+          {profile?.companies?.logo_url ? (
+            <img
+              src={profile.companies.logo_url}
+              alt="Logo"
+              className="h-8 w-8 md:h-11 md:w-11 rounded-full object-cover border-2 border-white dark:border-slate-800 shrink-0 shadow-md cursor-pointer hover:scale-105 transition-transform bg-white"
+            />
+          ) : (
+            <div className="h-8 w-8 md:h-11 md:w-11 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[10px] md:text-xs shadow-md cursor-pointer hover:scale-105 transition-transform border-2 border-white dark:border-slate-800 shrink-0">
+              {profile?.companies?.name?.charAt(0)?.toUpperCase() || "C"}
+            </div>
+          )}
         </div>
       </div>
 
@@ -688,9 +695,17 @@ function Feed() {
         {/* META-STYLE POST CREATOR TRIGGER */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-[2rem] shadow-sm border-2 border-slate-100 dark:border-white/5 p-4 md:p-6">
           <div className="flex items-center gap-3 md:gap-4">
-            <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[14px] md:text-heading-2 shadow-md shrink-0">
-              {profile?.full_name?.charAt(0)?.toUpperCase()}
-            </div>
+            {profile?.companies?.logo_url ? (
+              <img
+                src={profile.companies.logo_url}
+                alt="Logo"
+                className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-white dark:border-slate-800 shrink-0 shadow-md bg-white"
+              />
+            ) : (
+              <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-[14px] md:text-heading-2 shadow-md shrink-0">
+                {profile?.companies?.name?.charAt(0)?.toUpperCase() || "C"}
+              </div>
+            )}
             <button
               onClick={() => {
                 setEditingId(null);
@@ -869,16 +884,16 @@ function Feed() {
                 {(imagePreview || selectedImage) && (
                   <div className="relative rounded-2xl overflow-hidden border-2 border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-black/40 group max-h-[300px] min-h-[100px] flex items-center justify-center">
                     {selectedImage?.type?.startsWith("video") ||
-                    (editingId &&
-                      posts.find((p) => p.id === editingId)?.media_type ===
+                      (editingId &&
+                        posts.find((p) => p.id === editingId)?.media_type ===
                         "video") ? (
                       <video
                         src={imagePreview}
                         className="w-full max-h-[300px] object-contain"
                         controls
                       />
-                    ) : selectedImage?.name?.match(/\.(doc|docx|pdf|txt)$/i) || 
-                        (editingId && posts.find(p => p.id === editingId)?.media_type === "document") ? (
+                    ) : selectedImage?.name?.match(/\.(doc|docx|pdf|txt)$/i) ||
+                      (editingId && posts.find(p => p.id === editingId)?.media_type === "document") ? (
                       <div className="flex flex-col items-center justify-center gap-2 p-6">
                         <Paperclip className="h-10 w-10 text-slate-400" />
                         <span className="text-sm font-bold text-slate-600 dark:text-slate-300">
@@ -936,11 +951,10 @@ function Feed() {
                 <button
                   type="submit"
                   disabled={loading || !form.content.trim()}
-                  className={`hidden md:block w-full mt-4 py-4 rounded-xl font-black uppercase text-label tracking-[0.2em] transition-all ${
-                    form.content.trim() && !loading
+                  className={`hidden md:block w-full mt-4 py-4 rounded-xl font-black uppercase text-label tracking-[0.2em] transition-all ${form.content.trim() && !loading
                       ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20 active:scale-[0.98]"
                       : "bg-slate-100 dark:bg-white/5 text-slate-400 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   {loading
                     ? "Publishing..."
