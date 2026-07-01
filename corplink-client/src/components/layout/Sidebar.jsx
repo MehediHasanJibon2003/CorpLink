@@ -222,6 +222,9 @@ function Sidebar({ isOpen, setIsOpen }) {
             <p className="text-[10px] md:text-label text-slate-400 font-bold uppercase tracking-wider">
               All services operational
             </p>
+            <p className="text-[10px] md:text-[11px] text-blue-400 font-black uppercase tracking-widest mt-3 pt-3 border-t border-slate-700/50">
+              Powered by CorpLink
+            </p>
           </div>
         </div>
       </aside>
