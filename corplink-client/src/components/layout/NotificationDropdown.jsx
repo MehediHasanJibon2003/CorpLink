@@ -73,8 +73,8 @@ export default function NotificationDropdown() {
 
       {showNotifs && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setShowNotifs(false)} />
-          <div className="absolute right-0 mt-4 w-80 md:w-96 bg-white dark:bg-[#0d0622] border-2 border-slate-100 dark:border-violet-500/20 rounded-[2rem] shadow-2xl p-6 z-50 animate-in slide-in-from-top-4 duration-200">
+          <div className="fixed inset-0 z-[90]" onClick={() => setShowNotifs(false)} />
+          <div className="absolute right-0 mt-4 w-80 md:w-96 bg-white dark:bg-[#0d0622] border-2 border-slate-100 dark:border-violet-500/20 rounded-[2rem] shadow-2xl p-6 z-[100] animate-in slide-in-from-top-4 duration-200">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-black uppercase tracking-widest text-slate-900 dark:text-white text-body">Recent Alerts</h3>
               <span className="text-[10px] font-black bg-violet-600 text-white px-3 py-1 rounded-full uppercase">{unreadCount} New</span>

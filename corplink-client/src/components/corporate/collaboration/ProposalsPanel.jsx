@@ -78,7 +78,7 @@ function ProposalsPanel() {
           fp:profiles!from_profile_id (id, full_name)
         `,
         )
-        .or(`from_profile_id.eq.${user.id},to_profile_id.eq.${user.id}`)
+        .or(`from_profile_id.eq.${user.id},to_profile_id.eq.${user.id},to_company.eq.${profile.company_id},from_company.eq.${profile.company_id}`)
         .order("created_at", { ascending: false });
 
       setProposals(propData || []);
@@ -88,7 +88,7 @@ function ProposalsPanel() {
     } finally {
       setLoading(false);
     }
-  }, [user.id, profile.company_id]);
+  }, [user?.id, profile?.company_id]);
 
   useEffect(() => {
     fetchData();
@@ -113,6 +113,7 @@ function ProposalsPanel() {
     const target = partners.find((p) => p.id === form.target_id);
     const payload = {
       from_profile_id: user.id,
+      created_by: user.id,
       title: form.title.trim(),
       description: form.description.trim() || null,
       proposal_type: form.proposal_type,
