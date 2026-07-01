@@ -152,7 +152,7 @@ function Sidebar({ isOpen, setIsOpen }) {
                 <img src={profile.companies.logo_url} alt="Logo" className="w-full h-full object-contain p-1" />
               </div>
             ) : (
-              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-body md:text-heading-2 shrink-0" style={{ background: "var(--primary-color)" }}>
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-body md:text-heading-2 shrink-0">
                 {profile?.companies?.name?.charAt(0) || "C"}
               </div>
             )}
