@@ -343,14 +343,22 @@ const PostCard = memo(
               ) : (
                 post.comments.map((comment) => (
                   <div key={comment.id} className="flex gap-3 md:gap-5 group">
-                    <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center font-black text-slate-400 shrink-0 shadow-inner text-[10px] md:text-xs">
-                      {comment.id === "temp" ? "..." : "U"}
-                    </div>
+                    {comment.profiles?.companies?.logo_url ? (
+                      <img
+                        src={comment.profiles.companies.logo_url}
+                        alt="Company Logo"
+                        className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-xl object-contain border-2 border-white dark:border-slate-700 shrink-0 shadow-sm p-0.5 bg-white"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black shrink-0 shadow-sm border-2 border-white dark:border-slate-700 text-[10px] md:text-xs">
+                        {comment.id === "temp" ? "..." : (comment.profiles?.companies?.name?.charAt(0)?.toUpperCase() || "C")}
+                      </div>
+                    )}
                     <div className="flex-1">
                       <div className="bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-white/5 rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm group-hover:border-blue-500/20 transition-all">
                         <div className="flex justify-between items-center mb-2 md:mb-3">
                           <span className="text-[8px] md:text-[9px] font-black text-blue-600 uppercase tracking-widest">
-                            Member
+                            {comment.profiles?.full_name || "Member"}
                           </span>
                           <span className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase">
                             {new Date(comment.created_at).toLocaleDateString()}
@@ -414,7 +422,7 @@ function Feed() {
 
     const { data: commentsData } = await supabase
       .from("post_comments")
-      .select("*")
+      .select("*, profiles:employee_id(full_name, avatar_url, companies(name, logo_url))")
       .order("created_at", { ascending: true });
 
     const mergedPosts = (announcementsData || []).map((post) => {
