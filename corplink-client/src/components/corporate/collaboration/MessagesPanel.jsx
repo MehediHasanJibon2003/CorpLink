@@ -152,6 +152,9 @@ function MessagesPanel() {
     if (!error) {
       setNewMessage("")
       fetchMessages()
+    } else {
+      console.error("Insert message error:", error)
+      alert("Error sending message: " + error.message)
     }
   }
 
