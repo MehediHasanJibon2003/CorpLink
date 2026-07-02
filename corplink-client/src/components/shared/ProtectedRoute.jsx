@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children, moduleKey }) {
   const { user, loading, profile } = useAuth()
   const location = useLocation()
   const [companyStatus, setCompanyStatus] = useState(null)
@@ -80,6 +80,10 @@ function ProtectedRoute({ children }) {
   ];
   if (!CORPORATE_ROLES.includes(profile.role)) {
     return <Navigate to="/employee/dashboard" replace />
+  }
+
+  if (moduleKey && profile.activeModules && !profile.activeModules.includes(moduleKey)) {
+    return <Navigate to="/dashboard" replace />
   }
 
   return children

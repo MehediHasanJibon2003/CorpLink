@@ -62,6 +62,25 @@ export function AuthProvider({ children }) {
           }
         }
       }
+
+      // Fetch platform settings (active modules)
+      const { data: settingsData } = await supabase
+        .from("platform_settings")
+        .select("module_name, is_active")
+        .eq("corporate_id", data.company_id);
+
+      const defaultModules = ["task_management", "messaging", "collaboration", "news_feed", "analytics", "departments"];
+      const settingsMap = {};
+      
+      if (settingsData) {
+        settingsData.forEach(s => { settingsMap[s.module_name] = s.is_active });
+      }
+      
+      defaultModules.forEach(m => {
+        if (!(m in settingsMap)) settingsMap[m] = true;
+      });
+      
+      data.activeModules = Object.keys(settingsMap).filter(k => settingsMap[k]);
     }
 
     setProfile(data);

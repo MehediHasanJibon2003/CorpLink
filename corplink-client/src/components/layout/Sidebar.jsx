@@ -31,12 +31,14 @@ const menuGroups = [
         path: "/tasks",
         icon: CheckSquare,
         roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
+        moduleKey: "task_management",
       },
       {
         name: "Messages",
         path: "/messages",
         icon: MessageCircle,
         roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
+        moduleKey: "messaging",
       },
     ],
   },
@@ -44,24 +46,25 @@ const menuGroups = [
     title: "Organization",
     items: [
       {
-        // Managers & HR can view/manage employees; dept_head and team_lead cannot manage company-wide
         name: "Employees",
         path: "/employees",
         icon: Users,
         roles: ["admin", "corporate_admin", "manager", "hr"],
+        moduleKey: "departments",
       },
       {
         name: "Teams",
         path: "/teams",
         icon: Shield,
         roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
+        moduleKey: "departments",
       },
       {
-        // dept_head can manage their own department; team_lead cannot
         name: "Departments",
         path: "/departments",
         icon: Building2,
         roles: ["admin", "corporate_admin", "hr", "dept_head"],
+        moduleKey: "departments",
       },
     ],
   },
@@ -73,12 +76,14 @@ const menuGroups = [
         path: "/feed",
         icon: Radio,
         roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
+        moduleKey: "news_feed",
       },
       {
         name: "Collaboration",
         path: "/collaboration",
         icon: Network,
         roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
+        moduleKey: "collaboration",
       },
     ],
   },
@@ -86,21 +91,19 @@ const menuGroups = [
     title: "System",
     items: [
       {
-        // Analytics: only top-level admins
         name: "Analytics",
         path: "/analytics",
         icon: BarChart3,
         roles: ["admin", "corporate_admin"],
+        moduleKey: "analytics",
       },
       {
-        // System Logs: admins and HR (for compliance)
         name: "System Logs",
         path: "/activity",
         icon: Activity,
         roles: ["admin", "corporate_admin", "hr"],
       },
       {
-        // Settings: only admins
         name: "Settings",
         path: "/settings",
         icon: SettingsIcon,
@@ -171,7 +174,11 @@ function Sidebar({ isOpen, setIsOpen }) {
         <div className="flex-1 overflow-y-auto py-8 md:py-10 pl-4 pr-2 md:pl-6 md:pr-4 custom-scrollbar">
           {menuGroups.map((group, groupIndex) => {
             const hasAccessToGroup = group.items.some(
-              (item) => !item.roles || item.roles.includes(profile?.role),
+              (item) => {
+                const hasRoleAccess = !item.roles || item.roles.includes(profile?.role);
+                const hasModuleAccess = !item.moduleKey || (profile?.activeModules && profile.activeModules.includes(item.moduleKey));
+                return hasRoleAccess && hasModuleAccess;
+              }
             );
 
             if (!hasAccessToGroup) return null;
@@ -183,9 +190,9 @@ function Sidebar({ isOpen, setIsOpen }) {
                 </h3>
                 <nav className="space-y-2 md:space-y-3">
                   {group.items.map((item, itemIndex) => {
-                    const hasAccess =
-                      !item.roles || item.roles.includes(profile?.role);
-                    if (!hasAccess) return null;
+                    const hasRoleAccess = !item.roles || item.roles.includes(profile?.role);
+                    const hasModuleAccess = !item.moduleKey || (profile?.activeModules && profile.activeModules.includes(item.moduleKey));
+                    if (!hasRoleAccess || !hasModuleAccess) return null;
 
                     const isActive = location.pathname.startsWith(item.path);
                     const Icon = item.icon;

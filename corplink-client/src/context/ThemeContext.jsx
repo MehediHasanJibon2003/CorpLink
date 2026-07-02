@@ -48,8 +48,11 @@ export function ThemeProvider({ children }) {
     const root = window.document.documentElement;
     
     // Apply primary color variable
-    root.style.setProperty('--primary-color', config.primary_color);
-    
+    if (config.primary_color) {
+      root.style.setProperty('--primary-color', config.primary_color);
+    } else {
+      root.style.removeProperty('--primary-color');
+    }
     // Apply Platform Name
     if (config.platform_name) {
       document.title = config.platform_name;

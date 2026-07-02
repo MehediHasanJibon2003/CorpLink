@@ -4,16 +4,16 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Map dynamic primary color to tailwind's scales */
-  --color-blue-400: var(--primary-color);
-  --color-blue-500: var(--primary-color);
-  --color-blue-600: var(--primary-color);
-  --color-blue-700: var(--primary-color);
-  --color-violet-500: var(--primary-color);
-  --color-violet-600: var(--primary-color);
-  --color-violet-700: var(--primary-color);
-  --color-indigo-500: var(--primary-color);
-  --color-indigo-600: var(--primary-color);
+  /* Map dynamic primary color to tailwind's scales with default fallbacks */
+  --color-blue-400: var(--primary-color, #60a5fa);
+  --color-blue-500: var(--primary-color, #3b82f6);
+  --color-blue-600: var(--primary-color, #2563eb);
+  --color-blue-700: var(--primary-color, #1d4ed8);
+  --color-violet-500: var(--primary-color, #8b5cf6);
+  --color-violet-600: var(--primary-color, #7c3aed);
+  --color-violet-700: var(--primary-color, #6d28d9);
+  --color-indigo-500: var(--primary-color, #6366f1);
+  --color-indigo-600: var(--primary-color, #4f46e5);
 
   --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-plus-jakarta: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;

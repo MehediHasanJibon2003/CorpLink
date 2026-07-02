@@ -62,7 +62,7 @@ function App() {
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="analytics">
                   <Analytics />
                 </ProtectedRoute>
               }
@@ -86,7 +86,7 @@ function App() {
             <Route
               path="/messages"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="messaging">
                   <Messages />
                 </ProtectedRoute>
               }
@@ -102,7 +102,7 @@ function App() {
             <Route
               path="/teams"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="departments">
                   <Teams />
                 </ProtectedRoute>
               }
@@ -110,7 +110,7 @@ function App() {
             <Route
               path="/departments"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="departments">
                   <Departments />
                 </ProtectedRoute>
               }
@@ -118,7 +118,7 @@ function App() {
             <Route
               path="/employees"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="departments">
                   <Employees />
                 </ProtectedRoute>
               }
@@ -126,7 +126,7 @@ function App() {
             <Route
               path="/tasks"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="task_management">
                   <Tasks />
                 </ProtectedRoute>
               }
@@ -142,7 +142,7 @@ function App() {
             <Route
               path="/feed"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="news_feed">
                   <Feed />
                 </ProtectedRoute>
               }
@@ -150,7 +150,7 @@ function App() {
             <Route
               path="/collaboration"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute moduleKey="collaboration">
                   <Collaboration />
                 </ProtectedRoute>
               }

@@ -22,7 +22,7 @@ export default function CorporateManagement() {
       .from("companies")
       .select("*")
       .order("created_at", { ascending: false })
-    
+
     if (!error) setCompanies(data)
     setLoading(false)
   }
@@ -31,7 +31,7 @@ export default function CorporateManagement() {
 
   const handleUpdateStatus = async (id, status, reason = "") => {
     setActionLoading(id)
-    
+
     try {
       if (status === 'deleted') {
         const { error } = await supabase.from("companies").delete().eq("id", id)
@@ -56,38 +56,37 @@ export default function CorporateManagement() {
   }
 
   const filteredCompanies = companies.filter(co => {
-    const matchesSearch = (co.name || "").toLowerCase().includes(search.toLowerCase()) || 
-                          (co.email || "").toLowerCase().includes(search.toLowerCase())
+    const matchesSearch = (co.name || "").toLowerCase().includes(search.toLowerCase()) ||
+      (co.email || "").toLowerCase().includes(search.toLowerCase())
     const matchesStatus = statusFilter === "all" || co.status === statusFilter
     return matchesSearch && matchesStatus
   })
 
   return (
     <SuperAdminLayout title="Corporate Management" subtitle="Approve new registrations and manage corporate identities">
-      
+
       {/* Responsive Filters Section */}
       <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between mb-8 md:mb-12">
         <div className="relative flex-1 max-w-md w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-          <input 
-            type="text" 
-            placeholder="Search by name or email..." 
+          <input
+            type="text"
+            placeholder="Search by name or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-12 pr-4 py-3 md:py-4 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 outline-none focus:border-violet-500 transition-all font-bold text-slate-900 dark:text-white text-body md:text-body"
           />
         </div>
-        
+
         <div className="grid grid-cols-2 sm:flex sm:flex-row gap-3 md:gap-4">
           {["all", "pending", "active", "rejected"].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-full text-badge md:text-label font-black uppercase tracking-widest transition-all border-2 shrink-0 ${
-                statusFilter === status 
-                  ? "bg-violet-600 text-white border-violet-600 shadow-lg shadow-violet-600/30" 
+              className={`px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-full text-badge md:text-label font-black uppercase tracking-widest transition-all border-2 shrink-0 ${statusFilter === status
+                  ? "bg-violet-600 text-white border-violet-600 shadow-lg shadow-violet-600/30"
                   : "bg-white dark:bg-white/5 text-slate-500 dark:text-violet-400 border-slate-100 dark:border-violet-500/15"
-              }`}
+                }`}
             >
               {status}
             </button>
@@ -97,7 +96,7 @@ export default function CorporateManagement() {
 
       {/* Responsive Table/Cards Container */}
       <div className="rounded-3xl md:rounded-[2.5rem] overflow-hidden bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15 shadow-sm">
-        
+
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -141,11 +140,10 @@ export default function CorporateManagement() {
                     </div>
                   </td>
                   <td className="px-10 py-8">
-                    <span className={`px-4 py-1.5 rounded-full text-badge font-black uppercase tracking-widest border-2 ${
-                      co.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                      co.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100 animate-pulse' :
-                      'bg-red-50 text-red-600 border-red-100'
-                    }`}>
+                    <span className={`px-4 py-1.5 rounded-full text-badge font-black uppercase tracking-widest border-2 ${co.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                        co.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100 animate-pulse' :
+                          'bg-red-50 text-red-600 border-red-100'
+                      }`}>
                       {co.status}
                     </span>
                   </td>
@@ -153,14 +151,14 @@ export default function CorporateManagement() {
                     <div className="flex items-center justify-end gap-3">
                       {co.status === 'pending' && (
                         <>
-                          <button 
+                          <button
                             onClick={() => handleUpdateStatus(co.id, 'active')}
                             disabled={actionLoading === co.id}
                             className="p-3 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
                           >
                             <CheckCircle2 className="h-5 w-5" />
                           </button>
-                          <button 
+                          <button
                             onClick={() => { setSelectedCo(co); setIsModalOpen(true); }}
                             className="p-3 rounded-xl bg-red-50 border-2 border-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm"
                           >
@@ -169,13 +167,12 @@ export default function CorporateManagement() {
                         </>
                       )}
                       <div className="relative">
-                        <button 
+                        <button
                           onClick={() => setActiveMenu(activeMenu === co.id ? null : co.id)}
-                          className={`p-3 rounded-xl border-2 transition-all ${
-                            activeMenu === co.id 
-                              ? "bg-violet-600 border-violet-600 text-white" 
+                          className={`p-3 rounded-xl border-2 transition-all ${activeMenu === co.id
+                              ? "bg-violet-600 border-violet-600 text-white"
                               : "bg-slate-50 dark:bg-white/5 border-slate-100 dark:border-white/10 text-slate-400 hover:text-violet-500"
-                          }`}
+                            }`}
                         >
                           <MoreHorizontal className="h-5 w-5" />
                         </button>
@@ -184,7 +181,7 @@ export default function CorporateManagement() {
                           <>
                             <div className="fixed inset-0 z-10" onClick={() => setActiveMenu(null)}></div>
                             <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-[#1a0b3b] border-2 border-slate-100 dark:border-white/10 rounded-2xl shadow-2xl z-20 py-3 animate-in fade-in slide-in-from-top-5 duration-200">
-                              <button 
+                              <button
                                 onClick={() => { handleUpdateStatus(co.id, co.status === 'blocked' ? 'active' : 'blocked'); setActiveMenu(null); }}
                                 className="w-full px-6 py-3 text-left hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                               >
@@ -200,11 +197,11 @@ export default function CorporateManagement() {
                                   </>
                                 )}
                               </button>
-                              
+
                               <div className="h-px bg-slate-100 dark:bg-white/5 my-2" />
-                              
-                              <button 
-                                onClick={() => { 
+
+                              <button
+                                onClick={() => {
                                   showConfirm({
                                     title: "Terminate Corporate Record",
                                     message: `Are you sure you want to PERMANENTLY delete ${co.name}? This action is irreversible and will wipe all associated data.`,
@@ -249,11 +246,10 @@ export default function CorporateManagement() {
                   <div className="min-w-0 flex-1">
                     <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{co.name}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border-2 shrink-0 ${
-                        co.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                        co.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                        'bg-red-50 text-red-600 border-red-100'
-                      }`}>
+                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border-2 shrink-0 ${co.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                          co.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                            'bg-red-50 text-red-600 border-red-100'
+                        }`}>
                         {co.status}
                       </span>
                       <p className="text-badge font-bold text-slate-500 truncate">{co.email}</p>
@@ -262,13 +258,12 @@ export default function CorporateManagement() {
                 </div>
 
                 <div className="relative">
-                  <button 
+                  <button
                     onClick={() => setActiveMenu(activeMenu === co.id ? null : co.id)}
-                    className={`p-2 rounded-xl border-2 transition-all ${
-                      activeMenu === co.id 
-                        ? "bg-violet-600 border-violet-600 text-white" 
+                    className={`p-2 rounded-xl border-2 transition-all ${activeMenu === co.id
+                        ? "bg-violet-600 border-violet-600 text-white"
                         : "bg-slate-100 dark:bg-white/10 border-slate-200 dark:border-white/10 text-slate-400"
-                    }`}
+                      }`}
                   >
                     <MoreHorizontal className="h-5 w-5" />
                   </button>
@@ -277,7 +272,7 @@ export default function CorporateManagement() {
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setActiveMenu(null)}></div>
                       <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-[#1a0b3b] border-2 border-slate-100 dark:border-white/10 rounded-2xl shadow-2xl z-20 py-3 animate-in fade-in slide-in-from-top-5 duration-200">
-                        <button 
+                        <button
                           onClick={() => { handleUpdateStatus(co.id, co.status === 'blocked' ? 'active' : 'blocked'); setActiveMenu(null); }}
                           className="w-full px-6 py-3 text-left flex items-center gap-3"
                         >
@@ -285,8 +280,8 @@ export default function CorporateManagement() {
                           <span className="text-label font-bold text-slate-700 dark:text-slate-200">{co.status === 'blocked' ? 'Activate' : 'Block Access'}</span>
                         </button>
                         <div className="h-px bg-slate-100 dark:bg-white/5 my-2" />
-                        <button 
-                          onClick={() => { 
+                        <button
+                          onClick={() => {
                             showConfirm({
                               title: "Terminate Record",
                               message: `Delete ${co.name}?`,
@@ -318,14 +313,14 @@ export default function CorporateManagement() {
 
               {co.status === 'pending' && (
                 <div className="flex items-center gap-3 pt-1">
-                  <button 
+                  <button
                     onClick={() => handleUpdateStatus(co.id, 'active')}
                     disabled={actionLoading === co.id}
                     className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border-2 border-emerald-100 dark:border-emerald-500/20 text-emerald-600 font-black uppercase text-badge tracking-widest"
                   >
                     <CheckCircle2 className="h-4 w-4" /> Approve
                   </button>
-                  <button 
+                  <button
                     onClick={() => { setSelectedCo(co); setIsModalOpen(true); }}
                     className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border-2 border-red-100 dark:border-red-500/20 text-red-600 font-black uppercase text-badge tracking-widest"
                   >
@@ -345,8 +340,8 @@ export default function CorporateManagement() {
           <div className="relative bg-white dark:bg-[#0d0622] w-full max-w-lg rounded-[2.5rem] p-8 md:p-12 border-2 border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
             <h3 className="text-heading-1 font-black text-white uppercase tracking-tight mb-4">Reject Registration</h3>
             <p className="text-slate-400 font-bold mb-8">Please provide a reason for rejecting <span className="text-violet-400">{selectedCo?.name}</span>. This will be sent to their email.</p>
-            
-            <textarea 
+
+            <textarea
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="e.g. Invalid documents provided..."
@@ -354,13 +349,13 @@ export default function CorporateManagement() {
             />
 
             <div className="flex gap-4">
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="flex-1 py-4 rounded-2xl bg-white/5 text-slate-400 font-black uppercase text-label tracking-widest hover:bg-white/10 transition-all"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={() => handleUpdateStatus(selectedCo.id, 'rejected', rejectionReason)}
                 disabled={!rejectionReason || actionLoading}
                 className="flex-1 py-4 rounded-2xl bg-red-600 text-white font-black uppercase text-label tracking-widest shadow-xl shadow-red-600/20 disabled:opacity-50"
