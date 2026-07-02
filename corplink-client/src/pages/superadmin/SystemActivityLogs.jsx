@@ -34,7 +34,8 @@ export default function SystemActivityLogs() {
     if (severity !== "all") q = q.eq("severity", severity)
     if (companyId !== "all") q = q.eq("company_id", companyId)
     if (search) q = q.ilike("action", `%${search}%`)
-    const { data, count } = await q
+    const { data, count, error } = await q
+    console.log("Fetched activity logs:", { data, count, error })
     setLogs(data || [])
     setTotal(count || 0)
     setLoading(false)

@@ -2,9 +2,12 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
 import { useConfirm } from "../../context/ConfirmContext"
+import { useAuth } from "../../context/AuthContext"
+import { logAdminActivity } from "../../utils/logger"
 import { Building2, Search, Filter, MoreHorizontal, CheckCircle2, XCircle, AlertCircle, Mail, Globe, Users, CreditCard, ChevronRight } from "lucide-react"
 
 export default function CorporateManagement() {
+  const { profile } = useAuth()
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
@@ -36,11 +39,24 @@ export default function CorporateManagement() {
       if (status === 'deleted') {
         const { error } = await supabase.from("companies").delete().eq("id", id)
         if (error) throw error
+        await logAdminActivity({
+          user_id: profile?.id,
+          action: `Deleted company`,
+          entity: "Corporate",
+          severity: "error"
+        })
       } else {
         const updateData = { status }
         if (reason) updateData.rejection_reason = reason
         const { error } = await supabase.from("companies").update(updateData).eq("id", id)
         if (error) throw error
+        await logAdminActivity({
+          user_id: profile?.id,
+          company_id: id,
+          action: `${status === 'active' ? 'Approved' : status === 'rejected' ? 'Rejected' : 'Updated'} company`,
+          entity: "Corporate",
+          severity: status === 'active' ? 'success' : status === 'rejected' ? 'warning' : 'info'
+        })
       }
 
       await fetchCompanies()

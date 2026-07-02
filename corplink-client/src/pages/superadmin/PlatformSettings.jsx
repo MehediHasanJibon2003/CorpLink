@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
 import { useTheme } from "../../context/ThemeContext"
+import { useAuth } from "../../context/AuthContext"
+import { logAdminActivity } from "../../utils/logger"
 import {
   ToggleLeft, ToggleRight, Building2, ShieldCheck,
   Palette, Save, Upload, RefreshCw, ChevronDown, Loader2, CheckCircle, X
@@ -19,6 +21,7 @@ const DEFAULT_MODULES = [
 ]
 
 export default function PlatformSettings() {
+  const { profile } = useAuth()
   const [activeTab, setActiveTab] = useState("modules")
   const [companies, setCompanies] = useState([])
   const [selectedCo, setSelectedCo] = useState(null)
@@ -84,6 +87,13 @@ export default function PlatformSettings() {
     setSaving(moduleKey)
     setModuleSettings(prev => ({ ...prev, [moduleKey]: newVal }))
     await supabase.from("platform_settings").upsert({ corporate_id: selectedCo.id, module_name: moduleKey, is_active: newVal }, { onConflict: "corporate_id,module_name" })
+    await logAdminActivity({
+      user_id: profile?.id,
+      company_id: selectedCo.id,
+      action: `${newVal ? 'Enabled' : 'Disabled'} module: ${moduleKey}`,
+      entity: "Platform Settings",
+      severity: "info"
+    })
     setSaving(null)
   }
 
@@ -95,6 +105,12 @@ export default function PlatformSettings() {
         Object.entries(systemRules).map(([key, value]) => ({ key, value: String(value) })),
         { onConflict: 'key' }
       )
+      await logAdminActivity({
+        user_id: profile?.id,
+        action: `Updated system rules`,
+        entity: "Platform Settings",
+        severity: "warning"
+      })
       setRulesSuccess('System rules saved successfully!')
       setTimeout(() => setRulesSuccess(''), 3000)
     } catch (err) {
@@ -148,6 +164,12 @@ export default function PlatformSettings() {
         if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link) }
         link.href = branding.favicon_url
       }
+      await logAdminActivity({
+        user_id: profile?.id,
+        action: `Updated platform branding`,
+        entity: "Platform Settings",
+        severity: "info"
+      })
       setBrandingSuccess('Branding updated successfully!')
       setTimeout(() => setBrandingSuccess(''), 3000)
     } catch (err) {

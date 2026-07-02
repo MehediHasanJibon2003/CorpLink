@@ -82,7 +82,9 @@ function Login() {
       // --- SECURITY LOGGING END ---
 
       if (signInError) {
-        // If the error message is specifically about being blocked, show it
+        // Log the failed attempt via RPC
+        await supabase.rpc('record_failed_login', { user_email: cleanEmail });
+
         if ((signInError.message || "").toLowerCase().includes("blocked")) {
           setError("This account is blocked due to security reasons.");
         } else {
@@ -91,6 +93,9 @@ function Login() {
         setLoading(false);
         return;
       }
+
+      // Login success, reset the counter
+      await supabase.rpc('reset_failed_login', { user_email: cleanEmail });
 
       try {
         const { data: userProfile } = await supabase
@@ -106,6 +111,24 @@ function Login() {
           );
           setLoading(false);
           return;
+        }
+
+        // Check if company is suspended
+        if (userProfile?.company_id) {
+          const { data: companyData } = await supabase
+            .from("companies")
+            .select("status")
+            .eq("id", userProfile.company_id)
+            .single();
+            
+          if (companyData?.status === 'suspended') {
+            await supabase.auth.signOut();
+            setError(
+              "Your company has been temporarily blocked due to multiple failed login attempts. Please contact a Super Admin."
+            );
+            setLoading(false);
+            return;
+          }
         }
 
         if (userProfile?.role === "super_admin") {
