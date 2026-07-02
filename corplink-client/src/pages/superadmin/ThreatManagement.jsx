@@ -159,7 +159,7 @@ export default function ThreatManagement() {
                             {alert.severity}
                           </span>
                         </td>
-                        <td className="px-10 py-8 text-right flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                        <td className="px-10 py-8 text-right flex justify-end gap-3 transition-all">
                             {!alert.resolved && (
                               <button onClick={() => resolveAlert(alert.id)} className="px-6 py-2.5 rounded-xl bg-emerald-600 text-white text-badge font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20 active:scale-95 transition-all">Resolve</button>
                             )}
@@ -188,7 +188,7 @@ export default function ThreatManagement() {
                               <td className="px-10 py-8">
                                 <span className="px-4 py-1.5 rounded-full bg-red-50 text-red-600 border-2 border-red-100 text-badge font-black uppercase tracking-widest">Suspended</span>
                               </td>
-                              <td className="px-10 py-8 text-right flex justify-end opacity-0 group-hover:opacity-100 transition-all">
+                              <td className="px-10 py-8 text-right flex justify-end transition-all">
                                   <button onClick={() => unblockCompany(company.id)} className="px-6 py-3 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 text-badge font-black uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-95">
                                     <ShieldCheck className="h-4 w-4" /> Unblock Company
                                   </button>
@@ -210,7 +210,7 @@ export default function ThreatManagement() {
                               <td className="px-10 py-8">
                                 <span className="px-4 py-1.5 rounded-full bg-red-50 text-red-600 border-2 border-red-100 text-badge font-black uppercase tracking-widest">Blocked</span>
                               </td>
-                              <td className="px-10 py-8 text-right flex justify-end opacity-0 group-hover:opacity-100 transition-all">
+                              <td className="px-10 py-8 text-right flex justify-end transition-all">
                                   <button onClick={() => toggleUserBlock(user.id, true)} className="px-6 py-3 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-600 text-badge font-black uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-95">
                                     <UserCheck className="h-4 w-4" /> Unblock User
                                   </button>
