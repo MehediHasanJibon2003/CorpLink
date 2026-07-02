@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
+import { useTheme } from "../../context/ThemeContext"
 import {
   ToggleLeft, ToggleRight, Building2, ShieldCheck,
-  Palette, Save, Upload, AlertCircle, RefreshCw, ChevronDown, Loader2, CheckCircle
+  Palette, Save, Upload, RefreshCw, ChevronDown, Loader2, CheckCircle, X
 } from "lucide-react"
 
 const DEFAULT_MODULES = [
@@ -33,15 +34,21 @@ export default function PlatformSettings() {
     max_login_attempts: 5,
     registration_open: true
   })
+  const { branding: themeBranding } = useTheme()
   const [branding, setBranding] = useState({
     platform_name: "CorpLink",
     primary_color: "#8b5cf6",
-    logo_url: null
+    logo_url: null,
+    favicon_url: null,
   })
   const [savingRules, setSavingRules] = useState(false)
   const [rulesSuccess, setRulesSuccess] = useState('')
   const [savingBranding, setSavingBranding] = useState(false)
   const [brandingSuccess, setBrandingSuccess] = useState('')
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [uploadingIcon, setUploadingIcon] = useState(false)
+  const logoInputRef = useRef(null)
+  const iconInputRef = useRef(null)
 
   useEffect(() => {
     const loadInit = async () => {
@@ -52,7 +59,7 @@ export default function PlatformSettings() {
       // Load Branding
       const { data: brandData } = await supabase.from("platform_config").select("config").eq("id", "branding").maybeSingle()
       if (brandData?.config) {
-        setBranding(brandData.config)
+        setBranding(prev => ({ ...prev, ...brandData.config }))
       }
 
       setLoading(false)
@@ -97,19 +104,52 @@ export default function PlatformSettings() {
     }
   }
 
+  const handleUploadImage = async (file, field) => {
+    if (!file) return
+    const isLogo = field === 'logo_url'
+    if (isLogo) setUploadingLogo(true)
+    else setUploadingIcon(true)
+
+    try {
+      const ext = file.name.split('.').pop()
+      const fileName = `${field}_${Date.now()}.${ext}`
+      const { error: uploadError } = await supabase.storage
+        .from('platform-assets')
+        .upload(fileName, file, { upsert: true })
+
+      if (uploadError) throw uploadError
+
+      const { data: urlData } = supabase.storage
+        .from('platform-assets')
+        .getPublicUrl(fileName)
+
+      setBranding(prev => ({ ...prev, [field]: urlData.publicUrl }))
+    } catch (err) {
+      alert('Upload failed: ' + err.message)
+    } finally {
+      if (isLogo) setUploadingLogo(false)
+      else setUploadingIcon(false)
+    }
+  }
+
   const handleSaveBranding = async () => {
     setSavingBranding(true)
     setBrandingSuccess('')
     try {
-      await supabase.from('platform_config').upsert(
-        { id: 'branding', config: branding }
-      )
-
-      // Also update localStorage so it's instant on reload
+      const { error } = await supabase.from('platform_config').upsert({ id: 'branding', config: branding })
+      if (error) throw error
       localStorage.setItem("corplink-branding", JSON.stringify(branding))
-
-      setBrandingSuccess('Branding updated successfully! Reloading...')
-      setTimeout(() => window.location.reload(), 1500)
+      // Apply immediately without reload
+      const root = window.document.documentElement
+      if (branding.primary_color) root.style.setProperty('--primary-color', branding.primary_color)
+      if (branding.platform_name) document.title = branding.platform_name
+      if (branding.favicon_url) {
+        let link = document.querySelector("link[rel~='icon']")
+        if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link) }
+        link.href = branding.favicon_url
+      }
+      setBrandingSuccess('Branding updated successfully!')
+      setTimeout(() => setBrandingSuccess(''), 3000)
     } catch (err) {
       alert('Failed to save: ' + err.message)
     } finally {
@@ -266,38 +306,152 @@ export default function PlatformSettings() {
         {activeTab === "branding" && (
           <div className="rounded-3xl md:rounded-[3rem] p-6 md:p-12 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/15">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16">
+
+              {/* Left: Identity */}
               <div className="space-y-6 md:space-y-8">
                 <h3 className="text-heading-3 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Identity</h3>
-                <div className="space-y-4">
+                <div className="space-y-5">
+                  {/* Platform Name */}
                   <div>
                     <label className="text-badge font-black uppercase text-slate-500 tracking-widest block mb-2">Platform Name</label>
-                    <input type="text" value={branding.platform_name} onChange={e => setBranding({ ...branding, platform_name: e.target.value })} className="w-full bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl px-5 py-4 outline-none font-bold text-slate-900 dark:text-white focus:border-violet-500/40" />
+                    <input
+                      type="text"
+                      value={branding.platform_name}
+                      onChange={e => setBranding({ ...branding, platform_name: e.target.value })}
+                      className="w-full bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl px-5 py-4 outline-none font-bold text-slate-900 dark:text-white focus:border-violet-500/40 transition-all"
+                    />
                   </div>
+
+                  {/* Theme Color */}
                   <div>
                     <label className="text-badge font-black uppercase text-slate-500 tracking-widest block mb-2">Theme Color</label>
                     <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5">
-                      <input type="color" value={branding.primary_color} onChange={e => setBranding({ ...branding, primary_color: e.target.value })} className="h-12 w-20 rounded-lg bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 cursor-pointer" />
-                      <p className="font-mono font-bold text-slate-500 uppercase tracking-widest">{branding.primary_color}</p>
+                      <input
+                        type="color"
+                        value={branding.primary_color}
+                        onChange={e => {
+                          const color = e.target.value
+                          setBranding({ ...branding, primary_color: color })
+                          // Live preview
+                          document.documentElement.style.setProperty('--primary-color', color)
+                        }}
+                        className="h-12 w-20 rounded-lg cursor-pointer border-0 bg-transparent"
+                      />
+                      <div className="flex-1">
+                        <p className="font-mono font-black text-slate-900 dark:text-white text-heading-3">{branding.primary_color?.toUpperCase()}</p>
+                        <p className="text-badge text-slate-400 font-bold uppercase tracking-widest mt-1">Live preview active</p>
+                      </div>
+                      {/* Color swatch preview */}
+                      <div
+                        className="w-12 h-12 rounded-xl shadow-lg border-2 border-white/20"
+                        style={{ background: branding.primary_color }}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
 
+              {/* Right: Media Assets */}
               <div className="space-y-6 md:space-y-8">
                 <h3 className="text-heading-3 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Media Assets</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2 text-center">
-                    <p className="text-badge font-black uppercase text-slate-500 tracking-widest">Logo</p>
-                    <div className="aspect-square rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/10 flex items-center justify-center relative group cursor-pointer hover:border-violet-500/40 transition-all">
-                      <Upload className="h-6 w-6 text-slate-300 group-hover:text-violet-500" />
-                      <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
+
+                  {/* Logo Upload */}
+                  <div className="space-y-2">
+                    <p className="text-badge font-black uppercase text-slate-500 tracking-widest text-center">Logo</p>
+                    <div
+                      onClick={() => logoInputRef.current?.click()}
+                      className="aspect-square rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/20 flex flex-col items-center justify-center relative group cursor-pointer hover:border-violet-500/50 transition-all overflow-hidden"
+                    >
+                      {uploadingLogo ? (
+                        <Loader2 className="h-6 w-6 text-violet-500 animate-spin" />
+                      ) : branding.logo_url ? (
+                        <>
+                          <img src={branding.logo_url} alt="Logo" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-2 flex-col">
+                            <Upload className="h-5 w-5 text-white" />
+                            <p className="text-white text-[9px] font-black uppercase">Change</p>
+                          </div>
+                          <button
+                            onClick={e => { e.stopPropagation(); setBranding(prev => ({ ...prev, logo_url: null })) }}
+                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-6 w-6 text-slate-300 group-hover:text-violet-500 transition-colors mb-1" />
+                          <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Upload</p>
+                        </>
+                      )}
                     </div>
+                    <input
+                      ref={logoInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={e => handleUploadImage(e.target.files[0], 'logo_url')}
+                    />
                   </div>
-                  <div className="space-y-2 text-center">
-                    <p className="text-badge font-black uppercase text-slate-500 tracking-widest">Icon</p>
-                    <div className="aspect-square rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/10 flex items-center justify-center relative group cursor-pointer hover:border-violet-500/40 transition-all">
-                      <Upload className="h-6 w-6 text-slate-300 group-hover:text-violet-500" />
-                      <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
+
+                  {/* Icon / Favicon Upload */}
+                  <div className="space-y-2">
+                    <p className="text-badge font-black uppercase text-slate-500 tracking-widest text-center">Favicon / Icon</p>
+                    <div
+                      onClick={() => iconInputRef.current?.click()}
+                      className="aspect-square rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-violet-500/20 flex flex-col items-center justify-center relative group cursor-pointer hover:border-violet-500/50 transition-all overflow-hidden"
+                    >
+                      {uploadingIcon ? (
+                        <Loader2 className="h-6 w-6 text-violet-500 animate-spin" />
+                      ) : branding.favicon_url ? (
+                        <>
+                          <img src={branding.favicon_url} alt="Icon" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-2 flex-col">
+                            <Upload className="h-5 w-5 text-white" />
+                            <p className="text-white text-[9px] font-black uppercase">Change</p>
+                          </div>
+                          <button
+                            onClick={e => { e.stopPropagation(); setBranding(prev => ({ ...prev, favicon_url: null })) }}
+                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-6 w-6 text-slate-300 group-hover:text-violet-500 transition-colors mb-1" />
+                          <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Upload</p>
+                        </>
+                      )}
+                    </div>
+                    <input
+                      ref={iconInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={e => handleUploadImage(e.target.files[0], 'favicon_url')}
+                    />
+                    <p className="text-[9px] text-slate-400 font-bold text-center uppercase tracking-widest">Used as browser tab icon</p>
+                  </div>
+                </div>
+
+                {/* Live Preview Card */}
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10">
+                  <p className="text-badge font-black uppercase text-slate-500 tracking-widest mb-3">Live Preview</p>
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-body shadow-lg overflow-hidden"
+                      style={{ background: branding.primary_color }}
+                    >
+                      {branding.logo_url
+                        ? <img src={branding.logo_url} className="w-full h-full object-cover" alt="logo" />
+                        : (branding.platform_name?.charAt(0) || 'C')
+                      }
+                    </div>
+                    <div>
+                      <p className="font-black uppercase tracking-widest text-slate-900 dark:text-white text-body">{branding.platform_name || 'CorpLink'}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: branding.primary_color }}>Platform</p>
                     </div>
                   </div>
                 </div>

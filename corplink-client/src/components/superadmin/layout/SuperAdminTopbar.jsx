@@ -7,7 +7,7 @@ import NotificationDropdown from "../../layout/NotificationDropdown"
 export default function SuperAdminTopbar({ onMenuClick }) {
   const navigate = useNavigate()
   const { profile, logout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, branding: themeBranding } = useTheme()
 
   const handleLogout = async () => {
     await logout()
@@ -27,9 +27,13 @@ export default function SuperAdminTopbar({ onMenuClick }) {
         </button>
 
         <div className="flex items-center gap-2 md:gap-3 px-3 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-violet-50 dark:bg-violet-500/15 border-2 border-violet-100 dark:border-violet-500/25">
-          <Shield className="h-4 w-4 md:h-5 md:w-5 text-violet-500" />
+          {themeBranding?.logo_url ? (
+            <img src={themeBranding.logo_url} alt="Logo" className="h-6 md:h-8 object-contain" />
+          ) : (
+            <Shield className="h-4 w-4 md:h-5 md:w-5 text-violet-500" />
+          )}
           <span className="hidden xs:block text-label md:text-body font-black uppercase tracking-widest text-violet-700 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-violet-400 dark:to-indigo-400">
-            Super Admin Portal
+            {themeBranding?.platform_name || "Super Admin Portal"}
           </span>
           <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-400 ml-0.5 md:ml-2 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
         </div>

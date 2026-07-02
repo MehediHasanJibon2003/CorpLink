@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function Navbar() {
+  const { branding } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -28,14 +30,19 @@ export default function Navbar() {
             to="/"
             className="flex items-center gap-3 md:gap-5 hover:opacity-80 transition group"
           >
-            <motion.div 
-              whileHover={{ rotate: 10, scale: 1.1 }}
-              className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/40 text-heading-3 md:text-heading-1"
-            >
-              C
-            </motion.div>
+            {branding?.logo_url ? (
+              <img src={branding.logo_url} alt="Logo" className="w-10 h-10 md:w-16 md:h-16 object-contain" />
+            ) : (
+              <motion.div 
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white shadow-2xl shadow-orange-500/40 text-heading-3 md:text-heading-1"
+                style={{ background: branding?.primary_color || 'linear-gradient(to bottom right, #f97316, #ea580c)' }}
+              >
+                {(branding?.platform_name || 'C').charAt(0).toUpperCase()}
+              </motion.div>
+            )}
             <span className="text-heading-3 md:text-heading-1 font-black tracking-tighter text-white">
-              CorpLink<span className="text-orange-500">.</span>
+              {branding?.platform_name || 'CorpLink'}<span style={{ color: branding?.primary_color || '#f97316' }}>.</span>
             </span>
           </Link>
         </div>
