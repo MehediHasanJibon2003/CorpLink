@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../../context/AuthContext"
 import { useTheme } from "../../../context/ThemeContext"
-import { Shield, Menu, Sun, Moon, Bell, LogOut } from "lucide-react"
+import { Shield, Menu, Sun, Moon, LogOut } from "lucide-react"
+import NotificationDropdown from "../../layout/NotificationDropdown"
 
 export default function SuperAdminTopbar({ onMenuClick }) {
   const navigate = useNavigate()
@@ -14,7 +15,7 @@ export default function SuperAdminTopbar({ onMenuClick }) {
   }
 
   return (
-    <header className="h-20 md:h-24 lg:h-28 shrink-0 relative flex items-center justify-between px-4 md:px-8 lg:px-12 gap-4 md:gap-8 overflow-hidden
+    <header className="h-20 md:h-24 lg:h-28 shrink-0 relative flex items-center justify-between px-4 md:px-8 lg:px-12 gap-4 md:gap-8
       bg-white/80 dark:bg-[#0d0622]/85 border-b-2 border-slate-200 dark:border-violet-500/15 backdrop-blur-xl transition-colors duration-300"
     >
       <div className="absolute top-0 left-0 right-0 h-px"
@@ -38,12 +39,7 @@ export default function SuperAdminTopbar({ onMenuClick }) {
         <button onClick={toggleTheme} className="p-2.5 md:p-4 rounded-xl bg-slate-50 dark:bg-violet-500/10 border-2 border-slate-200 dark:border-violet-500/15">
           {theme === "dark" ? <Sun className="h-6 w-6 md:h-7 md:w-7 text-amber-400" /> : <Moon className="h-6 w-6 md:h-7 md:w-7" />}
         </button>
- 
-        <button className="p-2.5 md:p-4 rounded-xl text-slate-500 dark:text-violet-400 hover:text-slate-900 dark:hover:text-white transition relative group overflow-hidden bg-slate-50 dark:bg-violet-500/10 border-2 border-slate-200 dark:border-violet-500/15">
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl md:rounded-2xl bg-slate-100 dark:bg-violet-500/20" />
-          <Bell className="h-6 w-6 md:h-7 md:w-7 relative z-10" />
-          <span className="absolute top-2 right-2 w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] ring-4 ring-white dark:ring-[#0d0622]" />
-        </button>
+        <NotificationDropdown />
  
         <div className="h-10 md:h-12 w-0.5 mx-2 md:mx-4 opacity-20 hidden md:block" style={{ background: `linear-gradient(180deg, transparent, var(--primary-color), transparent)` }} />
  

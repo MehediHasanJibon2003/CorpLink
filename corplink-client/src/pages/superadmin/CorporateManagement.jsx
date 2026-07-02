@@ -338,14 +338,14 @@ export default function CorporateManagement() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
           <div className="relative bg-white dark:bg-[#0d0622] w-full max-w-lg rounded-[2.5rem] p-8 md:p-12 border-2 border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
-            <h3 className="text-heading-1 font-black text-white uppercase tracking-tight mb-4">Reject Registration</h3>
-            <p className="text-slate-400 font-bold mb-8">Please provide a reason for rejecting <span className="text-violet-400">{selectedCo?.name}</span>. This will be sent to their email.</p>
+            <h3 className="text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight mb-4">Reject Registration</h3>
+            <p className="text-slate-500 dark:text-slate-400 font-bold mb-8">Please provide a reason for rejecting <span className="text-violet-600 dark:text-violet-400">{selectedCo?.name}</span>. This will be sent to their email.</p>
 
             <textarea
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="e.g. Invalid documents provided..."
-              className="w-full h-32 bg-white/5 border-2 border-white/10 rounded-2xl p-6 text-white outline-none focus:border-red-500 transition-all font-bold mb-8"
+              className="w-full h-32 bg-slate-100 dark:bg-white/5 border-2 border-slate-300 dark:border-white/10 rounded-2xl p-6 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-red-500 dark:focus:border-red-500 transition-all font-bold mb-8 resize-none"
             />
 
             <div className="flex gap-4">

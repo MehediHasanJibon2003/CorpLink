@@ -45,205 +45,205 @@ function App() {
       <ConfirmProvider>
         <AuthProvider>
           <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/analytics"
-              element={
-                <ProtectedRoute moduleKey="analytics">
-                  <Analytics />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/billing"
-              element={
-                <ProtectedRoute>
-                  <Billing />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/messages"
-              element={
-                <ProtectedRoute moduleKey="messaging">
-                  <Messages />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <UserProfile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/teams"
-              element={
-                <ProtectedRoute moduleKey="departments">
-                  <Teams />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/departments"
-              element={
-                <ProtectedRoute moduleKey="departments">
-                  <Departments />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/employees"
-              element={
-                <ProtectedRoute moduleKey="departments">
-                  <Employees />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/tasks"
-              element={
-                <ProtectedRoute moduleKey="task_management">
-                  <Tasks />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/activity"
-              element={
-                <ProtectedRoute>
-                  <Activity />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/feed"
-              element={
-                <ProtectedRoute moduleKey="news_feed">
-                  <Feed />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/collaboration"
-              element={
-                <ProtectedRoute moduleKey="collaboration">
-                  <Collaboration />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <ProtectedRoute moduleKey="analytics">
+                    <Analytics />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/billing"
+                element={
+                  <ProtectedRoute>
+                    <Billing />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/messages"
+                element={
+                  <ProtectedRoute moduleKey="messaging">
+                    <Messages />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/teams"
+                element={
+                  <ProtectedRoute moduleKey="teams">
+                    <Teams />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/departments"
+                element={
+                  <ProtectedRoute moduleKey="departments">
+                    <Departments />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/employees"
+                element={
+                  <ProtectedRoute moduleKey="employees">
+                    <Employees />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/tasks"
+                element={
+                  <ProtectedRoute moduleKey="task_management">
+                    <Tasks />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/activity"
+                element={
+                  <ProtectedRoute>
+                    <Activity />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/feed"
+                element={
+                  <ProtectedRoute moduleKey="news_feed">
+                    <Feed />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/collaboration"
+                element={
+                  <ProtectedRoute moduleKey="collaboration">
+                    <Collaboration />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* ── Employee Routes ── */}
-            <Route
-              path="/employee/dashboard"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/messages"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/tasks"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/projects"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/performance"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/feed"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/notifications"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/collaboration"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/profile"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
-            <Route
-              path="/employee/department"
-              element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
-            />
+              {/* ── Employee Routes ── */}
+              <Route
+                path="/employee/dashboard"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/messages"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/tasks"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/projects"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/performance"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/feed"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/notifications"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/collaboration"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/profile"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
+              <Route
+                path="/employee/department"
+                element={<EmployeeRoute><EmployeeDashboard /></EmployeeRoute>}
+              />
 
-            {/* Unauthorized / Pending */}
-            <Route path="/unauthorized" element={<Unauthorized />} />
-            <Route path="/pending-approval" element={<PendingApproval />} />
+              {/* Unauthorized / Pending */}
+              <Route path="/unauthorized" element={<Unauthorized />} />
+              <Route path="/pending-approval" element={<PendingApproval />} />
 
-            {/* ── Super Admin Routes ── */}
-            <Route
-              path="/super-admin"
-              element={<SuperAdminRoute><SuperAdminDashboard /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/companies"
-              element={<SuperAdminRoute><CorporateManagement /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/subscriptions"
-              element={<SuperAdminRoute><SubscriptionBilling /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/settings"
-              element={<SuperAdminRoute><PlatformSettings /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/logs"
-              element={<SuperAdminRoute><SystemActivityLogs /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/announcements"
-              element={<SuperAdminRoute><GlobalAnnouncements /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/analytics"
-              element={<SuperAdminRoute><PlatformAnalytics /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/threats"
-              element={<SuperAdminRoute><ThreatManagement /></SuperAdminRoute>}
-            />
-            <Route
-              path="/super-admin/users"
-              element={<SuperAdminRoute><UserManagement /></SuperAdminRoute>}
-            />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </ConfirmProvider>
-  </ThemeProvider>
+              {/* ── Super Admin Routes ── */}
+              <Route
+                path="/super-admin"
+                element={<SuperAdminRoute><SuperAdminDashboard /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/companies"
+                element={<SuperAdminRoute><CorporateManagement /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/subscriptions"
+                element={<SuperAdminRoute><SubscriptionBilling /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/settings"
+                element={<SuperAdminRoute><PlatformSettings /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/logs"
+                element={<SuperAdminRoute><SystemActivityLogs /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/announcements"
+                element={<SuperAdminRoute><GlobalAnnouncements /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/analytics"
+                element={<SuperAdminRoute><PlatformAnalytics /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/threats"
+                element={<SuperAdminRoute><ThreatManagement /></SuperAdminRoute>}
+              />
+              <Route
+                path="/super-admin/users"
+                element={<SuperAdminRoute><UserManagement /></SuperAdminRoute>}
+              />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </ConfirmProvider>
+    </ThemeProvider>
   )
 }
 

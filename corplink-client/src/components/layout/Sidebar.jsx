@@ -50,14 +50,14 @@ const menuGroups = [
         path: "/employees",
         icon: Users,
         roles: ["admin", "corporate_admin", "manager", "hr"],
-        moduleKey: "departments",
+        moduleKey: "employees",
       },
       {
         name: "Teams",
         path: "/teams",
         icon: Shield,
         roles: ["admin", "corporate_admin", "manager", "hr", "dept_head", "team_lead"],
-        moduleKey: "departments",
+        moduleKey: "teams",
       },
       {
         name: "Departments",
@@ -201,11 +201,10 @@ function Sidebar({ isOpen, setIsOpen }) {
                       <Link
                         key={itemIndex}
                         to={item.path}
-                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-body md:text-body font-black uppercase tracking-widest transition-all duration-200 group ${
-                          isActive
+                        className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-2xl md:rounded-3xl text-body md:text-body font-black uppercase tracking-widest transition-all duration-200 group ${isActive
                             ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
                             : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800"
-                        }`}
+                          }`}
                       >
                         <Icon
                           className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"}`}

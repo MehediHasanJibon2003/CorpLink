@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import SuperAdminLayout from "../../components/superadmin/layout/SuperAdminLayout"
-import { 
-  ToggleLeft, ToggleRight, Building2, ShieldCheck, 
-  Palette, Save, Upload, AlertCircle, RefreshCw, ChevronDown, Loader2, CheckCircle 
+import {
+  ToggleLeft, ToggleRight, Building2, ShieldCheck,
+  Palette, Save, Upload, AlertCircle, RefreshCw, ChevronDown, Loader2, CheckCircle
 } from "lucide-react"
 
 const DEFAULT_MODULES = [
-  { key: "task_management", label: "Task",  desc: "Projects & tasks" },
-  { key: "messaging",       label: "Chat",  desc: "Internal messaging" },
-  { key: "collaboration",   label: "Collab", desc: "Partner discovery" },
-  { key: "news_feed",       label: "Feed",  desc: "Notice board" },
-  { key: "analytics",       label: "Charts", desc: "Data reports" },
-  { key: "departments",     label: "Teams",  desc: "Team management" },
+  { key: "task_management", label: "Task", desc: "Projects & tasks" },
+  { key: "messaging", label: "Chat", desc: "Internal messaging" },
+  { key: "collaboration", label: "Collab", desc: "Partner discovery" },
+  { key: "news_feed", label: "Feed", desc: "Notice board" },
+  { key: "analytics", label: "Charts", desc: "Data reports" },
+  { key: "departments", label: "Departments", desc: "Dept management" },
+  { key: "teams", label: "Teams", desc: "Team management" },
+  { key: "employees", label: "Employees", desc: "Employee records" },
 ]
 
 export default function PlatformSettings() {
@@ -46,13 +48,13 @@ export default function PlatformSettings() {
       const { data: comps } = await supabase.from("companies").select("id, name").eq("status", "active").order("name")
       setCompanies(comps || [])
       if (comps?.length) setSelectedCo(comps[0])
-      
+
       // Load Branding
       const { data: brandData } = await supabase.from("platform_config").select("config").eq("id", "branding").maybeSingle()
       if (brandData?.config) {
         setBranding(brandData.config)
       }
-      
+
       setLoading(false)
     }
     loadInit()
@@ -102,10 +104,10 @@ export default function PlatformSettings() {
       await supabase.from('platform_config').upsert(
         { id: 'branding', config: branding }
       )
-      
+
       // Also update localStorage so it's instant on reload
       localStorage.setItem("corplink-branding", JSON.stringify(branding))
-      
+
       setBrandingSuccess('Branding updated successfully! Reloading...')
       setTimeout(() => window.location.reload(), 1500)
     } catch (err) {
@@ -117,22 +119,21 @@ export default function PlatformSettings() {
 
   return (
     <SuperAdminLayout title="Platform Settings" subtitle="Branding and system rules">
-      
+
       {/* Responsive Tab Navigation */}
       <div className="grid grid-cols-3 lg:flex lg:flex-row gap-3 md:gap-6 mb-8 md:mb-12">
         {[
           { id: "modules", label: "Modules", icon: Building2 },
-          { id: "system",  label: "Rules",   icon: ShieldCheck },
+          { id: "system", label: "Rules", icon: ShieldCheck },
           { id: "branding", label: "Branding", icon: Palette },
         ].map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center justify-center lg:justify-start gap-2 md:gap-3 px-3 md:px-8 py-3.5 md:py-5 rounded-xl md:rounded-2xl font-black uppercase text-[9px] md:text-label tracking-widest transition-all border-2 ${
-              activeTab === tab.id 
-                ? "bg-violet-600 text-white border-violet-600 shadow-lg" 
+            className={`flex items-center justify-center lg:justify-start gap-2 md:gap-3 px-3 md:px-8 py-3.5 md:py-5 rounded-xl md:rounded-2xl font-black uppercase text-[9px] md:text-label tracking-widest transition-all border-2 ${activeTab === tab.id
+                ? "bg-violet-600 text-white border-violet-600 shadow-lg"
                 : "bg-white dark:bg-white/5 text-slate-500 dark:text-violet-400 border-slate-100 dark:border-violet-500/15"
-            }`}
+              }`}
           >
             <tab.icon className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
             <span className="truncate">{tab.label}</span>
@@ -141,7 +142,7 @@ export default function PlatformSettings() {
       </div>
 
       <div className="relative z-10">
-        
+
         {/* TAB 1: MODULE ACTIVATION */}
         {activeTab === "modules" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
@@ -150,7 +151,7 @@ export default function PlatformSettings() {
               <div className="flex items-center justify-between mb-4 md:mb-6">
                 <h3 className="text-badge font-black text-slate-500 uppercase tracking-widest">Companies</h3>
                 {/* Mobile Toggle Arrow */}
-                <button 
+                <button
                   onClick={() => setIsCoListOpen(!isCoListOpen)}
                   className="lg:hidden p-2 rounded-lg bg-slate-50 dark:bg-white/5 text-slate-400 hover:text-violet-600 transition-all"
                 >
@@ -166,11 +167,10 @@ export default function PlatformSettings() {
                     <button
                       key={co.id}
                       onClick={() => { setSelectedCo(co); setIsCoListOpen(false); }}
-                      className={`text-left px-5 md:px-6 py-3.5 md:py-4 rounded-xl font-black uppercase text-[9px] md:text-label tracking-widest transition-all border-2 shrink-0 ${
-                        selectedCo?.id === co.id 
-                          ? "bg-violet-600 text-white border-transparent shadow-md" 
+                      className={`text-left px-5 md:px-6 py-3.5 md:py-4 rounded-xl font-black uppercase text-[9px] md:text-label tracking-widest transition-all border-2 shrink-0 ${selectedCo?.id === co.id
+                          ? "bg-violet-600 text-white border-transparent shadow-md"
                           : "bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-violet-300 border-slate-100 dark:border-white/5"
-                      }`}
+                        }`}
                     >
                       {co.name}
                     </button>
@@ -225,11 +225,11 @@ export default function PlatformSettings() {
                 <div className="space-y-4">
                   <div>
                     <label className="text-badge font-black uppercase text-slate-500 tracking-widest block mb-2">Password Length</label>
-                    <input type="number" value={systemRules.password_min_length} onChange={e=>setSystemRules({...systemRules, password_min_length: e.target.value})} className="w-full bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl px-5 py-4 outline-none font-bold text-slate-900 dark:text-white focus:border-violet-500/40 transition-all" />
+                    <input type="number" value={systemRules.password_min_length} onChange={e => setSystemRules({ ...systemRules, password_min_length: e.target.value })} className="w-full bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl px-5 py-4 outline-none font-bold text-slate-900 dark:text-white focus:border-violet-500/40 transition-all" />
                   </div>
                   <div className="flex items-center justify-between p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10">
                     <p className="font-black uppercase text-badge md:text-label tracking-widest text-slate-900 dark:text-white">Require Symbols</p>
-                    <button onClick={()=>setSystemRules({...systemRules, require_symbols: !systemRules.require_symbols})}>
+                    <button onClick={() => setSystemRules({ ...systemRules, require_symbols: !systemRules.require_symbols })}>
                       {systemRules.require_symbols ? <ToggleRight className="h-9 w-9 text-emerald-500" /> : <ToggleLeft className="h-9 w-9 text-slate-300" />}
                     </button>
                   </div>
@@ -242,7 +242,7 @@ export default function PlatformSettings() {
                   <div className={`p-5 md:p-6 rounded-2xl border-2 transition-all ${systemRules.maintenance_mode ? 'bg-red-50 dark:bg-red-950/20 border-red-200' : 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200'}`}>
                     <div className="flex items-center justify-between mb-2">
                       <p className="font-black uppercase tracking-widest text-badge md:text-label text-slate-900 dark:text-white">Maintenance Mode</p>
-                      <button onClick={()=>setSystemRules({...systemRules, maintenance_mode: !systemRules.maintenance_mode})}>
+                      <button onClick={() => setSystemRules({ ...systemRules, maintenance_mode: !systemRules.maintenance_mode })}>
                         {systemRules.maintenance_mode ? <ToggleRight className="h-9 w-9 text-red-500" /> : <ToggleLeft className="h-9 w-9 text-emerald-500" />}
                       </button>
                     </div>
@@ -269,14 +269,14 @@ export default function PlatformSettings() {
               <div className="space-y-6 md:space-y-8">
                 <h3 className="text-heading-3 md:text-heading-1 font-black text-slate-900 dark:text-white uppercase tracking-tight">Identity</h3>
                 <div className="space-y-4">
-                   <div>
+                  <div>
                     <label className="text-badge font-black uppercase text-slate-500 tracking-widest block mb-2">Platform Name</label>
-                    <input type="text" value={branding.platform_name} onChange={e=>setBranding({...branding, platform_name: e.target.value})} className="w-full bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl px-5 py-4 outline-none font-bold text-slate-900 dark:text-white focus:border-violet-500/40" />
+                    <input type="text" value={branding.platform_name} onChange={e => setBranding({ ...branding, platform_name: e.target.value })} className="w-full bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-violet-500/10 rounded-xl px-5 py-4 outline-none font-bold text-slate-900 dark:text-white focus:border-violet-500/40" />
                   </div>
                   <div>
                     <label className="text-badge font-black uppercase text-slate-500 tracking-widest block mb-2">Theme Color</label>
                     <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5">
-                      <input type="color" value={branding.primary_color} onChange={e=>setBranding({...branding, primary_color: e.target.value})} className="h-12 w-20 rounded-lg bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 cursor-pointer" />
+                      <input type="color" value={branding.primary_color} onChange={e => setBranding({ ...branding, primary_color: e.target.value })} className="h-12 w-20 rounded-lg bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 cursor-pointer" />
                       <p className="font-mono font-bold text-slate-500 uppercase tracking-widest">{branding.primary_color}</p>
                     </div>
                   </div>
@@ -303,7 +303,7 @@ export default function PlatformSettings() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-10 border-t-2 border-slate-100 dark:border-white/5 pt-8">
               {brandingSuccess && (
                 <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-[11px] font-black mb-4">

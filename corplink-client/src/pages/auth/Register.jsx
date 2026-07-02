@@ -176,6 +176,12 @@ function Register() {
           }
         }
 
+        // Notify all super admins via security-definer RPC (bypasses RLS)
+        await supabase.rpc("notify_superadmins_new_company", {
+          company_name: companyName.trim(),
+        });
+
+
         setMessage("Company workspace created! Redirecting to login...");
         setTimeout(() => navigate("/login"), 1800);
       } else {
