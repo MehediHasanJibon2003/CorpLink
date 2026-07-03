@@ -95,12 +95,34 @@ export default function SubscriptionBilling() {
       }
     })
 
-    const invoicesWithNames = iData.map(inv => ({
-      ...inv,
-      companies: { name: cData.find(c => c.id === inv.company_id)?.name || null },
-      subscription_plans: { name: planMap[inv.plan_id]?.name || null }
-    }))
+    console.log("🧾 raw invoices:", iData.length, iData)
 
+    // USER REQUEST: Show ALL real companies in the invoices tab.
+    // If they have an invoice, show the latest one. If not, show 'No Invoice'.
+    const invoicesWithNames = cData.map(c => {
+      // Find all invoices for this company
+      const compInvoices = iData.filter(inv => inv.company_id === c.id || inv.corporate_id === c.id);
+      // Sort by date (assuming iData is already sorted, we just take the first)
+      const latestInvoice = compInvoices.length > 0 ? compInvoices[0] : null;
+
+      // Find the subscription for this company to get its expiry date
+      const sub = subByCompany[c.id] || null;
+
+      return {
+        id: latestInvoice?.id || `dummy-${c.id}`,
+        invoice_number: latestInvoice?.invoice_number || '—',
+        amount: latestInvoice?.amount || 0,
+        status: latestInvoice?.status || 'none',
+        companies: { name: c.name },
+        subscription_plans: { name: latestInvoice ? (planMap[latestInvoice.plan_id]?.name || 'Unknown') : 'No Plan' },
+        rawInvoice: latestInvoice ? {
+          ...latestInvoice,
+          companies: { name: c.name },
+          subscription_plans: { name: planMap[latestInvoice.plan_id]?.name || 'Unknown' },
+          subscription_expiry: sub?.expiry_date || null
+        } : null
+      }
+    })
     const alertsWithCompany = aData.map(a => ({
       ...a,
       companies: { name: cData.find(c => c.id === a.company_id)?.name || null }
@@ -250,7 +272,7 @@ export default function SubscriptionBilling() {
                       <td className="px-10 py-8 text-right">
                         <button 
                           onClick={() => { setSelectedSub(row.sub || { company_id: row.company_id }); setIsSubModalOpen(true); }}
-                          className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:bg-violet-600 hover:text-white transition-all opacity-0 group-hover:opacity-100 shadow-sm"
+                          className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:bg-violet-600 hover:text-white transition-all shadow-sm"
                         >
                           <Settings className="h-5 w-5" />
                         </button>
@@ -421,14 +443,16 @@ export default function SubscriptionBilling() {
                         </td>
                         <td className="px-10 py-8 text-right flex justify-end gap-3">
                           <button 
-                            onClick={() => { setSelectedInvoice(inv); setIsInvoiceViewOpen(true); }}
-                            className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:bg-violet-600 hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                            onClick={() => { if(inv.rawInvoice) { setSelectedInvoice(inv.rawInvoice); setIsInvoiceViewOpen(true); } }}
+                            className={`p-3 rounded-xl transition-all ${inv.rawInvoice ? 'bg-slate-100 dark:bg-white/5 text-slate-400 hover:bg-violet-600 hover:text-white' : 'opacity-50 cursor-not-allowed bg-slate-50 dark:bg-white/5 text-slate-300'}`}
+                            disabled={!inv.rawInvoice}
                           >
                             <FileText className="h-5 w-5" />
                           </button>
                           <button 
-                            onClick={() => { setSelectedInvoice(inv); setIsPaymentModalOpen(true); }}
-                            className="px-6 py-2 rounded-xl bg-slate-900 dark:bg-violet-600 text-white font-black uppercase text-badge tracking-widest hover:scale-105 transition-all opacity-0 group-hover:opacity-100"
+                            onClick={() => { if(inv.rawInvoice) { setSelectedInvoice(inv.rawInvoice); setIsPaymentModalOpen(true); } }}
+                            className={`px-6 py-2 rounded-xl font-black uppercase text-badge tracking-widest transition-all ${inv.rawInvoice ? 'bg-slate-900 dark:bg-violet-600 text-white hover:scale-105' : 'bg-slate-200 dark:bg-white/10 text-slate-400 cursor-not-allowed'}`}
+                            disabled={!inv.rawInvoice}
                           >
                             Process
                           </button>

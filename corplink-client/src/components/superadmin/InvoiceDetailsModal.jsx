@@ -124,8 +124,8 @@ export default function InvoiceDetailsModal({ invoice, onClose }) {
                     <p className="font-black text-slate-900">{new Date(invoice.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   </div>
                   <div className="space-y-4 text-right">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Due Date:</p>
-                    <p className="font-black text-slate-900">{new Date(invoice.billing_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Expiry Date:</p>
+                    <p className="font-black text-slate-900">{invoice.subscription_expiry ? new Date(invoice.subscription_expiry).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}</p>
                   </div>
                </div>
             </div>
