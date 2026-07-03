@@ -331,7 +331,7 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-blue-600 text-white py-5 rounded-2xl font-black text-heading-2 shadow-xl shadow-blue-600/20 mt-6"
+              className="w-full flex items-center justify-center gap-3 bg-[#2563eb] text-white py-5 rounded-2xl font-black text-heading-2 shadow-xl shadow-[#2563eb]/20 mt-6"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>

@@ -621,7 +621,7 @@ function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-60 text-white py-5 rounded-2xl font-black text-heading-2 transition-all shadow-xl shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 mt-6"
+              className="w-full flex items-center justify-center gap-3 bg-[#2563eb] hover:bg-[#1d4ed8] active:bg-[#1e40af] disabled:opacity-60 text-white py-5 rounded-2xl font-black text-heading-2 transition-all shadow-xl shadow-[#2563eb]/20 hover:shadow-[#2563eb]/30 hover:-translate-y-0.5 active:translate-y-0 mt-6"
             >
               {loading ? (
                 <>
