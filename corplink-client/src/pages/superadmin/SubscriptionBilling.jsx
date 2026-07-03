@@ -45,42 +45,95 @@ export default function SubscriptionBilling() {
 
   const fetchData = async () => {
     setLoading(true)
-    const { data: sData } = await supabase.from("subscriptions").select("*, companies(name)").order("created_at", { ascending: false })
-    const { data: pData } = await supabase.from("subscription_plans").select("*").order("price", { ascending: true })
-    const { data: iData } = await supabase.from("invoices").select("*, companies(name), subscription_plans(name)").order("created_at", { ascending: false })
-    const { data: aData } = await supabase.from("billing_alerts").select("*, companies(name)").order("created_at", { ascending: false })
-    const { data: gData } = await supabase.from("payment_gateways").select("*").order("name", { ascending: true })
-    
-    setSubs(sData || [])
-    setPlans(pData || [])
-    setInvoices(iData || [])
-    setAlerts(aData || [])
-    setGateways(gData || [])
-    
+
+    // Fetch all base data (no relational joins — no FK constraints in DB)
+    const [sRes, pRes, iRes, aRes, gRes, cRes] = await Promise.all([
+      supabase.from("subscriptions").select("*").order("start_date", { ascending: false }),
+      supabase.from("subscription_plans").select("*").order("price", { ascending: true }),
+      supabase.from("invoices").select("*").order("created_at", { ascending: false }),
+      supabase.from("billing_alerts").select("*").order("created_at", { ascending: false }),
+      supabase.from("payment_gateways").select("*").order("name", { ascending: true }),
+      supabase.from("companies").select("id, name").order("name", { ascending: true }),
+    ])
+
+    if (cRes.error) console.error("companies error:", cRes.error?.message)
+    if (sRes.error) console.error("subscriptions error:", sRes.error?.message)
+    if (iRes.error) console.error("invoices error:", iRes.error?.message)
+    if (aRes.error) console.error("billing_alerts error:", aRes.error?.message)
+
+    const sData = sRes.data || []
+    const pData = pRes.data || []
+    const iData = iRes.data || []
+    const aData = aRes.data || []
+    const gData = gRes.data || []
+    const cData = cRes.data || []
+
+    // Build plan lookup map
+    const planMap = {}
+    pData.forEach(p => { planMap[p.id] = p })
+
+    // Build subscription lookup map keyed by company id
+    // Try both corporate_id and company_id for compatibility
+    const subByCompany = {}
+    sData.forEach(s => {
+      const key = s.corporate_id || s.company_id
+      if (key && !subByCompany[key]) subByCompany[key] = s
+    })
+
+    // PRIMARY: Build rows from companies — every company shows up
+    const companyRows = cData.map(c => {
+      const sub = subByCompany[c.id] || null
+      return {
+        id: c.id,          // use company id as row key
+        company_id: c.id,
+        companyName: c.name,
+        plan: sub?.plan || sub?.plan_id || null,
+        planLabel: sub ? (planMap[sub.plan_id]?.name || sub.plan || 'Custom') : null,
+        status: sub?.status || 'none',
+        expiry_date: sub?.expiry_date || null,
+        sub: sub,          // raw subscription row for modal
+      }
+    })
+
+    const invoicesWithNames = iData.map(inv => ({
+      ...inv,
+      companies: { name: cData.find(c => c.id === inv.company_id)?.name || null },
+      subscription_plans: { name: planMap[inv.plan_id]?.name || null }
+    }))
+
+    const alertsWithCompany = aData.map(a => ({
+      ...a,
+      companies: { name: cData.find(c => c.id === a.company_id)?.name || null }
+    }))
+
+    setSubs(companyRows)
+    setPlans(pData)
+    setInvoices(invoicesWithNames)
+    setAlerts(alertsWithCompany)
+    setGateways(gData)
+
     // Calculate Metrics
-    const totalRev = (iData || []).filter(i => i.status === 'paid').reduce((acc, curr) => acc + Number(curr.amount), 0)
-    const active = (sData || []).filter(s => s.status === 'active')
-    const expired = (sData || []).filter(s => s.status === 'deactivated' || (s.expiry_date && new Date(s.expiry_date) < new Date()))
-    
-    // MRR Calculation
-    const mrr = active.reduce((acc, curr) => {
-      const plan = (pData || []).find(p => p.id === curr.plan_id)
+    const totalRev = invoicesWithNames.filter(i => i.status === 'paid').reduce((acc, curr) => acc + Number(curr.amount), 0)
+    const activeSubs = sData.filter(s => s.status === 'active')
+    const expiredSubs = sData.filter(s => s.status === 'deactivated' || (s.expiry_date && new Date(s.expiry_date) < new Date()))
+
+    const mrr = activeSubs.reduce((acc, curr) => {
+      const plan = planMap[curr.plan_id]
       return acc + (plan ? Number(plan.price) : 0)
     }, 0)
 
-    // Plan Statistics
-    const pStats = (pData || []).map(p => ({
+    const pStats = pData.map(p => ({
       name: p.name,
-      count: (sData || []).filter(s => s.plan_id === p.id).length,
-      revenue: (iData || []).filter(i => i.plan_id === p.id && i.status === 'paid').reduce((acc, curr) => acc + Number(curr.amount), 0),
+      count: sData.filter(s => s.plan_id === p.id).length,
+      revenue: invoicesWithNames.filter(i => i.plan_id === p.id && i.status === 'paid').reduce((acc, curr) => acc + Number(curr.amount), 0),
       color: p.color
     }))
 
     setMetrics({
       totalRevenue: totalRev,
-      mrr: mrr,
-      activeSubs: active.length,
-      expiredSubs: expired.length,
+      mrr,
+      activeSubs: activeSubs.length,
+      expiredSubs: expiredSubs.length,
       planStats: pStats
     })
 
@@ -170,25 +223,33 @@ export default function SubscriptionBilling() {
                 </thead>
                 <tbody className="divide-y-2 divide-slate-100 dark:divide-violet-500/5">
                   {loading ? (
-                    <tr><td colSpan={5} className="py-20 text-center animate-pulse font-black text-slate-400">Scanning Subscriptions...</td></tr>
-                  ) : subs.map(sub => (
-                    <tr key={sub.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
+                    <tr><td colSpan={5} className="py-20 text-center animate-pulse font-black text-slate-400">Scanning Companies...</td></tr>
+                  ) : subs.length === 0 ? (
+                    <tr><td colSpan={5} className="py-20 text-center font-black text-slate-400">No companies found</td></tr>
+                  ) : subs.map(row => (
+                    <tr key={row.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] group">
                       <td className="px-10 py-8">
-                        <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight">{sub.companies?.name || 'Unknown'}</p>
-                        <p className="text-badge font-bold text-slate-500 truncate">ID: {sub.company_id.substring(0, 8)}...</p>
+                        <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight">{row.companyName}</p>
+                        <p className="text-badge font-bold text-slate-500 truncate">ID: {row.company_id?.substring(0, 8)}...</p>
                       </td>
-                      <td className="px-10 py-8 font-black uppercase text-label text-violet-600 dark:text-violet-400">{sub.plan}</td>
+                      <td className="px-10 py-8 font-black uppercase text-label text-violet-600 dark:text-violet-400">
+                        {row.planLabel || <span className="text-slate-400">No Plan</span>}
+                      </td>
                       <td className="px-10 py-8">
-                        <span className={`px-4 py-1.5 rounded-full text-badge font-black uppercase border-2 ${sub.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
-                          {sub.status}
+                        <span className={`px-4 py-1.5 rounded-full text-badge font-black uppercase border-2 ${
+                          row.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                          row.status === 'none'   ? 'bg-slate-50 text-slate-400 border-slate-200' :
+                                                   'bg-red-50 text-red-600 border-red-100'
+                        }`}>
+                          {row.status === 'none' ? 'No Sub' : row.status}
                         </span>
                       </td>
                       <td className="px-10 py-8 font-black uppercase text-badge text-slate-500">
-                        {sub.expiry_date ? new Date(sub.expiry_date).toLocaleDateString() : "Lifetime"}
+                        {row.expiry_date ? new Date(row.expiry_date).toLocaleDateString() : '—'}
                       </td>
                       <td className="px-10 py-8 text-right">
                         <button 
-                          onClick={() => { setSelectedSub(sub); setIsSubModalOpen(true); }}
+                          onClick={() => { setSelectedSub(row.sub || { company_id: row.company_id }); setIsSubModalOpen(true); }}
                           className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:bg-violet-600 hover:text-white transition-all opacity-0 group-hover:opacity-100 shadow-sm"
                         >
                           <Settings className="h-5 w-5" />
@@ -204,26 +265,30 @@ export default function SubscriptionBilling() {
             <div className="md:hidden divide-y-2 divide-slate-100 dark:divide-violet-500/5">
               {loading ? (
                 <div className="py-20 text-center animate-pulse font-black text-slate-400 uppercase tracking-widest text-badge">Scanning...</div>
-              ) : subs.map(sub => (
-                <div key={sub.id} className="p-6 space-y-4">
+              ) : subs.map(row => (
+                <div key={row.id} className="p-6 space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{sub.companies?.name || 'Unknown'}</p>
-                      <p className="text-badge font-bold text-slate-500 mt-0.5">{sub.plan} Plan</p>
+                      <p className="text-heading-3 font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{row.companyName}</p>
+                      <p className="text-badge font-bold text-slate-500 mt-0.5">{row.planLabel || 'No Plan'}</p>
                     </div>
                     <button 
-                      onClick={() => { setSelectedSub(sub); setIsSubModalOpen(true); }}
+                      onClick={() => { setSelectedSub(row.sub || { company_id: row.company_id }); setIsSubModalOpen(true); }}
                       className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/10 text-slate-400"
                     >
                       <Settings className="h-5 w-5" />
                     </button>
                   </div>
                   <div className="flex items-center justify-between pt-2">
-                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border-2 ${sub.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
-                      {sub.status}
+                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border-2 ${
+                      row.status === 'active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                      row.status === 'none'   ? 'bg-slate-50 text-slate-400 border-slate-200' :
+                                               'bg-red-50 text-red-600 border-red-100'
+                    }`}>
+                      {row.status === 'none' ? 'No Sub' : row.status}
                     </span>
                     <p className="text-badge font-black text-slate-400 uppercase tracking-widest">
-                      Expires: {sub.expiry_date ? new Date(sub.expiry_date).toLocaleDateString() : "Lifetime"}
+                      {row.expiry_date ? new Date(row.expiry_date).toLocaleDateString() : '—'}
                     </p>
                   </div>
                 </div>
