@@ -93,9 +93,10 @@ function CollaborationRequest() {
       // Fetch colleagues from same company (employees table)
       const { data: colls } = await supabase
         .from("employees")
-        .select("id, name, designation, department_id")
+        .select("id, user_id, name, designation, department_id")
         .eq("company_id", profile.company_id)
         .neq("user_id", user.id) // exclude self
+        .not("user_id", "is", null)
         .eq("is_active", true)
         .order("name");
 
@@ -252,7 +253,7 @@ function CollaborationRequest() {
                 >
                   <option value="">-- Select a person --</option>
                   {colleagues.map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.id} value={c.user_id}>
                       {c.name} {c.designation ? `— ${c.designation}` : ""}
                     </option>
                   ))}
