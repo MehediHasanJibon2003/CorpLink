@@ -392,7 +392,7 @@ function CorporateFeed() {
   const filteredPosts = typeFilter === "all" ? posts : posts.filter((p) => p.type === typeFilter);
 
   const filterTabs = [
-    { value: "all", label: "Intelligence Feed", icon: Radio },
+    { value: "all", label: "News Feed", icon: Radio },
     { value: "announcement", label: "Strategic Briefings", icon: Megaphone },
     { value: "event", label: "Operational Events", icon: Calendar },
     { value: "promotion", label: "Growth & Scaling", icon: Zap },
@@ -402,19 +402,7 @@ function CorporateFeed() {
     <div className="space-y-12 md:space-y-20 pb-20">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b-4 border-slate-100 dark:border-slate-800 pb-12">
-        <div className="space-y-4">
-          <div className="flex items-center gap-4 text-emerald-600 font-black uppercase tracking-[0.4em] text-body">
-             <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-             Live Stream
-          </div>
-          <h1 className="text-5xl md:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-none">
-            Corporate <br />
-            <span className="text-emerald-500 drop-shadow-sm">Intelligence</span>
-          </h1>
-          <p className="text-heading-2 md:text-heading-1 text-slate-500 dark:text-slate-400 font-bold max-w-2xl leading-tight">
-            Centralized hub for strategic updates, promotions, and organizational transparency.
-          </p>
-        </div>
+
         <button
           onClick={() => setRefreshKey((k) => k + 1)}
           className="group flex items-center gap-4 px-10 py-6 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-3xl font-black text-slate-600 dark:text-slate-300 uppercase tracking-[0.2em] hover:bg-slate-50 transition-all shadow-xl active:scale-95"

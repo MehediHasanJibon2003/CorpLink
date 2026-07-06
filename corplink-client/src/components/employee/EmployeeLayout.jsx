@@ -173,7 +173,9 @@ function EmployeeLayout({ children }) {
         <header className="bg-white dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-800 h-20 md:h-24 lg:h-28 flex items-center justify-between px-4 md:px-8 lg:px-12">
           <div className="flex items-center gap-3 md:gap-4">
             <button onClick={() => setIsSidebarOpen(true)} className="md:hidden p-3 rounded-xl text-slate-500"><Menu className="h-6 w-6" /></button>
-            <p className="text-heading-2 md:text-heading-1 font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">{currentView}</p>
+            {currentView !== "feed" && (
+              <p className="text-heading-2 md:text-heading-1 font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">{currentView}</p>
+            )}
           </div>
 
           <div className="flex items-center gap-3 md:gap-6">
