@@ -200,23 +200,28 @@ function Messages({ isEmployeeView = false }) {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "internal_messages" },
         async (payload) => {
-          const newMsgId = payload.new.id;
-          // Fetch full message with sender info for real-time update
-          const { data: fullMsg } = await supabase
-            .from("internal_messages")
-            .select(
-              `
-            *,
-            sender:profiles!sender_id (
-              full_name,
-              role
-            )
-          `,
-            )
-            .eq("id", newMsgId)
-            .single();
+          let msg = payload.new;
+          try {
+            const { data: fullMsg, error: joinErr } = await supabase
+              .from("internal_messages")
+              .select(
+                `
+              *,
+              sender:profiles!sender_id (
+                full_name,
+                role
+              )
+            `,
+              )
+              .eq("id", newMsgId)
+              .single();
 
-          const msg = fullMsg || payload.new;
+            if (!joinErr && fullMsg) {
+              msg = fullMsg;
+            }
+          } catch (err) {
+            console.error("Realtime message join fetch error:", err);
+          }
 
           if (activeChat?.type === "group" && msg.group_id === activeChat.id) {
             setMessages((prev) => [...prev, msg]);
@@ -294,6 +299,24 @@ function Messages({ isEmployeeView = false }) {
         .from("internal_messages")
         .insert([messageData]);
       if (error) throw error;
+
+      // Create notification for receiver (if direct chat)
+      if (activeChat.type !== "group" && activeChat.id) {
+        try {
+          await supabase.from("notifications").insert([
+            {
+              user_id: activeChat.id,
+              company_id: profile?.company_id || null,
+              type: "direct_message",
+              message: `You received a new direct message from ${profile?.full_name || "a colleague"}!`,
+              is_read: false,
+              created_at: new Date().toISOString(),
+            }
+          ]);
+        } catch (nErr) {
+          console.error("Failed to insert message notification:", nErr);
+        }
+      }
 
       setNewMessage("");
       setAttachedFile(null);

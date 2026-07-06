@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { supabase } from "../../lib/supabase";
 import {
   LayoutDashboard,
   CheckSquare,
@@ -60,11 +61,12 @@ const EMPLOYEE_NAV = [
 
 
 function EmployeeLayout({ children }) {
-  const { profile, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const pathToView = {
     "/employee/dashboard": "dashboard",
@@ -90,6 +92,49 @@ function EmployeeLayout({ children }) {
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchUnreadCount = async () => {
+      try {
+        const { count, error } = await supabase
+          .from("notifications")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("is_read", false);
+
+        if (!error) {
+          setUnreadCount(count || 0);
+        }
+      } catch (err) {
+        console.error("Error fetching unread notifications count:", err);
+      }
+    };
+
+    fetchUnreadCount();
+
+    // Subscribe to notification changes
+    const channel = supabase
+      .channel(`layout-notifications-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          fetchUnreadCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();
@@ -184,6 +229,11 @@ function EmployeeLayout({ children }) {
             </button>
             <button onClick={() => navigate("/employee/notifications")} className="relative text-slate-500 dark:text-slate-400 p-2.5 md:p-4 rounded-xl md:rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
               <Bell className="h-6 w-6 md:h-7 md:w-7" />
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 h-5 min-w-5 px-1.5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white dark:border-slate-900 animate-pulse">
+                  {unreadCount}
+                </span>
+              )}
             </button>
             <div className="h-10 md:h-12 w-0.5 bg-slate-200 dark:bg-slate-700 mx-2 hidden md:block" />
             <div className="flex items-center gap-3 md:gap-5">

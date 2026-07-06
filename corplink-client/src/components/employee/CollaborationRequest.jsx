@@ -203,6 +203,22 @@ function CollaborationRequest() {
 
       if (error) throw error;
 
+      // Create notification for the receiver
+      try {
+        await supabase.from("notifications").insert([
+          {
+            user_id: form.receiver_id,
+            company_id: profile?.company_id || null,
+            type: "collaboration",
+            message: `${profile?.full_name || "A colleague"} sent you a collaboration request!`,
+            is_read: false,
+            created_at: new Date().toISOString(),
+          }
+        ]);
+      } catch (nErr) {
+        console.error("Failed to insert collaboration notification:", nErr);
+      }
+
       showToast("Collaboration request sent!", "success");
       setForm({ receiver_id: "", message: "", type: "internal" });
       setRefreshKey((k) => k + 1);
