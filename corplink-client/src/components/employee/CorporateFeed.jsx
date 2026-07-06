@@ -400,17 +400,7 @@ function CorporateFeed() {
 
   return (
     <div className="space-y-12 md:space-y-20 pb-20">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b-4 border-slate-100 dark:border-slate-800 pb-12">
 
-        <button
-          onClick={() => setRefreshKey((k) => k + 1)}
-          className="group flex items-center gap-4 px-10 py-6 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-3xl font-black text-slate-600 dark:text-slate-300 uppercase tracking-[0.2em] hover:bg-slate-50 transition-all shadow-xl active:scale-95"
-        >
-          <RefreshCw className="h-6 w-6 group-hover:rotate-180 transition-transform duration-700" />
-          Refresh Pulse
-        </button>
-      </div>
 
       {/* Filter Matrix */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
