@@ -11,6 +11,7 @@ import {
   RefreshCw,
   Trash2,
   Loader2,
+  Inbox,
 } from "lucide-react";
 
 // ─── Skeleton ──────────────────────────────────────────────────────
@@ -64,6 +65,9 @@ function CollaborationRequest() {
 
   const [colleagues, setColleagues] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
+  const [receivedRequests, setReceivedRequests] = useState([]);
+  const [activeTab, setActiveTab] = useState("incoming");
+  const [updatingId, setUpdatingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [cancelling, setCancelling] = useState(null);
@@ -112,10 +116,66 @@ function CollaborationRequest() {
 
       if (rErr && rErr.code !== "42P01") throw rErr;
       setSentRequests(reqs || []);
+
+      // Fetch received collaboration requests
+      const { data: recs, error: recErr } = await supabase
+        .from("collaboration_requests")
+        .select(`
+          id, 
+          sender_id, 
+          type, 
+          message, 
+          status, 
+          created_at,
+          sender:profiles!sender_id (full_name, role)
+        `)
+        .eq("receiver_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (recErr && recErr.code !== "42P01") throw recErr;
+      setReceivedRequests(recs || []);
     } catch (err) {
       console.error("CollaborationRequest fetchData error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async (requestId, newStatus) => {
+    setUpdatingId(requestId);
+    try {
+      const { error } = await supabase
+        .from("collaboration_requests")
+        .update({ status: newStatus })
+        .eq("id", requestId);
+
+      if (error) throw error;
+
+      showToast(`Request ${newStatus === "accepted" ? "accepted" : "declined"}.`, "success");
+      
+      // Update local state immediately
+      setReceivedRequests((prev) =>
+        prev.map((r) => (r.id === requestId ? { ...r, status: newStatus } : r))
+      );
+      
+      // Send notification to the sender
+      const targetReq = receivedRequests.find((r) => r.id === requestId);
+      if (newStatus === "accepted" && targetReq && targetReq.sender_id) {
+        await supabase.from("notifications").insert([
+          {
+            user_id: targetReq.sender_id,
+            company_id: profile.company_id,
+            type: "collaboration",
+            message: `${profile.full_name || "A colleague"} accepted your collaboration request!`,
+            is_read: false,
+            created_at: new Date().toISOString(),
+          },
+        ]);
+      }
+    } catch (err) {
+      showToast("Failed to update status: " + err.message, "error");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -298,82 +358,184 @@ function CollaborationRequest() {
           </form>
         </div>
 
-        {/* ── Sent Requests List ── */}
+        {/* ── Requests Manager (Right Column) ── */}
         <div className="border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-3xl md:rounded-[3rem] shadow-sm overflow-hidden flex flex-col">
-          <div className="px-8 md:px-10 py-6 border-b-2 border-slate-100 dark:border-slate-700">
-            <h2 className="font-black text-heading-3 md:text-heading-2 text-slate-800 dark:text-white flex items-center gap-3">
-              <Clock className="h-5 w-5 text-slate-400" />
+          {/* Tab Selector */}
+          <div className="flex border-b-2 border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30">
+            <button
+              onClick={() => setActiveTab("incoming")}
+              className={`flex-1 py-6 font-black uppercase tracking-widest text-[11px] md:text-body flex items-center justify-center gap-3 border-b-4 transition-all ${
+                activeTab === "incoming"
+                  ? "border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-800"
+                  : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              }`}
+            >
+              <Inbox className="h-5 w-5" />
+              Incoming Requests
+              {receivedRequests.filter(r => r.status === "pending").length > 0 && (
+                <span className="bg-blue-600 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center animate-pulse">
+                  {receivedRequests.filter(r => r.status === "pending").length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab("sent")}
+              className={`flex-1 py-6 font-black uppercase tracking-widest text-[11px] md:text-body flex items-center justify-center gap-3 border-b-4 transition-all ${
+                activeTab === "sent"
+                  ? "border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-800"
+                  : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              }`}
+            >
+              <Send className="h-5 w-5" />
               Sent Requests
-              <span className="ml-auto text-body font-black bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-4 py-1.5 rounded-full uppercase tracking-widest">
+              <span className="text-[10px] font-black bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full">
                 {sentRequests.length}
               </span>
-            </h2>
+            </button>
           </div>
 
-          {loading ? (
-            <div className="p-8 space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full rounded-2xl" />
-              ))}
-            </div>
-          ) : sentRequests.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-400 px-6 text-center">
-              <Users2 className="h-16 w-16 mb-4 opacity-30" />
-              <p className="text-heading-2 md:text-heading-1 font-black text-slate-500 dark:text-slate-400">
-                No requests sent yet
-              </p>
-              <p className="text-body md:text-heading-3 font-medium mt-2">
-                Your sent requests will appear here
-              </p>
-            </div>
-          ) : (
-            <div className="flex-1 overflow-y-auto divide-y-2 divide-slate-100 dark:divide-slate-700/50 custom-scrollbar">
-              {sentRequests.map((req) => {
-                const sConf = statusConfig[req.status] || statusConfig.pending;
-                const StatusIcon = sConf.icon;
-                return (
-                  <div
-                    key={req.id}
-                    className="flex flex-col md:flex-row md:items-center gap-6 px-8 md:px-10 py-8 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition group"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-4 flex-wrap mb-4">
-                        <span
-                          className={`text-label md:text-body font-black px-4 py-1.5 rounded-full flex items-center gap-2 uppercase tracking-widest ${sConf.class}`}
-                        >
-                          <StatusIcon className="h-4 w-4" />
-                          {sConf.label}
-                        </span>
-                        <span className="text-label md:text-body font-black bg-slate-100 dark:bg-slate-700 text-slate-500 px-4 py-1.5 rounded-full uppercase tracking-widest">
-                          {req.type}
-                        </span>
+          {activeTab === "incoming" ? (
+            loading ? (
+              <div className="p-8 space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+                ))}
+              </div>
+            ) : receivedRequests.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-400 px-6 text-center">
+                <Inbox className="h-16 w-16 mb-4 opacity-30" />
+                <p className="text-heading-2 md:text-heading-1 font-black text-slate-500 dark:text-slate-400">
+                  No incoming requests
+                </p>
+                <p className="text-body md:text-heading-3 font-medium mt-2">
+                  Collaboration requests sent by colleagues will show up here
+                </p>
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto divide-y-2 divide-slate-100 dark:divide-slate-700/50 custom-scrollbar">
+                {receivedRequests.map((req) => {
+                  const sConf = statusConfig[req.status] || statusConfig.pending;
+                  const StatusIcon = sConf.icon;
+                  const senderName = req.sender?.full_name || "Colleague";
+                  const senderRole = req.sender?.role || "Team Member";
+                  
+                  return (
+                    <div
+                      key={req.id}
+                      className="flex flex-col md:flex-row md:items-start gap-6 px-8 md:px-10 py-8 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition group"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-4 flex-wrap mb-4">
+                          <span
+                            className={`text-label md:text-body font-black px-4 py-1.5 rounded-full flex items-center gap-2 uppercase tracking-widest ${sConf.class}`}
+                          >
+                            <StatusIcon className="h-4 w-4" />
+                            {sConf.label}
+                          </span>
+                          <span className="text-body md:text-heading-3 font-black text-slate-800 dark:text-slate-100">
+                            From: {senderName}
+                          </span>
+                          <span className="text-label md:text-body font-black bg-slate-100 dark:bg-slate-700 text-slate-500 px-4 py-1.5 rounded-full uppercase tracking-widest leading-none">
+                            {senderRole}
+                          </span>
+                        </div>
+                        <p className="text-body md:text-heading-3 font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
+                          {req.message}
+                        </p>
+                        <p className="text-label md:text-body font-bold text-slate-400 mt-4 uppercase tracking-widest">
+                          {timeAgo(req.created_at)}
+                        </p>
                       </div>
-                      <p className="text-body md:text-heading-3 font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
-                        {req.message}
-                      </p>
-                      <p className="text-label md:text-body font-bold text-slate-400 mt-4 uppercase tracking-widest">
-                        {timeAgo(req.created_at)}
-                      </p>
-                    </div>
 
-                    {req.status === "pending" && (
-                      <button
-                        onClick={() => cancelRequest(req.id)}
-                        disabled={cancelling === req.id}
-                        title="Cancel request"
-                        className="shrink-0 p-4 text-red-500 hover:text-white hover:bg-red-500 dark:hover:bg-red-500 rounded-xl md:rounded-2xl transition disabled:opacity-50 group-hover:scale-105"
-                      >
-                        {cancelling === req.id ? (
-                          <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-5 w-5 md:h-6 md:w-6" />
-                        )}
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                      {req.status === "pending" && (
+                        <div className="flex gap-2 shrink-0 md:self-center">
+                          <button
+                            onClick={() => handleUpdateStatus(req.id, "accepted")}
+                            disabled={updatingId === req.id}
+                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-body font-black uppercase tracking-widest transition flex items-center gap-2"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => handleUpdateStatus(req.id, "rejected")}
+                            disabled={updatingId === req.id}
+                            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-body font-black uppercase tracking-widest transition flex items-center gap-2"
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          ) : (
+            loading ? (
+              <div className="p-8 space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+                ))}
+              </div>
+            ) : sentRequests.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-400 px-6 text-center">
+                <Users2 className="h-16 w-16 mb-4 opacity-30" />
+                <p className="text-heading-2 md:text-heading-1 font-black text-slate-500 dark:text-slate-400">
+                  No requests sent yet
+                </p>
+                <p className="text-body md:text-heading-3 font-medium mt-2">
+                  Your sent requests will appear here
+                </p>
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto divide-y-2 divide-slate-100 dark:divide-slate-700/50 custom-scrollbar">
+                {sentRequests.map((req) => {
+                  const sConf = statusConfig[req.status] || statusConfig.pending;
+                  const StatusIcon = sConf.icon;
+                  return (
+                    <div
+                      key={req.id}
+                      className="flex flex-col md:flex-row md:items-center gap-6 px-8 md:px-10 py-8 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition group"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-4 flex-wrap mb-4">
+                          <span
+                            className={`text-label md:text-body font-black px-4 py-1.5 rounded-full flex items-center gap-2 uppercase tracking-widest ${sConf.class}`}
+                          >
+                            <StatusIcon className="h-4 w-4" />
+                            {sConf.label}
+                          </span>
+                          <span className="text-label md:text-body font-black bg-slate-100 dark:bg-slate-700 text-slate-500 px-4 py-1.5 rounded-full uppercase tracking-widest">
+                            {req.type}
+                          </span>
+                        </div>
+                        <p className="text-body md:text-heading-3 font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
+                          {req.message}
+                        </p>
+                        <p className="text-label md:text-body font-bold text-slate-400 mt-4 uppercase tracking-widest">
+                          {timeAgo(req.created_at)}
+                        </p>
+                      </div>
+
+                      {req.status === "pending" && (
+                        <button
+                          onClick={() => cancelRequest(req.id)}
+                          disabled={cancelling === req.id}
+                          title="Cancel request"
+                          className="shrink-0 p-4 text-red-500 hover:text-white hover:bg-red-500 dark:hover:bg-red-500 rounded-xl md:rounded-2xl transition disabled:opacity-50 group-hover:scale-105"
+                        >
+                          {cancelling === req.id ? (
+                            <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-5 w-5 md:h-6 md:w-6" />
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )
           )}
         </div>
       </div>
