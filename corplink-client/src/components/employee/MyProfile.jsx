@@ -49,7 +49,7 @@ function Toast({ message, type }) {
 
 // ─── Main Component ────────────────────────────────────────────────
 function MyProfile() {
-  const { user, profile } = useAuth();
+  const { user, profile, setProfile } = useAuth();
   const fileInputRef = useRef();
 
   const [employeeData, setEmployeeData] = useState(null);
@@ -60,8 +60,12 @@ function MyProfile() {
   const [recentActivity, setRecentActivity] = useState([]);
 
   // Edit form state
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [currentAddress, setCurrentAddress] = useState("");
+  const [permanentAddress, setPermanentAddress] = useState("");
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   // Password change
@@ -80,7 +84,15 @@ function MyProfile() {
       fetchProfileData();
       fetchActivity();
     }
-  }, [user, profile]);
+  }, [user, profile?.company_id]);
+
+  useEffect(() => {
+    if (profile) {
+      setDateOfBirth(profile.date_of_birth || "");
+      setCurrentAddress(profile.current_address || "");
+      setPermanentAddress(profile.permanent_address || "");
+    }
+  }, [profile]);
 
   const fetchProfileData = async () => {
     setLoading(true);
@@ -114,6 +126,7 @@ function MyProfile() {
 
       if (emp) {
         setEmployeeData(emp);
+        setName(emp.name || "");
         setPhone(emp.phone || "");
         setPhotoUrl(emp.profile_photo || "");
       } else {
@@ -124,11 +137,15 @@ function MyProfile() {
           phone: profile.phone || "",
           designation: profile.designation || profile.role || "Employee",
           joined_at: profile.created_at,
-          profile_photo: profile.profile_photo || "",
+          profile_photo: profile.avatar_url || "",
         });
+        setName(profile.full_name || profile.name || "Employee");
         setPhone(profile.phone || "");
-        setPhotoUrl(profile.profile_photo || "");
+        setPhotoUrl(profile.avatar_url || "");
       }
+      setDateOfBirth(profile?.date_of_birth || "");
+      setCurrentAddress(profile?.current_address || "");
+      setPermanentAddress(profile?.permanent_address || "");
     } catch (err) {
       console.error("MyProfile fetch error:", err);
     } finally {
@@ -155,16 +172,16 @@ function MyProfile() {
 
     try {
       const ext = file.name.split(".").pop();
-      const path = `profile-photos/${user.id}-${Date.now()}.${ext}`;
+      const path = `${user.id}-${Date.now()}.${ext}`;
 
       const { error: uploadErr } = await supabase.storage
-        .from("profile-photos")
+        .from("avatars")
         .upload(path, file, { upsert: true });
 
       if (uploadErr) throw uploadErr;
 
       const { data: urlData } = supabase.storage
-        .from("profile-photos")
+        .from("avatars")
         .getPublicUrl(path);
 
       setPhotoUrl(urlData.publicUrl);
@@ -178,51 +195,73 @@ function MyProfile() {
   };
 
   const handleSaveProfile = async () => {
+    if (!name.trim()) {
+      showToast("Name cannot be empty.", "error");
+      return;
+    }
     setSaving(true);
     try {
       // Update employees table (use employee_id from profile, or fallback to email match)
-      let updateErr = null;
-
       if (profile?.employee_id) {
-        const { error } = await supabase
+        await supabase
           .from("employees")
-          .update({ phone: phone.trim(), profile_photo: photoUrl })
+          .update({ name: name.trim(), phone: phone.trim(), profile_photo: photoUrl })
           .eq("id", profile.employee_id)
           .eq("company_id", profile.company_id);
-        updateErr = error;
       } else {
-        const { error } = await supabase
+        await supabase
           .from("employees")
-          .update({ phone: phone.trim(), profile_photo: photoUrl })
+          .update({ name: name.trim(), phone: phone.trim(), profile_photo: photoUrl })
           .eq("email", (user?.email || profile?.email || "").toLowerCase())
           .eq("company_id", profile.company_id);
-        updateErr = error;
       }
 
-      if (updateErr) {
-        // Fallback: update profiles table
-        await supabase
-          .from("profiles")
-          .update({
-            phone: phone.trim(),
-            profile_photo: photoUrl,
-          })
-          .eq("id", user.id);
-      }
+      // Always update profiles table
+      const { error: profileErr } = await supabase
+        .from("profiles")
+        .update({
+          full_name: name.trim(),
+          avatar_url: photoUrl,
+          phone: phone.trim(),
+          date_of_birth: dateOfBirth || null,
+          current_address: currentAddress.trim() || null,
+          permanent_address: permanentAddress.trim() || null,
+        })
+        .eq("id", user.id);
+
+      if (profileErr) throw profileErr;
 
       await logAdminActivity({
         company_id: profile.company_id,
         user_id: user.id,
-        action: "Updated personal profile",
+        action: "Updated personal profile details",
         entity: "profile",
       });
 
-      setEmployeeData((prev) => ({ ...prev, phone, profile_photo: photoUrl }));
+      setEmployeeData((prev) => ({ 
+        ...prev, 
+        name: name.trim(),
+        phone: phone.trim(), 
+        profile_photo: photoUrl 
+      }));
+
+      // Update AuthContext profile state so sidebar and headers sync immediately
+      setProfile((prev) => ({
+        ...prev,
+        full_name: name.trim(),
+        avatar_url: photoUrl,
+        phone: phone.trim(),
+        date_of_birth: dateOfBirth || null,
+        current_address: currentAddress.trim() || null,
+        permanent_address: permanentAddress.trim() || null,
+      }));
+
       setEditMode(false);
       showToast("Profile updated successfully!", "success");
       fetchActivity();
     } catch (err) {
-      showToast("Failed to save profile.", "error");
+      showToast("Failed to save profile: " + err.message, "error");
+      console.error(err);
     } finally {
       setSaving(false);
     }
@@ -315,8 +354,12 @@ function MyProfile() {
             <button
               onClick={() => {
                 setEditMode(false);
+                setName(employeeData?.name || "");
                 setPhone(employeeData?.phone || "");
                 setPhotoUrl(employeeData?.profile_photo || "");
+                setDateOfBirth(profile?.date_of_birth || "");
+                setCurrentAddress(profile?.current_address || "");
+                setPermanentAddress(profile?.permanent_address || "");
               }}
               className="flex items-center gap-2 text-body font-semibold text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
             >
@@ -403,6 +446,47 @@ function MyProfile() {
               })}
             </p>
           )}
+              
+          <div className="w-full mt-8 md:mt-10 pt-8 border-t-2 border-slate-100 dark:border-slate-700 text-left space-y-6">
+            <div>
+              <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Organization</p>
+              <p className="text-[14px] md:text-heading-3 font-black text-slate-800 dark:text-slate-100">{profile?.companies?.name || "CorpLink Enterprise"}</p>
+            </div>
+            {profile?.company_id && (
+              <div>
+                <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Invite Code / Company ID</p>
+                <code className="text-[12px] md:text-[13px] font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-900/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 inline-block">
+                  {profile.company_id}
+                </code>
+              </div>
+            )}
+            {profile?.phone && (
+              <div>
+                <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Phone</p>
+                <p className="text-[14px] md:text-body font-bold text-slate-700 dark:text-slate-300">{profile.phone}</p>
+              </div>
+            )}
+            {profile?.date_of_birth && (
+              <div>
+                <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Date of Birth</p>
+                <p className="text-[14px] md:text-body font-bold text-slate-700 dark:text-slate-300">
+                  {new Date(profile.date_of_birth).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
+              </div>
+            )}
+            {profile?.current_address && (
+              <div>
+                <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Current Address</p>
+                <p className="text-[13px] md:text-body font-bold text-slate-700 dark:text-slate-300 leading-relaxed">{profile.current_address}</p>
+              </div>
+            )}
+            {profile?.permanent_address && (
+              <div>
+                <p className="text-[9px] md:text-label text-slate-400 font-black uppercase tracking-widest mb-1">Permanent Address</p>
+                <p className="text-[13px] md:text-body font-bold text-slate-700 dark:text-slate-300 leading-relaxed">{profile.permanent_address}</p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ── Info + Edit Section ── */}
@@ -413,14 +497,24 @@ function MyProfile() {
               Personal Information
             </h3>
             <div className="grid xl:grid-cols-2 gap-8 md:gap-10">
-              {/* Name (read-only) */}
+              {/* Name (editable) */}
               <div>
                 <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
                   <UserCircle className="h-5 w-5" /> Full Name
                 </label>
-                <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
-                  {displayName}
-                </p>
+                {editMode ? (
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Full Name"
+                    className="w-full px-6 py-4 border-2 border-blue-300 dark:border-blue-700 rounded-2xl bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-heading-3 outline-none focus:ring-4 focus:ring-blue-500/20"
+                  />
+                ) : (
+                  <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
+                    {displayName}
+                  </p>
+                )}
               </div>
 
               {/* Email (read-only) */}
@@ -461,6 +555,68 @@ function MyProfile() {
                 <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
                   {employeeData?.designation || "Not specified"}
                 </p>
+              </div>
+
+              {/* Date of Birth (editable) */}
+              <div>
+                <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
+                  <Calendar className="h-5 w-5" /> Date of Birth
+                </label>
+                {editMode ? (
+                  <input
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    className="w-full px-6 py-4 border-2 border-blue-300 dark:border-blue-700 rounded-2xl bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-heading-3 outline-none focus:ring-4 focus:ring-blue-500/20"
+                  />
+                ) : (
+                  <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700">
+                    {profile?.date_of_birth ? new Date(profile.date_of_birth).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : "Not set"}
+                  </p>
+                )}
+              </div>
+
+              {/* Empty placeholder for alignment */}
+              <div className="hidden xl:block"></div>
+
+              {/* Current Address (editable) */}
+              <div className="xl:col-span-2">
+                <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
+                  Current Address
+                </label>
+                {editMode ? (
+                  <textarea
+                    value={currentAddress}
+                    onChange={(e) => setCurrentAddress(e.target.value)}
+                    placeholder="Enter current address"
+                    rows={2}
+                    className="w-full px-6 py-4 border-2 border-blue-300 dark:border-blue-700 rounded-2xl bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-heading-3 outline-none focus:ring-4 focus:ring-blue-500/20 resize-none"
+                  />
+                ) : (
+                  <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700 leading-relaxed">
+                    {profile?.current_address || "Not set"}
+                  </p>
+                )}
+              </div>
+
+              {/* Permanent Address (editable) */}
+              <div className="xl:col-span-2">
+                <label className="text-body md:text-body font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-3">
+                  Permanent Address
+                </label>
+                {editMode ? (
+                  <textarea
+                    value={permanentAddress}
+                    onChange={(e) => setPermanentAddress(e.target.value)}
+                    placeholder="Enter permanent address"
+                    rows={2}
+                    className="w-full px-6 py-4 border-2 border-blue-300 dark:border-blue-700 rounded-2xl bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-heading-3 outline-none focus:ring-4 focus:ring-blue-500/20 resize-none"
+                  />
+                ) : (
+                  <p className="text-heading-3 md:text-heading-2 font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700 leading-relaxed">
+                    {profile?.permanent_address || "Not set"}
+                  </p>
+                )}
               </div>
             </div>
           </div>

@@ -82,6 +82,12 @@ function EmployeeLayout({ children }) {
   const currentView = pathToView[location.pathname] || "dashboard";
 
   useEffect(() => {
+    if (profile?.companies?.primary_color) {
+      document.documentElement.style.setProperty('--primary-color', profile.companies.primary_color);
+    }
+  }, [profile?.companies?.primary_color]);
+
+  useEffect(() => {
     setIsSidebarOpen(false);
   }, [location.pathname]);
 
@@ -99,9 +105,15 @@ function EmployeeLayout({ children }) {
       <aside className={`fixed inset-y-0 left-0 z-40 w-72 md:w-80 lg:w-[22rem] bg-slate-50 dark:bg-slate-900 border-r-2 border-slate-200 dark:border-slate-800 transition-transform duration-300 ease-in-out flex flex-col shrink-0 h-screen ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative`}>
         <div className="h-16 md:h-24 shrink-0 flex items-center px-6 md:px-8 border-b-2 border-slate-200 dark:border-slate-800/50">
           <Link to="/employee/dashboard" className="flex items-center gap-3 md:gap-4 overflow-hidden">
-            <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-body md:text-heading-2 shrink-0">
-              {profile?.companies?.name?.charAt(0) || "C"}
-            </div>
+            {profile?.companies?.logo_url ? (
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl shrink-0 overflow-hidden shadow-lg md:shadow-xl bg-white border border-slate-800">
+                <img src={profile.companies.logo_url} alt="Logo" className="w-full h-full object-contain p-1" />
+              </div>
+            ) : (
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-orange-500 flex items-center justify-center font-black text-white shadow-lg md:shadow-xl shadow-orange-500/20 text-body md:text-heading-2 shrink-0">
+                {profile?.companies?.name?.charAt(0) || "C"}
+              </div>
+            )}
             <div className="flex flex-col min-w-0">
               <span className="text-heading-3 md:text-[20px] font-black uppercase tracking-[0.1em] text-slate-900 dark:text-white leading-none truncate" title={profile?.companies?.name}>
                 {profile?.companies?.name || "CorpLink"}
@@ -178,8 +190,12 @@ function EmployeeLayout({ children }) {
                 <p className="text-[10px] md:text-label text-slate-500 font-black tracking-widest uppercase">{profile?.role}</p>
                 <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-[0.1em] mt-0.5">{profile?.companies?.name}</p>
               </div>
-              <div className="h-10 w-10 md:h-14 md:w-14 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center font-black text-white text-heading-3 md:text-heading-1 shadow-sm" style={{ background: "var(--primary-color)" }}>
-                {(profile?.full_name || "E").charAt(0).toUpperCase()}
+              <div className="h-10 w-10 md:h-14 md:w-14 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center font-black text-white text-heading-3 md:text-heading-1 shadow-sm overflow-hidden" style={{ background: profile?.avatar_url ? "transparent" : "var(--primary-color)" }}>
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  (profile?.full_name || "E").charAt(0).toUpperCase()
+                )}
               </div>
               <button onClick={handleLogout} className="ml-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2.5 md:px-8 md:py-4 rounded-xl font-black uppercase tracking-widest transition border-2 border-slate-200">Sign Out</button>
             </div>
