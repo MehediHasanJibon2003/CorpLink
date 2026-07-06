@@ -278,12 +278,13 @@ function PersonalDashboard() {
             </div>
          </div>
 
-         <button 
-           onClick={() => navigate("/employee/performance")}
-           className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-label hover:scale-105 active:scale-95 transition-all shadow-xl"
-         >
-           Detailed Intelligence
-         </button>
+          <button 
+            onClick={() => navigate("/employee/performance")}
+            className="text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-label hover:scale-105 active:scale-95 transition-all shadow-xl"
+            style={{ backgroundColor: "var(--primary-color)" }}
+          >
+            Detailed Intelligence
+          </button>
       </div>
 
       {/* ── Main Layout ── */}
