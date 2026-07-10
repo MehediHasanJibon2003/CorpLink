@@ -24,7 +24,7 @@ function Activity() {
       .select(
         `
         *,
-        user:profiles!fk_activity_user_profile (full_name, role)
+        user:profiles (full_name, role)
       `,
       )
       .eq("company_id", profile.company_id)
@@ -63,7 +63,7 @@ function Activity() {
           const { data: newRowWithUser } = await supabase
             .from("activity_logs")
             .select(
-              `*, user:profiles!fk_activity_user_profile(full_name, role)`,
+              `*, user:profiles(full_name, role)`,
             )
             .eq("id", payload.new.id)
             .single();
